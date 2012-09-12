@@ -20,7 +20,13 @@ namespace CLU.Classes.Paladin
                 return "Holy Paladin";
             }
         }
-
+        public override string Revision
+        {
+            get
+            {
+                return "$Rev$";
+            }
+        }
         public override string KeySpell
         {
             get

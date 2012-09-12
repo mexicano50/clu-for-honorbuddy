@@ -27,7 +27,7 @@ namespace CLU.Classes.Priest
         {
             get
             {
-                return "1";
+                return "$Rev$";
             }
         }
 

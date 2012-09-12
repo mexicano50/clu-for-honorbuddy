@@ -30,12 +30,11 @@ namespace CLU.Classes.Druid
                 return 3.2f;
             }
         }
-
         public override string Revision
         {
             get
             {
-                return "1";
+                return "$Rev$";
             }
         }
 

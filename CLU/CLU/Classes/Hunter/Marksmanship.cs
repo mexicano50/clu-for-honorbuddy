@@ -24,7 +24,7 @@ namespace CLU.Classes.Hunter
         {
             get
             {
-                return "1";
+                return "$Rev$";
             }
         }
 

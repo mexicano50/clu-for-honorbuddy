@@ -23,7 +23,7 @@ namespace CLU.Classes.Warlock
         {
             get
             {
-                return "1";
+                return "$Rev$";
             }
         }
 

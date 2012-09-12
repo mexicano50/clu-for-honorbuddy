@@ -35,7 +35,7 @@ namespace CLU.Classes.Rogue
         {
             get
             {
-                return "1";
+                return "$Rev$";
             }
         }
 

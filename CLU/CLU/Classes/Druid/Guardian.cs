@@ -33,7 +33,7 @@ namespace CLU.Classes.Druid
         {
             get
             {
-                return "1";
+                return "$Rev$";
             }
         }
 

@@ -56,7 +56,7 @@ Credits to Weischbier, because he owns the buisness and I want him to have my ba
         {
             get
             {
-                return "1";
+                return "$Rev$";
             }
         }
 

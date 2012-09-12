@@ -18,7 +18,13 @@ namespace CLU.Classes.Priest
                 return "Holy Priest";
             }
         }
-
+        public override string Revision
+        {
+            get
+            {
+                return "$Rev$";
+            }
+        }
         public override string KeySpell
         {
             get {

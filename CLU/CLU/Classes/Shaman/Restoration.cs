@@ -21,7 +21,13 @@ namespace CLU.Classes.Shaman
 				return "Restoration Shaman";
 			}
 		}
-
+        public override string Revision
+        {
+            get
+            {
+                return "$Rev$";
+            }
+        }
 		public override string KeySpell
 		{
 			get {

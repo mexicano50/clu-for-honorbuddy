@@ -28,7 +28,7 @@ namespace CLU.Classes.Deathknight
         {
             get
             {
-                return "1";
+                return "$Rev$";
             }
         }
 

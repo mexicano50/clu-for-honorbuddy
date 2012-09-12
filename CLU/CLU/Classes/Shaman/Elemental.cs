@@ -24,7 +24,7 @@ namespace CLU.Classes.Shaman
         {
             get
             {
-                return "1";
+                return "$Rev$";
             }
         }
 

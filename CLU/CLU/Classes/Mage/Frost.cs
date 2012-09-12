@@ -25,7 +25,7 @@ namespace CLU.Classes.Mage
         {
             get
             {
-                return "1";
+                return "$Rev$";
             }
         }
 

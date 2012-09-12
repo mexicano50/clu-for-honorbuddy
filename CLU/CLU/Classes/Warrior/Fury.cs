@@ -24,7 +24,7 @@ namespace CLU.Classes.Warrior
         {
             get
             {
-                return "1";
+                return "$Rev$";
             }
         }
 

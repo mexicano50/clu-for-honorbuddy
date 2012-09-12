@@ -25,7 +25,7 @@ namespace CLU.Classes.Paladin
         {
             get
             {
-                return "1";
+                return "$Rev$";
             }
         }
 

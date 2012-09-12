@@ -56,7 +56,7 @@ namespace CLU.Classes.DeathKnight
         {
             get
             {
-                return "1";
+                return "$Rev$";
             }
         }
 

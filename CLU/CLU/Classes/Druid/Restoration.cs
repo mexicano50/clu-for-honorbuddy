@@ -20,7 +20,13 @@ namespace CLU.Classes.Druid
                 return "Restoration Druid";
             }
         }
-
+        public override string Revision
+        {
+            get
+            {
+                return "$Rev$";
+            }
+        }
         public override string KeySpell
         {
             get {

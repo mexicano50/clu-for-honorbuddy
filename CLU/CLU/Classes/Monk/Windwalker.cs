@@ -25,7 +25,7 @@ namespace CLU.Classes.Monk
         {
             get
             {
-                return "1";
+                return "$Rev$";
             }
         }
 
