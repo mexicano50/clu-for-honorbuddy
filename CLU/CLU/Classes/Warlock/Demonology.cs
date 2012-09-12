@@ -1,10 +1,20 @@
-using CLU.Helpers;
+#region Author
+/*
+ * $Author$
+ * $Date$
+ * $ID$
+ * $Revision$
+ * $URL$
+ */
+#endregion
 using CommonBehaviors.Actions;
 using Styx.TreeSharp;
-using CLU.Lists;
-using CLU.Settings;
+using Styx.WoWInternals;
 using CLU.Base;
+using CLU.Helpers;
+using CLU.Lists;
 using CLU.Managers;
+using CLU.Settings;
 using Rest = CLU.Base.Rest;
 
 namespace CLU.Classes.Warlock
@@ -23,7 +33,7 @@ namespace CLU.Classes.Warlock
         {
             get
             {
-                return "1";
+                return "$Revision$";
             }
         }
 
@@ -104,54 +114,51 @@ namespace CLU.Classes.Warlock
                                         ),
 
                            // lets get our pet back
-                           new Decorator(ret => !Me.GotAlivePet,
-                                         new PrioritySelector(
-                                             Spell.CastSelfSpell("Soulburn", ret => !Buff.UnitHasHasteBuff(Me), "Soulburn for Pet"),
-                                             PetManager.CastPetSummonSpell("Summon Felhunter", ret => true, "Summoning Pet Felhunter (lets get our pet back)")
-                                         )
-                                        ),
+                            PetManager.CastPetSummonSpell(30146, ret => (!Me.IsMoving || Me.ActiveAuras.ContainsKey("Soulburn")) && !Me.GotAlivePet && !Me.ActiveAuras.ContainsKey(WoWSpell.FromId(108503).Name), "Summon Pet"),
+                            //Grimoire of Service
+                            Spell.CastSpellByID(111897, ret => Me.GotAlivePet && !WoWSpell.FromId(111897).Cooldown && TalentManager.HasTalent(14), "Grimoire of Service"),
+                            //Sacrifice Pet
+                            Spell.CastSelfSpellByID(108503, ret => Me.GotAlivePet && TalentManager.HasTalent(15) && !Me.ActiveAuras.ContainsKey(WoWSpell.FromId(108503).Name), "Grimoire of Sacrifice"),
 
                            // Threat
                            Buff.CastBuff("Soulshatter", ret => Me.CurrentTarget != null && Me.GotTarget && Me.CurrentTarget.ThreatInfo.RawPercent > 90 && !Spell.PlayerIsChanneling, "[High Threat] Soulshatter - Stupid Tank"),
-
-                           // Cooldowns
-                           new Decorator(
-                               ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget),
+                            //Cooldowns
+                            new Decorator(ret=> CLUSettings.Instance.UseCooldowns,
+                                new PrioritySelector(
+                                    Buff.CastBuff("Dark Soul: Knowledge", ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget) && !Me.IsMoving, "Dark Soul: Knowledge"),
+                                    //// TODO: Remove this when Apoc fixs Spellmanager. -- wulf 
+                                    new Decorator(ret => !WoWSpell.FromId(112927).Cooldown && Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget),
+                                        new PrioritySelector(
+                                            new Decorator(ret=>TalentManager.HasTalent(13),
+                                                new Sequence(
+                                                    new Action(a => CLU.Log(" [Casting] Summon Terrorguard ")),
+                                                    new Action(ret => Spell.CastfuckingSpell("Summon Terrorguard")))),
+                                            new Decorator(ret=>!TalentManager.HasTalent(13),
+                                                new Sequence(
+                                                    new Action(a => CLU.Log(" [Casting] Summon Doomguard ")),
+                                                    new Action(ret => Spell.CastfuckingSpell("Summon Doomguard"))))))
+                                    )),
+                           //Demonic Fury or Pull
+                           new Decorator(ret=> Me.CurrentTarget != null && !Me.ActiveAuras.ContainsKey("Metamorphosis") && ((!Me.CurrentTarget.ActiveAuras.ContainsKey("Doom") || (Me.CurrentTarget.ActiveAuras.ContainsKey("Corruption") && Spell.CurrentDemonicFury() > 800 && Me.CurrentTarget.ActiveAuras.ContainsKey("Shadowflame")))),
                                new PrioritySelector(
-                                   Buff.CastBuff("Metamorphosis",             ret => true, "Metamorphosis"),
-                                   Spell.CastSelfSpell("Demon Soul",          ret => true, "Demon Soul"),
-                                  // Spell.CastSelfSpell("Summon Doomguard",    ret => true, "Doomguard"),
-                                   PetManager.CastPetSpell("Felstorm",              ret => Me.GotAlivePet && Me.CurrentTarget != null && Me.Pet.Location.Distance(Me.CurrentTarget.Location) < Spell.MeleeRange, "Felstorm(Special Ability)"),
-                                   // Make sure our Felhunter did Axe Toss, before calling new pet -> Axe Toss needs to be on Cooldown
-                                   Spell.CastSelfSpell("Soulburn", ret => !PetManager.CanCastPetSpell("Axe Toss") && !PetManager.PetHasBuff("Felstorm"), "Soulburn to raise Felhunter"),
-                                   // Call pet - regardless if we have Soulburn or not, we need this pet!
-                                   Spell.CastSelfSpell("Summon Felhunter", ret => !PetManager.PetHasBuff("Felstorm") && !PetManager.HasSpellPet("Devour Magic") && !PetManager.CanCastPetSpell("Felstorm") && Buff.PlayerHasBuff("Soulburn"), "Felhunter (after axe toss)")
-                               )),
-                           Spell.CastSelfSpell("Soulburn",                ret => !Buff.UnitHasHasteBuff(Me) && !PetManager.PetHasBuff("Felstorm"), "Soulburn"),
-                           Spell.CastSpell("Soul Fire",                   ret => Buff.PlayerHasBuff("Soulburn"), "Soul Fire with soulburn"),
-
-                           // AoE
-                           PetManager.CastPetSpell("Felstorm",                  ret =>  Me.GotAlivePet && Me.CurrentTarget != null && Me.Pet.Location.Distance(Me.CurrentTarget.Location) < Spell.MeleeRange && !PetManager.PetHasBuff("Felstorm") && Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 12) > 0 && (Me.CurrentTarget.CurrentHealth > 310000 || Me.CurrentTarget.MaxHealth == 1), "Felstorm(Special Ability)"),
-                           Spell.ChannelAreaSpell("Hellfire", 11.0, false, 4, 0.0, 0.0, ret => !BossList.IgnoreAoE.Contains(Unit.CurrentTargetEntry), "Hellfire"),
-
-                           // Main Rotation
-                           Buff.CastDebuff("Curse of the Elements",       ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget) && Me.CurrentTarget.HealthPercent > 70 && !Buff.UnitHasMagicVulnerabilityDeBuffs(Me.CurrentTarget), "Curse of the Elements"),
-                           Buff.CastDebuff("Immolate",                    ret => true, "Immolate"),
-                           Buff.CastDebuff("Bane of Doom",                ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget) && Unit.TimeToDeath(Me.CurrentTarget) > 60 && !Buff.UnitsHasMyBuff("Bane of Doom"), "Bane of Doom TTL=" + Unit.TimeToDeath(Me.CurrentTarget)),
-                           Buff.CastDebuff("Agony",               ret => Me.CurrentTarget != null && !Unit.IsTargetWorthy(Me.CurrentTarget) || (Unit.IsTargetWorthy(Me.CurrentTarget) && (Unit.TimeToDeath(Me.CurrentTarget) < 60 || Unit.TimeToDeath(Me.CurrentTarget) == 9999) && (!Buff.UnitsHasMyBuff("Bane of Doom") || !Buff.TargetHasDebuff("Bane of Doom"))), "Agony TTL=" + Unit.TimeToDeath(Me.CurrentTarget)),
-                           Buff.CastDebuff("Corruption",                  ret => true, "Corruption"),
-                           Spell.CastConicSpell("Shadowflame", 11f, 33f,  ret => true, "ShadowFlame"),
-                           Spell.CastSpell("Hand of Gul'dan",             ret => true, "Hand of Gul'dan"),
-                           Spell.CastSelfSpell("Immolation Aura",         ret => Buff.PlayerBuffTimeLeft("Metamorphosis") > 10 && Unit.DistanceToTargetBoundingBox() <= 10f, "Immolation Aura"),
-                           Spell.CastSpell("Incinerate",                  ret => Buff.PlayerHasActiveBuff("Molten Core"), "Incinerate"),
-                           Spell.CastSpell("Shadow Bolt",                 ret => Buff.PlayerHasBuff("Shadow Trance"), "Instant Shadow Bolt"),
-                           Spell.CastSpell("Soul Fire",                   ret => Buff.PlayerBuffTimeLeft("Decimation") > 0, "Soul Fire with Decimation"),
-                           // Spell.CastSpell("Soul Fire",                ret => Buff.PlayerHasActiveBuff("Decimation"), "Soul Fire with Decimation"),
+                                   Spell.CastSelfSpell("Metamorphosis", ret => true, "Metamorphosis for Doom"),
+                                   Buff.CastDebuff("Doom", ret => true, "Doom"),
+                                   Spell.CastSpellByID(103964,ret=>true,"Touch of Chaos")
+                                   )),
+                           Spell.CancelMyAura("Metamorphosis", ret => Me.CurrentTarget != null && Me.ActiveAuras.ContainsKey("Metamorphosis") && Me.CurrentTarget.ActiveAuras.ContainsKey("Doom") && Spell.CurrentDemonicFury() < 200, "Metamorphosis"),
                            Spell.CastSelfSpell("Life Tap",                ret => Me.ManaPercent <= 30 && !Spell.PlayerIsChanneling && Me.HealthPercent > 40 && !Buff.UnitHasHasteBuff(Me) && !Buff.PlayerHasBuff("Metamorphosis") && !Buff.PlayerHasBuff("Demon Soul: Felguard"), "Life tap - mana < 30%"),
-                           Spell.CastSpell("Incinerate",                  ret => true, "Incinerate"),
                            Spell.CastSelfSpell("Life Tap",                ret => Me.IsMoving && Me.HealthPercent > Me.ManaPercent && Me.ManaPercent < 80, "Life tap while moving"),
-                           Spell.CastSpell("Fel Flame",                   ret => Me.IsMoving, "Fel flame while moving"),
-                           Spell.CastSelfSpell("Life Tap",                ret => Me.ManaPercent < 100 && !Spell.PlayerIsChanneling && Me.HealthPercent > 40, "Life tap - mana < 100%"));
+                           Spell.CastSelfSpell("Life Tap",                ret => Me.ManaPercent < 100 && !Spell.PlayerIsChanneling && Me.HealthPercent > 40, "Life tap - mana < 100%"),
+
+                           new Decorator(ret=> Me.CurrentTarget != null && !Me.ActiveAuras.ContainsKey("Metamorphosis") && Me.CurrentTarget.ActiveAuras.ContainsKey("Doom") && Spell.CurrentDemonicFury() < 800,
+                               new PrioritySelector(
+                                    Buff.CastDebuff("Corruption",ret=> true,"Corruption"),
+                                    Spell.CastSpellByID(105174, ret => !Me.CurrentTarget.ActiveAuras.ContainsKey("Shadowflame"), "Hand of Guld'an"),
+                                    Spell.CastSpell("Soul Fire",ret => Me.ActiveAuras.ContainsKey("Molten Core"),"Soul Fire"),
+                                    Spell.CastSpell("Shadow Bolt",ret => !Me.IsMoving,"Shadow Bolt"),
+                                    Spell.CastSpell("Fel Flame",ret => Me.IsMoving,"Fel Flame")
+                                   )));
+
             }
         }
 
@@ -171,8 +178,8 @@ namespace CLU.Classes.Warlock
                            new Decorator(
                                ret => !Me.Mounted && !Me.IsDead && !Me.Combat && !Me.IsFlying && !Me.IsOnTransport && !Me.HasAura("Food") && !Me.HasAura("Drink"),
                                new PrioritySelector(
-                                   PetManager.CastPetSummonSpell("Summon Felguard", ret => !Me.IsMoving && !Me.GotAlivePet, " Summoning Pet Felguard"),
-                                   Buff.CastBuff("Soul Link", ret => Pet != null && Pet.IsAlive, "Soul Link")
+                                   Buff.CastBuff("Dark Intent", ret => true, "Dark Intent"),
+                                   PetManager.CastPetSummonSpell(30146, ret => !Me.IsMoving && !Me.GotAlivePet, " Summoning Pet Felguard")
                                   )));
             }
         }

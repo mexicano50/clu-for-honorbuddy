@@ -1,4 +1,13 @@
-﻿using CLU.Helpers;
+﻿#region Author
+/*
+ * $Author$
+ * $Date$
+ * $ID$
+ * $Revision$
+ * $URL$
+ */
+#endregion
+using CLU.Helpers;
 using CommonBehaviors.Actions;
 using Styx.TreeSharp;
 using Styx.WoWInternals;
@@ -24,7 +33,7 @@ namespace CLU.Classes.Warlock
         {
             get
             {
-                return "$Rev: 199 $";
+                return "$Revision$";
             }
         }
 

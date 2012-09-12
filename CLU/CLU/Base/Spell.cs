@@ -1,4 +1,13 @@
-﻿using System.Reflection;
+﻿#region Author
+/*
+ * $Author$
+ * $Date$
+ * $ID$
+ * $Revision$
+ * $URL$
+ */
+#endregion
+using System.Reflection;
 
 namespace CLU.Base
 {
@@ -217,10 +226,25 @@ namespace CLU.Base
         }
 
         // For Storm :) usage in BT = new Action(ret => Spell.Cancelmyaura("fuckedaura"))
-        public static void Cancelmyaura(string name)
+        public static Composite CancelMyAura(string name)
+        {
+            return CancelMyAura(name, ret => true, "without reason");
+        }
+        public static Composite CancelMyAura(string name, CanRunDecoratorDelegate cond, string label)
         {
             name = LocalizeSpellName(name);
-            Lua.DoString(string.Format("/cancelaura \"{0}\"", RealLuaEscape(name)));
+            return new Decorator(
+                delegate(object a)
+                {
+                    if (name.Length == 0)
+                        return false;
+                    if (!cond(a))
+                        return false;
+                    return true;
+                },
+            new Sequence(
+                new Action(a => CLU.Log(" [CancelAura] {0}", name)),
+                new Action(a => Lua.DoString(string.Format("/cancelaura \"{0}\"", RealLuaEscape(name))))));
         }
 
         /// <summary>
