@@ -54,7 +54,7 @@ namespace CLU.Managers
         /// <returns></returns>
         public static bool HasTalent(int index)
         {
-            return Talents.FirstOrDefault(t => t.Index == index).Count != 0; 
+            return Talents.FirstOrDefault(t => t.Index == index).Count != 0;
         }
 
 
@@ -65,8 +65,9 @@ namespace CLU.Managers
 
             Update();
 
-            if (CurrentSpec != oldSpec) {
-                CLU.TroubleshootLog( "Your spec has been changed. Rebuilding rotation");
+            if (CurrentSpec != oldSpec)
+            {
+                CLU.TroubleshootLog("Your spec has been changed. Rebuilding rotation");
                 //SpellManager.Update();
                 CLU.Instance.QueryClassTree();
             }
@@ -90,10 +91,10 @@ namespace CLU.Managers
 
                 var numTalents = Lua.GetReturnVal<int>("return GetNumTalents()", 0);
                 CLU.TroubleshootLog("TalentManager - numTalents {0}", numTalents.ToString(CultureInfo.InvariantCulture));
-                
+
                 for (int index = 0; index <= numTalents; index++)
                 {
-                    
+
                     var selected = Lua.GetReturnVal<int>(string.Format("return GetTalentInfo({0})", index), 4);
                     //var talentName = Lua.GetReturnValues("return select(1, GetSpellInfo(" + index + "))")[0];
                     //CLU.TroubleshootLog("TalentManager - Name {10}", talentName);
@@ -101,7 +102,7 @@ namespace CLU.Managers
                     {
                         case 1:
                             {
-                                var t = new Talent { Index = index, Count=1 }; //Name = talentName
+                                var t = new Talent { Index = index, Count = 1 }; //Name = talentName
                                 Talents.Add(t);
                             }
                             break;
@@ -135,29 +136,50 @@ namespace CLU.Managers
                     }
                 }
 
-
-
-
                 Glyphs.Clear();
 
                 var glyphCount = Lua.GetReturnVal<int>("return GetNumGlyphSockets()", 0);
 
+                CLU.TroubleshootLog("TalentManager - GetNumGlyphSockets {0}", glyphCount);
+
                 if (glyphCount != 0)
                 {
+
                     for (int i = 1; i <= glyphCount; i++)
                     {
+                        CLU.TroubleshootLog("TalentManager - {0} <= {1}", i, glyphCount);
                         List<string> glyphInfo = Lua.GetReturnValues(String.Format("return GetGlyphSocketInfo({0})", i));
+                        //CLU.TroubleshootLog("TalentManager - {0} glyphInfo = {1}", i, glyphInfo[i]);
 
-                        if (glyphInfo != null && glyphInfo[3] != "nil" && !string.IsNullOrEmpty(glyphInfo[3]))
+                        //CLU.TroubleshootLog("TalentManager - {0}, {1}, {2}, {3}, {4}", i, glyphInfo[1], glyphInfo[2]);
+
+                        if (glyphInfo != null && glyphInfo[0] != "nil" && !string.IsNullOrEmpty(glyphInfo[0]))
                         {
-                            Glyphs.Add(WoWSpell.FromId(int.Parse(glyphInfo[3])).Name.Replace("Glyph of ", ""));
+                            CLU.TroubleshootLog("TalentManager - {0}", glyphInfo[0]);
                         }
+
+                        if (glyphInfo != null && glyphInfo[1] != "nil" && !string.IsNullOrEmpty(glyphInfo[1]))
+                        {
+                            CLU.TroubleshootLog("TalentManager - {0}", glyphInfo[1]);
+                        }
+
+                        if (glyphInfo != null && glyphInfo[2] != "nil" && !string.IsNullOrEmpty(glyphInfo[2]))
+                        {
+                            CLU.TroubleshootLog("TalentManager - {0}", glyphInfo[2]);
+                        }
+
+                        //if (glyphInfo != null && glyphInfo[2] != "nil" && !string.IsNullOrEmpty(glyphInfo[2]))
+                        //{
+                        //    CLU.TroubleshootLog("TalentManager -  Glyphs.Add {0}", WoWSpell.FromId(int.Parse(glyphInfo[2])).Name.Replace("Glyph of ", ""));
+                        //    Glyphs.Add(WoWSpell.FromId(int.Parse(glyphInfo[2])).Name.Replace("Glyph of ", ""));
+                        //}
                     }
                 }
             }
 
         }
-        public struct Talent {
+        public struct Talent
+        {
             public int Count;
             public int Index;
             public string Name;
