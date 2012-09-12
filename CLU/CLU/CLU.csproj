@@ -1,0 +1,195 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{1588A911-889A-4D46-8ABB-448F8E065E31}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>CLU</RootNamespace>
+    <AssemblyName>CLU</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Honorbuddy">
+      <HintPath>..\..\..\..\Applications\HB\Honorbuddy.exe</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Tripper.Tools">
+      <HintPath>..\..\..\..\Applications\HB\Tripper.Tools.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Base\Macro.cs" />
+    <Compile Include="Classes\DeathKnight\Blood.cs" />
+    <Compile Include="Classes\DeathKnight\Common.cs" />
+    <Compile Include="Classes\DeathKnight\Frost.cs" />
+    <Compile Include="Classes\DeathKnight\Unholy.cs" />
+    <Compile Include="Classes\Druid\Balance.cs" />
+    <Compile Include="Classes\Druid\Common.cs" />
+    <Compile Include="Classes\Druid\Guardian.cs" />
+    <Compile Include="Classes\Druid\Feral.cs" />
+    <Compile Include="Classes\Druid\Restoration.cs" />
+    <Compile Include="Classes\HealerRotationBase.cs" />
+    <Compile Include="Classes\Hunter\BeastMastery.cs" />
+    <Compile Include="Classes\Hunter\Common.cs" />
+    <Compile Include="Classes\Hunter\Marksmanship.cs" />
+    <Compile Include="Classes\Hunter\Survival.cs" />
+    <Compile Include="Classes\Mage\Arcane.cs" />
+    <Compile Include="Classes\Mage\Fire.cs" />
+    <Compile Include="Classes\Mage\Frost.cs" />
+    <Compile Include="Classes\Monk\Brewmaster.cs" />
+    <Compile Include="Classes\Monk\Mistweaver.cs" />
+    <Compile Include="Classes\Monk\Windwalker.cs" />
+    <Compile Include="Classes\Paladin\Holy.cs" />
+    <Compile Include="Classes\Paladin\Protection.cs" />
+    <Compile Include="Classes\Paladin\Retribution.cs" />
+    <Compile Include="Classes\Priest\Discipline.cs" />
+    <Compile Include="Classes\Priest\Holy.cs" />
+    <Compile Include="Classes\Priest\Shadow.cs" />
+    <Compile Include="Classes\Rogue\Combat.cs" />
+    <Compile Include="Classes\Rogue\Assassination.cs" />
+    <Compile Include="Classes\Rogue\Subtlety.cs" />
+    <Compile Include="Classes\RotationBase.cs" />
+    <Compile Include="Classes\Shaman\Elemental.cs" />
+    <Compile Include="Classes\Shaman\Enhancement.cs" />
+    <Compile Include="Classes\Shaman\Restoration.cs" />
+    <Compile Include="Classes\Warlock\Affliction.cs" />
+    <Compile Include="Classes\Warlock\Demonology.cs" />
+    <Compile Include="Classes\Warlock\Destruction.cs" />
+    <Compile Include="Classes\Warrior\Arms.cs" />
+    <Compile Include="Classes\Warrior\Fury.cs" />
+    <Compile Include="Classes\Warrior\Protection.cs" />
+    <Compile Include="CLU.cs" />
+    <Compile Include="GUI\ConfigurationForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\ConfigurationForm.designer.cs">
+      <DependentUpon>ConfigurationForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\GUIHelpers.cs" />
+    <Compile Include="GUI\Spellchecker.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Spellchecker.Designer.cs">
+      <DependentUpon>Spellchecker.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\TargetInfo.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\TargetInfo.designer.cs">
+      <DependentUpon>TargetInfo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Helpers\BotChecker.cs" />
+    <Compile Include="Base\Buff.cs" />
+    <Compile Include="Helpers\CircularBuffer.cs" />
+    <Compile Include="CombatLog\EventArgs.cs" />
+    <Compile Include="CombatLog\CombatLogEvents.cs" />
+    <Compile Include="Helpers\EncounterSpecific.cs" />
+    <Compile Include="Helpers\HealableUnit.cs" />
+    <Compile Include="Base\Item.cs" />
+    <Compile Include="Helpers\Keybinds.cs" />
+    <Compile Include="Base\Movement.cs" />
+    <Compile Include="Managers\PetManager.cs" />
+    <Compile Include="Classes\Rogue\Poisons.cs" />
+    <Compile Include="Base\Rest.cs" />
+    <Compile Include="Sound\SoundManager.cs" />
+    <Compile Include="Base\Spell.cs" />
+    <Compile Include="Managers\SpellImmunityManager.cs" />
+    <Compile Include="Managers\TalentManager.cs" />
+    <Compile Include="Helpers\TargetBase.cs" />
+    <Compile Include="Classes\Shaman\Totems.cs" />
+    <Compile Include="Base\Unit.cs" />
+    <Compile Include="Helpers\UnitOracle.cs" />
+    <Compile Include="CombatLog\WoWStats.cs" />
+    <Compile Include="Lists\Bosslist.cs" />
+    <Compile Include="Lists\MiscLists.cs" />
+    <Compile Include="Lists\Trinkets.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Settings\CLUSettings.cs" />
+    <Compile Include="Settings\DeathKnightSettings.cs" />
+    <Compile Include="Settings\DruidSettings.cs" />
+    <Compile Include="Settings\HunterSettings.cs" />
+    <Compile Include="Settings\MageSettings.cs" />
+    <Compile Include="Settings\MonkSettings.cs" />
+    <Compile Include="Settings\PaladinSettings.cs" />
+    <Compile Include="Settings\PriestSettings.cs" />
+    <Compile Include="Settings\RogueSettings.cs" />
+    <Compile Include="Settings\ShamanSettings.cs" />
+    <Compile Include="Settings\WarlockSettings.cs" />
+    <Compile Include="Settings\WarriorSettings.cs" />
+    <Compile Include="Base\enums.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="GUI\ConfigurationForm.resx">
+      <DependentUpon>ConfigurationForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\Spellchecker.resx">
+      <DependentUpon>Spellchecker.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\TargetInfo.resx">
+      <DependentUpon>TargetInfo.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="GUI\Resources\CLU.ico" />
+    <Content Include="GUI\Resources\CLU.png" />
+    <Content Include="Readme.txt" />
+    <Content Include="Sound\aoeabilitiesdisabled.wav" />
+    <Content Include="Sound\aoeabilitiesenabled.wav" />
+    <Content Include="Sound\chakrasanctuary.wav" />
+    <Content Include="Sound\chakraserenity.wav" />
+    <Content Include="Sound\cooldownsdisabled.wav" />
+    <Content Include="Sound\cooldownsenabled.wav" />
+    <Content Include="Sound\dsextraactionbuttondisabled.wav" />
+    <Content Include="Sound\dsextraactionbuttonenabled.wav" />
+    <Content Include="Sound\interuptsdisabled.wav" />
+    <Content Include="Sound\interuptsenabled.wav" />
+    <Content Include="Sound\multidottingdisabled.wav" />
+    <Content Include="Sound\multidottingenabled.wav" />
+    <Content Include="Sound\raidandpartybuffingdisabled.wav" />
+    <Content Include="Sound\raidandpartybuffingenabled.wav" />
+    <Content Include="Sound\rotationenabled.wav" />
+    <Content Include="Sound\rotationpaused.wav" />
+    <Content Include="Sound\selfhealingdisabled.wav" />
+    <Content Include="Sound\selfhealingenabled.wav" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
