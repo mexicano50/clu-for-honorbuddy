@@ -32,7 +32,10 @@ namespace CLU.Classes.Hunter
                 return "Explosive Shot";
             }
         }
-
+        public override int KeySpellId
+        {
+            get { return 53301; }
+        }
         public override float CombatMinDistance
         {
             get {

@@ -35,7 +35,10 @@ namespace CLU.Classes.Paladin
                 return "Templar's Verdict";
             }
         }
-
+        public override int KeySpellId
+        {
+            get { return 85256; }
+        }
         public override float CombatMaxDistance
         {
             get {

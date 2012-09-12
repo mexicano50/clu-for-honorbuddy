@@ -37,7 +37,10 @@ namespace CLU.Classes.Rogue
                 return "Hemorrhage";
             }
         }
-
+        public override int KeySpellId
+        {
+            get { return 16511; }
+        }
         public override float CombatMaxDistance
         {
             get {

@@ -43,7 +43,10 @@ namespace CLU.Classes.Warlock
                 return "Metamorphosis";
             }
         }
-
+        public override int KeySpellId
+        {
+            get { return 103958; }
+        }
         // I want to keep moving at melee range while morph is available
         // note that this info is used only if you enable moving/facing in the CC settings.
         public override float CombatMaxDistance
@@ -114,7 +117,7 @@ namespace CLU.Classes.Warlock
                                         ),
 
                            // lets get our pet back
-                            PetManager.CastPetSummonSpell(30146, ret => (!Me.IsMoving || Me.ActiveAuras.ContainsKey("Soulburn")) && !Me.GotAlivePet && !Me.ActiveAuras.ContainsKey(WoWSpell.FromId(108503).Name), "Summon Pet"),
+                            PetManager.CastPetSummonSpell(105174, ret => (!Me.IsMoving || Me.ActiveAuras.ContainsKey("Soulburn")) && !Me.GotAlivePet && !Me.ActiveAuras.ContainsKey(WoWSpell.FromId(108503).Name), "Summon Pet"),
                             //Grimoire of Service
                             Spell.CastSpellByID(111897, ret => Me.GotAlivePet && !WoWSpell.FromId(111897).Cooldown && TalentManager.HasTalent(14), "Grimoire of Service"),
                             //Sacrifice Pet
@@ -148,8 +151,6 @@ namespace CLU.Classes.Warlock
                            Spell.CancelMyAura("Metamorphosis", ret => Me.CurrentTarget != null && Me.ActiveAuras.ContainsKey("Metamorphosis") && Me.CurrentTarget.ActiveAuras.ContainsKey("Doom") && Spell.CurrentDemonicFury() < 200, "Metamorphosis"),
                            Spell.CastSelfSpell("Life Tap",                ret => Me.ManaPercent <= 30 && !Spell.PlayerIsChanneling && Me.HealthPercent > 40 && !Buff.UnitHasHasteBuff(Me) && !Buff.PlayerHasBuff("Metamorphosis") && !Buff.PlayerHasBuff("Demon Soul: Felguard"), "Life tap - mana < 30%"),
                            Spell.CastSelfSpell("Life Tap",                ret => Me.IsMoving && Me.HealthPercent > Me.ManaPercent && Me.ManaPercent < 80, "Life tap while moving"),
-                           Spell.CastSelfSpell("Life Tap",                ret => Me.ManaPercent < 100 && !Spell.PlayerIsChanneling && Me.HealthPercent > 40, "Life tap - mana < 100%"),
-
                            new Decorator(ret=> Me.CurrentTarget != null && !Me.ActiveAuras.ContainsKey("Metamorphosis") && Me.CurrentTarget.ActiveAuras.ContainsKey("Doom") && Spell.CurrentDemonicFury() < 800,
                                new PrioritySelector(
                                     Buff.CastDebuff("Corruption",ret=> true,"Corruption"),
@@ -157,7 +158,8 @@ namespace CLU.Classes.Warlock
                                     Spell.CastSpell("Soul Fire",ret => Me.ActiveAuras.ContainsKey("Molten Core"),"Soul Fire"),
                                     Spell.CastSpell("Shadow Bolt",ret => !Me.IsMoving,"Shadow Bolt"),
                                     Spell.CastSpell("Fel Flame",ret => Me.IsMoving,"Fel Flame")
-                                   )));
+                                   )),
+                           Spell.CastSelfSpell("Life Tap",                ret => Me.ManaPercent < 100 && !Spell.PlayerIsChanneling && Me.HealthPercent > 40, "Life tap - mana < 100%"));
 
             }
         }

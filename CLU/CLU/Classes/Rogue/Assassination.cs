@@ -43,7 +43,10 @@ namespace CLU.Classes.Rogue
         {
             get { return "Mutilate"; }
         }
-
+        public override int KeySpellId
+        {
+            get { return 1329; }
+        }
         /// <summary>
         /// Gets the healing rotation.
         /// Rotation created by wulf.

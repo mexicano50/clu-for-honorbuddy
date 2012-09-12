@@ -1,11 +1,11 @@
 ﻿// This file is part of Singular - A community driven Honorbuddy CC
-// $Author: raphus $
-// $Date: 2011-12-16 08:21:57 +1100 (Fri, 16 Dec 2011) $
-// $HeadURL: http://svn.apocdev.com/singular/trunk/Singular/Utilities/CombatLog.cs $
-// $LastChangedBy: raphus $
-// $LastChangedDate: 2011-12-16 08:21:57 +1100 (Fri, 16 Dec 2011) $
-// $LastChangedRevision: 480 $
-// $Revision: 480 $
+// $Author$
+// $Date$
+// $HeadURL$
+// $LastChangedBy$
+// $LastChangedDate$
+// $LastChangedRevision$
+// $Revision$
 
 namespace CLU.CombatLog
 {

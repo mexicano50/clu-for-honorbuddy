@@ -34,7 +34,10 @@ namespace CLU.Classes.Mage
                 return "Arcane Blast";
             }
         }
-
+        public override int KeySpellId
+        {
+            get { return 30451; }
+        }
         public override float CombatMinDistance
         {
             get {

@@ -35,7 +35,10 @@ namespace CLU.Classes.Mage
                 return "Frostbolt";
             }
         }
-
+        public override int KeySpellId
+        {
+            get { return 116; }
+        }
         public override float CombatMinDistance
         {
             get {

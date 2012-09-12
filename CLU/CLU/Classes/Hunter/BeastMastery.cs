@@ -34,7 +34,10 @@ namespace CLU.Classes.Hunter
                 return "Kill Command";
             }
         }
-
+        public override int KeySpellId
+        {
+            get { return 34026; }
+        }
         public override float CombatMinDistance
         {
             get {

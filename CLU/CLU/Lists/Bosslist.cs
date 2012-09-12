@@ -1,11 +1,11 @@
 ﻿// This file is part of Singular - A community driven Honorbuddy CC
-// $Author: apoc $
-// $Date: 2011-12-11 20:22:31 +1100 (Sun, 11 Dec 2011) $
-// $HeadURL: http://svn.apocdev.com/singular/trunk/Singular/Lists/BossList.cs $
-// $LastChangedBy: apoc $
-// $LastChangedDate: 2011-12-11 20:22:31 +1100 (Sun, 11 Dec 2011) $
-// $LastChangedRevision: 450 $
-// $Revision: 450 $
+// $Author$
+// $Date$
+// $HeadURL$
+// $LastChangedBy$
+// $LastChangedDate$
+// $LastChangedRevision$
+// $Revision$
 
 // Credits to Apoc
 // I have added:

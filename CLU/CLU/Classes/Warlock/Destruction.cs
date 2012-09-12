@@ -33,7 +33,10 @@ namespace CLU.Classes.Warlock
                 return "Conflagrate";
             }
         }
-
+        public override int KeySpellId
+        {
+            get { return 17962; }
+        }
         public override float CombatMinDistance
         {
             get {

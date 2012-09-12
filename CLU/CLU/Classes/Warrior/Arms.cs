@@ -30,7 +30,10 @@ namespace CLU.Classes.Warrior
         {
             get { return "Mortal Strike"; }
         }
-
+        public override int KeySpellId
+        {
+            get { return 12294; }
+        }
         public override float CombatMaxDistance
         {
             get { return 3.2f; }

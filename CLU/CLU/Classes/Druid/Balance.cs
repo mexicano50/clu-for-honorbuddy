@@ -35,7 +35,10 @@ namespace CLU.Classes.Druid
                 return "Starfire";
             }
         }
-
+        public override int KeySpellId
+        {
+            get { return 2912; }
+        }
         public override float CombatMinDistance
         {
             get {

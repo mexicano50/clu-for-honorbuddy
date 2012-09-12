@@ -36,7 +36,10 @@ namespace CLU.Classes.Shaman
                 return "Lava Lash";
             }
         }
-
+        public override int KeySpellId
+        {
+            get { return 60103; }
+        }
         public override float CombatMaxDistance
         {
             get {

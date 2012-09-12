@@ -35,7 +35,10 @@ namespace CLU.Classes.Monk
                 return "Fists of Fury";
             }
         }
-
+        public override int KeySpellId
+        {
+            get { return 0; }
+        }
         public override float CombatMaxDistance
         {
             get {

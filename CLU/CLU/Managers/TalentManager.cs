@@ -1,6 +1,6 @@
 ﻿// This file is part of Singular - A community driven Honorbuddy CC
-// $Author: raphus $
-// $LastChangedBy: wulf $
+// $Author$
+// $LastChangedBy$
 
 namespace CLU.Managers
 {
@@ -130,10 +130,6 @@ namespace CLU.Managers
                                 break;
                         }
                     }
-                    if (talent.Name != null)
-                    {
-                        CLU.TroubleshootLog("TalentManager - talent {0} == Name", talent.Index);
-                    }
                 }
 
                 Glyphs.Clear();
@@ -147,7 +143,7 @@ namespace CLU.Managers
 
                     for (int i = 1; i <= glyphCount; i++)
                     {
-                        CLU.TroubleshootLog("TalentManager - {0} <= {1}", i, glyphCount);
+                        //CLU.TroubleshootLog("TalentManager - {0} <= {1}", i, glyphCount);
                         List<string> glyphInfo = Lua.GetReturnValues(String.Format("return GetGlyphSocketInfo({0})", i));
                         //CLU.TroubleshootLog("TalentManager - {0} glyphInfo = {1}", i, glyphInfo[i]);
 

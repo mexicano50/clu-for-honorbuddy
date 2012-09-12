@@ -44,7 +44,10 @@ namespace CLU.Classes.Druid
                 return "Tiger's Fury";
             }
         }
-
+        public override int KeySpellId
+        {
+            get { return 5217; }
+        }
         public override string Help
         {
             get {

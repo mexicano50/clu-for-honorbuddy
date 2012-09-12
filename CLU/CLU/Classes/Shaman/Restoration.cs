@@ -34,7 +34,10 @@ namespace CLU.Classes.Shaman
                 return "Riptide";
 			}
 		}
-
+        public override int KeySpellId
+        {
+            get { return 61295; }
+        }
 		public override float CombatMaxDistance
 		{
 			get {

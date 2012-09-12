@@ -40,7 +40,10 @@ namespace CLU.Classes.Paladin
                 return "Avenger's Shield";
             }
         }
-
+        public override int KeySpellId
+        {
+            get { return 31935; }
+        }
         public override float CombatMaxDistance
         {
             get {

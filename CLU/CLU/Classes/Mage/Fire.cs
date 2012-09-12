@@ -34,7 +34,10 @@ namespace CLU.Classes.Mage
                 return "Pyroblast";
             }
         }
-
+        public override int KeySpellId
+        {
+            get { return 11366; }
+        }
         public override float CombatMinDistance
         {
             get {

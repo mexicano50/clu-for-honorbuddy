@@ -34,7 +34,10 @@ namespace CLU.Classes.Shaman
                 return "Thunderstorm";
             }
         }
-
+        public override int KeySpellId
+        {
+            get { return 51490; }
+        }
         public override float CombatMaxDistance
         {
             get {

@@ -37,7 +37,10 @@ namespace CLU.Classes.Rogue
                 return "Blade Flurry";
             }
         }
-
+        public override int KeySpellId
+        {
+            get { return 13877; }
+        }
         public override float CombatMaxDistance
         {
             get {

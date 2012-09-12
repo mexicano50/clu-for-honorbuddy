@@ -38,7 +38,10 @@ namespace CLU.Classes.Deathknight
                 return "Rune Tap";
             }
         }
-
+        public override int KeySpellId
+        {
+            get { return 48982; }
+        }
         public override float CombatMaxDistance
         {
             get {

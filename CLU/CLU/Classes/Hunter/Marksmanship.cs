@@ -34,7 +34,10 @@ namespace CLU.Classes.Hunter
                 return "Aimed Shot";
             }
         }
-
+        public override int KeySpellId
+        {
+            get { return 19434; }
+        }
         public override float CombatMinDistance
         {
             get {

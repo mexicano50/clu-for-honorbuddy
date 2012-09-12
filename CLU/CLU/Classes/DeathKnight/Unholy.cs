@@ -67,6 +67,11 @@ namespace CLU.Classes.DeathKnight
             }
         }
 
+        public override int KeySpellId
+        {
+            get { return 55090; }
+        }
+
         public override Composite SingleRotation
         {
             get

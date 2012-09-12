@@ -43,7 +43,10 @@ namespace CLU.Classes.Druid
                 return "Savage Defense";
             }
         }
-
+        public override int KeySpellId
+        {
+            get { return 62606; }
+        }
         public override string Help
         {
             get {

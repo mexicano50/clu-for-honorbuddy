@@ -365,7 +365,7 @@ namespace CLU
                 var constructorInfo = x.GetConstructor(new Type[] { });
                 if (constructorInfo != null) {
                     var rb = constructorInfo.Invoke(new object[] { }) as RotationBase;
-                    if (rb != null && SpellManager.HasSpell(Spell.LocalizeSpellName(rb.KeySpell)))
+                    if (rb != null && SpellManager.HasSpell(rb.KeySpellId))
                     {
                         CLU.TroubleshootLog(" Using " + rb.Name + " rotation. Character has " + rb.KeySpell);
                         this.rotations.Add(rb);

@@ -37,7 +37,10 @@ namespace CLU.Classes.Priest
                 return "Mind Blast"; // Mind Flay
             }
         }
-
+        public override int KeySpellId
+        {
+            get { return 8092; }
+        }
         public override float CombatMinDistance
         {
             get {

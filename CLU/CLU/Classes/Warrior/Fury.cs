@@ -32,7 +32,10 @@ namespace CLU.Classes.Warrior
         {
             get { return "Bloodthirst"; }
         }
-
+        public override int KeySpellId
+        {
+            get { return 23881; }
+        }
         public override float CombatMaxDistance
         {
             get { return 3.2f; }

@@ -34,7 +34,10 @@ namespace CLU.Classes.Paladin
                 return "Holy Shock";
             }
         }
-
+        public override int KeySpellId
+        {
+            get { return 20473; }
+        }
         public override float CombatMaxDistance
         {
             get

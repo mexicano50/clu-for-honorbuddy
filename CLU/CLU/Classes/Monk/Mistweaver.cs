@@ -34,7 +34,10 @@ namespace CLU.Classes.Monk
                 return "Soothing Mist";
             }
         }
-
+        public override int KeySpellId
+        {
+            get { return 0; }
+        }
         public override float CombatMaxDistance
         {
             get {

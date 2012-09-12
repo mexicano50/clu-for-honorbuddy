@@ -66,7 +66,10 @@ Credits to Weischbier, because he owns the buisness and I want him to have my ba
                 return "Howling Blast";
             }
         }
-
+        public override int KeySpellId
+        {
+            get { return 49184; }
+        }
         public override Composite SingleRotation
         {
             get {

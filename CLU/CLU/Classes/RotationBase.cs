@@ -17,7 +17,7 @@ namespace CLU.Classes
 		}
 
 	    public abstract string Revision { get; }
-
+        public abstract int KeySpellId { get; }
 	    public abstract string KeySpell { get; }
 
 		public abstract Composite SingleRotation { get; }

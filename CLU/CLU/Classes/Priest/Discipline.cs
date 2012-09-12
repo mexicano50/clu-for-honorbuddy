@@ -35,7 +35,10 @@ namespace CLU.Classes.Priest
                 return "Penance";
             }
         }
-
+        public override int KeySpellId
+        {
+            get { return 47540; }
+        }
         public override float CombatMaxDistance
         {
             get {

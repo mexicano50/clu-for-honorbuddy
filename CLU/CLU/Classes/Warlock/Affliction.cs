@@ -43,7 +43,10 @@ namespace CLU.Classes.Warlock
                 return "Unstable Affliction";
             }
         }
-
+        public override int KeySpellId
+        {
+            get { return 30108; }
+        }
         // adding some help about cooldown management
         public override string Help
         {

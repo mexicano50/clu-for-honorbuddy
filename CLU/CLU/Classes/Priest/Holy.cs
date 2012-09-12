@@ -31,7 +31,10 @@ namespace CLU.Classes.Priest
                 return "Holy Word: Chastise";
             }
         }
-
+        public override int KeySpellId
+        {
+            get { return 88625; }
+        }
         public override float CombatMaxDistance
         {
             get {

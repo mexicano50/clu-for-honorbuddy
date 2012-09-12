@@ -1,7 +1,7 @@
 ﻿#region Revision Info
 
 // This file was part of Singular - A community driven Honorbuddy CC
-// $Author: Laria $
+// $Author$
 // $LastChangedBy: Laria$
 #endregion
 using System.ComponentModel;

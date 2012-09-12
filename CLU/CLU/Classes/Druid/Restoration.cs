@@ -33,7 +33,10 @@ namespace CLU.Classes.Druid
                 return "Swiftmend";
             }
         }
-
+        public override int KeySpellId
+        {
+            get { return 18562; }
+        }
         public override float CombatMaxDistance
         {
             get {
