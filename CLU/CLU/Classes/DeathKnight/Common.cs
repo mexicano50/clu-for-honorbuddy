@@ -7,6 +7,7 @@ todo:                                                               Done by:
  * add apply diseases composit, its all the same for any spec                  : by Weischbier 15:34h GMT 31.08.2012
  * add CanPlagueLeech to rotations                                             : by Weischbier 15:34h GMT 31.08.2012
 */
+
 namespace CLU.Classes.DeathKnight
 {
     using System;
@@ -26,7 +27,7 @@ namespace CLU.Classes.DeathKnight
     {
 
         /// <summary>
-        /// erm..me
+        /// erm..me, us?
         /// </summary>
         private static LocalPlayer Me
         {
@@ -92,26 +93,6 @@ namespace CLU.Classes.DeathKnight
         }
 
         /// <summary>
-        /// Counts the amount of runes we have
-        /// </summary>
-        public static double RuneCalculus
-        {
-            get
-            {
-                try
-                {
-                    return Spell.RuneCooldown(1) + Spell.RuneCooldown(2) + Spell.RuneCooldown(3) + Spell.RuneCooldown(4) + Spell.RuneCooldown(5) + Spell.RuneCooldown(6);
-                }
-                catch (Exception ex)
-                {
-                    CLU.DiagnosticLog("RuneCalculus : {0}", ex);
-                }
-
-                return 0;
-            }
-        }
-
-        /// <summary>
         /// Checks if we can use Plague Leech
         /// We need to use Plague Leech right before Outbreak drops off so we dont 
         /// waste two globals on Icy Touch and Plague strike.
@@ -122,9 +103,7 @@ namespace CLU.Classes.DeathKnight
         {
             try
             {
-                return (Spell.RuneCooldown(1) > 1 && Spell.RuneCooldown(2) > 1 && Spell.RuneCooldown(5) > 1
-                        && Spell.RuneCooldown(6) > 1 && (Spell.RuneCooldown(3) > 1 && Spell.RuneCooldown(4) == 0 || Spell.RuneCooldown(3) == 0 && Spell.RuneCooldown(4) > 1)) 
-                        && (Buff.TargetDebuffTimeLeft("Blood Plague").TotalSeconds < 1
+                return (Buff.TargetDebuffTimeLeft("Blood Plague").TotalSeconds < 1
                         && Buff.TargetDebuffTimeLeft("Frost Fever").TotalSeconds < 1)
                         && Spell.SpellCooldown("Outbreak").TotalSeconds < 1 
                         && Buff.TargetHasDebuff("Blood Plague")
@@ -132,7 +111,6 @@ namespace CLU.Classes.DeathKnight
             }
             catch (Exception ex)
             {
-                //CLU.TroubleshootLog( "IsWieldingBigWeapon : {0}", ex);//Yeah yeah...copy and paste :D haha
                 CLU.TroubleshootLog( "CanPlagueLeech : {0}", ex);
             }
 

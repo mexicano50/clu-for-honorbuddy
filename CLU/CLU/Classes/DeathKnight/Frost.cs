@@ -95,7 +95,7 @@ Credits to Weischbier, because he owns the buisness and I want him to have my ba
                                          new PrioritySelector(
                                              Buff.CastBuff("Raise Dead", 				ret => Me.CurrentTarget != null && Buff.PlayerHasBuff("Pillar of Frost") && Buff.PlayerBuffTimeLeft("Pillar of Frost") <= 10 && Buff.PlayerHasBuff("Unholy Strength"), "Raise Dead"),
                                              Buff.CastBuff("Pillar of Frost", 			ret => Me.CurrentTarget != null, "Pillar of Frost"),
-                                             Spell.CastSelfSpell("Empower Rune Weapon", ret => Me.CurrentTarget != null && CLUSettings.Instance.DeathKnight.UseEmpowerRuneWeapon && StyxWoW.Me.FrostRuneCount < 1 && StyxWoW.Me.UnholyRuneCount < 2 && StyxWoW.Me.DeathRuneCount < 1 && Common.RuneCalculus > 8 && !Buff.UnitHasHasteBuff(Me), "Empower Rune Weapon")
+                                             Spell.CastSelfSpell("Empower Rune Weapon", ret => Me.CurrentTarget != null && CLUSettings.Instance.DeathKnight.UseEmpowerRuneWeapon && StyxWoW.Me.FrostRuneCount < 1 && StyxWoW.Me.UnholyRuneCount < 2 && StyxWoW.Me.DeathRuneCount < 1 && !Buff.UnitHasHasteBuff(Me), "Empower Rune Weapon")
                                          )
                                         ),
                            //Aoe
@@ -111,8 +111,8 @@ Credits to Weischbier, because he owns the buisness and I want him to have my ba
                            //Operation: Do Damage[Eyes only]
                            new Decorator(ret => Common.IsWieldingTwoHandedWeapon(),
                                new PrioritySelector(
-                                   Spell.CastSpell("Soul Reaper", ret => Me.CurrentTarget, ret => Me.CurrentTarget != null && Me.CurrentTarget.HealthPercent < 35, "Soul Reaping"),
-                                   Spell.CastSpell("Howling Blast", ret => Buff.PlayerHasBuff("Freezing Fog"), "Howling Blast (Rime)"),
+                                    Spell.CastSpell("Soul Reaper", ret => Me.CurrentTarget, ret => Me.CurrentTarget != null && Me.CurrentTarget.HealthPercent < 35, "Soul Reaping"),
+                                    Spell.CastSpell("Howling Blast", ret => Buff.PlayerHasBuff("Freezing Fog"), "Howling Blast (Rime)"),
                                     Spell.CastSpell("Obliterate", ret => Me.CurrentTarget, ret => Buff.PlayerHasBuff("Killing Machine"), "Obliterate (2 Hand Killing Machine)"),
                                     Spell.CastSpell("Obliterate", ret => Me.CurrentTarget, ret => Me.CurrentRunicPower < 85, "Obliterate (Utilize Runes)"),
                                     Spell.CastSpell("Frost Strike", ret => Me.CurrentTarget, ret => Me.RunicPowerPercent >= 90, "Frost Strike (Dumping Runic Power)"),
@@ -134,7 +134,7 @@ Credits to Weischbier, because he owns the buisness and I want him to have my ba
                                     Spell.CastSpell("Howling Blast", ret => true, "Howling Blast (Because we can)"),
                                     Spell.CastSpell("Blood Tap", ret => Me.CurrentTarget, ret =>  Buff.PlayerCountBuff("Blood Charge") >= 5 && (Common.FrostRuneSlotsActive == 0 || Common.UnholyRuneSlotsActive == 0 || Common.BloodRuneSlotsActive == 0), "Blood Tap (Refreshed a depleted Rune)"),  //Don't waste it on Unholy Runes
                                     Spell.CastSpell("Frost Strike", ret => true, "Frost Strike (Because we can)"),
-                                    Buff.CastBuff("Horn of Winter", ret => true, "Horn of Winter (Because we can)")
+                                    Spell.CastSpell("Horn of Winter",ret => Me, ret => true, "Horn of Winter for RP")
                                    )
                                )
                        );

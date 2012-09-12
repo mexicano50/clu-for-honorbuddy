@@ -69,56 +69,74 @@ namespace CLU.Classes.DeathKnight
 
         public override Composite SingleRotation
         {
-            get {
+            get
+            {
                 return new PrioritySelector(
-                           // Pause Rotation
-                           new Decorator(ret => CLUSettings.Instance.PauseRotation, new ActionAlwaysSucceed()),
+                    // Pause Rotation
+                    new Decorator(ret => CLUSettings.Instance.PauseRotation, new ActionAlwaysSucceed()),
 
-                           // For DS Encounters.
-                           EncounterSpecific.ExtraActionButton(),
+                    // For DS Encounters.
+                    EncounterSpecific.ExtraActionButton(),
 
-                           new Decorator(
-                               ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget),
+                    new Decorator(
+                        ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget),
+                        new PrioritySelector(
+                            Item.UseTrinkets(),
+                            Buff.CastBuff("Lifeblood", ret => true, "Lifeblood"), // Thanks Kink
+                            Item.UseEngineerGloves(),
+                            Spell.UseRacials()
+                            )
+                        ),
+                    //Interrupts
+                    Spell.CastInterupt("Mind Freeze",ret => Me.CurrentTarget != null && Me.CurrentTarget.IsWithinMeleeRange,"Mind Freeze"),//Why does nobody check for the range of melee kicks? // CurrentTarget Null check, we are accessing the objects property ;) --wulf
+                    Spell.CastInterupt("Strangulate", ret => true, "Strangulate"),
+                    Spell.CastInterupt("Asphyxiate", ret => true, "Asphyxiate"),// Replaces Strangulate -- Darth Vader like ability
+                    //Diseases
+                    Common.ApplyDiseases(ret => Me.CurrentTarget),
+                    // TIMMEEEEEEE
+                    Spell.CastSpell("Dark Transformation", ret => true, "Dark Transformation"),
+                    Spell.CastSelfSpell("Raise Dead", ret => (Me.Pet == null || Me.Pet.IsDead), "Raise Dead"),//Gettin' Timmy back
+                    //Cooldowns
+                    new Decorator(ret => Unit.IsTargetWorthy(Me.CurrentTarget) && Me.IsWithinMeleeRange,//Check for the damn range, we don't want to pop anything when the destination is shit away
+                                  new PrioritySelector(
+                                      Buff.CastBuffonUnit("Unholy Frenzy", u => Unit.BestUnholyFrenzyTarget,ret =>Me.CurrentRunicPower >= 60 && !Buff.UnitHasHasteBuff(Unit.BestUnholyFrenzyTarget),"Unholy Frenzy"),
+                                      Buff.CastBuff("Summon Gargoyle",ret => Me.CurrentRunicPower >= 60 && Buff.UnitHasHasteBuff(Me),"Gargoyle"),
+                                      Spell.CastSelfSpell("Empower Rune Weapon",ret =>Me.CurrentTarget != null && CLUSettings.Instance.DeathKnight.UseEmpowerRuneWeapon && StyxWoW.Me.FrostRuneCount < 1 && StyxWoW.Me.UnholyRuneCount < 2 && StyxWoW.Me.DeathRuneCount < 1 && !Buff.UnitHasHasteBuff(Me),"Empower Rune Weapon")
+                                      )
+                        ),
+
+                    // Short Duration AoE
+                    new Decorator(ret => CLUSettings.Instance.UseAoEAbilities && Unit.EnemyUnits.Count() > 2 && CLUSettings.Instance.UseAoEAbilities && Unit.EnemyUnits.Count() < 6,
                                new PrioritySelector(
-                                   Item.UseTrinkets(),
-                                   Buff.CastBuff("Lifeblood",                          ret => true, "Lifeblood"),  // Thanks Kink
-                                   Item.UseEngineerGloves(),
-                                   Buff.CastBuffonUnit("Unholy Frenzy", u => Unit.BestUnholyFrenzyTarget, ret => Me.CurrentRunicPower >= 60 && !Buff.UnitHasHasteBuff(Unit.BestUnholyFrenzyTarget), "Unholy Frenzy"),
-                                   // Buff.CastBuff("Unholy Frenzy",                       ret => Me.CurrentRunicPower >= 60 && !Buffs.UnitHasHasteBuff(Me), "Unholy Frenzy"),
-                                   Buff.CastBuff("Summon Gargoyle",                    ret => Me.CurrentRunicPower >= 60 && Buff.UnitHasHasteBuff(Me), "Gargoyle"),
-                                   Spell.UseRacials(),
-                                   Spell.CastSelfSpell("Empower Rune Weapon", ret => Me.CurrentTarget != null && CLUSettings.Instance.DeathKnight.UseEmpowerRuneWeapon && StyxWoW.Me.FrostRuneCount < 1 && StyxWoW.Me.UnholyRuneCount < 2 && StyxWoW.Me.DeathRuneCount < 1 && Common.RuneCalculus > 8 && !Buff.UnitHasHasteBuff(Me), "Empower Rune Weapon")
-                                )
-                           ),
-                           // Interupts
-                           Spell.CastInterupt("Mind Freeze",                  ret => true, "Mind Freeze"),
-                           Spell.CastInterupt("Strangulate",                  ret => true, "Strangulate"),
-                           Buff.CastBuff("Anti-Magic Shell", ret => Me.CurrentTarget != null && CLUSettings.Instance.EnableSelfHealing && CLUSettings.Instance.DeathKnight.UseAntiMagicShell && (Me.CurrentTarget.IsCasting || Me.CurrentTarget.ChanneledCastingSpellId != 0), "AMS"), // TODO: Put this back in when its fixed. && Me.CurrentTarget.IsTargetingMeOrPet
-                           Spell.CastSpell("Blood Tap", ret => Buff.PlayerCountBuff("Blood Charge") >= 5 && (Common.FrostRuneSlotsActive == 0 || Common.UnholyRuneSlotsActive == 0 || Common.BloodRuneSlotsActive == 0), "Blood Tap (Refreshed a depleted Rune)"),
-                           // Start Disease ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-                           Common.ApplyDiseases(ret => Me.CurrentTarget),
-                           // End Disease --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-                           Spell.CastSpell("Dark Transformation",             ret => true, "Dark Transformation"),
-                           // Start AoE ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-                           Spell.CastAreaSpell("Pestilence", 10, false, 3, 0.0, 0.0, ret => Buff.TargetHasDebuff("Blood Plague") && Buff.TargetHasDebuff("Frost Fever") && (from enemy in Unit.EnemyUnits where !enemy.HasAura("Blood Plague") && !enemy.HasAura("Frost Fever") select enemy).Any(), "Pestilence"),
-                           Spell.CastAreaSpell("Blood Boil", 10, false, 3, 0.0, 0.0, ret => Buff.TargetHasDebuff("Blood Plague") && Buff.TargetHasDebuff("Frost Fever") && (from enemy in Unit.EnemyUnits where enemy.HasAura("Blood Plague") && enemy.HasAura("Frost Fever") select enemy).Count() > 2, "Blood Boil"),
-                           // End AoE ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-                           Spell.CastSpellAtLocation("Death and Decay", u => Me, ret => Me.CurrentTarget != null && BossList.OverrideDnD.Contains(Unit.CurrentTargetEntry) && (Me.UnholyRuneCount == 2) && !Me.IsMoving && !Me.CurrentTarget.IsMoving && Me.CurrentRunicPower < 110 && (Me.CurrentTarget.CurrentHealth > 1000000 || Me.CurrentTarget.MaxHealth == 1) && Unit.CountEnnemiesInRange(Me.Location, 1000) >= 1, "Death and Decay"),
-                           Spell.CastAreaSpell("Death and Decay", 10, true, 1, 0.0, 0.0, ret => Me.CurrentTarget != null && !BossList.IgnoreAoE.Contains(Unit.CurrentTargetEntry) && (Me.UnholyRuneCount == 2) && !Me.IsMoving && !Me.CurrentTarget.IsMoving && Me.CurrentRunicPower < 110 && (Me.CurrentTarget.CurrentHealth > 1000000 || Me.CurrentTarget.MaxHealth == 1), "Death and Decay"),
-                           Spell.CastSpell("Death Coil",                      ret => Spell.SpellCooldown("Summon Gargoyle").TotalSeconds >= 1 && !Spell.CanCast("Summon Gargoyle", Me) && PetManager.PetCountBuff("Shadow Infusion") < 5 && !PetManager.PetHasActiveBuff("Dark Transformation"), "Death Coil (Shadow Infusion)"),
-                           Spell.CastSpell("Scourge Strike",                  ret => Me.UnholyRuneCount == 2 && Me.CurrentRunicPower < 110, "Scourge Strike"),
-                           Spell.CastSpell("Festering Strike",                ret => Me.BloodRuneCount == 2 && Me.FrostRuneCount == 2 && Me.CurrentRunicPower < 110, "Festering Strike"),
-                           Spell.CastSpell("Death Coil",                      ret => (Me.CurrentRunicPower >= 94 && !PetManager.PetHasActiveBuff("Dark Transformation")) || (Me.CurrentRunicPower >= 94 && PetManager.PetBuffTimeLeft("Dark Transformation").TotalSeconds > 4), "Death Coil (RP Burn)"),
-                           Spell.CastSpell("Death Coil",                      ret => Buff.PlayerHasActiveBuff("Sudden Doom"), "Death Coil (Sudden Doom)"),
-                           Spell.CastSpellAtLocation("Death and Decay", u => Me, ret => Me.CurrentTarget != null && BossList.OverrideDnD.Contains(Unit.CurrentTargetEntry) && !Me.IsMoving && !Me.CurrentTarget.IsMoving && (Me.CurrentTarget.CurrentHealth > 310000 || Me.CurrentTarget.MaxHealth == 1) && Unit.CountEnnemiesInRange(Me.Location, 1000) >= 1, "Death and Decay"),
-                           Spell.CastAreaSpell("Death and Decay", 10, true, 1, 0.0, 0.0, ret => Me.CurrentTarget != null && !BossList.IgnoreAoE.Contains(Unit.CurrentTargetEntry) && !Me.IsMoving && !Me.CurrentTarget.IsMoving && (Me.CurrentTarget.CurrentHealth > 310000 || Me.CurrentTarget.MaxHealth == 1), "Death and Decay"),
-                           Spell.CastSpell("Scourge Strike",                  ret => true, "Scourge Strike"),
-                           Spell.CastSpell("Festering Strike",                ret => true, "Festering Strike"),
-                           Spell.CastSpell("Death Coil",                      ret => PetManager.PetCountBuff("Shadow Infusion") < 5 && !PetManager.PetHasActiveBuff("Dark Transformation"), "Death Coil (Shadow Infusion)"),
-                           // Start AoE ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-                           Spell.CastAreaSpell("Icy Touch", 10, false, 3, 0.0, 0.0, ret => Me.FrostRuneCount > 0, "Icy Touch"),
-                           // End AoE ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-                           Spell.CastSpell("Horn of Winter",                  ret => (Me.CurrentRunicPower < 32 || !Buff.UnitHasStrAgiBuff(Me)), "Horn of Winter for RP"));
+                                    Common.SpreadDiseasesBehavior(ret => Me.CurrentTarget), // Used to spread your Diseases based upon your Tier one Talent. -- wulf
+                                    Spell.CastAreaSpell("Death and Decay", 10, true, 3, 0.0, 0.0, ret => Me.CurrentTarget != null && !BossList.IgnoreAoE.Contains(Unit.CurrentTargetEntry) && Me.UnholyRuneCount == 2 && Unit.EnemyUnits.Count() >= 3 && !Me.IsMoving && !Me.CurrentTarget.IsMoving, "Death and Decay"),
+                                    Spell.CastSpell("Scourge Strike",ret => Spell.SpellOnCooldown("Death and Decay"),""),
+                                    Spell.CastAreaSpell("Blood Boil", 10, false, 3, 0.0, 0.0, ret => Me.BloodRuneCount >= 1, "Blood Boil"),
+                                    Spell.CastSpell("Death Coil", ret => Me.ActiveAuras.ContainsKey("Sudden Doom"), "Death Coil (Sudden Doom)"),// need ActiveAuras, don't mess with me! Seriously... -- Weischbier
+                                    Spell.CastSpell("Blood Tap", ret => Me.CurrentTarget, ret => Buff.PlayerCountBuff("Blood Charge") >= 5 && (Common.FrostRuneSlotsActive == 0 || Common.UnholyRuneSlotsActive == 0 || Common.BloodRuneSlotsActive == 0), "Blood Tap (Refreshed a depleted Rune)"),  //Don't waste it on Unholy Runes
+                                    Spell.CastSpell("Icy Touch", ret => Me.ActiveAuras.ContainsKey("Sudden Doom"), "Icy Touch")
+                                   )
+                               ),
+                    // Long Duration AoE
+                    new Decorator(ret => CLUSettings.Instance.UseAoEAbilities && Unit.EnemyUnits.Count() > 5,
+                               new PrioritySelector(
+                                    Common.SpreadDiseasesBehavior(ret => Me.CurrentTarget), // Used to spread your Diseases based upon your Tier one Talent. -- wulf
+                                    Spell.CastAreaSpell("Death and Decay", 10, true, 3, 0.0, 0.0, ret => Me.CurrentTarget != null && !BossList.IgnoreAoE.Contains(Unit.CurrentTargetEntry) && Me.UnholyRuneCount == 2 && Unit.EnemyUnits.Count() >= 3 && !Me.IsMoving && !Me.CurrentTarget.IsMoving, "Death and Decay"),
+                                    Spell.CastSpell("Festering Strike", ret => Common.FrostRuneSlotsActive + Common.BloodRuneSlotsActive >= 2, "Festering Strike"),
+                                    Spell.CastSpell("Blood Tap", ret => Me.CurrentTarget, ret => Buff.PlayerCountBuff("Blood Charge") >= 5 && (Common.FrostRuneSlotsActive == 0 || Common.UnholyRuneSlotsActive == 0 || Common.BloodRuneSlotsActive == 0), "Blood Tap (Refreshed a depleted Rune)"),  //Don't waste it on Unholy Runes
+                                    Spell.CastAreaSpell("Blood Boil", 10, false, 3, 0.0, 0.0, ret => Me.BloodRuneCount >= 1, "Blood Boil")
+                                   )
+                               ),
+                    // Sustained Damage
+                    Spell.CastSpell("Soul Reaper", ret => Me.CurrentTarget, ret => Me.CurrentTarget != null && Me.CurrentTarget.HealthPercent < 35, "Soul Reaping"),
+                    Spell.CastSpell("Scourge Strike",ret => Me.CurrentRunicPower < 90,"Scourge Strike (generating Runic Power)"),
+                    Spell.CastSpell("Festering Strike", ret => Me.CurrentRunicPower < 90, "Festering Strike (generating Runic Power)"),
+                    Spell.CastSpell("Death Coil", ret => Me.CurrentRunicPower >= 90, "Death Coil (dumping Runic Power)"),
+                    Spell.CastSpell("Death Coil", ret => Me.ActiveAuras.ContainsKey("Sudden Doom"), "Death Coil (Sudden Doom)"),// need ActiveAuras, don't mess with me! Seriously... -- Weischbier
+                    Spell.CastSpell("Blood Tap", ret => Me.CurrentTarget, ret => Buff.PlayerCountBuff("Blood Charge") >= 5 && (Common.FrostRuneSlotsActive == 0 || Common.UnholyRuneSlotsActive == 0 || Common.BloodRuneSlotsActive == 0), "Blood Tap (Refreshed a depleted Rune)"),  //Don't waste it on Unholy Runes
+                    Spell.CastSpell("Scourge Strike", ret => true, "Scourge Strike"),
+                    Spell.CastSpell("Festering Strike", ret => true, "Festering Strike"),
+                    Spell.CastSpell("Horn of Winter",ret => Me, ret => true, "Horn of Winter for RP"));
             }
         }
 
@@ -218,6 +236,7 @@ namespace CLU.Classes.DeathKnight
                     new Decorator(
                         ret => !Me.Mounted && !Me.IsDead && !Me.Combat && !Me.IsFlying && !Me.IsOnTransport && !Me.HasAura("Food") && !Me.HasAura("Drink"),
                         new PrioritySelector(
+                            Buff.CastBuff("Unholy Presence", ret => !Me.HasMyAura("Unholy Presence"), "We need it!"),
                             Spell.CastSelfSpell("Raise Dead",              ret => (Me.Pet == null || Me.Pet.IsDead), "Raise Dead"),
                             Buff.CastRaidBuff("Horn of Winter",            ret => CLUSettings.Instance.DeathKnight.UseHornofWinter && Me.CurrentTarget != null && !Me.CurrentTarget.IsFriendly, "Horn of Winter")));
             }

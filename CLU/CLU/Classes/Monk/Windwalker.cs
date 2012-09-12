@@ -10,6 +10,8 @@ using Rest = CLU.Base.Rest;
 
 namespace CLU.Classes.Monk
 {
+    using Styx;
+
     class Windwalker : RotationBase
     {
         public override string Name
@@ -64,7 +66,7 @@ namespace CLU.Classes.Monk
         private static uint Chi
         {
             get {
-                return 1;    // Me.Chi
+                return 1; // StyxWoW.Me.GetCurrentPower(WoWPowerType.Chi)     // Me.Chi
             }
         }
 
