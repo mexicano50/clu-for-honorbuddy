@@ -33,14 +33,14 @@ namespace CLU.Classes.Warlock
         {
             get
             {
-                return "$Revision$";
+                return "$Rev$";
             }
         }
 
         public override string KeySpell
         {
             get {
-                return "Incinerate";
+                return "Metamorphosis";
             }
         }
 

@@ -383,7 +383,17 @@ namespace CLU
                         SetActiveRotation(rotations.First(x => value != null && x.Name == value));
                     }
                 } else {
-                    this.SetActiveRotation(rotations.FirstOrDefault());
+                    if (this.rotations.Count == 0)
+                    {
+                        CLU.Log("Couldn't finde a rotation for you, Contact us!");
+                        StopBot("Unable to find Active Rotation");
+                    }
+                    else
+                    {
+                        var _r = rotations.FirstOrDefault();
+                        CLU.Log("Found rotation: " + _r.Name);
+                        this.SetActiveRotation(_r);
+                    }
                 }
             } catch (Exception ex) {
                 Log(" Woops, we could not set the rotation.");
