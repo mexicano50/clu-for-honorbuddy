@@ -391,8 +391,11 @@ namespace CLU
                     else
                     {
                         var _r = rotations.FirstOrDefault();
-                        CLU.Log("Found rotation: " + _r.Name);
-                        this.SetActiveRotation(_r);
+                        if (_r != null)
+                        {
+                            CLU.Log("Found rotation: " + _r.Name);
+                            this.SetActiveRotation(_r);
+                        }
                     }
                 }
             } catch (Exception ex) {
