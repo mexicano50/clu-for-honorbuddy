@@ -1,11 +1,17 @@
+/*
+ * $Author$
+ * $Date$
+ * $ID$
+ * $Revision$
+ * $URL$
+ */
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Text;
 using System.Timers;
-using CLU.Classes;
-using CLU.GUI;
-using CLU.Helpers;
-using CLU.Settings;
 using Styx;
 using Styx.Combat.CombatRoutine;
 using System.Windows.Media;
@@ -13,11 +19,16 @@ using Styx.WoWInternals;
 using Styx.WoWInternals.WoWObjects;
 using Styx.TreeSharp;
 using System.Windows.Forms;
+using CLU.Classes;
+using CLU.GUI;
+using CLU.Helpers;
+using CLU.Settings;
 using CLU.Base;
 using CLU.CombatLog;
 using CLU.Managers;
 using CLU.Sound;
 using Timer = System.Timers.Timer;
+
 
 // Credits
 //-------------
@@ -355,51 +366,87 @@ namespace CLU
         private List<RotationBase> rotations; // list of Rotations
         public void QueryClassTree()
         {
-            var type = typeof (RotationBase);
-            var types = AppDomain.CurrentDomain.GetAssemblies().ToList()
-                        .SelectMany(s => s.GetTypes())
-                        .Where(p => p.IsSubclassOf(type) && !p.IsAbstract);
+            try
+            {
+                Type type = typeof(RotationBase);
+                IEnumerable<Type> types =
+                    AppDomain.CurrentDomain.GetAssemblies().ToList().SelectMany(s => s.GetTypes()).Where(
+                        p => p.IsSubclassOf(type) && !p.IsAbstract);
 
-            this.rotations = new List<RotationBase>();
-            foreach (var x in types) {
-                var constructorInfo = x.GetConstructor(new Type[] { });
-                if (constructorInfo != null) {
-                    var rb = constructorInfo.Invoke(new object[] { }) as RotationBase;
-                    if (rb != null && SpellManager.HasSpell(rb.KeySpellId))
+                this.rotations = new List<RotationBase>();
+                foreach (Type x in types)
+                {
+                    ConstructorInfo constructorInfo = x.GetConstructor(new Type[] { });
+                    if (constructorInfo != null)
                     {
-                        CLU.TroubleshootLog(" Using " + rb.Name + " rotation. Character has " + rb.KeySpell);
-                        this.rotations.Add(rb);
-                    } else {
-                        if (rb != null)
-                            CLU.TroubleshootLog(" Skipping " + rb.Name + " rotation. Character is missing " + rb.KeySpell);
+                        var rb = constructorInfo.Invoke(new object[] { }) as RotationBase;
+                        if (rb != null && SpellManager.HasSpell(rb.KeySpellId))
+                        {
+                            TroubleshootLog(" Using " + rb.Name + " rotation. Character has " + rb.KeySpell);
+                            this.rotations.Add(rb);
+                        }
+                        else
+                        {
+                            if (rb != null)
+                            {
+                                TroubleshootLog(
+                                    " Skipping " + rb.Name + " rotation. Character is missing " + rb.KeySpell);
+                            }
+                        }
                     }
                 }
-            }
-            // If there is more than one rotation then display the selector for the user, otherwise just load the one and only.
-            try {
-                if (this.rotations.Count > 1) {
-                    var value = "null";
-                    if (GUIHelpers.RotationSelector("[CLU] " + Version + " Rotation Selector", rotations, "Please select your prefered rotation:", ref value) == DialogResult.OK) {
-                        SetActiveRotation(rotations.First(x => value != null && x.Name == value));
+                // If there is more than one rotation then display the selector for the user, otherwise just load the one and only.
+
+                if (this.rotations.Count > 1)
+                {
+                    string value = "null";
+                    if (GUIHelpers.RotationSelector(
+                        "[CLU] " + Version + " Rotation Selector",
+                        this.rotations,
+                        "Please select your prefered rotation:",
+                        ref value) == DialogResult.OK)
+                    {
+                        this.SetActiveRotation(this.rotations.First(x => value != null && x.Name == value));
                     }
-                } else {
+                }
+                else
+                {
                     if (this.rotations.Count == 0)
                     {
-                        CLU.Log("Couldn't finde a rotation for you, Contact us!");
+                        Log("Couldn't finde a rotation for you, Contact us!");
                         StopBot("Unable to find Active Rotation");
                     }
                     else
                     {
-                        var _r = rotations.FirstOrDefault();
+                        RotationBase _r = this.rotations.FirstOrDefault();
                         if (_r != null)
                         {
-                            CLU.Log("Found rotation: " + _r.Name);
+                            Log("Found rotation: " + _r.Name);
                             this.SetActiveRotation(_r);
                         }
                     }
                 }
-            } catch (Exception ex) {
+            }
+            catch (ReflectionTypeLoadException ex)
+            {
+                var sb = new StringBuilder();
+                foreach (Exception exSub in ex.LoaderExceptions)
+                {
+                    sb.AppendLine(exSub.Message);
+                    if (exSub is FileNotFoundException)
+                    {
+                        var exFileNotFound = exSub as FileNotFoundException;
+                        if (!string.IsNullOrEmpty(exFileNotFound.FusionLog))
+                        {
+                            sb.AppendLine("CLU Log:");
+                            sb.AppendLine(exFileNotFound.FusionLog);
+                        }
+                    }
+                    sb.AppendLine();
+                }
+                string errorMessage = sb.ToString();
                 Log(" Woops, we could not set the rotation.");
+                Log(errorMessage);
                 StopBot(" Unable to find Active Rotation: " + ex);
             }
         }
