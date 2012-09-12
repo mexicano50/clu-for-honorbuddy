@@ -1,4 +1,11 @@
-﻿namespace CLU.Base
+﻿/*
+ * $Author$
+ * $Date$
+ * $ID$
+ * $Revision$
+ * $URL$
+ */
+namespace CLU.Base
 {
     using System;
     using System.Collections.Generic;
@@ -1117,7 +1124,8 @@
             } else {
                 hostile = hostile.Where(x =>
                                         !x.IsPlayer && IsAttackable(x) && !IsCrowdControlled(x)
-                                        && x.Location.Distance2D(fromLocation) < maxDistance2).ToList();
+                                        && x.Location.Distance2D(fromLocation) < maxDistance2
+                                        && (x.IsTargetingMeOrPet|| x.IsTargetingMyPartyMember)).ToList();
             }
 
             if (CLUSettings.Instance.EnableDebugLogging) {
