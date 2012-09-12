@@ -65,7 +65,7 @@ namespace CLU
 
         public delegate WoWUnit UnitSelection(object context);
 
-        public static readonly Version Version = new Version(3, 2, 6);
+        public static readonly Version Version = new Version(3, 3, 0);
 
         public override string Name
         {
@@ -365,7 +365,8 @@ namespace CLU
                 var constructorInfo = x.GetConstructor(new Type[] { });
                 if (constructorInfo != null) {
                     var rb = constructorInfo.Invoke(new object[] { }) as RotationBase;
-                    if (rb != null && SpellManager.HasSpell(rb.KeySpell)) {
+                    if (rb != null && SpellManager.HasSpell(Spell.LocalizeSpellName(rb.KeySpell)))
+                    {
                         CLU.TroubleshootLog(" Using " + rb.Name + " rotation. Character has " + rb.KeySpell);
                         this.rotations.Add(rb);
                     } else {
