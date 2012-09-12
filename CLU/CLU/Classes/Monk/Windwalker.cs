@@ -65,8 +65,9 @@ namespace CLU.Classes.Monk
 
         private static uint Chi
         {
-            get {
-                return 1; // StyxWoW.Me.GetCurrentPower(WoWPowerType.Chi)     // Me.Chi
+            get
+            {
+                return StyxWoW.Me.GetCurrentPower(WoWPowerType.LightForce);    // Me.Chi
             }
         }
 

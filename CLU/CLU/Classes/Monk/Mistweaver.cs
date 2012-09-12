@@ -9,6 +9,8 @@ using Rest = CLU.Base.Rest;
 
 namespace CLU.Classes.Monk
 {
+    using Styx;
+
     class Mistweaver : RotationBase
     {
         public override string Name
@@ -62,8 +64,9 @@ namespace CLU.Classes.Monk
 
         private static uint Chi
         {
-            get {
-                return 1;    // Me.Chi
+            get
+            {
+                return StyxWoW.Me.GetCurrentPower(WoWPowerType.LightForce);    // Me.Chi
             }
         }
 
