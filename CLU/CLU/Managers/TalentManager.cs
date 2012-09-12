@@ -136,39 +136,33 @@ namespace CLU.Managers
 
                 var glyphCount = Lua.GetReturnVal<int>("return GetNumGlyphSockets()", 0);
 
-                CLU.TroubleshootLog("TalentManager - GetNumGlyphSockets {0}", glyphCount);
+                CLU.TroubleshootLog("Glyphdetection - GetNumGlyphSockets {0}", glyphCount);
 
                 if (glyphCount != 0)
                 {
 
                     for (int i = 1; i <= glyphCount; i++)
                     {
-                        //CLU.TroubleshootLog("TalentManager - {0} <= {1}", i, glyphCount);
-                        List<string> glyphInfo = Lua.GetReturnValues(String.Format("return GetGlyphSocketInfo({0})", i));
-                        //CLU.TroubleshootLog("TalentManager - {0} glyphInfo = {1}", i, glyphInfo[i]);
-
-                        //CLU.TroubleshootLog("TalentManager - {0}, {1}, {2}, {3}, {4}", i, glyphInfo[1], glyphInfo[2]);
-
-                        if (glyphInfo != null && glyphInfo[0] != "nil" && !string.IsNullOrEmpty(glyphInfo[0]))
+                        List<string> glyphInfo = Lua.GetReturnValues(String.Format("return GetGlyphSocketInfo({0})", i),"glyphs.lua");
+                        var lua = String.Format("local enabled, glyphType, glyphTooltipIndex, glyphSpellID, icon = GetGlyphSocketInfo({0});if (enabled) then return glyphSpellID else return 0 end",i);
+                        int glyphSpellId = Lua.GetReturnVal<int>(lua,0);
+                        try
                         {
-                            CLU.TroubleshootLog("TalentManager - {0}", glyphInfo[0]);
+                            if (glyphSpellId != null && glyphSpellId > 0)
+                            {
+                                CLU.TroubleshootLog("Glyphdetection - SpellId: {0},Name:{1} ,WoWSpell: {2}", glyphSpellId, WoWSpell.FromId(glyphSpellId).Name, WoWSpell.FromId(glyphSpellId));
+                                Glyphs.Add(WoWSpell.FromId(glyphSpellId).Name.Replace("Glyph of ", ""));
+                            }
+                            else
+                            {
+                                CLU.TroubleshootLog("Glyphdetection - Couldn't find all values to detect the Glyph in slot {0}", i);
+                            }
                         }
-
-                        if (glyphInfo != null && glyphInfo[1] != "nil" && !string.IsNullOrEmpty(glyphInfo[1]))
+                        catch (Exception ex)
                         {
-                            CLU.TroubleshootLog("TalentManager - {0}", glyphInfo[1]);
+                            CLU.DiagnosticLog("We couldn't detect your Glyphs");
+                            CLU.DiagnosticLog("Report this message to us: " + ex);
                         }
-
-                        if (glyphInfo != null && glyphInfo[2] != "nil" && !string.IsNullOrEmpty(glyphInfo[2]))
-                        {
-                            CLU.TroubleshootLog("TalentManager - {0}", glyphInfo[2]);
-                        }
-
-                        //if (glyphInfo != null && glyphInfo[2] != "nil" && !string.IsNullOrEmpty(glyphInfo[2]))
-                        //{
-                        //    CLU.TroubleshootLog("TalentManager -  Glyphs.Add {0}", WoWSpell.FromId(int.Parse(glyphInfo[2])).Name.Replace("Glyph of ", ""));
-                        //    Glyphs.Add(WoWSpell.FromId(int.Parse(glyphInfo[2])).Name.Replace("Glyph of ", ""));
-                        //}
                     }
                 }
             }
