@@ -65,7 +65,7 @@ namespace CLU
 
         public delegate WoWUnit UnitSelection(object context);
 
-        public static readonly Version Version = new Version(3, 2, 5);
+        public static readonly Version Version = new Version(3, 2, 6);
 
         public override string Name
         {

@@ -60,7 +60,7 @@ Three Rotation Modes - Single, PVE, PVP
 * DeathKnight
 - [x] Blood
 - [x] Frost
-- [ ] Unholy
+- [x] Unholy
 
 * Druid
 - [ ] Balance

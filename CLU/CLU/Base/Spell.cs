@@ -216,6 +216,13 @@ namespace CLU.Base
             Lua.DoString(string.Format("CastSpellByName(\"{0}\")", RealLuaEscape(name)));
         }
 
+        // For Storm :) usage in BT = new Action(ret => Spell.Cancelmyaura("fuckedaura"))
+        public static void Cancelmyaura(string name)
+        {
+            name = LocalizeSpellName(name);
+            Lua.DoString(string.Format("/cancelaura \"{0}\"", RealLuaEscape(name)));
+        }
+
         /// <summary>
         /// Gets the spell by name (string)
         /// </summary>
