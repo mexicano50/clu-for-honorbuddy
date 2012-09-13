@@ -96,14 +96,14 @@ namespace CLU.Classes.Warlock
                             Buff.CastBuff("Soulshatter", ret => Me.CurrentTarget != null && Me.GotTarget && Me.CurrentTarget.ThreatInfo.RawPercent > 90 && !Spell.PlayerIsChanneling, "Soulshatter"),                            
                             //Call Pet
                             new PrioritySelector(
-                              Buff.CastBuff("Soulburn", ret => !Me.ActiveAuras.ContainsKey("Soulburn") && !Me.GotAlivePet && !Me.ActiveAuras.ContainsKey(WoWSpell.FromId(108503).Name), "Soulburn"),
-                              PetManager.CastPetSummonSpell(691, ret => (!Me.IsMoving || Me.ActiveAuras.ContainsKey("Soulburn")) && !Me.GotAlivePet && !Me.ActiveAuras.ContainsKey(WoWSpell.FromId(108503).Name), "Summon Pet")
+                              Buff.CastBuff("Soulburn", ret => !Me.ActiveAuras.ContainsKey("Soulburn") && !Me.GotAlivePet && !Buff.PlayerHasActiveBuff(108503), "Soulburn"),
+                              PetManager.CastPetSummonSpell(691, ret => (!Me.IsMoving || Me.ActiveAuras.ContainsKey("Soulburn")) && !Me.GotAlivePet && !Buff.PlayerHasActiveBuff(108503), "Summon Pet")
                              ),
                             
                             //Grimoire of Service
                             Spell.CastSpellByID(111897, ret => Me.GotAlivePet && !WoWSpell.FromId(111897).Cooldown && TalentManager.HasTalent(14), "Grimoire of Service"),
                             //Sacrifice Pet
-                            Spell.CastSelfSpellByID(108503,ret => Me.GotAlivePet && TalentManager.HasTalent(15) && !Me.ActiveAuras.ContainsKey(WoWSpell.FromId(108503).Name), "Grimoire of Sacrifice"),
+                            Spell.CastSelfSpellByID(108503,ret => Me.GotAlivePet && TalentManager.HasTalent(15) && !Buff.PlayerHasActiveBuff(108503), "Grimoire of Sacrifice"),
                     //Cooldowns
                     new Decorator(ret=> CLUSettings.Instance.UseCooldowns,
                         new PrioritySelector(
@@ -162,7 +162,7 @@ namespace CLU.Classes.Warlock
                                ret => !Me.Mounted && !Me.IsDead && !Me.Combat && !Me.IsFlying && !Me.IsOnTransport && !Me.HasAura("Food") && !Me.HasAura("Drink"),
                                new PrioritySelector(
                                    Buff.CastBuff("Dark Intent", ret => true, "Dark Intent"),
-                                   PetManager.CastPetSummonSpell(691, ret => !Me.IsMoving && !Me.GotAlivePet && !Me.ActiveAuras.ContainsKey(WoWSpell.FromId(108503).Name), "Summon Pet")
+                                   PetManager.CastPetSummonSpell(691, ret => !Me.IsMoving && !Me.GotAlivePet && !Buff.PlayerHasActiveBuff(108503), "Summon Pet")
                                   )));
             }
         }

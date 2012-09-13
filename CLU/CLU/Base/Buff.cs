@@ -734,6 +734,14 @@ namespace CLU.Base
         {
             return Me.ActiveAuras.ContainsKey(name);
         }
+        /// <summary>Returns true if the player has the ACTIVE buff. Good for checking procs.</summary>
+        /// <param name="spellId">the spellId of the active buff to check for</param>
+        /// <returns>The player has active buff.</returns>
+        public static bool PlayerHasActiveBuff(int spellId)
+        {
+
+            return Me.ActiveAuras.Any(q => q.Value.SpellId == spellId);
+        }
 
         /// <summary>Returns the debuff time left on the target</summary>
         /// <param name="name">the name of the buff to check for</param>
