@@ -207,7 +207,14 @@ namespace CLU.Base
         {
             return HasAura(unit, aura, Me);
         }
-
+        /// <summary>Check the aura thats created by yourself by the name on specified unit</summary>
+        /// <param name="unit">The unit to check auras for. </param>
+        /// <param name="spellId">The name of the aura in English. </param>
+        /// <returns>true if the target has the aura</returns>
+        public static bool HasMyAura(this WoWUnit unit, int spellId)
+        {
+            return HasAura(unit, spellId, Me);
+        }
         /// <summary>Checks for the auras on a specified unit. Returns true if the unit has any aura in the auraNames list.</summary>
         /// <param name="unit">The unit to check auras for.</param>
         /// <param name="aura">Aura names to be checked.</param>
@@ -217,7 +224,15 @@ namespace CLU.Base
         {
             return unit != null && unit.GetAllAuras().Any(a => a.Name == aura && (creator == null || a.CreatorGuid == creator.Guid));
         }
-
+        /// <summary>Checks for the auras on a specified unit. Returns true if the unit has any aura in the auraNames list.</summary>
+        /// <param name="unit">The unit to check auras for.</param>
+        /// <param name="spellId">Aura names to be checked.</param>
+        /// <param name="creator">Check for only self or all buffs</param>
+        /// <returns>The has aura.</returns>
+        public static bool HasAura(WoWUnit unit, int spellId, WoWUnit creator)
+        {
+            return unit != null && unit.GetAllAuras().Any(a => a.SpellId == spellId && (creator == null || a.CreatorGuid == creator.Guid));
+        }
         /// <summary>
         ///  Checks for the auras on a specified unit. Returns true if the unit has any aura in the auraNames list.
         /// </summary>
