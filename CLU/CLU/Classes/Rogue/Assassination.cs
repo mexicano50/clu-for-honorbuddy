@@ -16,6 +16,8 @@ using Rest = CLU.Base.Rest;
 
 namespace CLU.Classes.Rogue
 {
+    using Styx.WoWInternals.WoWObjects;
+
     [UsedImplicitly]
     public class Assassination : RotationBase
     {
@@ -143,7 +145,7 @@ namespace CLU.Classes.Rogue
             {
                 return new PrioritySelector
                     (new Decorator(ret => CLUSettings.Instance.PauseRotation, new ActionAlwaysSucceed()),
-                     EncounterSpecific.ExtraActionButton(), Cooldowns,
+                    MovementHelpers, EncounterSpecific.ExtraActionButton(), Cooldowns,
                      Spell.CastSelfSpell
                          ("Feint",
                           ret =>
@@ -311,6 +313,24 @@ namespace CLU.Classes.Rogue
                      Me.ComboPoints < 4 && Me.CurrentTarget.IsWithinMeleeRange,
                      Spell.CastSelfSpell("Vanish", x => true, "Vanish"));
             }
+        }
+
+        /// <summary>
+        /// Adds Movement support within BG's and Questing. -- wulf.
+        /// </summary>
+        private static Composite MovementHelpers 
+        { 
+            get
+            {
+                return   new Decorator(
+                               ret => CLUSettings.Instance.EnableMovement && Buff.PlayerHasBuff("Stealth"),
+                               new PrioritySelector(
+                                   // Spell.CastSpell("Pick Pocket", ret => Buff.PlayerHasBuff("Stealth"), "Gimme the caaash (Pick Pocket)"),
+                                   Spell.CastSelfSpell("Sprint",  ret => Me.IsMoving && Unit.DistanceToTargetBoundingBox() >= 15, "Sprint"),
+                                   Spell.CastSpell("Garrote", ret => Me.CurrentTarget != null && StyxWoW.Me.IsBehind(Me.CurrentTarget), "Garrote"),
+                                   Spell.CastSpell("Cheap Shot", ret => Me.CurrentTarget != null && !SpellManager.HasSpell("Garrote") || !StyxWoW.Me.IsBehind(Me.CurrentTarget), "Cheap Shot"),
+                                   Spell.CastSpell("Ambush",      ret => !SpellManager.HasSpell("Cheap Shot") && StyxWoW.Me.IsBehind(Me.CurrentTarget), "Ambush")));
+           }
         }
 
         #endregion
