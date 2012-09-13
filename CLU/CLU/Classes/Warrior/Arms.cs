@@ -136,44 +136,48 @@ namespace CLU.Classes.Warrior
             {
                 return (
                     new PrioritySelector(
-                        ////6	1.00	mogu_power_potion,if=(target.health.pct<20&buff.recklessness.up)|buff.bloodlust.react|target.time_to_die<=25
-                        ////7	3.46	recklessness,use_off_gcd=1,if=((debuff.colossus_smash.remains>=5|cooldown.colossus_smash.remains<=4)&((!talent.avatar.enabled|!set_bonus.tier14_4pc_melee)&((target.health.pct<20|target.time_to_die>315|(target.time_to_die>165&set_bonus.tier14_4pc_melee)))|(talent.avatar.enabled&set_bonus.tier14_4pc_melee&buff.avatar.up)))|target.time_to_die<=18
-                        ////8	0.00	avatar,use_off_gcd=1,if=talent.avatar.enabled&(((cooldown.recklessness.remains>=180|buff.recklessness.up)|(target.health.pct>=20&target.time_to_die>195)|(target.health.pct<20&set_bonus.tier14_4pc_melee))|target.time_to_die<=20)
-                        ////9	7.92	bloodbath,use_off_gcd=1,if=talent.bloodbath.enabled&(((cooldown.recklessness.remains>=10|buff.recklessness.up)|(target.health.pct>=20&(target.time_to_die<=165|(target.time_to_die<=315&!set_bonus.tier14_4pc_melee))&target.time_to_die>75))|target.time_to_die<=19)
-                        ////A	14.82	berserker_rage,use_off_gcd=1,if=!buff.enrage.up
-                        ////B	13.81	heroic_leap,use_off_gcd=1,if=debuff.colossus_smash.up
-                        ////C	7.83	deadly_calm,use_off_gcd=1,if=rage>=40
-                        ////D	36.86	heroic_strike,use_off_gcd=1,if=((buff.taste_for_blood.up&buff.taste_for_blood.remains<=2)|(buff.taste_for_blood.stack=5&buff.overpower.up)|(buff.taste_for_blood.up&debuff.colossus_smash.remains<=2&!cooldown.colossus_smash.remains=0)|buff.deadly_calm.up|rage>110)&target.health.pct>=20&debuff.colossus_smash.up
-                        //Spell.CastSpell("Heroic Strike", ret => true, "Heroic Strike"),
-                        ////mortal_strike
-                        //Spell.CastSpell("Mortal Strike", ret => true, "Mortal Strike"),
-                        ////colossus_smash,if=debuff.colossus_smash.remains<=1.5
-                        //Spell.CastSpell("Colossus Smash", ret => Buff.TargetDebuffTimeLeft("Colossus Smash").TotalSeconds <= 1.5, "Colossus Smash"),
-                        ////execute
-                        //Spell.CastSpell("Execute", ret => true, "Execute"),
-                        ////storm_bolt,if=talent.storm_bolt.enabled
-                        //Spell.CastSpell("Storm Bolt", ret => SpellManager.HasSpell("Storm Bolt"), "Storm Bolt"),
-                        ////overpower,if=buff.overpower.up
-                        //Spell.CastSpell("Overpower", ret => true, "Overpwoer"),
-                        ////shockwave,if=talent.shockwave.enabled
-                        //Spell.CastSpell("Shockwave", ret => SpellManager.HasSpell("Shockwave"), "Shockwave"),
-                        ////dragon_roar,if=talent.dragon_roar.enabled
-                        //Spell.CastSpell("Dragon Roar", ret => SpellManager.HasSpell("Dragon Roar"), "Dragon Roar"),
-                        ////slam,if=(rage>=70|debuff.colossus_smash.up)&target.health.pct>=20
-                        //Spell.CastSpell("Slam", ret => (Me.CurrentRage >= 70 || Buff.TargetHasDebuff("Colossus Smash")) && Me.CurrentTarget.HealthPercent >= 20, "Slam"),
-                        ////heroic_throw
-                        //Spell.CastSpell("Heroic Throw", ret => true, "Heroic Throw"),
-                        ////battle_shout,if=rage<70&!debuff.colossus_smash.up
-                        //Spell.CastSpell("Battle Shout", ret => Me.CurrentRage < 70 && !Buff.TargetHasDebuff("Colossus Smash"), "Battle Shout"),
-                        ////bladestorm,if=talent.bladestorm.enabled&cooldown.colossus_smash.remains>=5&!debuff.colossus_smash.up&cooldown.bloodthirst.remains>=2&target.health.pct>=20
-                        //Spell.CastSpell("Bladestorm", ret => SpellManager.HasSpell("Bladestorm") && SpellManager.Spells["Colossus Smash"].CooldownTimeLeft.Seconds >= 5 && !Buff.TargetHasDebuff("Colossus Smash")
-                        //    && SpellManager.Spells["Bloodthirst"].CooldownTimeLeft.Seconds >= 2 && Me.CurrentTarget.HealthPercent >= 20, "Bladestorm"),
-                        ////slam,if=target.health.pct>=20
-                        //Spell.CastSpell("Slam", ret => Me.CurrentTarget.HealthPercent >= 20, "Slam"),
-                        ////impending_victory,if=talent.impending_victory.enabled&target.health.pct>=20
-                        //Spell.CastSpell("Impending Victory", ret => SpellManager.HasSpell("Impending Victory"), "Impending Victory"),
-                        ////battle_shout,if=rage<70
-                        //Spell.CastSpell("Battle Shout", ret => Me.CurrentRage < 70, "Battle Shout")
+                        //mogu_power_potion,if=(target.health.pct<20&buff.recklessness.up)|buff.bloodlust.react|target.time_to_die<=25
+                        //7	3.46	recklessness,use_off_gcd=1,if=((debuff.colossus_smash.remains>=5|cooldown.colossus_smash.remains<=4)&((!talent.avatar.enabled|!set_bonus.tier14_4pc_melee)&((target.health.pct<20|target.time_to_die>315|(target.time_to_die>165&set_bonus.tier14_4pc_melee)))|(talent.avatar.enabled&set_bonus.tier14_4pc_melee&buff.avatar.up)))|target.time_to_die<=18
+                        //8	0.00	avatar,use_off_gcd=1,if=talent.avatar.enabled&(((cooldown.recklessness.remains>=180|buff.recklessness.up)|(target.health.pct>=20&target.time_to_die>195)|(target.health.pct<20&set_bonus.tier14_4pc_melee))|target.time_to_die<=20)
+                        //9	7.92	bloodbath,use_off_gcd=1,if=talent.bloodbath.enabled&(((cooldown.recklessness.remains>=10|buff.recklessness.up)|(target.health.pct>=20&(target.time_to_die<=165|(target.time_to_die<=315&!set_bonus.tier14_4pc_melee))&target.time_to_die>75))|target.time_to_die<=19)
+                        //A	14.82	berserker_rage,use_off_gcd=1,if=!buff.enrage.up
+                        //B	13.81	heroic_leap,use_off_gcd=1,if=debuff.colossus_smash.up
+                        //deadly_calm,use_off_gcd=1,if=rage>=40
+                        Spell.CastSelfSpell("Deadly Calm", ret => Me.CurrentRage >= 40, "Deadly Calm"),
+                        //heroic_strike,use_off_gcd=1,if=((buff.taste_for_blood.up&buff.taste_for_blood.remains<=2)|(buff.taste_for_blood.stack=5&buff.overpower.up)|(buff.taste_for_blood.up&debuff.colossus_smash.remains<=2&!cooldown.colossus_smash.remains=0)|buff.deadly_calm.up|rage>110)&target.health.pct>=20&debuff.colossus_smash.up
+                        Spell.CastSpell("Heroic Strike", ret => ((Buff.PlayerHasActiveBuff("Taste for Blood") && Buff.PlayerActiveBuffTimeLeft("Taste for Blood").Seconds <= 2) ||
+                            (Buff.PlayerCountBuff("Taste for Blood") == 5 && SpellManager.CanCast("Overpower")) || (Buff.PlayerHasActiveBuff("Taste for Blood") &&
+                            Buff.TargetDebuffTimeLeft("Colossus Smash").Seconds <= 2 && SpellManager.Spells["Colossus Smash"].CooldownTimeLeft.Seconds != 0) || Buff.PlayerHasActiveBuff("Deadly Calm") ||
+                            Me.CurrentRage > 110) && Me.CurrentTarget.HealthPercent >= 20 && Buff.TargetHasDebuff("Colossus Smash"), "Heroic Strike"),
+                        //mortal_strike
+                        Spell.CastSpell("Mortal Strike", ret => true, "Mortal Strike"),
+                        //colossus_smash,if=debuff.colossus_smash.remains<=1.5
+                        Spell.CastSpell("Colossus Smash", ret => Buff.TargetDebuffTimeLeft("Colossus Smash").TotalSeconds <= 1.5, "Colossus Smash"),
+                        //execute
+                        Spell.CastSpell("Execute", ret => true, "Execute"),
+                        //storm_bolt,if=talent.storm_bolt.enabled
+                        Spell.CastSpell("Storm Bolt", ret => SpellManager.HasSpell("Storm Bolt"), "Storm Bolt"),
+                        //overpower,if=buff.overpower.up
+                        Spell.CastSpell("Overpower", ret => true, "Overpwoer"),
+                        //shockwave,if=talent.shockwave.enabled
+                        Spell.CastSpell("Shockwave", ret => SpellManager.HasSpell("Shockwave"), "Shockwave"),
+                        //dragon_roar,if=talent.dragon_roar.enabled
+                        Spell.CastSpell("Dragon Roar", ret => SpellManager.HasSpell("Dragon Roar"), "Dragon Roar"),
+                        //slam,if=(rage>=70|debuff.colossus_smash.up)&target.health.pct>=20
+                        Spell.CastSpell("Slam", ret => (Me.CurrentRage >= 70 || Buff.TargetHasDebuff("Colossus Smash")) && Me.CurrentTarget.HealthPercent >= 20, "Slam"),
+                        //heroic_throw
+                        Spell.CastSpell("Heroic Throw", ret => true, "Heroic Throw"),
+                        //battle_shout,if=rage<70&!debuff.colossus_smash.up
+                        Buff.CastBuff("Battle Shout", ret => Me.CurrentRage < 70 && !Buff.TargetHasDebuff("Colossus Smash"), "Battle Shout"),
+                        //bladestorm,if=talent.bladestorm.enabled&cooldown.colossus_smash.remains>=5&!debuff.colossus_smash.up&cooldown.bloodthirst.remains>=2&target.health.pct>=20
+                        Spell.CastSpell("Bladestorm", ret => SpellManager.HasSpell("Bladestorm") && SpellManager.Spells["Colossus Smash"].CooldownTimeLeft.Seconds >= 5 && !Buff.TargetHasDebuff("Colossus Smash")
+                            && SpellManager.Spells["Bloodthirst"].CooldownTimeLeft.Seconds >= 2 && Me.CurrentTarget.HealthPercent >= 20, "Bladestorm"),
+                        //slam,if=target.health.pct>=20
+                        Spell.CastSpell("Slam", ret => Me.CurrentTarget.HealthPercent >= 20, "Slam"),
+                        //impending_victory,if=talent.impending_victory.enabled&target.health.pct>=20
+                        Spell.CastSpell("Impending Victory", ret => SpellManager.HasSpell("Impending Victory"), "Impending Victory"),
+                        //battle_shout,if=rage<70
+                        Buff.CastBuff("Battle Shout", ret => Me.CurrentRage < 70, "Battle Shout")
                 ));
             }
         }
@@ -202,7 +206,7 @@ namespace CLU.Classes.Warrior
                             //flask,type=winters_bite
                             //food,type=black_pepper_ribs_and_shrimp
                             //stance,choose=battle
-                            Spell.CastSpell("Battle Stance", ret => !StyxWoW.Me.HasMyAura("Battle Stance"), "Battle Stance"),
+                            Buff.CastBuff("Battle Stance", ret => !StyxWoW.Me.HasMyAura("Battle Stance"), "Battle Stance"),
                             //mogu_power_potion
                             Buff.CastRaidBuff("Commanding Shout",   ret => true, "Commanding Shout"),
                             Buff.CastRaidBuff("Battle Shout",       ret => true, "Battle Shout"))));
