@@ -50,10 +50,20 @@ namespace CLU.Classes.Rogue
         {
             get { return "Mutilate"; }
         }
+
         public override int KeySpellId
         {
             get { return 1329; }
         }
+
+        public override float CombatMaxDistance
+        {
+            get
+            {
+                return 3.2f;
+            }
+        }
+
         /// <summary>
         /// Gets the healing rotation.
         /// Rotation created by wulf.
