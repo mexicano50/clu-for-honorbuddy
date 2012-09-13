@@ -60,8 +60,10 @@ namespace CLU.Helpers
             if (BotBaseInUse("BGBuddy"))
             {
                 CLUSettings.Instance.EnableMultiDotting = false;
+                CLUSettings.Instance.Rogue.UseTricksOfTheTrade = false;
+                CLUSettings.Instance.Rogue.UseTricksOfTheTradeForce = false;
                 CLUSettings.Instance.EnableMovement = true;
-                CLU.Log(" [BotChecker] BGBuddy Bot Detected. *MULTI-DOTTING DISABLED* && *MOVEMENT ENABLED*");
+                CLU.Log(" [BotChecker] BGBuddy Bot Detected. *MULTI-DOTTING DISABLED* && *MOVEMENT ENABLED* && *TotT DISABLED*");
             }
 
             // Check for Questing
