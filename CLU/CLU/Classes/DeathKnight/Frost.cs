@@ -201,7 +201,8 @@ Credits to Weischbier, because he owns the buisness and I want him to have my ba
                                 Spell.CastSpell("Obliterate", ret => !Macro.rotationSwap && Buff.PlayerHasBuff("Killing Machine") && StyxWoW.Me.FrostRuneCount >= 1 && StyxWoW.Me.UnholyRuneCount >= 1,
                                     "Obliterate"),
                                 //blood_tap,if=talent.blood_tap.enabled
-                                Spell.CastSpell("Blood Tap", ret => SpellManager.HasSpell("Blood Tap") &&  Buff.PlayerCountBuff("Blood Charge") >= 5 && (Common.FrostRuneSlotsActive == 0 || Common.UnholyRuneSlotsActive == 0 || Common.BloodRuneSlotsActive == 0), "Blood Tap"),
+                                Spell.CastSpell("Blood Tap", ret => SpellManager.HasSpell("Blood Tap") &&  Buff.PlayerCountBuff("Blood Charge") >= 5 && (Common.FrostRuneSlotsActive == 0 ||
+                                    Common.UnholyRuneSlotsActive == 0 || Common.BloodRuneSlotsActive == 0), "Blood Tap"),
                                 //frost_strike
                                 Spell.CastSpell("Frost Strike", ret => true, "Frost Strike"),
                                 //horn_of_winter
@@ -241,7 +242,8 @@ Credits to Weischbier, because he owns the buisness and I want him to have my ba
                                 //plague_strike
                                 Spell.CastSpell("Plague Strike", ret => true, "Plague Strike"),
                                 //blood_tap,if=talent.blood_tap.enabled
-                                Spell.CastSpell("Blood Tap", ret => SpellManager.HasSpell("Blood Tap") &&  Buff.PlayerCountBuff("Blood Charge") >= 5 && (Common.FrostRuneSlotsActive == 0 || Common.UnholyRuneSlotsActive == 0 || Common.BloodRuneSlotsActive == 0), "Blood Tap"),
+                                Spell.CastSpell("Blood Tap", ret => SpellManager.HasSpell("Blood Tap") &&  Buff.PlayerCountBuff("Blood Charge") >= 5 && (Common.FrostRuneSlotsActive == 0 ||
+                                    Common.UnholyRuneSlotsActive == 0 || Common.BloodRuneSlotsActive == 0), "Blood Tap"),
                                 //horn_of_winter
                                 Buff.CastBuff("Horn of Winter", ret => true, "Horn of Winter"),
                                 //empower_rune_weapon
