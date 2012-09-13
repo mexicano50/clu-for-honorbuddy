@@ -164,7 +164,7 @@ Credits to Weischbier, because he owns the buisness and I want him to have my ba
                     new PrioritySelector(
                         //pillar_of_frost
                         Buff.CastBuff("Pillar of Frost", ret => Unit.IsTargetWorthy(StyxWoW.Me.CurrentTarget) && StyxWoW.Me.IsWithinMeleeRange && StyxWoW.Me.CurrentTarget != null, "Pillar of Frost"),
-                        //C	4.31	raise_dead
+                        //raise_dead
 
                         //outbreak,if=dot.frost_fever.remains<3|dot.blood_plague.remains<3
                         Spell.CastSpell("Outbreak", ret => Buff.TargetDebuffTimeLeft("Frost Fever").Seconds < 3 || Buff.TargetDebuffTimeLeft("Blood Plague").Seconds < 3, "Outbreak"),
@@ -191,7 +191,7 @@ Credits to Weischbier, because he owns the buisness and I want him to have my ba
                                 Spell.CastSpell("Obliterate", ret => Macro.rotationSwap && StyxWoW.Me.CurrentRunicPower <= 76, "Obliterate"),
                                 //obliterate,if=base_rotation.disabled&runic_power<=76&frost>=1|unholy>=1
                                 Spell.CastSpell("Obliterate", ret => !Macro.rotationSwap && StyxWoW.Me.CurrentRunicPower <= 76 && StyxWoW.Me.FrostRuneCount >= 1 && StyxWoW.Me.UnholyRuneCount >= 1, "Obliterate"),
-                                //L	0.15	empower_rune_weapon,if=target.time_to_die<=60&buff.mogu_power_potion.up
+                                //empower_rune_weapon,if=target.time_to_die<=60&buff.mogu_power_potion.up
 
                                 //frost_strike,if=!buff.killing_machine.react
                                 Spell.CastSpell("Frost Strike", ret => !Buff.PlayerHasBuff("Killing Machine"), "Frost Strike"),
@@ -220,7 +220,7 @@ Credits to Weischbier, because he owns the buisness and I want him to have my ba
                                 Spell.CastSpell("Howling Blast", ret => Buff.PlayerHasBuff("Freezing Fog"), "Howling Blast"),
                                 //frost_strike,if=runic_power>=88
                                 Spell.CastSpell("Frost Strike", ret => StyxWoW.Me.CurrentRunicPower >= 88, "Frost Strike"),
-                                //L	0.28	empower_rune_weapon,if=target.time_to_die<=60&buff.mogu_power_potion.up
+                                //empower_rune_weapon,if=target.time_to_die<=60&buff.mogu_power_potion.up
 
                                 //frost_strike,if=buff.killing_machine.react
                                 Spell.CastSpell("Frost Strike", ret => Buff.PlayerHasBuff("Killing Machine"), "Frost Strike"),

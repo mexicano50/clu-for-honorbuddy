@@ -164,7 +164,7 @@ namespace CLU.Classes.DeathKnight
                     new PrioritySelector(
                         //blood_fury,if=time>=2
                         Spell.UseRacials(),
-                        //9	1.00	mogu_power_potion,if=buff.dark_transformation.up&target.time_to_die<=35
+                        //mogu_power_potion,if=buff.dark_transformation.up&target.time_to_die<=35
 
                         //unholy_frenzy,if=time>=4
                         Spell.CastSpell("Unholy Frenzy", ret => true, "Unholy Frenzy"),
@@ -187,7 +187,7 @@ namespace CLU.Classes.DeathKnight
                         Buff.CastBuff("Summon Gargoyle", ret => true, "Summon Gargoyle"),
                         //dark_transformation
                         Spell.CastSpell("Dark Transformation", ret => true, "Dark Transformation"),
-                        //L	0.09	empower_rune_weapon,if=target.time_to_die<=60&buff.mogu_power_potion.up
+                        //empower_rune_weapon,if=target.time_to_die<=60&buff.mogu_power_potion.up
 
                         //necrotic_strike,if=base_rotation.disabled
                         Spell.CastSpell("Necrotic Strike", ret => !Macro.rotationSwap, "Necrotic Strike"),
