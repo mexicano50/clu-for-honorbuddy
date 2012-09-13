@@ -224,7 +224,7 @@ namespace CLU.Classes.Warrior
             {
                 return (
                     new PrioritySelector(
-                        new Decorator(ret => Macro.Manual,
+                        new Decorator(ret => Macro.Manual || BotChecker.BotBaseInUse("BGBuddy"),
                             new Decorator(ret => StyxWoW.Me.CurrentTarget != null && Unit.IsTargetWorthy(StyxWoW.Me.CurrentTarget),
                                 new PrioritySelector(
                                     Spell.CastSpell("Charge", ret => !Me.CurrentTarget.IsWithinMeleeRange && !Unit.IsCrowdControlled(Me.CurrentTarget), "Charge"),
