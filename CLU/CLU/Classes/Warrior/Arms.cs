@@ -57,7 +57,7 @@ namespace CLU.Classes.Warrior
                        "==> UseEngineerGloves \n" +
                        "3. Stance Dance\n" +
                        "4. Best Suited for end game raiding\n" +
-                       "NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagradt changes that. \n" +
+                       "NOTE: PvP rotations have been implemented in the most basic form, once MoP is released I will go back & revise the rotations for optimal functionality 'Dagradt'. \n" +
                        "Credits to gniegsch, lathrodectus and Obliv\n" +
                        "----------------------------------------------------------------------\n";
             }
@@ -140,8 +140,10 @@ namespace CLU.Classes.Warrior
                         //7	3.46	recklessness,use_off_gcd=1,if=((debuff.colossus_smash.remains>=5|cooldown.colossus_smash.remains<=4)&((!talent.avatar.enabled|!set_bonus.tier14_4pc_melee)&((target.health.pct<20|target.time_to_die>315|(target.time_to_die>165&set_bonus.tier14_4pc_melee)))|(talent.avatar.enabled&set_bonus.tier14_4pc_melee&buff.avatar.up)))|target.time_to_die<=18
                         //8	0.00	avatar,use_off_gcd=1,if=talent.avatar.enabled&(((cooldown.recklessness.remains>=180|buff.recklessness.up)|(target.health.pct>=20&target.time_to_die>195)|(target.health.pct<20&set_bonus.tier14_4pc_melee))|target.time_to_die<=20)
                         //9	7.92	bloodbath,use_off_gcd=1,if=talent.bloodbath.enabled&(((cooldown.recklessness.remains>=10|buff.recklessness.up)|(target.health.pct>=20&(target.time_to_die<=165|(target.time_to_die<=315&!set_bonus.tier14_4pc_melee))&target.time_to_die>75))|target.time_to_die<=19)
-                        //A	14.82	berserker_rage,use_off_gcd=1,if=!buff.enrage.up
-                        //B	13.81	heroic_leap,use_off_gcd=1,if=debuff.colossus_smash.up
+                        //berserker_rage,use_off_gcd=1,if=!buff.enrage.up
+                        Spell.CastSelfSpell("Berserker Rage", ret => !Buff.PlayerHasActiveBuff("Enrage"), "Berserker Rage"),
+                        //heroic_leap,use_off_gcd=1,if=debuff.colossus_smash.up
+                        Spell.CastSpellAtLocation("Heroic Leap", ret => Me.CurrentTarget, ret => Buff.TargetHasDebuff("Colossus Smash"), "Heroic Leap"),
                         //deadly_calm,use_off_gcd=1,if=rage>=40
                         Spell.CastSelfSpell("Deadly Calm", ret => Me.CurrentRage >= 40, "Deadly Calm"),
                         //heroic_strike,use_off_gcd=1,if=((buff.taste_for_blood.up&buff.taste_for_blood.remains<=2)|(buff.taste_for_blood.stack=5&buff.overpower.up)|(buff.taste_for_blood.up&debuff.colossus_smash.remains<=2&!cooldown.colossus_smash.remains=0)|buff.deadly_calm.up|rage>110)&target.health.pct>=20&debuff.colossus_smash.up
@@ -225,9 +227,11 @@ namespace CLU.Classes.Warrior
                 return (
                     new PrioritySelector(
                         new Decorator(ret => Macro.Manual || BotChecker.BotBaseInUse("BGBuddy"),
-                            new Decorator(ret => StyxWoW.Me.CurrentTarget != null && Unit.IsTargetWorthy(StyxWoW.Me.CurrentTarget),
+                            new Decorator(ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget),
                                 new PrioritySelector(
                                     Spell.CastSpell("Charge", ret => !Me.CurrentTarget.IsWithinMeleeRange && !Unit.IsCrowdControlled(Me.CurrentTarget), "Charge"),
+                                    Spell.CastSpellAtLocation("Heroic Leap", ret => Me.CurrentTarget, ret => !Me.CurrentTarget.IsWithinMeleeRange && !Unit.IsCrowdControlled(Me.CurrentTarget) &&
+                                        !Buff.TargetHasDebuff("Charge Stun"), "Heroic Leap"),
                                     Item.UseTrinkets(),
                                     Spell.UseRacials(),
                                     Buff.CastBuff("Lifeblood", ret => true, "Lifeblood"),
