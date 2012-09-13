@@ -66,10 +66,12 @@ Credits to Weischbier, because he owns the buisness and I want him to have my ba
                 return "Howling Blast";
             }
         }
+
         public override int KeySpellId
         {
             get { return 49184; }
         }
+
         public override Composite SingleRotation
         {
             get {
@@ -273,12 +275,18 @@ Credits to Weischbier, because he owns the buisness and I want him to have my ba
         public override Composite PreCombat
         {
             get {
-                return
-                    new Decorator(
-                        ret => !Me.Mounted && !Me.IsDead && !Me.Combat && !Me.IsFlying && !Me.IsOnTransport && !Me.HasAura("Food") && !Me.HasAura("Drink"),
+                return (
+                    new Decorator(ret => !Me.Mounted && !Me.IsDead && !Me.Combat && !Me.IsFlying && !Me.IsOnTransport && !Me.HasAura("Food") && !Me.HasAura("Drink"),
                         new PrioritySelector(
-                            Buff.CastRaidBuff("Horn of Winter", ret => CLUSettings.Instance.DeathKnight.UseHornofWinter && Me.CurrentTarget != null && !Me.CurrentTarget.IsFriendly, "Horn of Winter"),
-                            Buff.CastBuff("Frost Presence",ret => !Me.HasMyAura("Frost Presence"),"We need it!")));
+                            //    0	0.00	flask,type=winters_bite
+                            //    1	0.00	food,type=black_pepper_ribs_and_shrimp
+                            //frost_presence
+                            Buff.CastBuff("Frost Presence", ret => !Me.HasMyAura("Frost Presence"), "We need it!"),
+                            //horn_of_winter
+                            Buff.CastRaidBuff("Horn of Winter", ret => CLUSettings.Instance.DeathKnight.UseHornofWinter && Me.CurrentTarget != null && !Me.CurrentTarget.IsFriendly, "Horn of Winter")
+                            //    4	0.00	army_of_the_dead
+                            //    6	0.00	mogu_power_potion
+                )));
             }
         }
 
