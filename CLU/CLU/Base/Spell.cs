@@ -892,10 +892,11 @@ namespace CLU.Base
             return
                 new PrioritySelector(
                     new Decorator(
-                        x => PlayerIsChanneling && Me.ChanneledCastingSpellId == SpellManager.Spells[name].Id,
+                        x => StyxWoW.Me.ChannelObjectGuid > 0,
                         new Action(a => CLU.Log(" [Channeling] {0} ", name))),
                     CastSpell(name, cond, label));
         }
+
         /// <summary>Channel spell on target. Will not break channel and adds the name of spell to knownChanneledSpells</summary>
         /// <param name="spellId">the name of the spell to channel</param>
         /// <param name="cond">The conditions that must be true</param>
