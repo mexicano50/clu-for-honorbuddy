@@ -421,9 +421,24 @@ namespace CLU.Settings
             set;
         }
 
+
+        [Setting]
+        [DefaultValue(false)]
+        [Category("Misc")]
+        [DisplayName("Enable Movement Logging")]
+        [Description("Enable movement logging to HB output")]
+        public bool MovementLogging
+        {
+            get;
+            set;
+        }
+
         #endregion
 
         #region Category: Movement
+
+        
+
 
         [Setting]
         [DefaultValue(false)]

@@ -142,6 +142,17 @@ namespace CLU
             }
         }
 
+        /// <summary>writes debug messages to the log file. Only enable movement logs.</summary>
+        /// <param name="msg">the message to write to the log</param>
+        /// <param name="args">the arguments that accompany the message</param>
+        public static void MovementLog(string msg, params object[] args)
+        {
+            if (msg != null && CLUSettings.Instance.MovementLogging)
+            {
+                Logging.Write(LogLevel.Quiet, Colors.DimGray, "[CLU] " + Version + ": " + msg, args);
+            }
+        }
+
 
         /// <summary>writes debug messages to the log file (false by default)</summary>
         /// <param name="msg">the message to write to the log</param>
