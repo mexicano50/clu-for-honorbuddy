@@ -436,7 +436,7 @@ namespace CLU.Base
         /// </summary>
         /// <param name="unit">the unit to check for</param>
         /// <returns>returns true if the unit is a training dummy</returns>
-        private static bool IsTrainingDummy(WoWUnit unit)
+        internal static bool IsTrainingDummy(WoWUnit unit)
         {
             return unit != null && BossList.TrainingDummies.Contains(unit.Entry);
         }

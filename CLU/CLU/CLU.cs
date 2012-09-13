@@ -55,8 +55,11 @@ namespace CLU
     using Styx.CommonBot;
     using Styx.CommonBot.Routines;
 
+    internal delegate void PulseHander();
+
     public class CLU : CombatRoutine
     {
+        internal event PulseHander PulseEvent;
 
         public CLU()
         {
@@ -256,6 +259,13 @@ namespace CLU
 
         public override void Pulse()
         {
+            PulseHander handler = PulseEvent;
+
+            if (handler != null)
+            {
+                handler();
+            }
+
             if (!Me.IsValid || !StyxWoW.IsInGame)
             {
                 return;
@@ -469,6 +479,9 @@ namespace CLU
             Log(" Let's execute the plan!");
 
             this.rotationBase = rb;
+
+            PulseEvent = null;
+            PulseEvent += rb.OnPulse;
 
             // Check for Instancebuddy and warn user that healing is not supported.
             if (BotChecker.BotBaseInUse("Instancebuddy") && this.ActiveRotation.GetType().BaseType == typeof(HealerRotationBase)) {

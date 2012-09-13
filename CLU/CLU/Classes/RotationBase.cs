@@ -52,5 +52,8 @@ namespace CLU.Classes
 		{
 			get { return 35f; }
 		}
+
+	    internal virtual void OnPulse()
+        {}
 	}
 }
