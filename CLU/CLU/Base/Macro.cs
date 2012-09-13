@@ -43,17 +43,6 @@ namespace CLU.Base
         }
 
         /// <summary>
-        /// Toggle macro for switching Necrotic Strike rotations (pressure ~> stack & vise versa)
-        /// </summary>
-        public static bool necroSwap
-        {
-            get
-            {
-                return Convert.ToBoolean(Lua.GetReturnVal<int>("return necroSwap and 0 or 1", 0));
-            }
-        }
-
-        /// <summary>
         /// Resets individual MultiCastMacro int's from one(1) to zero(0)
         /// </summary>
         /// <param name="Which">Spell name</param>
