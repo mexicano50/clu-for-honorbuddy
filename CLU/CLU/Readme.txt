@@ -311,7 +311,7 @@ I want more information show me the good stuff!!
 Full Documentation can be found your reading it!
 
 
-Where is the Chang Log? How do I know what is updated?
+Where is the Change Log? How do I know what is updated?
 ===================================================
 
 Change Log as well of a rolling list of changes can be found https://code.google.com/p/clu-for-honorbuddy/source/list
