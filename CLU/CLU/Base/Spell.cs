@@ -217,7 +217,19 @@ namespace CLU.Base
                 CastfuckingSpell(name);
             }
         }
-
+        public static void CastMySpell(WoWSpell spell, WoWUnit unit)
+        {
+            // Fishing for KeyNotFoundException's yay!
+            if (spell != null)
+            {
+                SpellManager.Cast(spell, unit);
+                Spell.CreateWaitForLagDuration();
+            }
+            else
+            {
+                CLU.DiagnosticLog("Unknown spell {0} - casting by name anyway.", spell);
+            }
+        }
         // TODO: Remove this.
         public static void CastfuckingSpell(string name)
         {
@@ -589,6 +601,15 @@ namespace CLU.Base
         {
             return CastSpell(name, ret => Me.CurrentTarget, cond, label);
         }
+        /// <summary>Casts a spell by name on a target</summary>
+        /// <param name="spell">the spell to cast in engrish</param>
+        /// <param name="cond">The conditions that must be true</param>
+        /// <param name="label">A descriptive label for the clients GUI logging output</param>
+        /// <returns>The cast spell.</returns>
+        public static Composite CastSpell(WoWSpell spell, CanRunDecoratorDelegate cond, string label)
+        {
+            return CastSpell(spell, ret => Me.CurrentTarget, cond, label);
+        }
 
         /// <summary>Casts a spell on a specified unit</summary>
         /// <param name="name">the name of the spell to cast</param>
@@ -614,7 +635,29 @@ namespace CLU.Base
                 new Action(a => CastMySpell(name, onUnit(a)))));
         }
 
+        /// <summary>Casts a spell on a specified unit</summary>
+        /// <param name="name">the name of the spell to cast</param>
+        /// <param name="onUnit">The Unit.</param>
+        /// <param name="cond">The conditions that must be true</param>
+        /// <param name="label">A descriptive label for the clients GUI logging output</param>
+        /// <returns>The cast spell on the unit</returns>
+        public static Composite CastSpell(WoWSpell spell, CLU.UnitSelection onUnit, CanRunDecoratorDelegate cond, string label)
+        {
+            return new Decorator(
+                delegate(object a)
+                {
+                    if (!cond(a))
+                        return false;
+                    //CLU.TroubleshootLog("Cancast: {0} = {1}", name, CanCast(name, onUnit(a)));
+                    if (!CanCast(spell, onUnit(a)))
+                        return false;
 
+                    return onUnit(a) != null;
+                },
+            new Sequence(
+                new Action(a => CLU.Log(" [Casting] {0} on {1}", label, CLU.SafeName(onUnit(a)))),
+                new Action(a => CastMySpell(spell, onUnit(a)))));
+        }
         /// <summary>Casts self spells eg: 'Fient', 'Shield Wall', 'Blood Tap', 'Rune Tap' </summary>
         /// <param name="name">the name of the spell in english</param>
         /// <param name="cond">The conditions that must be true</param>
@@ -852,6 +895,22 @@ namespace CLU.Base
                         x => PlayerIsChanneling && Me.ChanneledCastingSpellId == SpellManager.Spells[name].Id,
                         new Action(a => CLU.Log(" [Channeling] {0} ", name))),
                     CastSpell(name, cond, label));
+        }
+        /// <summary>Channel spell on target. Will not break channel and adds the name of spell to knownChanneledSpells</summary>
+        /// <param name="spellId">the name of the spell to channel</param>
+        /// <param name="cond">The conditions that must be true</param>
+        /// <param name="label">A descriptive label for the clients GUI logging output</param>
+        /// <returns>The channel spell.</returns>
+        public static Composite ChannelSpell(int spellId, CanRunDecoratorDelegate cond, string label)
+        {
+            var spell = WoWSpell.FromId(spellId);
+            KnownChanneledSpells.Add(spell.Name);
+            return
+                new PrioritySelector(
+                    new Decorator(
+                        x => PlayerIsChanneling && Me.ChanneledCastingSpellId == spell.Id,
+                        new Action(a => CLU.Log(" [Channeling] {0} ", spell.Name))),
+                    CastSpell(spell, cond, label));
         }
 
         /// <summary>Channel spell on player. Will not break channel and adds the name of spell to _knownChanneledSpells</summary>

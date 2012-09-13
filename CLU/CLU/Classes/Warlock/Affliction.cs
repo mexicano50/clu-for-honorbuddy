@@ -140,8 +140,8 @@ namespace CLU.Classes.Warlock
                     Buff.CastDebuff("Haunt", ret => true, "Haunt"),
                     Spell.CastSelfSpell("Life Tap", ret => Me.ManaPercent < 20 && Me.HealthPercent > 40, "Life Tap"),
                     Spell.CastSpell("Fel Flame", ret => Me.IsMoving, "Fel flame while moving"),
-                    Spell.ChannelSpell("Malefic Grasp", ret => Me.CurrentTarget != null && (Me.CurrentTarget.HealthPercent >= 20 || Me.CurrentSoulShards > 0) && !Me.IsMoving && !Me.IsCasting, "Malefic Grasp"),
-                    Spell.ChannelSpell("Drain Soul", ret => Me.CurrentTarget != null && (Me.CurrentTarget.HealthPercent < 20 || Me.CurrentSoulShards == 0) && !Me.IsMoving, "Drain Soul"));
+                    Spell.ChannelSpell(103103, ret => Me.CurrentTarget != null && (Me.CurrentTarget.HealthPercent >= 20 || Me.CurrentSoulShards > 0) && !Me.IsMoving && !Me.IsCasting, "Malefic Grasp"),
+                    Spell.ChannelSpell(1120, ret => Me.CurrentTarget != null && (Me.CurrentTarget.HealthPercent < 20 || Me.CurrentSoulShards == 0) && !Me.IsMoving, "Drain Soul"));
             }
         }
 
