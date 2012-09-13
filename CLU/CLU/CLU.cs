@@ -580,7 +580,7 @@ namespace CLU
         public override Composite PullBehavior
         {
             get {
-                return new Decorator(ret => true, this.Rotation);
+                return new Decorator(ret => AllowPulse, this.Rotation);
             }
         }
 

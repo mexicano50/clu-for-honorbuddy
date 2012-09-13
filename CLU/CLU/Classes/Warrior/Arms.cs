@@ -99,7 +99,6 @@ namespace CLU.Classes.Warrior
                                     Spell.CastSpell("Colossus Smash",              ret => Buff.PlayerHasBuff("Sudden Death") && IsMortalStrikeOnCooldown, "Colossus Smash"),
                                     Spell.CastAreaSpell("Sweeping Strikes", 5, false, 2, 0.0, 0.0, a => (Buff.PlayerHasBuff("Berserker Stance") || Buff.PlayerHasBuff("Battle Stance")), "Sweeping Strikes"),
                                     Spell.CastAreaSpell("Cleave", 5, false, 3, 0.0, 0.0, a => (Buff.PlayerHasBuff("Berserker Stance") || Buff.PlayerHasBuff("Battle Stance")) && Me.CurrentRage > 40, "Cleave"),
-                                    Spell.CastSpell("Rend",                        ret => !Buff.TargetHasDebuff("Rend"), "Rend"),
                                     // Disabled for now.  We need to only use if we have Blood and Thunder.
                                     // Spell.CastAreaSpell("Thunder Clap", 8, false, 2, 0.0, 0.0, a => Buff.PlayerHasBuff("Battle Stance") && Buff.TargetDebuffTimeLeft("Thunder Clap").TotalSeconds < 12.5 && Buff.TargetHasDebuff("Rend"), "TC Rend"),
                                     Spell.CastAreaSpell("Bladestorm", 5, false, 4, 0.0, 0.0, a => !Buff.PlayerHasActiveBuff("Deadly Calm") && !Buff.PlayerHasActiveBuff("Sweeping Strikes"), "Bladestorm"),
@@ -168,7 +167,7 @@ namespace CLU.Classes.Warrior
                             Spell.CastSpell("Battle Stance", ret => !StyxWoW.Me.HasMyAura("Battle Stance"), "Battle Stance"),
                             //mogu_power_potion
                             Buff.CastRaidBuff("Commanding Shout",   ret => true, "Commanding Shout"),
-                            Buff.CastRaidBuff("Battle Shout",       ret => true, "Battle Shout")));
+                            Buff.CastRaidBuff("Battle Shout",       ret => true, "Battle Shout"))));
             }
         }
 

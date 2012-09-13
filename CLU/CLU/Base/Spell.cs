@@ -916,6 +916,7 @@ namespace CLU.Base
                 new DecoratorContinue(x => requiresTerrainClick, new Action(a => SpellManager.ClickRemoteLocation(bestLocation)))));
         }
 
+
         /// <summary>Casts a spell at the units location</summary>
         /// <param name="name">the name of the spell to cast</param>
         /// <param name="onUnit">The on Unit.</param>
@@ -938,12 +939,13 @@ namespace CLU.Base
             new Sequence(
                 new Action(a => CLU.Log(" [Casting at Location] {0} ", label)),
                 new Action(a => CastMySpell(name)),
-                // new WaitContinue(
-                //    0,
-                //    ret => StyxWoW.Me.CurrentPendingCursorSpell != null &&
-                //           StyxWoW.Me.CurrentPendingCursorSpell.Name == name,
-                //    new ActionAlwaysSucceed()),
-                new Action(a => SpellManager.ClickRemoteLocation(onUnit(a).Location))));
+                 //new WaitContinue(
+                 //   1,
+                 //   ret => StyxWoW.Me.CurrentPendingCursorSpell != null &&
+                 //          StyxWoW.Me.CurrentPendingCursorSpell.Name == name,
+                 //   new ActionAlwaysSucceed()),
+                 //new WaitContinue(TimeSpan.FromMilliseconds(200), ret => false, new ActionAlwaysSucceed()),
+                                new Action(ret => SpellManager.ClickRemoteLocation(onUnit(ret).Location))));
         }
 
         /// <summary>Casts Sanctuary at the units location</summary>

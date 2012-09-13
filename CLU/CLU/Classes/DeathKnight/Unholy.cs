@@ -92,6 +92,7 @@ namespace CLU.Classes.DeathKnight
                             Spell.UseRacials()
                             )
                         ),
+
                     //Interrupts
                     Spell.CastInterupt("Mind Freeze",ret => Me.CurrentTarget != null && Me.CurrentTarget.IsWithinMeleeRange,"Mind Freeze"),//Why does nobody check for the range of melee kicks? // CurrentTarget Null check, we are accessing the objects property ;) --wulf
                     Spell.CastInterupt("Strangulate", ret => true, "Strangulate"),
