@@ -171,8 +171,8 @@ Credits to Weischbier, because he owns the buisness and I want him to have my ba
                         //soul_reaper,if=target.health.pct<=35|((target.health.pct-3*(target.health.pct%target.time_to_die))<=35)
                         Spell.CastSpell("Soul Reaper", ret => StyxWoW.Me.CurrentTarget.HealthPercent <= 35, "Soul Reaping"),
                         //unholy_blight,if=talent.unholy_blight.enabled&(dot.frost_fever.remains<3|dot.blood_plague.remains<3)
-                        Spell.CastSpell("Unholy Blight", ret => SpellManager.HasSpell("Unholy Blight") && Buff.TargetDebuffTimeLeft("Frost Fever").Seconds < 3 ||
-                            Buff.TargetDebuffTimeLeft("Blood Plague").Seconds < 3, "Unholy Blight"),
+                        Spell.CastSpell("Unholy Blight", ret => SpellManager.HasSpell("Unholy Blight") && (Buff.TargetDebuffTimeLeft("Frost Fever").Seconds < 3 ||
+                            Buff.TargetDebuffTimeLeft("Blood Plague").Seconds < 3), "Unholy Blight"),
                         //howling_blast,if=!dot.frost_fever.ticking
                         Spell.CastSpell("Howling Blast", ret => !Buff.TargetHasDebuff("Frost Fever"), "Howling Blast"),
                         //plague_strike,if=!dot.blood_plague.ticking
@@ -278,14 +278,14 @@ Credits to Weischbier, because he owns the buisness and I want him to have my ba
                 return (
                     new Decorator(ret => !Me.Mounted && !Me.IsDead && !Me.Combat && !Me.IsFlying && !Me.IsOnTransport && !Me.HasAura("Food") && !Me.HasAura("Drink"),
                         new PrioritySelector(
-                            //    0	0.00	flask,type=winters_bite
-                            //    1	0.00	food,type=black_pepper_ribs_and_shrimp
+                            //flask,type=winters_bite
+                            //food,type=black_pepper_ribs_and_shrimp
                             //frost_presence
                             Buff.CastBuff("Frost Presence", ret => !Me.HasMyAura("Frost Presence"), "We need it!"),
                             //horn_of_winter
                             Buff.CastRaidBuff("Horn of Winter", ret => CLUSettings.Instance.DeathKnight.UseHornofWinter && Me.CurrentTarget != null && !Me.CurrentTarget.IsFriendly, "Horn of Winter")
-                            //    4	0.00	army_of_the_dead
-                            //    6	0.00	mogu_power_potion
+                            //army_of_the_dead
+                            //mogu_power_potion
                 )));
             }
         }
