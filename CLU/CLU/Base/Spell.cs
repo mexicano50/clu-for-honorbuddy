@@ -892,7 +892,7 @@ namespace CLU.Base
             return
                 new PrioritySelector(
                     new Decorator(
-                        x => StyxWoW.Me.ChannelObjectGuid > 0,
+                        x => StyxWoW.Me.ChannelObjectGuid > 0, //TODO: HB fix PlayerIsChanneling && Me.ChanneledCastingSpellId == spell.Id
                         new Action(a => CLU.Log(" [Channeling] {0} ", name))),
                     CastSpell(name, cond, label));
         }
@@ -909,7 +909,7 @@ namespace CLU.Base
             return
                 new PrioritySelector(
                     new Decorator(
-                        x => PlayerIsChanneling && Me.ChanneledCastingSpellId == spell.Id,
+                        x => StyxWoW.Me.ChannelObjectGuid > 0, //TODO: HB fix PlayerIsChanneling && Me.ChanneledCastingSpellId == spell.Id
                         new Action(a => CLU.Log(" [Channeling] {0} ", spell.Name))),
                     CastSpell(spell, cond, label));
         }
