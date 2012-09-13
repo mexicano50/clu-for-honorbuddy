@@ -283,7 +283,7 @@ Credits to Weischbier, because he owns the buisness and I want him to have my ba
                             //flask,type=winters_bite
                             //food,type=black_pepper_ribs_and_shrimp
                             //frost_presence
-                            Buff.CastBuff("Frost Presence", ret => !StyxWoW.Me.HasMyAura("Frost Presence"), "Frost Presence"),
+                            Buff.CastBuff("Frost Presence", ret => !Me.HasMyAura("Frost Presence"), "Frost Presence"),
                             //horn_of_winter
                             Buff.CastRaidBuff("Horn of Winter", ret => CLUSettings.Instance.DeathKnight.UseHornofWinter && Me.CurrentTarget != null && !Me.CurrentTarget.IsFriendly, "Horn of Winter")
                             //army_of_the_dead
@@ -308,7 +308,7 @@ Credits to Weischbier, because he owns the buisness and I want him to have my ba
                         new Decorator(ret => Macro.Manual,
                             new Decorator(ret => StyxWoW.Me.CurrentTarget != null && Unit.IsTargetWorthy(StyxWoW.Me.CurrentTarget),
                                 new PrioritySelector(
-                                    Spell.CastSpell("Chains of Ice", ret => !StyxWoW.Me.CurrentTarget.IsWithinMeleeRange && !Unit.IsCrowdControlled(StyxWoW.Me.CurrentTarget), "Chains of Ice"),
+                                    Spell.CastSpell("Chains of Ice", ret => !Me.CurrentTarget.IsWithinMeleeRange && !Unit.IsCrowdControlled(Me.CurrentTarget), "Chains of Ice"),
                                     Item.UseTrinkets(),
                                     Spell.UseRacials(),
                                     Buff.CastBuff("Lifeblood", ret => true, "Lifeblood"),

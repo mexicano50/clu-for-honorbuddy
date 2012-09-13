@@ -227,7 +227,7 @@ namespace CLU.Classes.Warrior
                         new Decorator(ret => Macro.Manual,
                             new Decorator(ret => StyxWoW.Me.CurrentTarget != null && Unit.IsTargetWorthy(StyxWoW.Me.CurrentTarget),
                                 new PrioritySelector(
-                                    Spell.CastSpell("Charge", ret => !StyxWoW.Me.CurrentTarget.IsWithinMeleeRange && !Unit.IsCrowdControlled(StyxWoW.Me.CurrentTarget), "Charge"),
+                                    Spell.CastSpell("Charge", ret => !Me.CurrentTarget.IsWithinMeleeRange && !Unit.IsCrowdControlled(Me.CurrentTarget), "Charge"),
                                     Item.UseTrinkets(),
                                     Spell.UseRacials(),
                                     Buff.CastBuff("Lifeblood", ret => true, "Lifeblood"),

@@ -244,9 +244,9 @@ namespace CLU.Classes.DeathKnight
                             //flask,type=winters_bite
                             //food,type=black_pepper_ribs_and_shrimp
                             //unholy_presence,if=PvE
-                            Buff.CastBuff("Unholy Presence", ret => CLU.LocationContext != GroupLogic.Battleground && !StyxWoW.Me.HasMyAura("Unholy Presence"), "Unholy Presence"),
+                            Buff.CastBuff("Unholy Presence", ret => CLU.LocationContext != GroupLogic.Battleground && !Me.HasMyAura("Unholy Presence"), "Unholy Presence"),
                             //unholy_presence,if=PvP
-                            Buff.CastBuff("Frost Presence", ret => CLU.LocationContext == GroupLogic.Battleground && !StyxWoW.Me.HasMyAura("Frost Presence"), "Frost Presence"),
+                            Buff.CastBuff("Frost Presence", ret => CLU.LocationContext == GroupLogic.Battleground && !Me.HasMyAura("Frost Presence"), "Frost Presence"),
                             //horn_of_winter
                             Buff.CastRaidBuff("Horn of Winter", ret => CLUSettings.Instance.DeathKnight.UseHornofWinter && Me.CurrentTarget != null && !Me.CurrentTarget.IsFriendly, "Horn of Winter"),
                             //army_of_the_dead
@@ -273,7 +273,7 @@ namespace CLU.Classes.DeathKnight
                         new Decorator(ret => Macro.Manual,
                             new Decorator(ret => StyxWoW.Me.CurrentTarget != null && Unit.IsTargetWorthy(StyxWoW.Me.CurrentTarget),
                                 new PrioritySelector(
-                                    Spell.CastSpell("Chains of Ice", ret => !StyxWoW.Me.CurrentTarget.IsWithinMeleeRange && !Unit.IsCrowdControlled(StyxWoW.Me.CurrentTarget), "Chains of Ice"),
+                                    Spell.CastSpell("Chains of Ice", ret => !Me.CurrentTarget.IsWithinMeleeRange && !Unit.IsCrowdControlled(Me.CurrentTarget), "Chains of Ice"),
                                     Item.UseTrinkets(),
                                     Buff.CastBuff("Lifeblood", ret => true, "Lifeblood"),
                                     new Action(delegate
