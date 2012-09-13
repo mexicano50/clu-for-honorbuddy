@@ -36,7 +36,7 @@ namespace CLU.Settings
         }
 
         [Setting]
-        [DefaultValue(OHPoisonType.Leeching)]
+        [DefaultValue(OHPoisonType.Crippling)]
         [Category("Common")]
         [DisplayName("Off Hand Poison")]
         [Description("Off Hand Poison")]
