@@ -5,12 +5,12 @@ using CLU.Settings;
 using CLU.Base;
 using Styx.CommonBot;
 using Rest = CLU.Base.Rest;
+using Styx;
 
 namespace CLU.Classes.Warrior
 {
     class Arms : RotationBase
     {
-
         private const int ItemSetId = 1073; // Tier set ID Colossal Dragonplate (Normal)
 
         public override string Name
@@ -30,10 +30,12 @@ namespace CLU.Classes.Warrior
         {
             get { return "Mortal Strike"; }
         }
+
         public override int KeySpellId
         {
             get { return 12294; }
         }
+
         public override float CombatMaxDistance
         {
             get { return 3.2f; }
@@ -55,7 +57,7 @@ namespace CLU.Classes.Warrior
                        "==> UseEngineerGloves \n" +
                        "3. Stance Dance\n" +
                        "4. Best Suited for end game raiding\n" +
-                       "NOTE: PvP uses single target rotation - It's not designed for PvP use. \n" +
+                       "NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagradt changes that. \n" +
                        "Credits to gniegsch, lathrodectus and Obliv\n" +
                        "----------------------------------------------------------------------\n";
             }
@@ -119,6 +121,26 @@ namespace CLU.Classes.Warrior
             }
         }
 
+        public Composite burstRotation
+        {
+            get
+            {
+                return (
+                    new PrioritySelector(
+                ));
+            }
+        }
+
+        public Composite baseRotation
+        {
+            get
+            {
+                return (
+                    new PrioritySelector(
+                ));
+            }
+        }
+
         public override Composite Medic
         {
             get
@@ -137,9 +159,14 @@ namespace CLU.Classes.Warrior
         {
             get
             {
-                return new Decorator(
-                        ret => !Me.Mounted && !Me.IsDead && !Me.Combat && !Me.IsFlying && !Me.IsOnTransport && !Me.HasAura("Food") && !Me.HasAura("Drink"),
+                return (
+                    new Decorator(ret => !Me.Mounted && !Me.IsDead && !Me.Combat && !Me.IsFlying && !Me.IsOnTransport && !Me.HasAura("Food") && !Me.HasAura("Drink"),
                         new PrioritySelector(
+                            //flask,type=winters_bite
+                            //food,type=black_pepper_ribs_and_shrimp
+                            //stance,choose=battle
+                            Spell.CastSpell("Battle Stance", ret => !StyxWoW.Me.HasMyAura("Battle Stance"), "Battle Stance"),
+                            //mogu_power_potion
                             Buff.CastRaidBuff("Commanding Shout",   ret => true, "Commanding Shout"),
                             Buff.CastRaidBuff("Battle Shout",       ret => true, "Battle Shout")));
             }
@@ -152,7 +179,27 @@ namespace CLU.Classes.Warrior
 
         public override Composite PVPRotation
         {
-            get { return this.SingleRotation; }
+            get
+            {
+                return (
+                    new PrioritySelector(
+                        new Decorator(ret => Macro.Manual,
+                            new Decorator(ret => StyxWoW.Me.CurrentTarget != null && Unit.IsTargetWorthy(StyxWoW.Me.CurrentTarget),
+                                new PrioritySelector(
+                                    Spell.CastSpell("Charge", ret => !StyxWoW.Me.CurrentTarget.IsWithinMeleeRange && !Unit.IsCrowdControlled(StyxWoW.Me.CurrentTarget), "Charge"),
+                                    Item.UseTrinkets(),
+                                    Spell.UseRacials(),
+                                    Buff.CastBuff("Lifeblood", ret => true, "Lifeblood"),
+                                    Item.UseEngineerGloves(),
+                                    new Action(delegate
+                                    {
+                                        Macro.isMultiCastMacroInUse();
+                                        return RunStatus.Failure;
+                                    }),
+                                    new Decorator(ret => Macro.Burst, burstRotation),
+                                    new Decorator(ret => !Macro.Burst, baseRotation)))
+                )));
+            }
         }
 
         public override Composite PVERotation

@@ -283,7 +283,7 @@ Credits to Weischbier, because he owns the buisness and I want him to have my ba
                             //flask,type=winters_bite
                             //food,type=black_pepper_ribs_and_shrimp
                             //frost_presence
-                            Buff.CastBuff("Frost Presence", ret => !Me.HasMyAura("Frost Presence"), "We need it!"),
+                            Buff.CastBuff("Frost Presence", ret => !StyxWoW.Me.HasMyAura("Frost Presence"), "Frost Presence"),
                             //horn_of_winter
                             Buff.CastRaidBuff("Horn of Winter", ret => CLUSettings.Instance.DeathKnight.UseHornofWinter && Me.CurrentTarget != null && !Me.CurrentTarget.IsFriendly, "Horn of Winter")
                             //army_of_the_dead
