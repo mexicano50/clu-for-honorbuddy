@@ -422,6 +422,17 @@ namespace CLU.Base
         }
 
         /// <summary>
+        /// Will check if the unit is carrying the Flag (For future PvP Support)
+        /// </summary>
+        /// <param name="unit">the unit to check for</param>
+        /// <returns>true if we have the flag</returns>
+        private static bool IsCarryingFlag (WoWUnit unit)
+        {
+            return unit != null && (unit.HasAura("Alliance Flag") || unit.HasAura("Horde Flag")
+                                    || unit.HasAura("Netherstorm Flag"));
+        }
+
+        /// <summary>
         /// Returns true if the unit is a boss
         /// </summary>
         /// <param name="unit">the unit to query</param>
