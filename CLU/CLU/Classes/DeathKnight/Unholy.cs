@@ -271,9 +271,10 @@ namespace CLU.Classes.DeathKnight
                 return (
                     new PrioritySelector(
                         new Decorator(ret => Macro.Manual || BotChecker.BotBaseInUse("BGBuddy"),
-                            new Decorator(ret => StyxWoW.Me.CurrentTarget != null && Unit.IsTargetWorthy(StyxWoW.Me.CurrentTarget),
+                            new Decorator(ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget),
                                 new PrioritySelector(
                                     Spell.CastSpell("Chains of Ice", ret => !Me.CurrentTarget.IsWithinMeleeRange && !Unit.IsCrowdControlled(Me.CurrentTarget), "Chains of Ice"),
+                                    Spell.CastSpell("Death Grip", ret => !Me.CurrentTarget.IsWithinMeleeRange && !Unit.IsCrowdControlled(Me.CurrentTarget) && !Buff.TargetHasDebuff("Chains of Ice"), "Death Grip"),
                                     Item.UseTrinkets(),
                                     Buff.CastBuff("Lifeblood", ret => true, "Lifeblood"),
                                     new Action(delegate
