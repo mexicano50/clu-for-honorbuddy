@@ -619,16 +619,16 @@ namespace CLU.Base
         /// <returns>The cast spell on the unit</returns>
         public static Composite CastSpell(string name, CLU.UnitSelection onUnit, CanRunDecoratorDelegate cond, string label)
         {
-            WoWSpell spell;
+            /*WoWSpell spell;
             bool spellIsOnCoolDown = false;
             if (SpellManager.Spells.TryGetValue(name, out spell))
             {
                 if (spell != null) spellIsOnCoolDown = !spell.Cooldown;
-            }
+            }*/
             return new Decorator(
                 delegate(object a)
                 {
-                    if (!cond(a) || spellIsOnCoolDown)
+                    if (!cond(a))
                         return false;
                     //CLU.TroubleshootLog("Cancast: {0} = {1}", name, CanCast(name, onUnit(a)));
                     if (!CanCast(name, onUnit(a)))
