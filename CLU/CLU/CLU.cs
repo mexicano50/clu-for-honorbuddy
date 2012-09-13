@@ -397,7 +397,6 @@ namespace CLU
                 this.rotations = new List<RotationBase>();
                 foreach (Type x in types)
                 {
-                    CLU.TroubleshootLog("{0} - {1} - {2} - {3} - {4} - {5} - {6} - {7}", x.Assembly, x.BaseType, x.FullName, x.IsVisible, x.MemberType, x.Module, x.Name, x.Namespace);
                     ConstructorInfo constructorInfo = x.GetConstructor(new Type[] { });
                     if (constructorInfo != null)
                     {
