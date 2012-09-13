@@ -16,8 +16,6 @@ using Rest = CLU.Base.Rest;
 
 namespace CLU.Classes.Rogue
 {
-    using Styx.WoWInternals.WoWObjects;
-
     [UsedImplicitly]
     public class Assassination : RotationBase
     {

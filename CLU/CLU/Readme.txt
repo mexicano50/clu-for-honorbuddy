@@ -1,33 +1,35 @@
 CLU (Codified Likeness Utility) the Rotation CC for Combat/Raid/Lazyraider bots Powered by Felmaster technology
 
-Latest Version: 3.1.0 (From SVN).
-
-Wulf is awesome -- Weischbier . . .I know! -- Wulf
-
-Current Issues Updated: 01/September/2012
+Current Issues Updated: 13/September/2012
 =================================
-* [Movement] No Pull Logic (Will cast ranged spells to pull)
-* [Movement] PvP Tweaking needed, Use at your own peri
+None. - well maybe a few :P
 
 Description
 ==========
-This CC is mainly intended for PVE users of honorbuddy, however it can still be used for PVP it will simply use the PVE Rotation at the moment. (Class Specific PVP rotations may be added in the future).
-It will perform its rotation according to online resources such as Elitist Jerks & SimulationCraft, leaving you to monitor more important things such as fight mechanics.
+This CC is mainly intended for PVE users of honorbuddy, however it can still be used for PVP it will simply use the PVE Rotation at the moment. 
+(Class Specific PVP rotations may be added in the future).It will perform its rotation according to online resources such as Elitist Jerks 
+& SimulationCraft, leaving you to monitor more important things such as fight mechanics.
 
-Author's Note
+Developer's Note
 ============
 This CC was formed as a hobby.
 Donations are not permitted.
-Support is provided, however I do have a RL job and a wife and children therefore support may be a little slow (Wife rage!).
+Support is provided, however many of us have jobs and families so do not expect 24hr support.
 Constructive criticism is welcome.
 
 Installation
 ============
 
-Method 1: Zip File
+*First Step - Important Do not skip this step!*
+--------------
+*Update to Microsoft .NET Framework 4 http://www.microsoft.com/en-us/download/details.aspx?id=17851
+*Set your WoW Client to 32bit
+
+
+Method 1: Zip File !! *Note: Currently not available until the official Honorbuddy release. !!
 -------------------
 
-* You can download a stable version from the HB forum post Download the latest zip file
+* You can download a stable version from the HB forum post - Download the latest zip file.
 * Copy the CLU folder into "%Your Honorbuddy Folder%\Routines\"
 * Load Honorbuddy
 * Select "Combat" as your bot base (Lazyraider and RaidBot tested OK)
@@ -39,10 +41,10 @@ Method 2: SVN
 ------------------
 
 * You can access the latest CLU build from the following SVN Link http://clu-for-honorbuddy.googlecode.com/svn/trunk/CLU/
-* Google: How to use tortoisesvn. (Please do not PM HB moderators if you do not know how to use a SVN, PM me instead)
+* Google: How to use TortoiseSVN. http://tortoisesvn.net
 * Copy the CLU folder into "%Your Honorbuddy Folder%\Routines\"
 * Load Honorbuddy
-* Select "Combat" as your bot base (Lazyraider and RaidBot tested OK)
+* Select "Combat" as your bot base (Lazyraider and RaidBot are supported)
 * Select "Load Profile" and load the BlankProfile.xml (Provided at the end of this post.)
 * Start Honorbuddy.
 * Stay out of the fire and point to kill.
@@ -51,80 +53,81 @@ Method 2: SVN
 Features
 ========
 
-Current Rotations
+Current Supported Rotations - All rotations capable of combat. The [U]untested rotations are from patch 4.3
 ------------------------------
 
 Three Rotation Modes - Single, PVE, PVP
 - Key: Tested[T], Untested[U], Partially checked[PC], NotImplemented[N/A], , Checked/Some Abilities Missing[x]
 
 * DeathKnight
-- [x] Blood
-- [x] Frost
-- [x] Unholy
+- [T] Blood
+- [T] Frost
+- [T] Unholy
 
 * Druid
-- [ ] Balance
-- [x] Feral
-- [x] Guardian	
-- [ ] Restoration
+- [U] Balance
+- [PC] Feral
+- [PC] Guardian	
+- [U] Restoration
 
 * Hunter
-- [x] BeastMastery
-- [x] Marksmanship
-- [x] Survival
+- [T] BeastMastery
+- [T] Marksmanship
+- [T] Survival
 
 * Mage
-- [x] Arcane
-- [x] Fire
-- [ ] Frost
+- [T] Arcane
+- [T] Fire
+- [U] Frost
 
 * Monk
-- [N/A] Brewmaster
-- [N/A] Mistweaver
-- [N/A] Windwalker
+- [U] Brewmaster
+- [U] Mistweaver
+- [U] Windwalker
 
 * Paladin
-- [x] Holy
-- [x] Protection
-- [x] Retribution
+- [T] Holy
+- [T] Protection
+- [T] Retribution
 
 * Priest
-- [x] Shadow
-- [ ] Discipline
-- [ ] Holy	
+- [T] Shadow
+- [U] Discipline
+- [U] Holy	
 
 * Rogue
-- [x] Assassination
-- [x] Combat
-- [ ] Subtlety	
+- [T] Assassination
+- [T] Combat
+- [U] Subtlety	
 
 * Shaman
-- [ ] Elemental	 	
-- [ ] Restoration
-- [ ] Enhancement
+- [U] Elemental	 	
+- [U] Restoration
+- [U] Enhancement
 
 * Warlock
-- [x] Affliction
-- [ ] Demonology
-- [ ] Destruction
+- [T] Affliction
+- [U] Demonology
+- [U] Destruction
 
 * Warrior
-- [ ] Arms
-- [x] Protection
-- [x] Fury
+- [U] Arms
+- [T] Protection
+- [T] Fury
 	
 Rotation Selector
 --------------------
 
-Clu has the special abiltie to load Custom Rotations. This means you can copy an existing rotation and modify it to your needs and CLU will load it for you to use.
+Clu has the special abilitie to load Custom Rotations. This means you can copy an existing rotation and modify it to your needs and CLU 
+will load it for you to use.
 
-1) goto "%Your Honorbuddy Folder%\CustomClasses\Classes\" folder and select the class folder you want to custimize.
+1) goto "%Your Honorbuddy Folder%\CustomClasses\Classes\" folder and select the class folder you want to customize.
 2) copy and paste the rotation file you want to change.
 3) rename the file to a different name (i.e. Elemental.cs to Elemental_v2.cs)
 4) open the file you just renamed and look for the line that says "class Elemental : RotationBase" and change it to "class Elemental_v2 : RotationBase".
 5) in the same file look for the line that says "public override string Name { get { return "Elemental Shaman"; } }" and rename it to public override string Name { get { return "Elemental Shaman v2"; } }
-6) Make any necassary changes to the rotation you want.
-7) Congradulations you just made a custom rotation file of your own. When you next run CLU it will prompt you to select a rotation.
+6) Make any necessary changes to the rotation you want.
+7) Congratulations you just made a custom rotation file of your own. When you next run CLU it will prompt you to select a rotation.
 
 Utility
 -------------
@@ -142,6 +145,7 @@ Utility
 * Poisons
 - Handles the application of poisons for rogues.
 
+
 Miscellaneous functionality
 -----------------------------------------------
 
@@ -155,7 +159,7 @@ Miscellaneous functionality
 - Boss, PvP Player, or Mobs (for questing)
 
 * Extra Action button Click
-- Whilst in DeathWing (Cataclysm) CLU will click the Extra Action Button during the encounter for you.
+- While in DeathWing (Cataclysm) CLU will click the Extra Action Button during the encounter for you.
 
 * Interrupts
 - It will not try to interrupt non-interruptible abilities
@@ -169,6 +173,12 @@ Miscellaneous functionality
 
 * Tier piece detection
 - Detection of how many Tier pieces a player is wearing to dynamically change rotation priorities (Only built with feral druid and retribution paladin and Shadow Priest)
+
+*Talents
+- CLU is capable of detecting what specialization you are and setting an appropriate rotation
+
+* Glyphs
+- CLU is capable of detecting Glyphs you have and will change its rotation to accommodate them
 
 * Bag Items Support
 - Using a bag item (Healthstone, Flask, Potion)
@@ -234,10 +244,13 @@ Information
 - Information on the current target includes Location, Distance, Name, GUID, isBehind.
 
 * Spells
-- Dumps the targets spells (including ID's, Powercost, etc) to the honorbuddy debug log
+- Dumps the target spells (including ID's, Powercost, etc) to the honorbuddy debug log
 
 * Auras
 - Dumps the targets Auras to the honorbuddy debug log
+
+* Spellchecker
+- provides information on the spell you provide (spellname or spell Id)
 
 Keybinds
 ------------------
@@ -283,19 +296,31 @@ User Interface
 - Healing Target Information
 - Reports
 - Aura/Spell Dumps
+- Spellchecker
 
 * Spell Lock Watcher
-- Watchs debuffs on your target and counts down when time remaining is less than 3 seconds.
+- Watchs debuffs on your target and counts down when time remaining is less than three seconds.
 
 * Realtime Target Information
 - Information on the current target includes Location, Distance, Name, GUID, isBehind.
 		
 
+I want more information show me the good stuff!!
+============================================
+
+Full Documentation can be found your reading it!
+
+
+Where is the Chang Log? How do I know what is updated?
+===================================================
+
+Change Log as well of a rolling list of changes can be found https://code.google.com/p/clu-for-honorbuddy/source/list
+
 How to report a bug
 ==================
-* Make sure you are using latest version
-* Verify that you have followed all the steps listed under the 'How do I use CLU' of this post.
-* Please enable debug log within CLU settings before you attatch your log..the more information the better.
+* Make sure you are using latest version! - Update your via SVN regularly.
+* Verify that you have followed all the steps listed under the 'Installation'
+* Please enable Debug Logging within CLU settings before you attach your log..the more information the better.
 * Attach a log (See How to by Kickazz006) http://www.thebuddyforum.com/honorbuddy-forum/guides/35945-guide-how-attach-your-log-kick.html
 
 
@@ -319,6 +344,19 @@ Credits
 * kbrebel04  for his improvements to Subtlety Rogue
 
 
+Development Team
+==================
+
+- Wulf
+- Stormchasing
+- Weischbeir
+- LaoArchAngel
+- Dagradt
+- Ama
+- handnavi
+
+
+
 Disclaimer
 =========
 Use of 3rd party programs are against Blizzard's terms of use and license.
@@ -328,6 +366,14 @@ Any use on Blizzard realms is at your own risk and not supported per this statem
 
 F.A.Q
 ======
+
+Q. CLU crashes with Unable to find Active Rotation OR System.Reflection.ReflectionTypeLoadException
+A. Update to Microsoft .Net 4
+
+Q. Can I use this CC for low level questing/grinding/GB2/BGBuddy?
+A. CLU was designed for High level Raiding - having said that it is capable of performing movement, targeting, buffing, combat from level 20-90.
+*Note: Using it for these functions are not fully supported. If it's not working they way you want..its for a reason..we just do not want to support 
+	   low level combat currently. Please use Singular for this, it ships free with Honorbuddy.
 
 Q. Can CLU tank raids and heroic dungeons ?
 A. All Tank/Healing specs provided have been tested for Heroics/Raids.
@@ -339,9 +385,8 @@ Q. What Botbase should I use for Raiding/ Heroic Dungeons?
 A. Depends on what you want to do. CLU works best with Raidbot but Lazyraider and Combat can be used as well. When Healing Use Lazyraider and turn of Tank selection (aka: Solo Mode)
 
 Q. Where is XYZ setting?
-A. If you do not see it in the UI settings its not there yet!
+A. If you do not see it in the UI settings it's not there yet!
 
 Q. Is there any way for me to have control over blade flurry as a rogue? 
 A. Turn off AoE, this is true for all class AoE abilities.
-
 
