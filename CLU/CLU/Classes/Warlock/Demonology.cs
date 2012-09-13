@@ -130,7 +130,7 @@ namespace CLU.Classes.Warlock
                                 new PrioritySelector(
                                     Buff.CastBuff("Dark Soul: Knowledge", ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget) && !Me.IsMoving, "Dark Soul: Knowledge"),
                                     //// TODO: Remove this when Apoc fixs Spellmanager. -- wulf 
-                                    Spell.CastSpellByID(18540, ret => !WoWSpell.FromId(18540).Cooldown && Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget), "Summon Doomguard"),
+                                    Spell.CastSpellByID(18540, ret => !WoWSpell.FromId(18540).Cooldown && Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget), "Summon Doomguard")
                                     )),
                            //Demonic Fury or Pull
                            new Decorator(ret => Me.CurrentTarget != null && ((!Me.CurrentTarget.HasMyAura(603) || (Me.CurrentTarget.ActiveAuras.ContainsKey("Corruption") && Spell.CurrentDemonicFury() > 800 && Me.CurrentTarget.ActiveAuras.ContainsKey("Shadowflame")))),
