@@ -103,7 +103,7 @@ namespace CLU.Classes.Warlock
                             //Grimoire of Service
                             Spell.CastSpellByID(111897, ret => Me.GotAlivePet && !WoWSpell.FromId(111897).Cooldown && TalentManager.HasTalent(14), "Grimoire of Service"),
                             //Sacrifice Pet
-                            Spell.CastSelfSpellByID(108503,ret => Me.GotAlivePet && TalentManager.HasTalent(15) && !Buff.PlayerHasActiveBuff(108503), "Grimoire of Sacrifice"),
+                            Spell.CastSelfSpellByID(108503, ret => Me.GotAlivePet && TalentManager.HasTalent(15) && !Buff.PlayerHasActiveBuff(108503) && !WoWSpell.FromId(108503).Cooldown, "Grimoire of Sacrifice"),
                     //Cooldowns
                     new Decorator(ret=> CLUSettings.Instance.UseCooldowns,
                         new PrioritySelector(
