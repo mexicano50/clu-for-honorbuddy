@@ -309,6 +309,7 @@ Credits to Weischbier, because he owns the buisness and I want him to have my ba
                             new Decorator(ret => StyxWoW.Me.CurrentTarget != null && Unit.IsTargetWorthy(StyxWoW.Me.CurrentTarget),
                                 new PrioritySelector(
                                     Spell.CastSpell("Chains of Ice", ret => !Me.CurrentTarget.IsWithinMeleeRange && !Unit.IsCrowdControlled(Me.CurrentTarget), "Chains of Ice"),
+                                    Spell.CastSpell("Death Grip", ret => !Me.CurrentTarget.IsWithinMeleeRange && !Unit.IsCrowdControlled(Me.CurrentTarget) && !Buff.TargetHasDebuff("Chains of Ice"), "Death Grip"),
                                     Item.UseTrinkets(),
                                     Spell.UseRacials(),
                                     Buff.CastBuff("Lifeblood", ret => true, "Lifeblood"),
