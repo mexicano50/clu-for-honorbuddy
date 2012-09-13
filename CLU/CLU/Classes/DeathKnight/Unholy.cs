@@ -237,13 +237,22 @@ namespace CLU.Classes.DeathKnight
         public override Composite PreCombat
         {
             get {
-                return
-                    new Decorator(
-                        ret => !Me.Mounted && !Me.IsDead && !Me.Combat && !Me.IsFlying && !Me.IsOnTransport && !Me.HasAura("Food") && !Me.HasAura("Drink"),
+                return (
+                    new Decorator(ret => !Me.Mounted && !Me.IsDead && !Me.Combat && !Me.IsFlying && !Me.IsOnTransport && !Me.HasAura("Food") && !Me.HasAura("Drink"),
                         new PrioritySelector(
-                            Buff.CastBuff("Unholy Presence", ret => !Me.HasMyAura("Unholy Presence"), "We need it!"),
-                            Spell.CastSelfSpell("Raise Dead",              ret => (Me.Pet == null || Me.Pet.IsDead), "Raise Dead"),
-                            Buff.CastRaidBuff("Horn of Winter",            ret => CLUSettings.Instance.DeathKnight.UseHornofWinter && Me.CurrentTarget != null && !Me.CurrentTarget.IsFriendly, "Horn of Winter")));
+                            //flask,type=winters_bite
+                            //food,type=black_pepper_ribs_and_shrimp
+                            //unholy_presence,if=PvE
+                            Buff.CastBuff("Unholy Presence", ret => CLU.LocationContext != GroupLogic.Battleground && !StyxWoW.Me.HasMyAura("Unholy Presence"), "Unholy Presence"),
+                            //unholy_presence,if=PvP
+                            Buff.CastBuff("Frost Presence", ret => CLU.LocationContext == GroupLogic.Battleground && !StyxWoW.Me.HasMyAura("Frost Presence"), "Frost Presence"),
+                            //horn_of_winter
+                            Buff.CastRaidBuff("Horn of Winter", ret => CLUSettings.Instance.DeathKnight.UseHornofWinter && Me.CurrentTarget != null && !Me.CurrentTarget.IsFriendly, "Horn of Winter"),
+                            //army_of_the_dead
+                            //raise_dead
+                            Spell.CastSelfSpell("Raise Dead", ret => (Me.Pet == null || Me.Pet.IsDead), "Raise Dead")
+                            //mogu_power_potion
+                )));
             }
         }
 
