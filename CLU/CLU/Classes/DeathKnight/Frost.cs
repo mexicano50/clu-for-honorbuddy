@@ -319,7 +319,7 @@ Credits to Weischbier, because he owns the buisness and I want him to have my ba
                                         return RunStatus.Failure;
                                     }),
                                     new Decorator(ret => Macro.Burst, burstRotation),
-                                    new Decorator(ret => !Macro.Burst, baseRotation)))
+                                    new Decorator(ret => !Macro.Burst || BotChecker.BotBaseInUse("BGBuddy"), baseRotation)))
                 )));
             }
         }

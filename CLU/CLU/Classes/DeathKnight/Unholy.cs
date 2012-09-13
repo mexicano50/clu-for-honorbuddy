@@ -282,7 +282,7 @@ namespace CLU.Classes.DeathKnight
                                         return RunStatus.Failure;
                                     }),
                                     new Decorator(ret => Macro.Burst, burstRotation),
-                                    new Decorator(ret => !Macro.Burst, baseRotation)))
+                                    new Decorator(ret => !Macro.Burst || BotChecker.BotBaseInUse("BGBuddy"), baseRotation)))
                 )));
             }
         }
