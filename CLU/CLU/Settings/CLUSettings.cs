@@ -425,8 +425,8 @@ namespace CLU.Settings
         [Setting]
         [DefaultValue(false)]
         [Category("Misc")]
-        [DisplayName("Enable Movement Logging")]
-        [Description("Enable movement logging to HB output")]
+        [DisplayName("Enable Movement/Targeting Logging")]
+        [Description("Enable movement/Targeting  logging to HB output")]
         public bool MovementLogging
         {
             get;
