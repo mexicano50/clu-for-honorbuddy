@@ -1,4 +1,16 @@
-﻿using System.Collections.Generic;
+﻿#region Revision info
+/*
+ * $Author$
+ * $Date$
+ * $ID$
+ * $Revision$
+ * $URL$
+ * $LastChangedBy$
+ * $ChangesMade$
+ */
+#endregion
+
+using System.Collections.Generic;
 using System.Linq;
 using Styx.WoWInternals;
 using Styx.WoWInternals.WoWObjects;

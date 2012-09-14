@@ -1,12 +1,15 @@
-﻿#region Author
+﻿#region Revision info
 /*
  * $Author$
  * $Date$
  * $ID$
  * $Revision$
  * $URL$
+ * $LastChangedBy$
+ * $ChangesMade$
  */
 #endregion
+
 using System.Reflection;
 
 namespace CLU.Base
@@ -15,7 +18,6 @@ namespace CLU.Base
     using System.Collections.Generic;
     using System.Linq;
     using System.Text;
-    using System.Windows.Media;
 
     using CommonBehaviors.Actions;
     using Styx;

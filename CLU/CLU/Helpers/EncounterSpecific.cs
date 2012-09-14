@@ -1,8 +1,19 @@
-﻿using System.Linq;
+﻿#region Revision info
+/*
+ * $Author$
+ * $Date$
+ * $ID$
+ * $Revision$
+ * $URL$
+ * $LastChangedBy$
+ * $ChangesMade$
+ */
+#endregion
+
+using System.Linq;
 using Styx;
-using Styx.WoWInternals;
 using Styx.WoWInternals.WoWObjects;
-using System.Drawing;
+
 using CommonBehaviors.Actions;
 using Styx.TreeSharp;
 using CLU.Settings;

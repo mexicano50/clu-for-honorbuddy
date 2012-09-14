@@ -1,4 +1,16 @@
-﻿using CLU.Settings;
+﻿#region Revision info
+/*
+ * $Author$
+ * $Date$
+ * $ID$
+ * $Revision$
+ * $URL$
+ * $LastChangedBy$
+ * $ChangesMade$
+ */
+#endregion
+
+using CLU.Settings;
 using Styx;
 using Styx.WoWInternals.WoWObjects;
 using Styx.TreeSharp;

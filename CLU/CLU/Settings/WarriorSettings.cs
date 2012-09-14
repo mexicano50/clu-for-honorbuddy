@@ -1,9 +1,16 @@
-﻿#region Revision Info
+﻿#region Revision info
+/*
+ * $Author$
+ * $Date$
+ * $ID$
+ * $Revision$
+ * $URL$
+ * $LastChangedBy$
+ * $ChangesMade$
+ */
+#endregion
 
 // This file was part of Singular - A community driven Honorbuddy CC
-// $Author$
-// $LastChangedBy$
-#endregion
 
 using System.ComponentModel;
 using Styx.Helpers;

@@ -1,18 +1,20 @@
-#region Author
+#region Revision info
 /*
  * $Author$
  * $Date$
  * $ID$
  * $Revision$
  * $URL$
+ * $LastChangedBy$
+ * $ChangesMade$
  */
 #endregion
+
 using CommonBehaviors.Actions;
 using Styx.TreeSharp;
 using Styx.WoWInternals;
 using CLU.Base;
 using CLU.Helpers;
-using CLU.Lists;
 using CLU.Managers;
 using CLU.Settings;
 using Rest = CLU.Base.Rest;

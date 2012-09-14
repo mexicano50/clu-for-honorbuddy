@@ -1,6 +1,17 @@
-﻿using System;
-using System.Windows.Forms;
+﻿#region Revision info
+/*
+ * $Author$
+ * $Date$
+ * $ID$
+ * $Revision$
+ * $URL$
+ * $LastChangedBy$
+ * $ChangesMade$
+ */
+#endregion
 
+using System;
+using System.Windows.Forms;
 using Styx.WoWInternals;
 
 namespace CLU.GUI

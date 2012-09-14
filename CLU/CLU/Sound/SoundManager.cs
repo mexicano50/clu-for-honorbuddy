@@ -1,12 +1,21 @@
-﻿namespace CLU.Sound
+﻿#region Revision info
+/*
+ * $Author$
+ * $Date$
+ * $ID$
+ * $Revision$
+ * $URL$
+ * $LastChangedBy$
+ * $ChangesMade$
+ */
+#endregion
+
+namespace CLU.Sound
 {
-    using System;
     using System.IO;
     using System.Media;
-    using System.Windows.Forms;
 
     using Styx.Common;
-    using Styx.Helpers;
 
     public static class SoundManager
     {

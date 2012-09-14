@@ -1,4 +1,16 @@
-﻿using CommonBehaviors.Actions;
+﻿#region Revision info
+/*
+ * $Author$
+ * $Date$
+ * $ID$
+ * $Revision$
+ * $URL$
+ * $LastChangedBy$
+ * $ChangesMade$
+ */
+#endregion
+
+using CommonBehaviors.Actions;
 using Styx;
 using Styx.WoWInternals.WoWObjects;
 using Styx.TreeSharp;

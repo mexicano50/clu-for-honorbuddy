@@ -1,4 +1,17 @@
-﻿using CLU.Helpers;
+﻿#region Revision info
+/*
+ * $Author$
+ * $Date$
+ * $ID$
+ * $Revision$
+ * $URL$
+ * $LastChangedBy$
+ * $ChangesMade$
+ */
+#endregion
+
+
+using CLU.Helpers;
 using Styx.TreeSharp;
 using System.Linq;
 using CommonBehaviors.Actions;

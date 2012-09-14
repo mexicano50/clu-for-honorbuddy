@@ -1,13 +1,21 @@
-﻿using System.Linq;
+﻿#region Revision info
+/*
+ * $Author$
+ * $Date$
+ * $ID$
+ * $Revision$
+ * $URL$
+ * $LastChangedBy$
+ * $ChangesMade$
+ */
+#endregion
 
+using System.Linq;
 using CLU.Base;
 using CLU.Helpers;
 using CLU.Settings;
-
 using CommonBehaviors.Actions;
-
 using JetBrains.Annotations;
-
 using Styx;
 using Styx.CommonBot;
 using Styx.TreeSharp;

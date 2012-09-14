@@ -1,10 +1,15 @@
-﻿/*
+﻿#region Revision info
+/*
  * $Author$
  * $Date$
  * $ID$
  * $Revision$
  * $URL$
+ * $LastChangedBy$
+ * $ChangesMade$
  */
+#endregion
+
 namespace CLU.Base
 {
     using System;

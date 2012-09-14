@@ -1,3 +1,15 @@
+#region Revision info
+/*
+ * $Author$
+ * $Date$
+ * $ID$
+ * $Revision$
+ * $URL$
+ * $LastChangedBy$
+ * $ChangesMade$
+ */
+#endregion
+
 using System.Linq;
 using CLU.Helpers;
 using CLU.Lists;

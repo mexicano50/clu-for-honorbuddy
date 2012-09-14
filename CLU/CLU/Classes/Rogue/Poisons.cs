@@ -1,5 +1,15 @@
-﻿// Full Credit to singular for this class (why re-invent the wheel?)
-// edited for MoP (8/09/2012)
+﻿#region Revision info
+/*
+ * $Author$
+ * $Date$
+ * $ID$
+ * $Revision$
+ * $URL$
+ * $LastChangedBy$
+ * $ChangesMade$
+ */
+#endregion
+
 
 namespace CLU.Classes.Rogue
 {

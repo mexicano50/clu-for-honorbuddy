@@ -1,11 +1,14 @@
-﻿// This file is part of Singular - A community driven Honorbuddy CC
-// $Author$
-// $Date$
-// $HeadURL$
-// $LastChangedBy$
-// $LastChangedDate$
-// $LastChangedRevision$
-// $Revision$
+﻿#region Revision info
+/*
+ * $Author$
+ * $Date$
+ * $ID$
+ * $Revision$
+ * $URL$
+ * $LastChangedBy$
+ * $ChangesMade$
+ */
+#endregion
 
 // Credits to Apoc
 // I have added:

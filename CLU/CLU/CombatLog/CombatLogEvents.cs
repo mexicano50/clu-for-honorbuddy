@@ -1,4 +1,16 @@
-﻿namespace CLU.CombatLog
+﻿#region Revision info
+/*
+ * $Author$
+ * $Date$
+ * $ID$
+ * $Revision$
+ * $URL$
+ * $LastChangedBy$
+ * $ChangesMade$
+ */
+#endregion
+
+namespace CLU.CombatLog
 {
     using System;
     using System.Collections.Generic;

@@ -1,9 +1,13 @@
-﻿#region Revision Info
-
-// This file was part of Singular - A community driven Honorbuddy CC
-// $Author$
-// $LastChangedBy$
-
+﻿#region Revision info
+/*
+ * $Author$
+ * $Date$
+ * $ID$
+ * $Revision$
+ * $URL$
+ * $LastChangedBy$
+ * $ChangesMade$
+ */
 #endregion
 
 using System;
@@ -21,12 +25,10 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using Styx.Helpers;
 
 namespace CLU.GUI
 {
     using Styx.Common;
-    using Styx.CommonBot;
 
     using global::CLU.Base;
     using global::CLU.CombatLog;

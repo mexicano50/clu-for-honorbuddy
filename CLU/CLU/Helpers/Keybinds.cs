@@ -1,5 +1,16 @@
-﻿using Styx.WoWInternals;
-using System.Drawing;
+﻿#region Revision info
+/*
+ * $Author$
+ * $Date$
+ * $ID$
+ * $Revision$
+ * $URL$
+ * $LastChangedBy$
+ * $ChangesMade$
+ */
+#endregion
+
+using Styx.WoWInternals;
 using CLU.Settings;
 using CLU.Base;
 using CLU.Sound;

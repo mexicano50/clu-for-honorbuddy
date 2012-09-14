@@ -1,12 +1,14 @@
-﻿
+﻿#region Revision info
 /*
-todo:                                                               Done by:
- * add pestilence with glyph                                                   : by Weischbier 15:46h GMT 31.08.2012 : Changed by Wulf 12:39h GMT 01.09.2012
- * revisit unholy with rune power management                                   : Pending
- * revisit frost...not happy                                                   : by Weischbier 15:09h GMT 08.09.2012
- * add apply diseases composit, its all the same for any spec                  : by Weischbier 15:34h GMT 31.08.2012
- * add CanPlagueLeech to rotations                                             : by Weischbier 15:34h GMT 31.08.2012
-*/
+ * $Author$
+ * $Date$
+ * $ID$
+ * $Revision$
+ * $URL$
+ * $LastChangedBy$
+ * $ChangesMade$
+ */
+#endregion
 
 namespace CLU.Classes.DeathKnight
 {

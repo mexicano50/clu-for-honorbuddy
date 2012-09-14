@@ -1,4 +1,16 @@
-﻿using System;
+﻿#region Revision info
+/*
+ * $Author$
+ * $Date$
+ * $ID$
+ * $Revision$
+ * $URL$
+ * $LastChangedBy$
+ * $ChangesMade$
+ */
+#endregion
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Styx;
@@ -6,7 +18,6 @@ using Styx.WoWInternals;
 using Styx.WoWInternals.WoWObjects;
 using Styx.TreeSharp;
 using System.Diagnostics;
-using System.Drawing;
 using CLU.Base;
 using Action = Styx.TreeSharp.Action;
 

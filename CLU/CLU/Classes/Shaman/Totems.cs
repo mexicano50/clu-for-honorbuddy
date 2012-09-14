@@ -1,10 +1,13 @@
-﻿#region Revision Info
-
-// This file was part of Singular - A community driven Honorbuddy CC
-// $Author$ HB Dev Team
-// $LastChangedBy$ Wulf
-// $ChangesMade$ Added Fire totem support, Added CLU settings to set each totem for individual shaman Specs, Code Cleanup Commenting.
-
+﻿#region Revision info
+/*
+ * $Author$
+ * $Date$
+ * $ID$
+ * $Revision$
+ * $URL$
+ * $LastChangedBy$
+ * $ChangesMade$
+ */
 #endregion
 
 namespace CLU.Classes.Shaman

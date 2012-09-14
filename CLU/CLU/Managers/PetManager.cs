@@ -1,4 +1,16 @@
-﻿namespace CLU.Managers
+﻿#region Revision info
+/*
+ * $Author$
+ * $Date$
+ * $ID$
+ * $Revision$
+ * $URL$
+ * $LastChangedBy$
+ * $ChangesMade$
+ */
+#endregion
+
+namespace CLU.Managers
 {
     using System;
     using System.Collections.Generic;

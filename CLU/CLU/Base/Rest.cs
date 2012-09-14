@@ -1,4 +1,16 @@
-﻿// This class was directly taken from Singular and full credit goes to the developers...lets not re-invent the wheel.
+﻿#region Revision info
+/*
+ * $Author$
+ * $Date$
+ * $ID$
+ * $Revision$
+ * $URL$
+ * $LastChangedBy$
+ * $ChangesMade$
+ */
+#endregion
+
+// This class was directly taken from Singular and full credit goes to the developers...lets not re-invent the wheel.
 
 
 namespace CLU.Base

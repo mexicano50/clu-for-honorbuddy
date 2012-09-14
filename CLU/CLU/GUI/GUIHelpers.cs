@@ -1,4 +1,16 @@
-﻿using System;
+﻿#region Revision info
+/*
+ * $Author$
+ * $Date$
+ * $ID$
+ * $Revision$
+ * $URL$
+ * $LastChangedBy$
+ * $ChangesMade$
+ */
+#endregion
+
+using System;
 using System.Drawing;
 using System.Linq;
 using System.Reflection;

@@ -1,4 +1,16 @@
-﻿using Styx;
+﻿#region Revision info
+/*
+ * $Author$
+ * $Date$
+ * $ID$
+ * $Revision$
+ * $URL$
+ * $LastChangedBy$
+ * $ChangesMade$
+ */
+#endregion
+
+using Styx;
 using Styx.WoWInternals.WoWObjects;
 using Styx.TreeSharp;
 

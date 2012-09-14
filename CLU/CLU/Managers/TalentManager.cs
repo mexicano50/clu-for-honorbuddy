@@ -1,6 +1,16 @@
-﻿// This file is part of Singular - A community driven Honorbuddy CC
-// $Author$
-// $LastChangedBy$
+﻿#region Revision info
+/*
+ * $Author$
+ * $Date$
+ * $ID$
+ * $Revision$
+ * $URL$
+ * $LastChangedBy$
+ * $ChangesMade$
+ */
+#endregion
+
+// This was part of Singular - A community driven Honorbuddy CC
 
 namespace CLU.Managers
 {

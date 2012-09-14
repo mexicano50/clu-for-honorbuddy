@@ -1,21 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
+﻿#region Revision info
+/*
+ * $Author$
+ * $Date$
+ * $ID$
+ * $Revision$
+ * $URL$
+ * $LastChangedBy$
+ * $ChangesMade$
+ */
+#endregion
+
+using System;
 using System.Windows.Forms;
 
 namespace CLU.GUI
 {
     using System.Globalization;
 
-    using Styx;
     using Styx.CommonBot;
     using Styx.WoWInternals;
-
-    using global::CLU.Base;
 
     public partial class Spellchecker : Form
     {
