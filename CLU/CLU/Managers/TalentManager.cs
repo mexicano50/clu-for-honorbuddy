@@ -100,14 +100,10 @@ namespace CLU.Managers
                 Talents.Clear();
 
                 var numTalents = Lua.GetReturnVal<int>("return GetNumTalents()", 0);
-                CLU.TroubleshootLog("TalentManager - numTalents {0}", numTalents.ToString(CultureInfo.InvariantCulture));
-
                 for (int index = 0; index <= numTalents; index++)
                 {
 
                     var selected = Lua.GetReturnVal<int>(string.Format("return GetTalentInfo({0})", index), 4);
-                    //var talentName = Lua.GetReturnValues("return select(1, GetSpellInfo(" + index + "))")[0];
-                    //CLU.TroubleshootLog("TalentManager - Name {10}", talentName);
                     switch (selected)
                     {
                         case 1:

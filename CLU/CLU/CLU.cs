@@ -527,10 +527,8 @@ namespace CLU
             try
             {
                 Type type = typeof (RotationBase);
-                IEnumerable<Type> types =
-                    AppDomain.CurrentDomain.GetAssemblies().Where(q => q.Location.Contains(Utilities.AssemblyDirectory))
-                        .ToList().SelectMany(s => s.GetTypes()).Where(p => p.IsSubclassOf(type) && !p.IsAbstract);
-
+                //no need to get ALL Assemblies, need only the executed ones
+                IEnumerable<Type> types = Assembly.GetExecutingAssembly().GetTypes().Where(p => p.IsSubclassOf(type));
                 //_rotations.AddRange(new TypeLoader<RotationBase>(null));
 
                 this._rotations = new List<RotationBase>();
@@ -549,8 +547,7 @@ namespace CLU
                         {
                             if ( rb != null )
                             {
-                                TroubleshootLog
-                                    (" Skipping " + rb.Name + " rotation. Character is missing " + rb.KeySpell);
+                                //TroubleshootLog(" Skipping " + rb.Name + " rotation. Character is missing " + rb.KeySpell);
                             }
                         }
                     }
