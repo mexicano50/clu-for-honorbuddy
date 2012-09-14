@@ -162,6 +162,7 @@ namespace CLU.Classes.DeathKnight
             {
                 return (
                     new PrioritySelector(
+                        Spell.CastSpell("Chains of Ice", ret => Me.CurrentTarget.DistanceSqr > 5 * 5 && !Buff.TargetHasDebuff("Chains of Ice"), "Chains of Ice"),
                         //blood_fury,if=time>=2
                         Spell.UseRacials(),
                         //mogu_power_potion,if=buff.dark_transformation.up&target.time_to_die<=35
@@ -273,7 +274,6 @@ namespace CLU.Classes.DeathKnight
                         new Decorator(ret => Macro.Manual || BotChecker.BotBaseInUse("BGBuddy"),
                             new Decorator(ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget),
                                 new PrioritySelector(
-                                    Spell.CastSpell("Chains of Ice", ret => Me.CurrentTarget.DistanceSqr > 10 * 10 && !Unit.IsCrowdControlled(Me.CurrentTarget), "Chains of Ice"),
                                     Spell.CastSpell("Death Grip", ret => Me.CurrentTarget.DistanceSqr > 10 * 10 && !Unit.IsCrowdControlled(Me.CurrentTarget) && !Buff.TargetHasDebuff("Chains of Ice"),
                                         "Death Grip"),
                                     Item.UseTrinkets(),

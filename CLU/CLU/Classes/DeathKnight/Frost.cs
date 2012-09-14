@@ -162,6 +162,7 @@ Credits to Weischbier, because he owns the buisness and I want him to have my ba
             {
                 return (
                     new PrioritySelector(
+                        Spell.CastSpell("Chains of Ice", ret => Me.CurrentTarget.DistanceSqr > 5 * 5 && !Buff.TargetHasDebuff("Chains of Ice"), "Chains of Ice"),
                         //pillar_of_frost
                         Buff.CastBuff("Pillar of Frost", ret => Unit.IsTargetWorthy(StyxWoW.Me.CurrentTarget) && StyxWoW.Me.IsWithinMeleeRange && StyxWoW.Me.CurrentTarget != null, "Pillar of Frost"),
                         //raise_dead
@@ -308,7 +309,6 @@ Credits to Weischbier, because he owns the buisness and I want him to have my ba
                         new Decorator(ret => Macro.Manual || BotChecker.BotBaseInUse("BGBuddy"),
                             new Decorator(ret => StyxWoW.Me.CurrentTarget != null && Unit.IsTargetWorthy(StyxWoW.Me.CurrentTarget),
                                 new PrioritySelector(
-                                    Spell.CastSpell("Chains of Ice", ret => Me.CurrentTarget.DistanceSqr > 10 * 10 && !Unit.IsCrowdControlled(Me.CurrentTarget), "Chains of Ice"),
                                     Spell.CastSpell("Death Grip", ret => Me.CurrentTarget.DistanceSqr > 10 * 10 && !Unit.IsCrowdControlled(Me.CurrentTarget) && !Buff.TargetHasDebuff("Chains of Ice"),
                                         "Death Grip"),
                                     Item.UseTrinkets(),
