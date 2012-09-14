@@ -59,7 +59,7 @@ namespace CLU.Classes.DeathKnight
                         "[*] AutomaticCooldowns now works with Boss's or Mob's (See: General Setting)\n" +
                         "[*] Death Siphon (only if movement enabled.)\n" +
                         "Credits to Weischbier, because he owns the buisness and I want him to have my babys! -- Sincerely Wulf (Bahahaha :P)\n" +
-                        "----------------------------------------------------------------------\n" +;
+                        "----------------------------------------------------------------------\n";
             }
         }
 
