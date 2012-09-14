@@ -826,6 +826,35 @@ namespace CLU.Base
                 new Action(a => CastMySpell(name, onUnit(a)))));
         }
 
+        /// <summary>Casts the interupt by name on the provided target. Checks CanInterruptCurrentSpellCast.</summary>
+        /// <param name="name">the name of the spell in english</param>
+        /// <param name="onUnit">the unit to cas the interupt on. </param>
+        /// <param name="cond">The conditions that must be true</param>
+        /// <param name="label">A descriptive label for the clients GUI logging output</param>
+        /// <returns>The cast interupt.</returns>
+        public static Composite CastInterupt(string name, CLU.UnitSelection onUnit, CanRunDecoratorDelegate cond, string label)
+        {
+            return new Decorator(
+                delegate(object a)
+                {
+                    if (!CLUSettings.Instance.EnableInterupts)
+                        return false;
+
+                    if (!cond(a))
+                        return false;
+
+                    if (onUnit != null && !(onUnit(a).IsCasting && onUnit(a).CanInterruptCurrentSpellCast))
+                        return false;
+
+                    if (onUnit != null && CanCast(name, onUnit(a)))
+                        return false;
+
+                    return true;
+                },
+            new Sequence(
+                new Action(a => CLU.Log(" [Interupt] {0} on {1}", label, CLU.SafeName(onUnit(a)))), new Action(a => CastMySpell(name, onUnit(a)))));
+        }
+
         /// <summary>Casts the interupt by name on your current target. Checks CanInterruptCurrentSpellCast.</summary>
         /// <param name="name">the name of the spell in english</param>
         /// <param name="cond">The conditions that must be true</param>
