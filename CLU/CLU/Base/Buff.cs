@@ -221,7 +221,7 @@ namespace CLU.Base
             697, // Summon Voidwalker, // 
             30108, // Unstable Affliction, // 
             34914, // Vampiric Touch, // 
-            5176, // Wrath, // 
+            5176, // Wrath, //
 
 
         };
@@ -244,6 +244,7 @@ namespace CLU.Base
            47540, // Penance, // 
            5740, // Rain of Fire, // 
            740, // Tranquility, // 
+           103103, // Malefic Grasp //
 
         };
 
@@ -253,7 +254,8 @@ namespace CLU.Base
             "Toxic Torment",
             "Frostburn Formula",
             "Burning Blood",
-            "Unstable Affliction"
+            "Unstable Affliction",
+             "Flame Shock",              // Magic
         };
 
         private static readonly HashSet<string> urgentDispel = new HashSet<string> {
@@ -271,8 +273,7 @@ namespace CLU.Base
             "Arcane Bomb",              // Magic
             "Shriek of the Highborne",  // Magic
             "Frost Corruption",         // Magic
-            "Static Cling",             // Magic
-            "Flame Shock",              // Magic
+            "Static Cling",             // Magic           
             "Static Discharge",         // Magic
             "Consuming Darkness",       // ???
             "Lash of Anguish",          // Magic
