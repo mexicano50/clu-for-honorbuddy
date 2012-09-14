@@ -226,7 +226,12 @@ namespace CLU.Classes.Warrior
                             Buff.CastBuff("Battle Stance", ret => !StyxWoW.Me.HasMyAura("Battle Stance"), "Battle Stance"),
                             //mogu_power_potion
                             Buff.CastRaidBuff("Battle Shout", ret => true, "Battle Shout"),
-                            Buff.CastRaidBuff("Commanding Shout", ret => true, "Commanding Shout"))
+                            Buff.CastRaidBuff("Commanding Shout", ret => true, "Commanding Shout"),
+                            Spell.CastSpell("Charge", ret => Macro.Manual && (CLU.LocationContext == GroupLogic.Battleground || Unit.IsTrainingDummy(Me.CurrentTarget)) && Me.CurrentTarget.DistanceSqr > 3.2 * 3.2,
+                                "Charge"),
+                            Spell.CastSpellAtLocation("Heroic Leap", ret => Me.CurrentTarget, ret => Macro.Manual && (CLU.LocationContext == GroupLogic.Battleground || Unit.IsTrainingDummy(Me.CurrentTarget)) &&
+                                Me.CurrentTarget.Attackable && Me.CurrentTarget.DistanceSqr > 3.2 * 3.2 && SpellManager.Spells["Charge"].CooldownTimeLeft.Seconds > 1 &&
+                                SpellManager.Spells["Charge"].CooldownTimeLeft.Seconds < 18, "Heroic Leap"))
                 ));
             }
         }
