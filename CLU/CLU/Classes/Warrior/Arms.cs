@@ -192,7 +192,7 @@ namespace CLU.Classes.Warrior
                         //slam,if=target.health.pct>=20
                         Spell.CastSpell("Slam", ret => Me.CurrentTarget.HealthPercent >= 20, "Slam"),
                         //impending_victory,if=talent.impending_victory.enabled&target.health.pct>=20
-                        Spell.CastSpell("Impending Victory", ret => SpellManager.HasSpell("Impending Victory"), "Impending Victory"),
+                        Spell.CastSpell("Impending Victory", ret => SpellManager.HasSpell("Impending Victory") && Me.CurrentTarget.HealthPercent >= 20, "Impending Victory"),
                         //battle_shout,if=rage<70
                         Buff.CastBuff("Battle Shout", ret => Me.CurrentRage < 70, "Battle Shout")
                 ));
