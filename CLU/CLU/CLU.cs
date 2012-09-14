@@ -73,13 +73,6 @@ namespace CLU
         public static readonly Version Version = new Version(3, 3, 0);
         private readonly Timer _clupulsetimer = new Timer(10000); // A timer for keybinds
 
-/*
-        /// <summary>
-        /// writes messages to the client UI
-        /// </summary>
-        private static string _lastLine;
-*/
-
         private RotationBase _rotationBase;
 
         /// <summary>This will: loop assemblies,

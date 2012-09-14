@@ -144,7 +144,110 @@ namespace CLU.Base
             115804,  // Mortal Wounds
         };
 
-        // Dispel shit.
+        // ===================== Interuptable Spells =====================================
+
+        private static readonly HashSet<int> InteruptableSpells = new HashSet<int> {
+            30451, // Arcane Blast, // 
+            32546, // Binding Heal, // 
+            1064, // Chain Heal, // 
+            421, // Chain Lightning, // 
+            50796, // Chaos Bolt, // 
+            693, // Create Healthstone, // 
+            6201, // Create Healthstone, // 
+            33786, // Cyclone, // 
+            82326, // Divine Light, // 
+            61882, // Earthquake, // 
+            339, // Entangling Roots, // 
+            12051, // Evocation, // 
+            879, // Exorcism, // 
+            5782, // Fear, // 
+            133, // Fireball, // 
+            2120, // Flamestrike, // 
+            2061, // Flash Heal, // 
+            19750, // Flash of Light, // 
+            116, // Frostbolt, // 
+            44614, // Frostfire Bolt, // 
+            2060, // Greater Heal, // 
+            77472, // Greater Healing Wave, // 
+            71521, // Hand of Gul'dan, // 
+            48181, // Haunt, // 
+            2050, // Heal, // 
+            73920, // Healing Rain, // 
+            8004, // Healing Surge, // 
+            5185, // Healing Touch, // 
+            331, // Healing Wave, // 
+            51514, // Hex, // 
+            2637, // Hibernate, // 
+            14914, // Holy Fire, // 
+            635, // Holy Light, // 
+            82327, // Holy Radiance, // 
+            5484, // Howl of Terror, // 
+            49203, // Hungering Cold, // 
+            348, // Immolate, // 
+            29722, // Incinerate, // 
+            51505, // Lava Burst, // 
+            403, // Lightning Bolt, // 
+            8129, // Mana Burn, // 
+            32375, // Mass Dispel, // 
+            8092, // Mind Blast, // 
+            605, // Mind Control, // 
+            73510, // Mind Spike, // 
+            50464, // Nourish, // 
+            118, // Polymorph, // 
+            28272, // Polymorph, // 
+            61721, // Polymorph, // 
+            61305, // Polymorph, // 
+            61780, // Polymorph, // 
+            28271, // Polymorph, // 
+            596, // Prayer of Healing, // 
+            11366, // Pyroblast, // 
+            20484, // Rebirth, // 
+            8936, // Regrowth, // 
+            1513, // Scare Beast, // 
+            2948, // Scorch, // 
+            5676, // Searing Pain, // 
+            27243, // Seed of Corruption, // 
+            9484, // Shackle Undead, // 
+            686, // Shadow Bolt, // 
+            585, // Smite, // 
+            6353, // Soul Fire, // 
+            2912, // Starfire, // 
+            78674, // Starsurge, // 
+            30146, // Summon Felguard, // 
+            691, // Summon Felhunter, // 
+            688, // Summon Imp, // 
+            1122, // Summon Infernal, // 
+            712, // Summon Succubus, // 
+            697, // Summon Voidwalker, // 
+            30108, // Unstable Affliction, // 
+            34914, // Vampiric Touch, // 
+            5176, // Wrath, // 
+
+
+        };
+
+        private static readonly HashSet<int> ChanneledInteruptableSpells = new HashSet<int> {
+           5143, // Arcane Missiles, // 
+           42650, // Army of the Dead, // 
+           10, // Blizzard, // 
+           64843, // Divine Hymn, // 
+           689, // Drain Life, // 
+           89420, // Drain Life, // 
+           1120, // Drain Soul, // 
+           755, // Health Funnel, // 
+           1949, // Hellfire, // 
+           85403, // Hellfire, // 
+           16914, // Hurricane, // 
+           64901, // Hymn of Hope, // 
+           50589, // Immolation Aura, // 
+           15407, // Mind Flay, // 
+           47540, // Penance, // 
+           5740, // Rain of Fire, // 
+           740, // Tranquility, // 
+
+        };
+
+        // ============================ Dispel shit.============================
         private static readonly HashSet<string> ignoreDispel = new HashSet<string> {
             "Blackout",
             "Toxic Torment",
@@ -866,6 +969,22 @@ namespace CLU.Base
         public static bool UnitHasStrAgiBuff(WoWUnit unit)
         {
             return unit != null && unit.ActiveAuras.Any(x => AttackPower.Contains(x.Value.SpellId));
+        }
+
+        /// <summary>Checks the unit for an interuptable spell being cast</summary>
+        /// <param name="player">The unit to check the for.</param>
+        /// <returns>The spell cast is interuptable</returns>
+        public static bool CanInteruptCastSpell(this WoWUnit player)
+        {
+            return player != null && player.IsCasting && InteruptableSpells.Contains(player.CastingSpellId);
+        }
+
+        /// <summary>Checks the unit for an interuptable channeled spell being cast</summary>
+        /// <param name="player">The unit to check the for.</param>
+        /// <returns>the spell channel is interuptable</returns>
+        public static bool CanInteruptChannelSpell(this WoWUnit player)
+        {
+            return player != null && player.IsCasting && ChanneledInteruptableSpells.Contains(player.CastingSpellId);
         }
 
     }

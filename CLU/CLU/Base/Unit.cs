@@ -178,16 +178,46 @@ namespace CLU.Base
                                      && (unit.IsTargetingMeOrPet
                                          //|| unit.IsTargetingMyPartyMember
                                          //|| unit.IsTargetingMyRaidMember
-                                         || unit.IsPlayer
-                                         || unit.MaxHealth == 1)
+                                         || unit.IsPlayer)
                                      && !unit.IsNonCombatPet
                                      && !unit.IsCritter
-                                     && unit.Distance2D
-                                     <= 40).OrderBy(u => u.DistanceSqr);
+                                     && unit.DistanceSqr
+                                     <= 40 * 40).OrderBy(u => u.DistanceSqr);
 
                     return ret;
                 }
                 catch (NullReferenceException) {
+                    return new List<WoWUnit>();
+                }
+            }
+        }
+
+        /// <summary>
+        ///     List of nearby Ranged enemy units that pass certain criteria, this list should only return units
+        ///     in active combat with the player, the player's party, or the player's raid.
+        /// </summary>
+        public static IEnumerable<WoWUnit> MeleePvPUnits
+        {
+            get
+            {
+                try
+                {
+                    var ret = ObjectManager.GetObjectsOfType<WoWUnit>(true, false)
+                              .Where(unit =>
+                                     !unit.IsFriendly
+                                     && (unit.IsTargetingMeOrPet
+                                         //|| unit.IsTargetingMyPartyMember
+                                         //|| unit.IsTargetingMyRaidMember
+                                         || unit.IsPlayer)
+                                     && !unit.IsNonCombatPet
+                                     && !unit.IsCritter
+                                     && unit.DistanceSqr
+                                     <= 5 * 5).OrderBy(u => u.DistanceSqr);
+
+                    return ret;
+                }
+                catch (NullReferenceException)
+                {
                     return new List<WoWUnit>();
                 }
             }

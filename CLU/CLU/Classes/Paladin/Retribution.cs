@@ -111,7 +111,7 @@ NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagr
                                    Item.UseEngineerGloves())),
                            // Interupt
                            Spell.CastInterupt("Rebuke", ret => CLU.LocationContext != GroupLogic.Battleground, "Rebuke"),
-                           Spell.CastInterupt("Rebuke", ret => Unit.EnemyHealer.OrderBy(u => u.IsCasting && u.CastingSpell.CooldownTimeLeft > TimeSpan.FromMilliseconds(500)).FirstOrDefault(), ret => CLU.LocationContext == GroupLogic.Battleground, "Rebuke"),
+                           Spell.CastInterupt("Rebuke", ret => Unit.MeleePvPUnits.OrderBy(u => Me.IsFacing(u) && u.IsCasting && u.CastingSpell.CooldownTimeLeft > TimeSpan.FromMilliseconds(500) && (u.CanInteruptCastSpell() || u.CanInteruptChannelSpell())).FirstOrDefault(), ret => CLU.LocationContext == GroupLogic.Battleground, "Rebuke"),
                            // Threat
                            Buff.CastBuff("Hand of Salvation",      ret => Me.CurrentTarget != null && Me.GotTarget && Me.CurrentTarget.ThreatInfo.RawPercent > 90, "Hand of Salvation"),
                            // Seal Swapping for AoE
