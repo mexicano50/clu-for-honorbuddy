@@ -1029,6 +1029,80 @@ namespace CLU.Base
             return (from woWClass in classes select StyxWoW.Me.PartyMemberInfos.FirstOrDefault(p => p.ToPlayer() != null && p.ToPlayer().Distance < range && p.ToPlayer().Class == woWClass) into unit where unit != null where !includeDead && unit.Dead || unit.Ghost select unit.ToPlayer()).FirstOrDefault();
         }
 
+
+        /// <summary>
+        /// Returns a number for priority based on class and spec.
+        /// Author: Tuan.
+        /// </summary>
+        /// <param name="target">the target to check</param>
+        /// <returns>a value indicating priority.</returns>
+        public static byte TalentSort(WoWUnit target)
+        {
+            if (target == null) return 0;
+
+            switch (StyxWoW.Me.Class)
+            {
+                case WoWClass.Warrior:
+                    return 1;
+                case WoWClass.Paladin:
+                    return (byte)(target.MaxMana >= 80000 ? 4 : 1);
+                case WoWClass.Hunter:
+                    return 2;
+                    break;
+                case WoWClass.Rogue:
+                    return 1;
+                case WoWClass.Priest:
+                    return (byte)(target.Shapeshift == ShapeshiftForm.Shadow ? 3 : 4);
+                case WoWClass.DeathKnight:
+                    return 1;
+                case WoWClass.Shaman:
+                    if (target.MaxMana < 4000)
+                        return 1;
+                    if (target.Buffs.ContainsKey("Elemental Oath") &&
+                        target.Buffs["Elemental Oath"].CreatorGuid == target.Guid)
+                        return 3;
+                    return 4;
+                case WoWClass.Mage:
+                    return 3;
+                case WoWClass.Warlock:
+                    return 3;
+                case WoWClass.Druid:
+                    if (target.Buffs.ContainsKey("Moonkin Form"))
+                        return 3;
+                    if ((target.Buffs.ContainsKey("Leader of the Pack") &&
+                        target.Buffs["Leader of the Pack"].CreatorGuid == target.Guid) || target.MaxMana < 40000)
+                        return 1;
+                    return 4;
+                case WoWClass.Monk:
+                    return (byte)(target.MaxMana >= 80000 ? 4 : 1);
+                default:
+                    return 0;
+            }
+        }
+
+        /// <summary>
+        /// Used to detect stealthed players.
+        /// </summary>
+        /// <param name="target">the unit to check for</param>
+        /// <returns>returns true if there are nearby stealthed units</returns>
+        public static bool StealthUnitNearby(WoWUnit target)
+        {
+            if (target == null || !target.IsValid || !target.IsFriendly)
+            {
+                return false;
+            }
+
+            return (from aura in target.Buffs.Values
+                    where aura.Name == "Leader of the Pack" || aura.Name == "Honor Among Thieves"
+                    select aura.CreatorGuid
+                        into stealthUnitNearbyGuid
+                        select (from unit in RangedPvPUnits
+                                where unit.Guid == stealthUnitNearbyGuid
+                                select unit).FirstOrDefault()
+                            into stealthUnitNearby
+                            select stealthUnitNearby == null).FirstOrDefault();
+        }
+
         /// <summary>
         /// Finds a target that does not have the specified spell and applys it.
         /// </summary>
