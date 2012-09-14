@@ -148,13 +148,15 @@ namespace CLU.Classes.Warrior
             {
                 return (
                     new PrioritySelector(
+                        //charge,if=!currenttarget.iswithinmeleerenage
                         Spell.CastSpell("Charge", ret => Me.CurrentTarget != null && Me.CurrentTarget.DistanceSqr > 3.2 * 3.2, "Charge"),
+                        //heroic_leap,if=!currenttarget.iswithinmeleerange&spell.charge.down
                         Spell.CastSpellAtLocation("Heroic Leap", ret => Me.CurrentTarget, ret => Me.CurrentTarget != null && Me.CurrentTarget.DistanceSqr > 3.2 * 3.2 &&
                             SpellManager.Spells["Charge"].CooldownTimeLeft.Seconds > 1 && SpellManager.Spells["Charge"].CooldownTimeLeft.Seconds < 18, "Heroic Leap"),
                         //mogu_power_potion,if=(target.health.pct<20&buff.recklessness.up)|buff.bloodlust.react|target.time_to_die<=25
-                        //7	3.46	recklessness,use_off_gcd=1,if=((debuff.colossus_smash.remains>=5|cooldown.colossus_smash.remains<=4)&((!talent.avatar.enabled|!set_bonus.tier14_4pc_melee)&((target.health.pct<20|target.time_to_die>315|(target.time_to_die>165&set_bonus.tier14_4pc_melee)))|(talent.avatar.enabled&set_bonus.tier14_4pc_melee&buff.avatar.up)))|target.time_to_die<=18
-                        //8	0.00	avatar,use_off_gcd=1,if=talent.avatar.enabled&(((cooldown.recklessness.remains>=180|buff.recklessness.up)|(target.health.pct>=20&target.time_to_die>195)|(target.health.pct<20&set_bonus.tier14_4pc_melee))|target.time_to_die<=20)
-                        //9	7.92	bloodbath,use_off_gcd=1,if=talent.bloodbath.enabled&(((cooldown.recklessness.remains>=10|buff.recklessness.up)|(target.health.pct>=20&(target.time_to_die<=165|(target.time_to_die<=315&!set_bonus.tier14_4pc_melee))&target.time_to_die>75))|target.time_to_die<=19)
+                        //recklessness,use_off_gcd=1,if=((debuff.colossus_smash.remains>=5|cooldown.colossus_smash.remains<=4)&((!talent.avatar.enabled|!set_bonus.tier14_4pc_melee)&((target.health.pct<20|target.time_to_die>315|(target.time_to_die>165&set_bonus.tier14_4pc_melee)))|(talent.avatar.enabled&set_bonus.tier14_4pc_melee&buff.avatar.up)))|target.time_to_die<=18
+                        //avatar,use_off_gcd=1,if=talent.avatar.enabled&(((cooldown.recklessness.remains>=180|buff.recklessness.up)|(target.health.pct>=20&target.time_to_die>195)|(target.health.pct<20&set_bonus.tier14_4pc_melee))|target.time_to_die<=20)
+                        //bloodbath,use_off_gcd=1,if=talent.bloodbath.enabled&(((cooldown.recklessness.remains>=10|buff.recklessness.up)|(target.health.pct>=20&(target.time_to_die<=165|(target.time_to_die<=315&!set_bonus.tier14_4pc_melee))&target.time_to_die>75))|target.time_to_die<=19)
                         //berserker_rage,use_off_gcd=1,if=!buff.enrage.up
                         Spell.CastSelfSpell("Berserker Rage", ret => Me.CurrentTarget.IsWithinMeleeRange && !Buff.PlayerHasActiveBuff("Enrage"), "Berserker Rage"),
                         //heroic_leap,use_off_gcd=1,if=debuff.colossus_smash.up
@@ -223,14 +225,18 @@ namespace CLU.Classes.Warrior
                             //flask,type=winters_bite
                             //food,type=black_pepper_ribs_and_shrimp
                             //stance,choose=battle
-                            Buff.CastBuff("Battle Stance", ret => StyxWoW.Me.Shapeshift != ShapeshiftForm.BattleStance, "Battle Stance"),
+                            Buff.CastBuff("Battle Stance", ret => Me.Shapeshift != ShapeshiftForm.BattleStance, "Battle Stance"),
                             //mogu_power_potion
+                            //battle_shout,if=!buff_exists
                             Buff.CastRaidBuff("Battle Shout", ret => true, "Battle Shout"),
+                            //commanding_shout,if=!buff_exists
                             Buff.CastRaidBuff("Commanding Shout", ret => true, "Commanding Shout"),
+                            //charge,if=!currenttarget.iswithinmeleerenage
                             Spell.CastSpell("Charge", ret => Me.CurrentTarget != null && (CLU.LocationContext == GroupLogic.Battleground && Macro.Manual || Unit.IsTrainingDummy(Me.CurrentTarget)) &&
                                 Me.CurrentTarget.DistanceSqr > 3.2 * 3.2, "Charge"),
+                            //heroic_leap,if=!currenttarget.iswithinmeleerange&spell.charge.down
                             Spell.CastSpellAtLocation("Heroic Leap", ret => Me.CurrentTarget, ret => Me.CurrentTarget != null && (CLU.LocationContext == GroupLogic.Battleground && Macro.Manual ||
-                                Unit.IsTrainingDummy(Me.CurrentTarget)) && Me.CurrentTarget.Attackable && Me.CurrentTarget.DistanceSqr > 3.2 * 3.2 && SpellManager.Spells["Charge"].CooldownTimeLeft.Seconds > 1 &&
+                                Unit.IsTrainingDummy(Me.CurrentTarget)) && Me.CurrentTarget.DistanceSqr > 3.2 * 3.2 && SpellManager.Spells["Charge"].CooldownTimeLeft.Seconds > 1 &&
                                 SpellManager.Spells["Charge"].CooldownTimeLeft.Seconds < 18, "Heroic Leap"))
                 ));
             }
@@ -250,9 +256,6 @@ namespace CLU.Classes.Warrior
                         new Decorator(ret => Macro.Manual || BotChecker.BotBaseInUse("BGBuddy"),
                             new Decorator(ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget),
                                 new PrioritySelector(
-                                    //Spell.CastSpell("Charge", ret => Me.CurrentTarget != null && Me.CurrentTarget.DistanceSqr > 3.2 * 3.2, "Charge"),
-                                    //Spell.CastSpellAtLocation("Heroic Leap", ret => Me.CurrentTarget, ret => Me.CurrentTarget != null &&Me.CurrentTarget.DistanceSqr > 3.2 * 3.2 && 
-                                        //SpellManager.Spells["Charge"].CooldownTimeLeft.Seconds > 1 && SpellManager.Spells["Charge"].CooldownTimeLeft.Seconds < 18, "Heroic Leap"),
                                     Item.UseTrinkets(),
                                     Spell.UseRacials(),
                                     Buff.CastBuff("Lifeblood", ret => true, "Lifeblood"),
