@@ -117,6 +117,7 @@
     <Compile Include="Helpers\CircularBuffer.cs" />
     <Compile Include="CombatLog\EventArgs.cs" />
     <Compile Include="CombatLog\CombatLogEvents.cs" />
+    <Compile Include="Helpers\DpsMeter.cs" />
     <Compile Include="Helpers\EncounterSpecific.cs" />
     <Compile Include="Helpers\HealableUnit.cs" />
     <Compile Include="Base\Item.cs" />
