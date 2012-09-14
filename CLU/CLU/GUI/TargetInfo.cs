@@ -10,6 +10,7 @@ namespace CLU.GUI
     using System.Globalization;
 
     using Styx.Combat.CombatRoutine;
+    using Styx.WoWInternals.WoWObjects;
 
     using global::CLU.Base;
 
@@ -47,6 +48,7 @@ namespace CLU.GUI
             realDistance.Text = target == null ? string.Empty : Math.Round(Unit.DistanceToTargetBoundingBox(target), 3).ToString(CultureInfo.InvariantCulture);
             issafelybehindtarget.ForeColor = color;
             issafelybehindtarget.Text = (target != null && StyxWoW.Me.IsBehind(target)).ToString(CultureInfo.InvariantCulture);
+            IsWithinMeleeRange_lbl.Text = (target != null && MeleeRangeCheck(target)).ToString(CultureInfo.InvariantCulture);
             // ttl_label.Text = new HealableUnit(StyxWoW.Me.CurrentTarget).TimeToLive(4).ToString(CultureInfo.InvariantCulture);
 
 
@@ -63,6 +65,16 @@ namespace CLU.GUI
                 // if (StyxWoW.Me.Class == WoWClass.DeathKnight) checkrunes(); enable this and it will kill HB.
             }
 
+        }
+
+        /// <summary>
+        /// Small check fo melee range.
+        /// </summary>
+        /// <param name="unit"></param>
+        /// <returns></returns>
+        private bool MeleeRangeCheck(WoWUnit unit)
+        {
+            return unit.IsWithinMeleeRange;
         }
 
         void Timer1Tick(object sender, EventArgs e)

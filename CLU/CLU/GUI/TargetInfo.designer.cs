@@ -43,6 +43,7 @@
             this.label2 = new System.Windows.Forms.Label();
             this.issafelybehindtarget = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.checkmybuffs = new System.Windows.Forms.CheckBox();
             this.button1 = new System.Windows.Forms.Button();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.textBox1 = new System.Windows.Forms.TextBox();
@@ -53,7 +54,8 @@
             this.Unholy1lbl = new System.Windows.Forms.Label();
             this.Unholy2lbl = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.checkmybuffs = new System.Windows.Forms.CheckBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.IsWithinMeleeRange_lbl = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
@@ -79,7 +81,7 @@
             // tguid
             // 
             this.tguid.AutoSize = true;
-            this.tguid.Location = new System.Drawing.Point(148, 46);
+            this.tguid.Location = new System.Drawing.Point(148, 54);
             this.tguid.Name = "tguid";
             this.tguid.Size = new System.Drawing.Size(22, 13);
             this.tguid.TabIndex = 3;
@@ -88,7 +90,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(13, 46);
+            this.label4.Location = new System.Drawing.Point(13, 54);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(68, 13);
             this.label4.TabIndex = 2;
@@ -97,7 +99,7 @@
             // distance
             // 
             this.distance.AutoSize = true;
-            this.distance.Location = new System.Drawing.Point(147, 85);
+            this.distance.Location = new System.Drawing.Point(147, 101);
             this.distance.Name = "distance";
             this.distance.Size = new System.Drawing.Size(22, 13);
             this.distance.TabIndex = 5;
@@ -106,7 +108,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(12, 85);
+            this.label6.Location = new System.Drawing.Point(12, 101);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(49, 13);
             this.label6.TabIndex = 4;
@@ -115,7 +117,7 @@
             // realDistance
             // 
             this.realDistance.AutoSize = true;
-            this.realDistance.Location = new System.Drawing.Point(148, 123);
+            this.realDistance.Location = new System.Drawing.Point(148, 147);
             this.realDistance.Name = "realDistance";
             this.realDistance.Size = new System.Drawing.Size(22, 13);
             this.realDistance.TabIndex = 7;
@@ -124,7 +126,7 @@
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(13, 123);
+            this.label8.Location = new System.Drawing.Point(13, 147);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(128, 13);
             this.label8.TabIndex = 6;
@@ -133,7 +135,7 @@
             // facing
             // 
             this.facing.AutoSize = true;
-            this.facing.Location = new System.Drawing.Point(148, 159);
+            this.facing.Location = new System.Drawing.Point(148, 191);
             this.facing.Name = "facing";
             this.facing.Size = new System.Drawing.Size(22, 13);
             this.facing.TabIndex = 9;
@@ -142,7 +144,7 @@
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(13, 159);
+            this.label10.Location = new System.Drawing.Point(13, 191);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(133, 13);
             this.label10.TabIndex = 8;
@@ -157,7 +159,7 @@
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(14, 193);
+            this.label2.Location = new System.Drawing.Point(14, 233);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(77, 13);
             this.label2.TabIndex = 10;
@@ -167,7 +169,7 @@
             // 
             this.issafelybehindtarget.AutoSize = true;
             this.issafelybehindtarget.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.issafelybehindtarget.Location = new System.Drawing.Point(146, 189);
+            this.issafelybehindtarget.Location = new System.Drawing.Point(146, 229);
             this.issafelybehindtarget.Name = "issafelybehindtarget";
             this.issafelybehindtarget.Size = new System.Drawing.Size(26, 16);
             this.issafelybehindtarget.TabIndex = 11;
@@ -186,6 +188,16 @@
             this.groupBox1.TabIndex = 15;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Target Auras";
+            // 
+            // checkmybuffs
+            // 
+            this.checkmybuffs.AutoSize = true;
+            this.checkmybuffs.Location = new System.Drawing.Point(224, 355);
+            this.checkmybuffs.Name = "checkmybuffs";
+            this.checkmybuffs.Size = new System.Drawing.Size(113, 17);
+            this.checkmybuffs.TabIndex = 19;
+            this.checkmybuffs.Text = "Check my buffs";
+            this.checkmybuffs.UseVisualStyleBackColor = true;
             // 
             // button1
             // 
@@ -294,21 +306,33 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "IsRuneCooldown (Highlighted Green when true)";
             // 
-            // checkmybuffs
+            // label3
             // 
-            this.checkmybuffs.AutoSize = true;
-            this.checkmybuffs.Location = new System.Drawing.Point(224, 355);
-            this.checkmybuffs.Name = "checkmybuffs";
-            this.checkmybuffs.Size = new System.Drawing.Size(113, 17);
-            this.checkmybuffs.TabIndex = 19;
-            this.checkmybuffs.Text = "Check my buffs";
-            this.checkmybuffs.UseVisualStyleBackColor = true;
+            this.label3.AutoSize = true;
+            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label3.Location = new System.Drawing.Point(14, 269);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(106, 13);
+            this.label3.TabIndex = 23;
+            this.label3.Text = "IsWithinMeleeRange";
+            // 
+            // IsWithinMeleeRange_lbl
+            // 
+            this.IsWithinMeleeRange_lbl.AutoSize = true;
+            this.IsWithinMeleeRange_lbl.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.IsWithinMeleeRange_lbl.Location = new System.Drawing.Point(146, 267);
+            this.IsWithinMeleeRange_lbl.Name = "IsWithinMeleeRange_lbl";
+            this.IsWithinMeleeRange_lbl.Size = new System.Drawing.Size(26, 16);
+            this.IsWithinMeleeRange_lbl.TabIndex = 24;
+            this.IsWithinMeleeRange_lbl.Text = "xxx";
             // 
             // TargetInfo
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1010, 416);
+            this.Controls.Add(this.IsWithinMeleeRange_lbl);
+            this.Controls.Add(this.label3);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.issafelybehindtarget);
@@ -361,5 +385,7 @@
         private System.Windows.Forms.Label Unholy2lbl;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.CheckBox checkmybuffs;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label IsWithinMeleeRange_lbl;
     }
 }
