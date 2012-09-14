@@ -461,10 +461,9 @@ namespace CLU.Base
         /// </summary>
         /// <param name="unit">the unit to check for</param>
         /// <returns>true if we have the flag</returns>
-        private static bool IsCarryingFlag (WoWUnit unit)
+        public static bool IsCarryingFlag (this WoWUnit unit)
         {
-            return unit != null && (unit.HasAura("Alliance Flag") || unit.HasAura("Horde Flag")
-                                    || unit.HasAura("Netherstorm Flag"));
+            return unit != null && (unit.HasAura("Alliance Flag") || unit.HasAura("Horde Flag") || unit.HasAura("Netherstorm Flag"));
         }
 
         /// <summary>

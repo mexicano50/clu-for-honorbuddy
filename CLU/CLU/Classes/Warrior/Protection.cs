@@ -22,6 +22,7 @@ using Styx.WoWInternals;
 
 namespace CLU.Classes.Warrior
 {
+    using Styx;
 
     class Protection : RotationBase
     {
@@ -158,7 +159,7 @@ NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagr
                             new PrioritySelector(
                                 Buff.CastRaidBuff("Commanding Shout", ret => true, "Commanding Shout"),
                                 Buff.CastRaidBuff("Battle Shout", ret => true, "Battle Shout"),
-                                Buff.CastBuff("Defensive Stance", ret => !Me.HasMyAura("Defensive Stance"), "Defensive Stance We need it!"))));
+                                Buff.CastBuff("Defensive Stance", ret => StyxWoW.Me.Shapeshift != ShapeshiftForm.DefensiveStance, "Defensive Stance We need it!"))));
             }
         }
 

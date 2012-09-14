@@ -223,7 +223,7 @@ namespace CLU.Classes.Warrior
                             //flask,type=winters_bite
                             //food,type=black_pepper_ribs_and_shrimp
                             //stance,choose=battle
-                            Buff.CastBuff("Battle Stance", ret => !StyxWoW.Me.HasMyAura("Battle Stance"), "Battle Stance"),
+                            Buff.CastBuff("Battle Stance", ret => StyxWoW.Me.Shapeshift != ShapeshiftForm.BattleStance, "Battle Stance"),
                             //mogu_power_potion
                             Buff.CastRaidBuff("Battle Shout", ret => true, "Battle Shout"),
                             Buff.CastRaidBuff("Commanding Shout", ret => true, "Commanding Shout"),

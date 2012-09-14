@@ -169,7 +169,7 @@ NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagr
                                    ret => !Buff.PlayerHasBuff("Forbearance"),
                                    new PrioritySelector(
                                        Buff.CastBuff("Lay on Hands",       ret => Me.HealthPercent < CLUSettings.Instance.Paladin.RetributionLoHPercent, "Lay on Hands"),
-                                       Buff.CastBuff("Divine Shield",      ret => Me.HealthPercent < CLUSettings.Instance.Paladin.RetributionDSPercent, "Divine Shield"),
+                                       Buff.CastBuff("Divine Shield", ret => Me.HealthPercent < CLUSettings.Instance.Paladin.RetributionDSPercent && !Me.IsCarryingFlag(), "Divine Shield"),
                                        Buff.CastBuff("Hand of Protection", ret => Me.HealthPercent < CLUSettings.Instance.Paladin.RetributionHoPPercent, "Hand of Protection")))));
             }
         }

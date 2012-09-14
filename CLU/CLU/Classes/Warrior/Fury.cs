@@ -150,7 +150,7 @@ NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagr
                         new PrioritySelector(
                             Buff.CastRaidBuff("Commanding Shout",   ret => true, "Commanding Shout"),
                             Buff.CastRaidBuff("Battle Shout",       ret => true, "Battle Shout"),
-                            Spell.CastSelfSpell("Berserker Stance", ret => !Buff.PlayerHasBuff("Berserker Stance") && CLUSettings.Instance.EnableMovement, "Berserker Stance")));
+                            Spell.CastSelfSpell("Battle Stance", ret => StyxWoW.Me.Shapeshift != ShapeshiftForm.BattleStance && CLUSettings.Instance.EnableMovement, "Berserker Stance")));
             }
         }
 

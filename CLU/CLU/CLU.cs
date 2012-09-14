@@ -40,8 +40,6 @@ using Styx.WoWInternals;
 using Styx.WoWInternals.DBC;
 using Styx.WoWInternals.WoWObjects;
 
-using Styx.Loaders;
-
 using Timer = System.Timers.Timer;
 
 // Credits
