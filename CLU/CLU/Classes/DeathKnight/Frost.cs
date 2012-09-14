@@ -44,24 +44,22 @@ namespace CLU.Classes.DeathKnight
         public override string Help
         {
             get {
-                return
-                    @"
-----------------------------------------------------------------------
-Frost:
-[*] Handles Killing Machine differently; Dual Wield (Frost Strike); 2Handed (Obliterate)
-[*] Unholy runes are gamed to force RE procs or Blood Tap or Plague Leech on blood/frost
-[*] AutomaticCooldowns now works with Boss's or Mob's (See: General Setting)
-[*] Death Siphon (only if movement enabled.)
-This Rotation will:
-1. Heal using AMS, IBF, Healthstone, Deathstrike
-2. AutomaticCooldowns has:
-    ==> UseTrinkets 
-    ==> UseRacials 
-    ==> UseEngineerGloves
-    ==> Pillar of Frost & Raise Dead & Death and Decay & Empower Rune Weapon 
-NOTE: PvP rotations have been implemented in the most basic form, once MoP is released I will go back & revise the rotations for optimal functionality 'Dagradt'.
-Credits to Weischbier, because he owns the buisness and I want him to have my babys! -- Sincerely Wulf (Bahahaha :P)
-----------------------------------------------------------------------";
+                return "\n" +
+                        "----------------------------------------------------------------------\n" +
+                        "This Rotation will:\n" +
+                        "1. Heal using AMS, IBF, Healthstone, Deathstrike\n" +
+                        "2. AutomaticCooldowns has:\n" +
+                            "==> UseTrinkets\n" + 
+                            "==> UseRacials\n" +
+                            "==> UseEngineerGloves\n" +
+                            "==> Pillar of Frost & Raise Dead & Death and Decay & Empower Rune Weapon\n" + 
+                        "NOTE: PvP rotations have been implemented in the most basic form, once MoP is released I will go back & revise the rotations for optimal functionality 'Dagradt'.\n" +
+                        "[*] Handles Killing Machine differently; Dual Wield (Frost Strike); 2Handed (Obliterate)\n" +
+                        "[*] Unholy runes are gamed to force RE procs or Blood Tap or Plague Leech on blood/frost\n" +
+                        "[*] AutomaticCooldowns now works with Boss's or Mob's (See: General Setting)\n" +
+                        "[*] Death Siphon (only if movement enabled.)\n" +
+                        "Credits to Weischbier, because he owns the buisness and I want him to have my babys! -- Sincerely Wulf (Bahahaha :P)\n" +
+                        "----------------------------------------------------------------------\n" +;
             }
         }
 

@@ -50,10 +50,10 @@ namespace CLU.Classes.DeathKnight
                        "This Rotation will:\n" +
                        "1. Heal using AMS, IBF, Healthstone and Deathstrike < 40%\n" +
                        "2. AutomaticCooldowns has: \n" +
-                       "==> UseTrinkets \n" +
-                       "==> UseRacials \n" +
-                       "==> UseEngineerGloves \n" +
-                       "==> Unholy Frenzy & Summon Gargoyle & Death and Decay & Empower Rune Weapon \n" +
+                           "==> UseTrinkets \n" +
+                           "==> UseRacials \n" +
+                           "==> UseEngineerGloves \n" +
+                           "==> Unholy Frenzy & Summon Gargoyle & Death and Decay & Empower Rune Weapon \n" +
                        "3. Maintain HoW only if similar buff is not present\n" +
                        "4. Ensure we are in Unholy Presence\n" +
                        "5. Use Death and Decay and Pestilence and Blood boil for AoE\n" +
