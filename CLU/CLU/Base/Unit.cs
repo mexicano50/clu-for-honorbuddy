@@ -193,7 +193,7 @@ namespace CLU.Base
         }
 
         /// <summary>
-        ///     List of nearby Ranged enemy units that pass certain criteria, this list should only return units
+        ///     List of nearby Melee enemy units that pass certain criteria, this list should only return units
         ///     in active combat with the player, the player's party, or the player's raid.
         /// </summary>
         public static IEnumerable<WoWUnit> MeleePvPUnits

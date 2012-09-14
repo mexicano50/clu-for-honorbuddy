@@ -40,6 +40,8 @@ using Styx.WoWInternals;
 using Styx.WoWInternals.DBC;
 using Styx.WoWInternals.WoWObjects;
 
+using Styx.Loaders;
+
 using Timer = System.Timers.Timer;
 
 // Credits
@@ -72,15 +74,7 @@ namespace CLU
 
         public static readonly Version Version = new Version(3, 3, 0);
         private readonly Timer _clupulsetimer = new Timer(10000); // A timer for keybinds
-
         private RotationBase _rotationBase;
-
-        /// <summary>This will: loop assemblies,
-        /// loop types,
-        /// filter types that are a subclass of RotationBase and not the abstract,
-        /// create an instance of a RotationBase subclass so we can interigate KeySpell within the RotationBase subclass,
-        /// Check if the character has the Keyspell,
-        /// Set the active rotation to the matching RotationBase subclass.</summary>
         private List<RotationBase> _rotations; // list of Rotations
 
         #endregion
@@ -125,7 +119,7 @@ namespace CLU
                     this.QueryClassTree();
                     if ( this._rotationBase == null )
                     {
-                        if ( TalentManager.CurrentSpec.ToString() == "Lowbie" )
+                        if ( TalentManager.CurrentSpec == WoWSpec.None)
                         {
                             Log
                                 (" Greetings, level {0} user. Unfortunelty CLU does not support such Low Level players at this time",
@@ -524,6 +518,12 @@ namespace CLU
             //ManageOracle();
         }
 
+        /// <summary>This will: loop assemblies,
+        /// loop types,
+        /// filter types that are a subclass of RotationBase and not the abstract,
+        /// create an instance of a RotationBase subclass so we can interigate KeySpell within the RotationBase subclass,
+        /// Check if the character has the Keyspell,
+        /// Set the active rotation to the matching RotationBase subclass.</summary>
         public void QueryClassTree()
         {
             try
@@ -532,6 +532,8 @@ namespace CLU
                 IEnumerable<Type> types =
                     AppDomain.CurrentDomain.GetAssemblies().Where(q => q.Location.Contains(Utilities.AssemblyDirectory))
                         .ToList().SelectMany(s => s.GetTypes()).Where(p => p.IsSubclassOf(type) && !p.IsAbstract);
+
+                //_rotations.AddRange(new TypeLoader<RotationBase>(null));
 
                 this._rotations = new List<RotationBase>();
                 foreach ( Type x in types )
