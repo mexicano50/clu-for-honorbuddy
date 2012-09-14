@@ -1048,7 +1048,6 @@ namespace CLU.Base
                     return (byte)(target.MaxMana >= 80000 ? 4 : 1);
                 case WoWClass.Hunter:
                     return 2;
-                    break;
                 case WoWClass.Rogue:
                     return 1;
                 case WoWClass.Priest:
@@ -1082,6 +1081,7 @@ namespace CLU.Base
 
         /// <summary>
         /// Used to detect stealthed players.
+        /// Author: Tuan
         /// </summary>
         /// <param name="target">the unit to check for</param>
         /// <returns>returns true if there are nearby stealthed units</returns>
