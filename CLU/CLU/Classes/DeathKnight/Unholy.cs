@@ -175,7 +175,7 @@ namespace CLU.Classes.DeathKnight
                 return (
                     new PrioritySelector(
                         Spell.CastSpell("Chains of Ice", ret => Me.CurrentTarget.DistanceSqr > 3.2 * 3.2 && !Buff.TargetHasDebuff("Chains of Ice"), "Chains of Ice"),
-                        Spell.CastSpell("Death Grip", ret => Me.CurrentTarget.DistanceSqr > 3.2 * 3.2 && !Buff.TargetHasDebuff("Chains of Ice"), "Death Grip"),
+                        Spell.CastSpell("Death Grip", ret => Me.CurrentTarget.DistanceSqr > 3.2 * 3.2 && !Buff.TargetHasDebuff("Chains of Ice") && !SpellManager.CanCast("Chains of Ice"), "Death Grip"),
                         //blood_fury,if=time>=2
                         Spell.UseRacials(),
                         //mogu_power_potion,if=buff.dark_transformation.up&target.time_to_die<=35
@@ -263,8 +263,12 @@ namespace CLU.Classes.DeathKnight
                             Buff.CastRaidBuff("Horn of Winter", ret => CLUSettings.Instance.DeathKnight.UseHornofWinter && Me.CurrentTarget != null && !Me.CurrentTarget.IsFriendly, "Horn of Winter"),
                             //army_of_the_dead
                             //raise_dead
-                            Spell.CastSelfSpell("Raise Dead", ret => (Me.Pet == null || Me.Pet.IsDead), "Raise Dead")
+                            Spell.CastSelfSpell("Raise Dead", ret => (Me.Pet == null || Me.Pet.IsDead), "Raise Dead"),
                             //mogu_power_potion
+                            Spell.CastSpell("Chains of Ice", ret => (CLU.LocationContext == GroupLogic.Battleground && Macro.Manual || Unit.IsTrainingDummy(Me.CurrentTarget)) &&
+                                Me.CurrentTarget.DistanceSqr > 3.2 * 3.2 && !Buff.TargetHasDebuff("Chains of Ice"), "Chains of Ice"),
+                            Spell.CastSpell("Death Grip", ret => CLU.LocationContext == GroupLogic.Battleground && Macro.Manual && Me.CurrentTarget.DistanceSqr > 3.2 * 3.2 && !Buff.TargetHasDebuff("Chains of Ice")
+                                && !SpellManager.CanCast("Chains of Ice"), "Death Grip")
                 )));
             }
         }
@@ -286,7 +290,8 @@ namespace CLU.Classes.DeathKnight
                             new Decorator(ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget),
                                 new PrioritySelector(
                                     //Spell.CastSpell("Chains of Ice", ret => Me.CurrentTarget.DistanceSqr > 3.2 * 3.2 && !Buff.TargetHasDebuff("Chains of Ice"), "Chains of Ice"),
-                                    //Spell.CastSpell("Death Grip", ret => Me.CurrentTarget.DistanceSqr > 3.2 * 3.2 && !Buff.TargetHasDebuff("Chains of Ice"), "Death Grip"),
+                                    //Spell.CastSpell("Death Grip", ret => Me.CurrentTarget.DistanceSqr > 3.2 * 3.2 && !Buff.TargetHasDebuff("Chains of Ice") && !SpellManager.CanCast("Chains of Ice"),
+                                        //"Death Grip"),
                                     Item.UseTrinkets(),
                                     Buff.CastBuff("Lifeblood", ret => true, "Lifeblood"),
                                     new Action(delegate
