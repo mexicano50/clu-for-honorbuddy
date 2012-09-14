@@ -58,7 +58,7 @@ namespace CLU.Classes.DeathKnight
                        "4. Ensure we are in Unholy Presence\n" +
                        "5. Use Death and Decay and Pestilence and Blood boil for AoE\n" +
                        "6. Brez players (non-specific) using Raise Ally\n" +
-                       "NOTE: PvP uses single target rotation - It's not designed for PvP use. \n" +
+                       "NOTE: PvP rotations have been implemented in the most basic form, once MoP is released I will go back & revise the rotations for optimal functionality 'Dagradt'. \n" +
                        "Credits to Weischbier, ossirian, kbrebel04, Toney001 and cowdude\n" +
                        "----------------------------------------------------------------------\n";
             }
@@ -174,8 +174,8 @@ namespace CLU.Classes.DeathKnight
             {
                 return (
                     new PrioritySelector(
-                        Spell.CastSpell("Chains of Ice", ret => Me.CurrentTarget.DistanceSqr > 5 * 5 && !Buff.TargetHasDebuff("Chains of Ice"), "Chains of Ice"),
-                        Spell.CastSpell("Death Grip", ret => Me.CurrentTarget.DistanceSqr > 5 * 5 && !Buff.TargetHasDebuff("Chains of Ice"), "Death Grip"),
+                        Spell.CastSpell("Chains of Ice", ret => Me.CurrentTarget.DistanceSqr > 3.2 * 3.2 && !Buff.TargetHasDebuff("Chains of Ice"), "Chains of Ice"),
+                        Spell.CastSpell("Death Grip", ret => Me.CurrentTarget.DistanceSqr > 3.2 * 3.2 && !Buff.TargetHasDebuff("Chains of Ice"), "Death Grip"),
                         //blood_fury,if=time>=2
                         Spell.UseRacials(),
                         //mogu_power_potion,if=buff.dark_transformation.up&target.time_to_die<=35
@@ -285,6 +285,8 @@ namespace CLU.Classes.DeathKnight
                         new Decorator(ret => Macro.Manual || BotChecker.BotBaseInUse("BGBuddy"),
                             new Decorator(ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget),
                                 new PrioritySelector(
+                                    //Spell.CastSpell("Chains of Ice", ret => Me.CurrentTarget.DistanceSqr > 3.2 * 3.2 && !Buff.TargetHasDebuff("Chains of Ice"), "Chains of Ice"),
+                                    //Spell.CastSpell("Death Grip", ret => Me.CurrentTarget.DistanceSqr > 3.2 * 3.2 && !Buff.TargetHasDebuff("Chains of Ice"), "Death Grip"),
                                     Item.UseTrinkets(),
                                     Buff.CastBuff("Lifeblood", ret => true, "Lifeblood"),
                                     new Action(delegate
