@@ -1,10 +1,10 @@
 ﻿#region Revision info
 /*
  * $Author: Apoc $
- * $Date: 2012-09-14 15:56:17 +1000 (Fri, 14 Sep 2012) $
+ * $Date$
  * $ID$
- * $Revision: 271 $
- * $URL: https://clu-for-honorbuddy.googlecode.com/svn/trunk/CLU/CLU/Classes/DeathKnight/Unholy.cs $
+ * $Revision$
+ * $URL$
  * $LastChangedBy: clutwopointzero@gmail.com $
  * $ChangesMade$
  */
