@@ -230,8 +230,8 @@ namespace CLU.Classes.Warrior
                             new Decorator(ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget),
                                 new PrioritySelector(
                                     //Add function to use Berserker on CC, BS on Root, trinket on CC, etc
-                                    Spell.CastSpell("Charge", ret => !Me.CurrentTarget.IsWithinMeleeRange && !Unit.IsCrowdControlled(Me.CurrentTarget), "Charge"),
-                                    Spell.CastSpellAtLocation("Heroic Leap", ret => Me.CurrentTarget, ret => !Me.CurrentTarget.IsWithinMeleeRange && !Unit.IsCrowdControlled(Me.CurrentTarget) &&
+                                    Spell.CastSpell("Charge", ret => Me.CurrentTarget.DistanceSqr > 10 * 10 && !Unit.IsCrowdControlled(Me.CurrentTarget), "Charge"),
+                                    Spell.CastSpellAtLocation("Heroic Leap", ret => Me.CurrentTarget, ret => Me.CurrentTarget.DistanceSqr > 10 * 10 && !Unit.IsCrowdControlled(Me.CurrentTarget) &&
                                         !Buff.TargetHasDebuff("Charge Stun"), "Heroic Leap"),
                                     Item.UseTrinkets(),
                                     Spell.UseRacials(),
