@@ -156,7 +156,7 @@ namespace CLU.Classes.Warrior
                         //8	0.00	avatar,use_off_gcd=1,if=talent.avatar.enabled&(((cooldown.recklessness.remains>=180|buff.recklessness.up)|(target.health.pct>=20&target.time_to_die>195)|(target.health.pct<20&set_bonus.tier14_4pc_melee))|target.time_to_die<=20)
                         //9	7.92	bloodbath,use_off_gcd=1,if=talent.bloodbath.enabled&(((cooldown.recklessness.remains>=10|buff.recklessness.up)|(target.health.pct>=20&(target.time_to_die<=165|(target.time_to_die<=315&!set_bonus.tier14_4pc_melee))&target.time_to_die>75))|target.time_to_die<=19)
                         //berserker_rage,use_off_gcd=1,if=!buff.enrage.up
-                        Spell.CastSelfSpell("Berserker Rage", ret => !Buff.PlayerHasActiveBuff("Enrage"), "Berserker Rage"),
+                        Spell.CastSelfSpell("Berserker Rage", ret => Me.CurrentTarget.IsWithinMeleeRange && !Buff.PlayerHasActiveBuff("Enrage"), "Berserker Rage"),
                         //heroic_leap,use_off_gcd=1,if=debuff.colossus_smash.up
                         Spell.CastSpellAtLocation("Heroic Leap", ret => Me.CurrentTarget, ret => Buff.TargetHasDebuff("Colossus Smash"), "Heroic Leap"),
                         //deadly_calm,use_off_gcd=1,if=rage>=40
