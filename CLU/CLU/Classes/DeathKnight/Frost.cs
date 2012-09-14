@@ -163,10 +163,15 @@ Credits to Weischbier, because he owns the buisness and I want him to have my ba
                 return (
                     new PrioritySelector(
                         Spell.CastSpell("Chains of Ice", ret => Me.CurrentTarget.DistanceSqr > 5 * 5 && !Buff.TargetHasDebuff("Chains of Ice"), "Chains of Ice"),
+                        Spell.CastSpell("Death Grip", ret => Me.CurrentTarget.DistanceSqr > 5 * 5 && !Buff.TargetHasDebuff("Chains of Ice"), "Death Grip"),
+                        //blood_fury,if=time>=10
+                        Spell.UseRacials(),
+                        //mogu_power_potion,if=target.time_to_die<=60&buff.pillar_of_frost.up
+                        //use_item,name=gauntlets_of_the_lost_catacomb,if=(frost>=1|death>=1)
+                        Item.UseEngineerGloves(),
                         //pillar_of_frost
                         Buff.CastBuff("Pillar of Frost", ret => Unit.IsTargetWorthy(StyxWoW.Me.CurrentTarget) && StyxWoW.Me.IsWithinMeleeRange && StyxWoW.Me.CurrentTarget != null, "Pillar of Frost"),
                         //raise_dead
-
                         //outbreak,if=dot.frost_fever.remains<3|dot.blood_plague.remains<3
                         Spell.CastSpell("Outbreak", ret => Buff.TargetDebuffTimeLeft("Frost Fever").Seconds < 3 || Buff.TargetDebuffTimeLeft("Blood Plague").Seconds < 3, "Outbreak"),
                         //soul_reaper,if=target.health.pct<=35|((target.health.pct-3*(target.health.pct%target.time_to_die))<=35)
@@ -193,7 +198,6 @@ Credits to Weischbier, because he owns the buisness and I want him to have my ba
                                 //obliterate,if=base_rotation.disabled&runic_power<=76&frost>=1|unholy>=1
                                 Spell.CastSpell("Obliterate", ret => !Macro.rotationSwap && StyxWoW.Me.CurrentRunicPower <= 76 && StyxWoW.Me.FrostRuneCount >= 1 && StyxWoW.Me.UnholyRuneCount >= 1, "Obliterate"),
                                 //empower_rune_weapon,if=target.time_to_die<=60&buff.mogu_power_potion.up
-
                                 //frost_strike,if=!buff.killing_machine.react
                                 Spell.CastSpell("Frost Strike", ret => !Buff.PlayerHasBuff("Killing Machine"), "Frost Strike"),
                                 //obliterate,if=base_rotation.enabled&buff.killing_machine.react
@@ -222,7 +226,6 @@ Credits to Weischbier, because he owns the buisness and I want him to have my ba
                                 //frost_strike,if=runic_power>=88
                                 Spell.CastSpell("Frost Strike", ret => StyxWoW.Me.CurrentRunicPower >= 88, "Frost Strike"),
                                 //empower_rune_weapon,if=target.time_to_die<=60&buff.mogu_power_potion.up
-
                                 //frost_strike,if=buff.killing_machine.react
                                 Spell.CastSpell("Frost Strike", ret => Buff.PlayerHasBuff("Killing Machine"), "Frost Strike"),
                                 //obliterate,if=base_rotation.enabled&buff.killing_machine.react&runic_power<10
@@ -309,12 +312,8 @@ Credits to Weischbier, because he owns the buisness and I want him to have my ba
                         new Decorator(ret => Macro.Manual || BotChecker.BotBaseInUse("BGBuddy"),
                             new Decorator(ret => StyxWoW.Me.CurrentTarget != null && Unit.IsTargetWorthy(StyxWoW.Me.CurrentTarget),
                                 new PrioritySelector(
-                                    Spell.CastSpell("Death Grip", ret => Me.CurrentTarget.DistanceSqr > 10 * 10 && !Unit.IsCrowdControlled(Me.CurrentTarget) && !Buff.TargetHasDebuff("Chains of Ice"),
-                                        "Death Grip"),
                                     Item.UseTrinkets(),
-                                    Spell.UseRacials(),
                                     Buff.CastBuff("Lifeblood", ret => true, "Lifeblood"),
-                                    Item.UseEngineerGloves(),
                                     new Action(delegate
                                     {
                                         Macro.isMultiCastMacroInUse();
