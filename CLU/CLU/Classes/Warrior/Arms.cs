@@ -213,8 +213,9 @@ namespace CLU.Classes.Warrior
                             //stance,choose=battle
                             Buff.CastBuff("Battle Stance", ret => !StyxWoW.Me.HasMyAura("Battle Stance"), "Battle Stance"),
                             //mogu_power_potion
-                            Buff.CastRaidBuff("Commanding Shout",   ret => true, "Commanding Shout"),
-                            Buff.CastRaidBuff("Battle Shout",       ret => true, "Battle Shout"))));
+                            Buff.CastRaidBuff("Battle Shout", ret => true, "Battle Shout"),
+                            Buff.CastRaidBuff("Commanding Shout", ret => true, "Commanding Shout"))
+                ));
             }
         }
 
