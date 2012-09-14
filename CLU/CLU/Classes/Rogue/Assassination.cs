@@ -21,6 +21,11 @@ namespace CLU.Classes.Rogue
     {
         #region Public Properties
 
+        public override float CombatMaxDistance
+        {
+            get { return 3.2f; }
+        }
+
         public override string Help
         {
             get
@@ -38,14 +43,6 @@ namespace CLU.Classes.Rogue
             }
         }
 
-        public override string Revision
-        {
-            get
-            {
-                return "$Rev$";
-            }
-        }
-
         public override string KeySpell
         {
             get { return "Mutilate"; }
@@ -54,14 +51,6 @@ namespace CLU.Classes.Rogue
         public override int KeySpellId
         {
             get { return 1329; }
-        }
-
-        public override float CombatMaxDistance
-        {
-            get
-            {
-                return 3.2f;
-            }
         }
 
         /// <summary>
@@ -137,13 +126,18 @@ namespace CLU.Classes.Rogue
             get { return new PrioritySelector(Rest.CreateDefaultRestBehaviour()); }
         }
 
+        public override string Revision
+        {
+            get { return "$Rev$"; }
+        }
+
         public override Composite SingleRotation
         {
             get
             {
                 return new PrioritySelector
                     (new Decorator(ret => CLUSettings.Instance.PauseRotation, new ActionAlwaysSucceed()),
-                    MovementHelpers, EncounterSpecific.ExtraActionButton(), Cooldowns,
+                     MovementHelpers, EncounterSpecific.ExtraActionButton(), Cooldowns,
                      Spell.CastSelfSpell
                          ("Feint",
                           ret =>
@@ -247,6 +241,34 @@ namespace CLU.Classes.Rogue
         }
 
         /// <summary>
+        /// Adds Movement support within BG's and Questing. -- wulf.
+        /// </summary>
+        private static Composite MovementHelpers
+        {
+            get
+            {
+                return new Decorator
+                    (ret => CLUSettings.Instance.EnableMovement && Buff.PlayerHasBuff("Stealth"),
+                     new PrioritySelector
+                         ( // Spell.CastSpell("Pick Pocket", ret => Buff.PlayerHasBuff("Stealth"), "Gimme the caaash (Pick Pocket)"),
+                         Spell.CastSelfSpell
+                             ("Sprint", ret => Me.IsMoving && Unit.DistanceToTargetBoundingBox() >= 15, "Sprint"),
+                         Spell.CastSpell
+                             ("Garrote", ret => Me.CurrentTarget != null && StyxWoW.Me.IsBehind(Me.CurrentTarget),
+                              "Garrote"),
+                         Spell.CastSpell
+                             ("Cheap Shot",
+                              ret =>
+                              Me.CurrentTarget != null && !SpellManager.HasSpell("Garrote") ||
+                              !StyxWoW.Me.IsBehind(Me.CurrentTarget), "Cheap Shot"),
+                         Spell.CastSpell
+                             ("Ambush",
+                              ret => !SpellManager.HasSpell("Cheap Shot") && StyxWoW.Me.IsBehind(Me.CurrentTarget),
+                              "Ambush")));
+            }
+        }
+
+        /// <summary>
         /// Gets the out-of-combat routine.
         /// </summary>
         private static Composite OutOfCombat
@@ -281,7 +303,7 @@ namespace CLU.Classes.Rogue
                          (Spell.CastSpell("Rupture", ret => !Buff.TargetHasDebuff("Rupture"), "Rupture @ Down"),
                           // Rupture if it's down.
                           Spell.CastSpell("Rupture", ret => Me.ComboPoints >= ReqCmbPts, "Rupture @ Low")));
-                    // Rupture if it's about to fall off and we have 4 or 5 combo points.
+                // Rupture if it's about to fall off and we have 4 or 5 combo points.
             }
         }
 
@@ -311,24 +333,6 @@ namespace CLU.Classes.Rogue
                      Me.ComboPoints < 4 && Me.CurrentTarget.IsWithinMeleeRange,
                      Spell.CastSelfSpell("Vanish", x => true, "Vanish"));
             }
-        }
-
-        /// <summary>
-        /// Adds Movement support within BG's and Questing. -- wulf.
-        /// </summary>
-        private static Composite MovementHelpers 
-        { 
-            get
-            {
-                return   new Decorator(
-                               ret => CLUSettings.Instance.EnableMovement && Buff.PlayerHasBuff("Stealth"),
-                               new PrioritySelector(
-                                   // Spell.CastSpell("Pick Pocket", ret => Buff.PlayerHasBuff("Stealth"), "Gimme the caaash (Pick Pocket)"),
-                                   Spell.CastSelfSpell("Sprint",  ret => Me.IsMoving && Unit.DistanceToTargetBoundingBox() >= 15, "Sprint"),
-                                   Spell.CastSpell("Garrote", ret => Me.CurrentTarget != null && StyxWoW.Me.IsBehind(Me.CurrentTarget), "Garrote"),
-                                   Spell.CastSpell("Cheap Shot", ret => Me.CurrentTarget != null && !SpellManager.HasSpell("Garrote") || !StyxWoW.Me.IsBehind(Me.CurrentTarget), "Cheap Shot"),
-                                   Spell.CastSpell("Ambush",      ret => !SpellManager.HasSpell("Cheap Shot") && StyxWoW.Me.IsBehind(Me.CurrentTarget), "Ambush")));
-           }
         }
 
         #endregion

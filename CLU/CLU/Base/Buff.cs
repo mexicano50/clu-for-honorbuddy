@@ -2,7 +2,6 @@ namespace CLU.Base
 {
 
     using System;
-    using System.Windows.Media;
 
     using Styx;
     using Styx.Combat.CombatRoutine;
@@ -12,9 +11,9 @@ namespace CLU.Base
     using System.Collections.Generic;
     using System.Linq;
     using Styx.WoWInternals;
-    using global::CLU.CombatLog;
-    using global::CLU.Managers;
-    using global::CLU.Settings;
+    using CombatLog;
+    using Managers;
+    using Settings;
     using Action = Styx.TreeSharp.Action;
 
     internal static class Buff

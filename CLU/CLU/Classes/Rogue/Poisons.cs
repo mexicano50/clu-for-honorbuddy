@@ -9,13 +9,12 @@ namespace CLU.Classes.Rogue
     using Styx.Pathing;
     using Styx.TreeSharp;
 
-    using global::CLU.Base;
-    using global::CLU.Settings;
+    using Base;
+    using Settings;
 
     public static class Poisons
     {
-
-        public static bool NeedsPoison
+        private static bool NeedsPoison
         {
             get {
                 return StyxWoW.Me.Inventory.Equipped.MainHand != null && 
@@ -24,7 +23,7 @@ namespace CLU.Classes.Rogue
             }
         }
 
-        public static int MainHandPoison
+        private static int MainHandPoison
         {
             get {
                 switch (CLUSettings.Instance.Rogue.MainHandPoison)
@@ -40,7 +39,7 @@ namespace CLU.Classes.Rogue
             }
         }
 
-        public static int OffHandHandPoison
+        private static int OffHandHandPoison
         {
             get
             {
@@ -64,7 +63,7 @@ namespace CLU.Classes.Rogue
         {
             return new PrioritySelector(
                        new Decorator(
-                           ret => NeedsPoison && !StyxWoW.Me.HasAura(MainHandPoison) && SpellManager.HasSpell(MainHandPoison),
+                           ret => NeedsPoison && !Buff.PlayerHasActiveBuff(MainHandPoison) && SpellManager.HasSpell(MainHandPoison),
                            new Sequence(
                                new Action(ret => CLU.TroubleshootLog("Applying {0} to main hand", CLUSettings.Instance.Rogue.MainHandPoison)),
                                new Action(ret => Navigator.PlayerMover.MoveStop()),

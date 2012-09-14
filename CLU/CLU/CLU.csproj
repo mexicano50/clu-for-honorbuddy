@@ -31,8 +31,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Honorbuddy">
-      <HintPath>..\..\..\..\Applications\HB\Honorbuddy.exe</HintPath>
+    <Reference Include="calc, Version=2.5.6211.431, Culture=neutral, PublicKeyToken=50a565ab5c01ae50, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\Desktop\Games\Blizzard\HB\dev\calc.exe</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="System" />
