@@ -59,7 +59,7 @@ This Rotation will:
     ==> UseRacials 
     ==> UseEngineerGloves
     ==> Pillar of Frost & Raise Dead & Death and Decay & Empower Rune Weapon 
-NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagradt changes that.
+NOTE: PvP rotations have been implemented in the most basic form, once MoP is released I will go back & revise the rotations for optimal functionality 'Dagradt'.
 Credits to Weischbier, because he owns the buisness and I want him to have my babys! -- Sincerely Wulf (Bahahaha :P)
 ----------------------------------------------------------------------";
             }
