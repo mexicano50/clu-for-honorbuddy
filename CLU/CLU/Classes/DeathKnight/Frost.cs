@@ -173,8 +173,9 @@ namespace CLU.Classes.DeathKnight
             {
                 return (
                     new PrioritySelector(
-                        Spell.CastSpell("Chains of Ice", ret => Me.CurrentTarget.DistanceSqr > 3.2 * 3.2 && !Buff.TargetHasDebuff("Chains of Ice"), "Chains of Ice"),
-                        Spell.CastSpell("Death Grip", ret => Me.CurrentTarget.DistanceSqr > 3.2 * 3.2 && !Buff.TargetHasDebuff("Chains of Ice") && !SpellManager.CanCast("Chains of Ice"), "Death Grip"),
+                        Spell.CastSpell("Chains of Ice", ret => Me.CurrentTarget != null && Me.CurrentTarget.DistanceSqr > 3.2 * 3.2 && !Buff.TargetHasDebuff("Chains of Ice"), "Chains of Ice"),
+                        Spell.CastSpell("Death Grip", ret => Me.CurrentTarget != null && Me.CurrentTarget.DistanceSqr > 3.2 * 3.2 && !Buff.TargetHasDebuff("Chains of Ice") &&
+                            !SpellManager.CanCast("Chains of Ice"), "Death Grip"),
                         //blood_fury,if=time>=10
                         Spell.UseRacials(),
                         //mogu_power_potion,if=target.time_to_die<=60&buff.pillar_of_frost.up
@@ -303,10 +304,10 @@ namespace CLU.Classes.DeathKnight
                             Buff.CastRaidBuff("Horn of Winter", ret => CLUSettings.Instance.DeathKnight.UseHornofWinter && Me.CurrentTarget != null && !Me.CurrentTarget.IsFriendly, "Horn of Winter"),
                             //army_of_the_dead
                             //mogu_power_potion
-                            Spell.CastSpell("Chains of Ice", ret => (CLU.LocationContext == GroupLogic.Battleground && Macro.Manual || Unit.IsTrainingDummy(Me.CurrentTarget)) &&
+                            Spell.CastSpell("Chains of Ice", ret => Me.CurrentTarget != null && (CLU.LocationContext == GroupLogic.Battleground && Macro.Manual || Unit.IsTrainingDummy(Me.CurrentTarget)) &&
                                 Me.CurrentTarget.DistanceSqr > 3.2 * 3.2 && !Buff.TargetHasDebuff("Chains of Ice"), "Chains of Ice"),
-                            Spell.CastSpell("Death Grip", ret => CLU.LocationContext == GroupLogic.Battleground && Macro.Manual && Me.CurrentTarget.DistanceSqr > 3.2 * 3.2 && !Buff.TargetHasDebuff("Chains of Ice")
-                                && !SpellManager.CanCast("Chains of Ice"), "Death Grip")
+                            Spell.CastSpell("Death Grip", ret => Me.CurrentTarget != null && CLU.LocationContext == GroupLogic.Battleground && Macro.Manual && Me.CurrentTarget.DistanceSqr > 3.2 * 3.2 &&
+                                !Buff.TargetHasDebuff("Chains of Ice") && !SpellManager.CanCast("Chains of Ice"), "Death Grip")
                 )));
             }
         }
@@ -327,9 +328,9 @@ namespace CLU.Classes.DeathKnight
                         new Decorator(ret => Macro.Manual || BotChecker.BotBaseInUse("BGBuddy"),
                             new Decorator(ret => StyxWoW.Me.CurrentTarget != null && Unit.IsTargetWorthy(StyxWoW.Me.CurrentTarget),
                                 new PrioritySelector(
-                                    //Spell.CastSpell("Chains of Ice", ret => Me.CurrentTarget.DistanceSqr > 3.2 * 3.2 && !Buff.TargetHasDebuff("Chains of Ice"), "Chains of Ice"),
-                                    //Spell.CastSpell("Death Grip", ret => Me.CurrentTarget.DistanceSqr > 3.2 * 3.2 && !Buff.TargetHasDebuff("Chains of Ice") && !SpellManager.CanCast("Chains of Ice"),
-                                        //"Death Grip"),
+                                    //Spell.CastSpell("Chains of Ice", ret => Me.CurrentTarget != null &&Me.CurrentTarget.DistanceSqr > 3.2 * 3.2 && !Buff.TargetHasDebuff("Chains of Ice"), "Chains of Ice"),
+                                    //Spell.CastSpell("Death Grip", ret => Me.CurrentTarget != null &&Me.CurrentTarget.DistanceSqr > 3.2 * 3.2 && !Buff.TargetHasDebuff("Chains of Ice") &&
+                                        //!SpellManager.CanCast("Chains of Ice"), "Death Grip"),
                                     Item.UseTrinkets(),
                                     Buff.CastBuff("Lifeblood", ret => true, "Lifeblood"),
                                     new Action(delegate
