@@ -313,7 +313,7 @@ namespace CLU.Base
         /// Enemy Healers for PvP
         /// </summary>
         /// <returns>Closest Enemy Healer</returns>
-        private static IEnumerable<WoWUnit> EnemyHealer
+        public static IEnumerable<WoWUnit> EnemyHealer
         {
             get {
                 try {
