@@ -42,23 +42,27 @@ using Styx.WoWInternals.WoWObjects;
 
 using Timer = System.Timers.Timer;
 
-// Credits
-//-------------
-// * cowdude for his initial work with Felmaster and giving me inspiration to create this CC.
-// * All the Singular Developers For there tiresome work and supporting code
-// * bobby53 For his Disclaimer (Couldn't have said it better)
-// * Kickazz006 for his BlankProfile.xml
-// * Shaddar & Mentally for thier initial detection code of HourofTwilight, FadingLight and Shrapnel
-// * bennyquest for his continued efforts in reporting issues!
-// * Jamjar0207 for his Protection Warrior Rotation and Fire Mage
-// * gniegsch for his Arms Warrior Rotation and improvements with blood deathknight
-// * Stormchasing for his help with warlocks and patchs
-// * Obliv For his Boomkin, Frost Mage & Assassination rotations and Arms warrior improvement
-// * ShinobiAoshi for his initial Affliction warlock rotation
-// * fluffyhusky for his initial Enhancement Shaman rotation
-// * Digitalmocking for his initial Elemental Shaman rotation
-// * Toney001 for his improvements to the Unholy Deathknight rotation
-// * kbrebel04  for his improvements to Subtlety Rogue
+/*Credits
+=======
+* cowdude for his initial work with Felmaster and giving me inspiration to create this CC.
+* All the Singular Developers For there tiresome work and supporting code
+* Weischbier for his Support with the new 5.0.4 MoP Changes.
+* bobby53 For his Disclaimer (Couldn't have said it better)
+* Kickazz006 for his BlankProfile.xml
+* Shaddar & Mentally for thier initial detection code of HourofTwilight, FadingLight and Shrapnel
+* bennyquest for his continued efforts in reporting issues!
+* Jamjar0207 for his Protection Warrior Rotation and Fire Mage
+* gniegsch for his Arms Warrior Rotation and improvements with blood deathknight
+* Stormchasing for his help with warlocks and patchs
+* Obliv For his Boomkin, Frost Mage & Assassination rotations and Arms warrior improvement
+* ShinobiAoshi for his initial Affliction warlock rotation
+* fluffyhusky for his initial Enhancement Shaman rotation
+* Digitalmocking for his initial Elemental Shaman rotation
+* Toney001 for his improvements to the Unholy Deathknight rotation
+* kbrebel04  for his improvements to Subtlety Rogue
+* Dagradt for his PvP rotations.
+* LaoArchAngel for his help with core changes and Rogue changes.
+* Apoc for just about everything :P */
 
 //[assembly: CLSCompliant(true)]
 

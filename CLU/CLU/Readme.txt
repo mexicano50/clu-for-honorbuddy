@@ -355,6 +355,9 @@ Credits
 * Digitalmocking for his initial Elemental Shaman rotation
 * Toney001 for his improvements to the Unholy Deathknight rotation
 * kbrebel04  for his improvements to Subtlety Rogue
+* Dagradt for his PvP rotations.
+* LaoArchAngel for his help with core changes and Rogue changes.
+* Apoc for just about everything :P
 
 
 Development Team
