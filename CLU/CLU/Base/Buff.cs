@@ -73,7 +73,7 @@ namespace CLU.Base
             77747,      //Burning Wrath
             109773,     //Dark Intent
             61316,      //Dalaran Brilliance
-            1459,       //Arcane Brilliance
+            1459,       //Arcane Brilliance 
             //126309,     //Still Water
         };
 
@@ -643,12 +643,12 @@ namespace CLU.Base
 
         			// If we are solo then return true if the name of the requested buff matchs the users UI setting and the player does not have the buff..
         			if (!Me.IsInParty && !Me.IsInRaid && !Me.IsDead && !Me.IsGhost && Me.IsAlive) {
-                        //if (name.Contains(CLUSettings.Instance.Warrior.ShoutSelection.ToString()) && !PlayerHasBuff(name)) return true;
-                        //if (name.Contains(CLUSettings.Instance.Monk.LegacySelection.ToString()) && !PlayerHasBuff(name)) return true;
-                        //if (name.Contains(CLUSettings.Instance.Paladin.BlessingSelection.ToString()) && !PlayerHasBuff(name)) return true;
-                        if (name.Contains(CLUSettings.Instance.Warrior.ShoutSelection.ToString()) && PlayerHasBuff(name)) return false;
-                        if (name.Contains(CLUSettings.Instance.Monk.LegacySelection.ToString()) && PlayerHasBuff(name)) return false;
-                        if (name.Contains(CLUSettings.Instance.Paladin.BlessingSelection.ToString()) && PlayerHasBuff(name)) return false;
+                        if (name.Contains(CLUSettings.Instance.Warrior.ShoutSelection.ToString()) && !PlayerHasBuff(name)) return true;
+                        if (name.Contains(CLUSettings.Instance.Monk.LegacySelection.ToString()) && !PlayerHasBuff(name)) return true;
+                        if (name.Contains(CLUSettings.Instance.Paladin.BlessingSelection.ToString()) && !PlayerHasBuff(name)) return true;
+                        //if (name.Contains(CLUSettings.Instance.Warrior.ShoutSelection.ToString()) && PlayerHasBuff(name)) return false;
+                        //if (name.Contains(CLUSettings.Instance.Monk.LegacySelection.ToString()) && PlayerHasBuff(name)) return false;
+                        //if (name.Contains(CLUSettings.Instance.Paladin.BlessingSelection.ToString()) && PlayerHasBuff(name)) return false;
         			}
 
         			// Continue on if we are in a raid group and check all raid members for the buffs we can provide and cast them if ok.
@@ -709,22 +709,19 @@ namespace CLU.Base
                             ProvidablePlayerBuffs.UnionWith(Stats);
                             ProvidablePlayerBuffs.UnionWith(CriticalStrike);
                             ProvidablePlayerBuffs.UnionWith(SpellHaste);
+        			        break;
 
-        					//case WoWClass.Monk:
-                            // ProvidablePlayerBuffs.UnionWith(Stats);
-                            // ProvidablePlayerBuffs.UnionWith(Mastery);
-                           
+        			    case WoWClass.Monk:
+                            ProvidablePlayerBuffs.UnionWith(Stats);
+                            ProvidablePlayerBuffs.UnionWith(Mastery);          
         					break;
-        				default:
-        					break;
-                            
         			}
 
-        			return  players.Any(x => x.Distance2DSqr < 40 * 40 && !x.HasAnyAura(ProvidablePlayerBuffs) && x.Distance <= 30f && !x.IsDead && !x.IsGhost);
+        			return  players.Any(x => x.Distance2DSqr < 40 * 40 && !x.HasAnyAura(ProvidablePlayerBuffs) && !x.IsDead && !x.IsGhost && x.IsAlive);
             },
             new Sequence(
                 new Action(a => CLU.Log(" [Raid Buff] {0} ", label)),
-                new Action(a => Spell.CastMySpell(name,Me))));
+                new Action(a => Spell.CastMySpell(name))));
         }
 
         /// <summary>

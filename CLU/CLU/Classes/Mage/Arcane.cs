@@ -155,7 +155,7 @@ namespace CLU.Classes.Mage
                            ret => !Me.Mounted && !Me.IsDead && !Me.Combat && !Me.IsFlying && !Me.IsOnTransport && !Me.HasAura("Food") && !Me.HasAura("Drink"),
                            new PrioritySelector(
                                Buff.CastBuff("Frost Armor",                     ret => true, "Frost Armor"),
-                               Buff.CastRaidBuff("Dalaran Brilliance",         ret => true, "Dalaran Brilliance"),
+                    //Buff.CastRaidBuff("Dalaran Brilliance",         ret => true, "Dalaran Brilliance"), //Commentet out as it is of no real importance except for 10yrd extra range.
                                Buff.CastRaidBuff("Arcane Brilliance",          ret => true, "Arcane Brilliance"), 
                                Item.RunMacroText("/cast Conjure Mana Gem",     ret => !Me.IsMoving && !Item.HaveManaGem(), "Conjure Mana Gem")));
             }
