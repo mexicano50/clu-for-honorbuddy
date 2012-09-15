@@ -488,10 +488,11 @@ namespace CLU
             TroubleshootLog("Routines were reloaded, re-creating behaviors");
             CreateBehaviors();
         }
-
+        private static ConfigurationForm _a = null;
         public override void OnButtonPress()
         {
-            new ConfigurationForm().ShowDialog();
+            if (_a == null) _a = new ConfigurationForm();
+            if(_a!=null || _a.IsDisposed) _a.ShowDialog();
         }
 
         public override void Pulse()

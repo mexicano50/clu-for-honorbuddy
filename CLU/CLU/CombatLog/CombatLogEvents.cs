@@ -42,27 +42,36 @@ namespace CLU.CombatLog
 
         public void CombatLogEventsOnStarted(object o)
         {
-            CLU.TroubleshootLog( "CombatLogEvents: Connected to the Grid");
-
-            // Lua.Events.AttachEvent("CHARACTER_POINTS_CHANGED", UpdateActiveRotation);
-            // Lua.Events.AttachEvent("ACTIVE_TALENT_GROUP_CHANGED", UpdateActiveRotation)
-
-            // means spell was cast (did not hit target yet)
-            Lua.Events.AttachEvent("UNIT_SPELLCAST_SUCCEEDED", this.OnSpellFired_ACK);
-
-            // user got stunned, silenced, kicked...
-            Lua.Events.AttachEvent("UNIT_SPELLCAST_INTERRUPTED", this.OnSpellFired_NACK);
-
-            // misc fails, due to stopcast, spell spam, etc.
-            Lua.Events.AttachEvent("UNIT_SPELLCAST_FAILED", this.OnSpellFired_FAIL);
-            Lua.Events.AttachEvent("UNIT_SPELLCAST_FAILED_QUIET", this.OnSpellFired_FAIL);
-            Lua.Events.AttachEvent("UNIT_SPELLCAST_STOP", this.OnSpellFired_FAIL);
-
-            // Handle Spell Missed events
-            Lua.Events.AttachEvent("SPELL_MISSED", this.HandleSpellMissed);
-            Lua.Events.AttachEvent("RANGE_MISSED", this.HandleSpellMissed);
-            Lua.Events.AttachEvent("SWING_MISSED", this.HandleSpellMissed);
-            Lua.Events.AttachEvent("PARTY_MEMBERS_CHANGED", this.HandlePartyMembersChanged);
+            try
+            {
+                CLU.TroubleshootLog("CombatLogEvents: Connected to the Grid");
+                // means spell was cast (did not hit target yet)
+                CLU.TroubleshootLog("CombatLogEvents: Connect UNIT_SPELLCAST_SUCCEEDED");
+                Lua.Events.AttachEvent("UNIT_SPELLCAST_SUCCEEDED", this.OnSpellFired_ACK);
+                // user got stunned, silenced, kicked...
+                CLU.TroubleshootLog("CombatLogEvents: Connect UNIT_SPELLCAST_INTERRUPTED");
+                Lua.Events.AttachEvent("UNIT_SPELLCAST_INTERRUPTED", this.OnSpellFired_NACK);
+                // misc fails, due to stopcast, spell spam, etc.
+                CLU.TroubleshootLog("CombatLogEvents: Connect UNIT_SPELLCAST_FAILED");
+                Lua.Events.AttachEvent("UNIT_SPELLCAST_FAILED", this.OnSpellFired_FAIL);
+                CLU.TroubleshootLog("CombatLogEvents: Connect UNIT_SPELLCAST_FAILED_QUIET");
+                Lua.Events.AttachEvent("UNIT_SPELLCAST_FAILED_QUIET", this.OnSpellFired_FAIL);
+                CLU.TroubleshootLog("CombatLogEvents: Connect UNIT_SPELLCAST_STOP");
+                Lua.Events.AttachEvent("UNIT_SPELLCAST_STOP", this.OnSpellFired_FAIL);
+                // Handle Spell Missed events
+                CLU.TroubleshootLog("CombatLogEvents: Connect SPELL_MISSED");
+                Lua.Events.AttachEvent("SPELL_MISSED", this.HandleSpellMissed);
+                CLU.TroubleshootLog("CombatLogEvents: Connect RANGE_MISSED");
+                Lua.Events.AttachEvent("RANGE_MISSED", this.HandleSpellMissed);
+                CLU.TroubleshootLog("CombatLogEvents: Connect SWING_MISSED");
+                Lua.Events.AttachEvent("SWING_MISSED", this.HandleSpellMissed);
+                CLU.TroubleshootLog("CombatLogEvents: Connect PARTY_MEMBERS_CHANGED");
+                Lua.Events.AttachEvent("PARTY_MEMBERS_CHANGED", this.HandlePartyMembersChanged);
+            }
+            catch (Exception ex)
+            { 
+                CLU.DiagnosticLog("HandlePartyMembersChanged : {0}", ex);
+            }
         }
 
         public void CombatLogEventsOnStopped(object o)
