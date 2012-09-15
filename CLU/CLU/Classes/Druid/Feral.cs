@@ -172,7 +172,7 @@ NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagr
                                            Item.UseTrinkets(),
                                            Racials.UseRacials(),
                                            Spell.CastSelfSpell("Enrage", ret => !Spell.CanCast("Berserk", Me) && Me.CurrentRage < 80, "Enrage"),
-                                           Spell.CastSelfSpell("Berserk", ret => Buff.PlayerHasBuff("Pulverize") && Buff.TargetCountDebuff("Lacerate") >= 1, "Berserk"),
+                                           //Spell.CastSelfSpell("Berserk", ret => Buff.PlayerHasBuff("Pulverize") && Buff.TargetCountDebuff("Lacerate") >= 1, "Berserk"),
                                            Item.UseEngineerGloves(),
                                            Buff.CastBuff("Lifeblood", ret => true, "Lifeblood"))),
 
@@ -217,7 +217,7 @@ NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagr
                                    // Interupts
                                    Spell.CastInterupt("Skull Bash",             ret => true, "Skull Bash"),
                                    Spell.CastSelfSpell("Tiger's Fury",          ret => Me.CurrentEnergy <= (Item.Has2PcTeirBonus(ItemSetId) ? 45 : 35) && !Buff.PlayerHasBuff("Clearcasting"), "Tigers Fury"),
-                                   Spell.CastSelfSpell("Berserk",               ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget) && (Buff.PlayerHasBuff("Tiger's Fury") || Buff.TargetDebuffTimeLeft("Tiger's Fury").TotalSeconds > 6), "Berserk"),
+                                   //Spell.CastSelfSpell("Berserk",               ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget) && (Buff.PlayerHasBuff("Tiger's Fury") || Buff.TargetDebuffTimeLeft("Tiger's Fury").TotalSeconds > 6), "Berserk"),
                                    // actions+=/natures_vigil,if=buff.berserk.up&talent.natures_vigil.enabled
                                    // actions+=/incarnation,if=buff.berserk.up&talent.incarnation.enabled
                                    Spell.CastSelfSpell("Berserking",            ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget) && Buff.PlayerHasBuff("Tiger's Fury"), "Berserking"),

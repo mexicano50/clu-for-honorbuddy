@@ -248,7 +248,7 @@ namespace CLU.Classes.Priest
                     new Decorator(
                         ret => !Me.Mounted && !Me.IsDead && !Me.Combat && !Me.IsFlying && !Me.IsOnTransport && !Me.HasAura("Food") && !Me.HasAura("Drink"),
                         new PrioritySelector(
-                            Buff.CastRaidBuff("Power Word: Fortitude", 	ret => CLUSettings.Instance.Priest.UsePowerWordFortitude, "Power Word: Fortitude"),
+                            Buff.CastRaidBuff("Power Word: Fortitude", ret => CLUSettings.Instance.Priest.UsePowerWordFortitude, "Power Word: Fortitude"),
                             Buff.CastRaidBuff("Shadow Protection", 		ret => CLUSettings.Instance.Priest.UseShadowProtection, "Shadow Protection"),
                             Buff.CastBuff("Inner Fire", 				ret => NotMoving && CLUSettings.Instance.Priest.UseInnerFire, "Inner Fire"))));
             }
