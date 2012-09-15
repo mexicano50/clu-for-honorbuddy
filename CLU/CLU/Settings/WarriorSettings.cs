@@ -81,23 +81,25 @@ namespace CLU.Settings
         [Description("When enabled CLU will use Dragon Roar. (shared across all warrior rotations)")]
         public bool UseDragonRoar { get; set; }
 
-        #endregion
-
-        #region Protection
 
         [Setting]
         [DefaultValue(true)]
-        [Category("Protection")]
+        [Category("Common")]
         [DisplayName("Use Deadly Calm on CD")]
         [Description("When enabled CLU will use deadly calm on CD.")]
         public bool UseDeadlyCalm { get; set; }
 
         [Setting]
         [DefaultValue(true)]
-        [Category("Protection")]
+        [Category("Common")]
         [DisplayName("Use Recklessness on bosses")]
         [Description("When enabled CLU will use Recklessness on bosses.")]
         public bool UseRecklessness { get; set; }
+
+        #endregion
+
+        #region Protection
+
 
         [Setting]
         [DefaultValue(true)]

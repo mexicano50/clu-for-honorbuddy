@@ -21,6 +21,7 @@ using Rest = CLU.Base.Rest;
 
 namespace CLU.Classes.Warrior
 {
+    using global::CLU.Managers;
 
     class Fury : RotationBase
     {
@@ -101,16 +102,16 @@ NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagr
                                     // Interupts
                                     Spell.CastInterupt("Pummel",               ret => true, "Pummel"),
                                     Spell.CastInterupt("Spell Reflection",     ret => Me.CurrentTarget != null && Me.CurrentTarget.CurrentTarget == Me, "Spell Reflection"),
-                                    Spell.CastSelfSpell("Recklessness",        ret => CLUSettings.Instance.UseCooldowns && Me.CurrentTarget != null && ((Buff.TargetDebuffTimeLeft("Colossus Smash").TotalSeconds >= 5 || Spell.SpellCooldown("Colossus Smash").TotalSeconds <= 4) && ((!SpellManager.HasSpell("Avatar") || !Item.Has4PcTeirBonus(ItemSetId))) && ((Me.CurrentTarget.HealthPercent < 20 || Unit.TimeToDeath(Me.CurrentTarget) > 315 || (Unit.TimeToDeath(Me.CurrentTarget) > 165 && Item.Has4PcTeirBonus(ItemSetId)))) || (SpellManager.HasSpell("Avatar") && Item.Has4PcTeirBonus(ItemSetId) && Buff.PlayerHasBuff("Avatar"))) || Unit.TimeToDeath(Me.CurrentTarget) <= 18, "Recklessness"),
+                                    Spell.CastSelfSpell("Recklessness",        ret => CLUSettings.Instance.UseCooldowns && CLUSettings.Instance.Warrior.UseRecklessness && Me.CurrentTarget != null && ((Buff.TargetDebuffTimeLeft("Colossus Smash").TotalSeconds >= 5 || Spell.SpellCooldown("Colossus Smash").TotalSeconds <= 4) && ((!SpellManager.HasSpell("Avatar") || !Item.Has4PcTeirBonus(ItemSetId))) && ((Me.CurrentTarget.HealthPercent < 20 || Unit.TimeToDeath(Me.CurrentTarget) > 315 || (Unit.TimeToDeath(Me.CurrentTarget) > 165 && Item.Has4PcTeirBonus(ItemSetId)))) || (SpellManager.HasSpell("Avatar") && Item.Has4PcTeirBonus(ItemSetId) && Buff.PlayerHasBuff("Avatar"))) || Unit.TimeToDeath(Me.CurrentTarget) <= 18, "Recklessness"),
                                     Spell.CastSelfSpell("Avatar",              ret => Me.CurrentTarget != null && (CLUSettings.Instance.UseCooldowns && SpellManager.HasSpell("Avatar") && (((Spell.SpellCooldown("Recklessness").TotalSeconds >= 180 || Buff.PlayerHasBuff("Recklessness")) || (Me.CurrentTarget.HealthPercent >= 20 && Unit.TimeToDeath(Me.CurrentTarget) > 195) || (Me.CurrentTarget.HealthPercent < 20 && Item.Has4PcTeirBonus(ItemSetId))) || Unit.TimeToDeath(Me.CurrentTarget) <= 20)), "Avatar"),
                                     Spell.CastSelfSpell("Bloodbath",           ret => Me.CurrentTarget != null && ( SpellManager.HasSpell("Bloodbath") && (((Spell.SpellCooldown("Recklessness").TotalSeconds >= 10 || Buff.PlayerHasBuff("Recklessness")) || (Me.CurrentTarget.HealthPercent >= 20 && (Unit.TimeToDeath(Me.CurrentTarget) <= 165 || (Unit.TimeToDeath(Me.CurrentTarget) <= 315 & !Item.Has4PcTeirBonus(ItemSetId))) && Unit.TimeToDeath(Me.CurrentTarget) > 75)) || Unit.TimeToDeath(Me.CurrentTarget) <= 19)), "Bloodbath"),
-                                    Spell.CastSelfSpell("Berserker Rage",      ret => Me.CurrentTarget != null && !(Buff.PlayerHasBuff("Enrage") || (Buff.PlayerCountBuff("Raging Blow!") == 2 && Me.CurrentTarget.HealthPercent >= 20)), "Berserker Rage"),
+                                    Spell.CastSelfSpell("Berserker Rage",      ret => Me.CurrentTarget != null && !(Buff.PlayerHasActiveBuff("Enrage") || (Buff.PlayerCountBuff("Raging Blow!") == 2 && Me.CurrentTarget.HealthPercent >= 20)) && Me.CurrentTarget.IsWithinMeleeRange, "Berserker Rage"),
                                     Spell.CastSelfSpell("Deadly Calm",         ret => CLUSettings.Instance.Warrior.UseDeadlyCalm && CLUSettings.Instance.UseCooldowns && Me.CurrentRage >= 40, "Deadly Calm"),
                                     Spell.CastSelfSpell("Death Wish",          ret => CLUSettings.Instance.UseCooldowns, "Death Wish"),
                                     Spell.CastAreaSpell("Cleave", 5, false, 2, 0.0, 0.0, a => true, "Cleave"),
                                     Spell.CastAreaSpell("Whirlwind", 8, false, 4, 0.0, 0.0, a => true, "Whirlwind"),
                                     // TODO: Add support for Glyph of Unending Rage. add support for Skull Banner
-                                    Spell.CastSpell("Heroic Strike",           ret => Me.CurrentTarget != null && ((((Buff.TargetHasDebuff("Colossus Smash") && Me.CurrentRage >= 40) || (Buff.PlayerHasBuff("Deadly Calm") && Me.CurrentRage >= 30)) && Me.CurrentTarget.HealthPercent >= 20) || Me.CurrentRage >= 110), "Heroic Strike"),
+                                    Spell.CastSpell("Heroic Strike",           ret => Me.CurrentTarget != null && ((((Buff.TargetHasDebuff("Colossus Smash") && Me.CurrentRage >= 40) || (Buff.PlayerHasBuff("Deadly Calm") && Me.CurrentRage >= 30)) && Me.CurrentTarget.HealthPercent >= 20) || Me.CurrentRage >= (TalentManager.HasGlyph("Unending Rage") ? 80 : 110)), "Heroic Strike"),
                                     Spell.CastSpell("Bloodthirst",             ret => Me.CurrentTarget != null && !(Me.CurrentTarget.HealthPercent < 20 && Buff.TargetHasDebuff("Colossus Smash") & Me.CurrentRage >= 30), "Bloodthirst"),
                                     Spell.CastSpell("Wild Strike",             ret => Buff.PlayerHasBuff("Bloodsurge") && Me.CurrentTarget.HealthPercent >= 20 && Spell.SpellCooldown("Bloodthirst").TotalSeconds <= 1, "Wild Strike"),
                                     Spell.CastSpell("Colossus Smash",          ret => true, "Colossus Smash"),
@@ -154,7 +155,18 @@ NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagr
                             Buff.CastRaidBuff("Commanding Shout",   ret => true, "Commanding Shout"),
                             Buff.CastRaidBuff("Battle Shout",       ret => true, "Battle Shout"),
                             Buff.CastBuff("Berserker Stance", ret => StyxWoW.Me.Shapeshift != CLUSettings.Instance.Warrior.StanceSelection && CLUSettings.Instance.Warrior.StanceSelection == ShapeshiftForm.BerserkerStance, "Stance is Berserker"),
-                            Buff.CastBuff("Battle Stance", ret => StyxWoW.Me.Shapeshift != CLUSettings.Instance.Warrior.StanceSelection && CLUSettings.Instance.Warrior.StanceSelection == ShapeshiftForm.BattleStance, "Stance is Battle")));
+                            Buff.CastBuff("Battle Stance", ret => StyxWoW.Me.Shapeshift != CLUSettings.Instance.Warrior.StanceSelection && CLUSettings.Instance.Warrior.StanceSelection == ShapeshiftForm.BattleStance, "Stance is Battle"),
+                            
+                            Spell.CastSpell("Charge", ret => Me.CurrentTarget != null && CLU.LocationContext == GroupLogic.Battleground && 
+                                (Macro.Manual || Unit.IsTrainingDummy(Me.CurrentTarget)) && Me.CurrentTarget.DistanceSqr > 3.2 * 3.2, "Charge"),
+
+                            Spell.CastSpellAtLocation("Heroic Leap", ret => Me.CurrentTarget, ret => Me.CurrentTarget != null && 
+                                CLU.LocationContext == GroupLogic.Battleground && (Macro.Manual ||
+                                Unit.IsTrainingDummy(Me.CurrentTarget)) && Me.CurrentTarget.DistanceSqr > 3.2 * 3.2 && 
+                                SpellManager.Spells["Charge"].CooldownTimeLeft.Seconds > 1 &&
+                                SpellManager.Spells["Charge"].CooldownTimeLeft.Seconds < 18, "Heroic Leap")
+                            
+                            ));
             }
         }
 
