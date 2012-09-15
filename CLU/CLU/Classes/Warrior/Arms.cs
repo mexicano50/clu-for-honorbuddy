@@ -70,24 +70,33 @@ namespace CLU.Classes.Warrior
                        "3. Stance Dance\n" +
                        "4. Best Suited for end game raiding\n" +
                        "NOTE: PvP rotations have been implemented in the most basic form, once MoP is released I will go back & revise the rotations for optimal functionality 'Dagradt'. \n" +
-                       "Credits to gniegsch, lathrodectus and Obliv\n" +
+                       "Credits to gniegsch, lathrodectus and Obliv, alxaw \n" +
                        "----------------------------------------------------------------------\n";
             }
         }
 
         private static bool IsMortalStrikeOnCooldown { get { return Spell.SpellCooldown("Mortal Strike").TotalSeconds > 1.5; } }
+        private static bool HasColossusSmash { get { return Buff.PlayerBuffTimeLeft("Colossus Smash") > 5; } }
+        private static bool HasColossusSmash2 { get { return Buff.PlayerBuffTimeLeft("Colossus Smash") > 2; } }
+        private static bool IsColossusSmashOnCooldown { get { return Spell.SpellCooldown("Colossus Smash").TotalSeconds > 4.0; } }
+        private static bool IsTasteForBloodOnCooldown { get { return Buff.PlayerBuffTimeLeft("Taste For Blood") > 2; } }
+        private static bool TasteForBloodStacks { get { return Buff.PlayerCountBuff("Taste For Blood") > 5; } }
+        private static bool IsColossusSmashOnCoolDownHeroicStrike { get { return Spell.SpellCooldown("Colossus Smash").TotalSeconds > 0.3; } }
+
+
+
 
         public override Composite SingleRotation
         {
             get
             {
                 return new PrioritySelector(
-                                // Pause Rotation
+                    // Pause Rotation
                                 new Decorator(ret => CLUSettings.Instance.PauseRotation, new ActionAlwaysSucceed()),
 
                                 // For DS Encounters.
                                 EncounterSpecific.ExtraActionButton(),
-   
+
                                 new Decorator(
                                     ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget),
                                         new PrioritySelector(
@@ -96,39 +105,34 @@ namespace CLU.Classes.Warrior
                                         Buff.CastBuff("Lifeblood", ret => true, "Lifeblood"), // Thanks Kink
                                         Item.UseEngineerGloves())),
                                     // Interupts
-                                    Spell.CastInterupt("Pummel", ret => true, "Pummel"),
+                                    Spell.CastInterupt("Pummel", ret => CLUSettings.Instance.Warrior.UsePummel, "Pummel"),
                                     Spell.CastInterupt("Spell Reflection", ret => Me.CurrentTarget != null && Me.CurrentTarget.CurrentTarget == Me, "Spell Reflection"),
 
                                     // Start of Actions - SimCraft as of 3/31/2012
                                     // TODO: GCD Check and Tier pce check needs attention. Spell.GCD = 0
-                                    Spell.CastSelfSpell("Berserker Rage",          ret => !Buff.PlayerHasActiveBuff("Deadly Calm") && Spell.SpellCooldown("Deadly Calm").TotalSeconds > 1.5 && Me.CurrentRage <= 95, "Berserker Rage"),
-                                    Spell.CastSelfSpell("Deadly Calm",             ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget), "Deadly Calm"),
-                                    Spell.CastSelfSpell("Inner Rage",              ret => !Buff.PlayerHasActiveBuff("Deadly Calm") && Spell.SpellCooldown("Deadly Calm").TotalSeconds > 15, "Inner Rage"),
-                                    Spell.CastSpell("Recklessness",                ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget) && (Me.CurrentTarget.HealthPercent > 90 || Me.CurrentTarget.HealthPercent <= 20), "Recklessness"),
-                                    Spell.CastSelfSpell("Berserker Stance",        ret => !Buff.PlayerHasBuff("Berserker Stance") && !Buff.PlayerHasActiveBuff("Taste for Blood") && Buff.TargetHasDebuff("Rend") && Me.CurrentRage <= 75 && CLUSettings.Instance.Warrior.EnableStanceDance, "**Berserker Stance**"),
-                                    Spell.CastSelfSpell("Battle Stance",           ret => !Buff.PlayerHasBuff("Battle Stance") && !Buff.TargetHasDebuff("Rend") && CLUSettings.Instance.Warrior.EnableStanceDance, "**Battle Stance**"),
-                                    Spell.CastSelfSpell("Battle Stance",           ret => !Buff.PlayerHasBuff("Battle Stance") && (Buff.PlayerHasActiveBuff("Taste for Blood") || Buff.PlayerHasActiveBuff("Overpower")) && Me.CurrentRage <= 75 && SpellManager.Spells["Mortal Strike"].Cooldown && CLUSettings.Instance.Warrior.EnableStanceDance, "**Battle Stance**"), // Spell.SpellCooldown("Mortal Strike").TotalSeconds > (1.5 + StyxWoW.WoWClient.Latency * 2 / 1000.0)
-                                    Spell.CastSpell("Colossus Smash",              ret => Buff.PlayerHasBuff("Sudden Death") && IsMortalStrikeOnCooldown, "Colossus Smash"),
-                                    Spell.CastAreaSpell("Sweeping Strikes", 5, false, 2, 0.0, 0.0, a => (Buff.PlayerHasBuff("Berserker Stance") || Buff.PlayerHasBuff("Battle Stance")), "Sweeping Strikes"),
-                                    Spell.CastAreaSpell("Cleave", 5, false, 3, 0.0, 0.0, a => (Buff.PlayerHasBuff("Berserker Stance") || Buff.PlayerHasBuff("Battle Stance")) && Me.CurrentRage > 40, "Cleave"),
-                                    // Disabled for now.  We need to only use if we have Blood and Thunder.
-                                    // Spell.CastAreaSpell("Thunder Clap", 8, false, 2, 0.0, 0.0, a => Buff.PlayerHasBuff("Battle Stance") && Buff.TargetDebuffTimeLeft("Thunder Clap").TotalSeconds < 12.5 && Buff.TargetHasDebuff("Rend"), "TC Rend"),
-                                    Spell.CastAreaSpell("Bladestorm", 5, false, 4, 0.0, 0.0, a => !Buff.PlayerHasActiveBuff("Deadly Calm") && !Buff.PlayerHasActiveBuff("Sweeping Strikes"), "Bladestorm"),
-                                    Spell.CastSpell("Heroic Strike",               ret => Buff.PlayerHasActiveBuff("Deadly Calm"), "Heroic Strike"),
-                                    Spell.CastSpell("Heroic Strike",               ret => Me.CurrentRage > 85, "Heroic Strike"),
-                                    Spell.CastSpell("Heroic Strike",               ret => Me.CurrentTarget != null && Buff.PlayerHasBuff("Inner Rage") && Me.CurrentTarget.HealthPercent > 20 && (Item.Has2PcTeirBonus(ItemSetId) ? Me.CurrentRage > 50 : Me.CurrentRage > 60), "Heroic Strike"),
-                                    Spell.CastSpell("Heroic Strike",               ret => Me.CurrentTarget != null && Buff.PlayerHasBuff("Inner Rage") && Me.CurrentTarget.HealthPercent <= 20 && ((Item.Has2PcTeirBonus(ItemSetId) ? Me.CurrentRage > 50 : Me.CurrentRage > 60) || Buff.PlayerHasActiveBuff("Battle Trance")), "Heroic Strike"),
-                                    Spell.CastSpell("Mortal Strike",               ret => Me.CurrentTarget != null && Me.CurrentTarget.HealthPercent > 20, "Mortal Strike"),
-                                    Spell.CastSpell("Colossus Smash",              ret => !Buff.TargetHasDebuff("Colossus Smash") && IsMortalStrikeOnCooldown, "Colossus Smash"),
-                                    Spell.CastSpell("Execute",                     ret => Buff.PlayerActiveBuffTimeLeft("Executioner").TotalSeconds < 2.5, "Execute"),
-                                    Spell.CastSpell("Mortal Strike",               ret => Me.CurrentTarget != null && Me.CurrentTarget.HealthPercent <= 20 && (Buff.TargetDebuffTimeLeft("Rend").TotalSeconds < 3 || !Buff.PlayerHasActiveBuff("Wrecking Crew") || Me.CurrentRage <= 25 || Me.CurrentRage >= 35), "Mortal Strike"),
-                                    Spell.CastSpell("Execute",                     ret => Me.CurrentRage > 90, "Execute"),
-                                    Spell.CastSpell("Overpower",                   ret => Buff.PlayerHasActiveBuff("Taste for Blood") || Buff.PlayerHasActiveBuff("Overpower"), "Overpower"),
-                                    Spell.CastSpell("Execute",                     ret => true, "Execute"),
-                                    Spell.CastSpell("Colossus Smash",              ret => Buff.TargetDebuffTimeLeft("Colossus Smash").TotalSeconds < 1.5 && IsMortalStrikeOnCooldown, "Colossus Smash"),
-                                    Spell.CastSpell("Slam",                        ret => (Me.CurrentRage >= 35 || Buff.PlayerHasActiveBuff("Battle Trance") || Buff.PlayerHasActiveBuff("Deadly Calm")) && IsMortalStrikeOnCooldown, "Slam"),
-                                    Spell.CastSpell("Commanding Shout",            ret => Me.RagePercent < 60 && CLUSettings.Instance.Warrior.ShoutSelection == WarriorShout.Commanding, "Commanding Shout for Rage"),
-                                    Spell.CastSpell("Battle Shout",                ret => Me.RagePercent < 60 && CLUSettings.Instance.Warrior.ShoutSelection == WarriorShout.Battle, "Battle Shout for Rage"));
+                                    Spell.CastSelfSpell("Berserker Rage",   ret => Me.CurrentRage > 30 || !Me.Auras.ContainsKey("Enrage") || Buff.PlayerHasBuff("Recklessness"), "Berserker Rage"), //Thanks to swordfish for !Me.Auras.ContainsKey tip.
+                                    Spell.CastSelfSpell("Deadly Calm",      ret => Me.CurrentRage > 40 || Buff.PlayerCountBuff("Taste For Blood") > 3, "Deadly Calm"),
+                                    Spell.CastSelfSpell("Recklessness",     ret => HasColossusSmash || IsColossusSmashOnCooldown, "Recklessness"),
+                                    Spell.CastAreaSpell("Sweeping Strikes", 5, false, 2, 0.0, 0.0, a => true, "Sweeping Strikes"),
+                                    Spell.CastAreaSpell("Thunder Clap", 5, false, 3, 0.0, 0.0, a => true, "Thunder Clap"),
+                                    Spell.CastAreaSpell("Cleave", 5, false, 3, 0.0, 0.0, a => Me.CurrentRage > 40, "Cleave"),
+                                    Spell.CastSpell("Dragon Roar",          ret => true, "Dragon Roar"),
+                                    Spell.CastAreaSpell("Whirlwind", 5, false, 3, 0.0, 0.0, a => Me.CurrentRage > 50, "Whirlwind"),
+                                    Spell.CastAreaSpell("Bladestorm", 5, false, 4, 0.0, 0.0, a => true, "Bladestorm"),
+                                    Spell.CastAreaSpell("Shockwave", 5, false, 1, 0.0, 0.0, a => true, "Shockwave"),
+                                    Spell.CastSpell("Heroic Strike",        ret => Buff.PlayerHasBuff("Deadly Calm") || (Me.CurrentRage > 95 && Me.CurrentTarget.HealthPercent > 20 && Buff.TargetHasDebuff("Colosuss Smash")), "Heroic Strike"),
+                                    Spell.CastSpell("Heroic Strike",        ret => Buff.PlayerHasBuff("Taste For Blood") && IsColossusSmashOnCoolDownHeroicStrike && HasColossusSmash2, "Heroic Strike"),
+                                    Spell.CastSpell("Mortal Strike",        ret => true, "Mortal Strike"),
+                                    Spell.CastSpell("Colossus Smash",       ret => Buff.TargetDebuffTimeLeft("Colossus Smash").TotalSeconds <= 1.5 || IsMortalStrikeOnCooldown, "Colossus Smash"),
+                                    Spell.CastSpell("Execute",              ret => Me.CurrentTarget.HealthPercent > 20, "Execute"),
+                                    Spell.CastSpell("Heroic Strike",        ret => TasteForBloodStacks && SpellManager.CanCast("Overpower"), "Heroic Strike"),
+                                    Spell.CastSpell("Heroic Throw",         ret => true, "Heroic Throw"),
+                                    Spell.CastSpell("Heroic Strike",        ret => Buff.PlayerHasBuff("Taste for Blood") && IsTasteForBloodOnCooldown, "Heroic Strike"),
+                                    Spell.CastSpell("Overpower",            ret => true, "Overpower"),
+                                    Spell.CastSpell("Slam",                 ret => Me.CurrentRage > 70 && Buff.TargetHasDebuff("Colossus Smash") && Me.CurrentTarget.HealthPercent > 20, "Slam"),
+                                    Spell.CastSpell("Slam",                 ret => Me.CurrentTarget.HealthPercent > 20, "Slam"),
+                                    Spell.CastSpell("Commanding Shout",     ret => Me.RagePercent < 60 && CLUSettings.Instance.Warrior.ShoutSelection == WarriorShout.Commanding, "Commanding Shout for Rage"),
+                                    Spell.CastSpell("Battle Shout",         ret => Me.RagePercent < 60 && CLUSettings.Instance.Warrior.ShoutSelection == WarriorShout.Battle, "Battle Shout for Rage"));
             }
         }
 
@@ -225,7 +229,12 @@ namespace CLU.Classes.Warrior
                             //flask,type=winters_bite
                             //food,type=black_pepper_ribs_and_shrimp
                             //stance,choose=battle
+<<<<<<< .mine
+                            Buff.CastBuff("Berserker Stance", ret => StyxWoW.Me.Shapeshift != CLUSettings.Instance.Warrior.StanceSelection && CLUSettings.Instance.Warrior.StanceSelection == ShapeshiftForm.BerserkerStance, "Stance is Berserker"),
+                            Buff.CastBuff("Battle Stance", ret => StyxWoW.Me.Shapeshift != CLUSettings.Instance.Warrior.StanceSelection && CLUSettings.Instance.Warrior.StanceSelection == ShapeshiftForm.BattleStance, "Stance is Battle"),
+=======
                             Buff.CastBuff("Battle Stance", ret => Me.Shapeshift != ShapeshiftForm.BattleStance, "Battle Stance"),
+>>>>>>> .r294
                             //mogu_power_potion
                             //battle_shout,if=!buff_exists
                             Buff.CastRaidBuff("Battle Shout", ret => true, "Battle Shout"),

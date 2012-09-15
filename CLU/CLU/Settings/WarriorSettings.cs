@@ -19,6 +19,8 @@ using DefaultValue = Styx.Helpers.DefaultValueAttribute;
 
 namespace CLU.Settings
 {
+    using Styx;
+
     internal class WarriorSettings : Styx.Helpers.Settings
     {
         public WarriorSettings()
@@ -27,6 +29,18 @@ namespace CLU.Settings
         }
 
         #region Common
+
+        [Setting]
+        [DefaultValue(ShapeshiftForm.BattleStance)]
+        [Category("Common")]
+        [DisplayName("Warrior Stance Selector")]
+        [Description("Choose a Warrior Stance.")]
+        public ShapeshiftForm StanceSelection
+        {
+            get;
+            set;
+        }
+        
 
         [Setting]
         [DefaultValue(WarriorShout.Battle)]
