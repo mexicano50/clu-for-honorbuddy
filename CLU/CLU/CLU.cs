@@ -60,6 +60,7 @@ using Timer = System.Timers.Timer;
 * Digitalmocking for his initial Elemental Shaman rotation
 * Toney001 for his improvements to the Unholy Deathknight rotation
 * kbrebel04  for his improvements to Subtlety Rogue
+* alxaw (HB9806B90) for his initial Arms rotation
 * Dagradt for his PvP rotations.
 * LaoArchAngel for his help with core changes and Rogue changes.
 * Apoc for just about everything :P */
