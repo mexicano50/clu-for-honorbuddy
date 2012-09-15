@@ -18,7 +18,6 @@ using CLU.Helpers;
 using CLU.Settings;
 
 using Styx;
-using Styx.Combat.CombatRoutine;
 using Styx.WoWInternals;
 using Styx.WoWInternals.WoWObjects;
 using System.Collections.Generic;

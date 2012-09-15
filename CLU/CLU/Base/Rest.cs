@@ -17,7 +17,6 @@ namespace CLU.Base
 {
 
     using Styx;
-    using Styx.Combat.CombatRoutine;
     using Styx.CommonBot;
     using Styx.CommonBot.Inventory;
     using Styx.CommonBot.POI;

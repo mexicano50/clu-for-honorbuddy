@@ -17,7 +17,6 @@ namespace CLU.Managers
     using System.Linq;
     using CommonBehaviors.Actions;
     using Styx;
-    using Styx.Combat.CombatRoutine;
     using Styx.Common.Helpers;
     using Styx.CommonBot;
     using Styx.WoWInternals;

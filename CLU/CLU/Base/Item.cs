@@ -17,7 +17,6 @@ namespace CLU.Base
     using Styx.WoWInternals;
     using Styx.WoWInternals.WoWObjects;
     using Styx.TreeSharp;
-    using Styx.Combat.CombatRoutine;
     using System.Text;
     using global::CLU.Lists;
 

@@ -31,7 +31,6 @@ using CLU.Settings;
 using CLU.Sound;
 
 using Styx;
-using Styx.Combat.CombatRoutine;
 using Styx.Common;
 using Styx.CommonBot;
 using Styx.CommonBot.Routines;

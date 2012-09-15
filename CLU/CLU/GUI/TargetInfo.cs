@@ -20,11 +20,9 @@ namespace CLU.GUI
     using System.Drawing;
     using System.Globalization;
 
-    using Styx.Combat.CombatRoutine;
+
     using Styx.WoWInternals.WoWObjects;
-
     using global::CLU.Base;
-
     using Styx;
 
     public partial class TargetInfo : Form

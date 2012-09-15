@@ -18,7 +18,8 @@ using CLU.Helpers;
 using CLU.Managers;
 using CLU.Settings;
 using Rest = CLU.Base.Rest;
-
+using Styx.CommonBot;
+using Styx;
 namespace CLU.Classes.Warlock
 {
 
@@ -54,7 +55,7 @@ namespace CLU.Classes.Warlock
         public override float CombatMaxDistance
         {
             get {
-                return (Spell.CanCast("Metamorphosis", Me) || Buff.PlayerHasBuff("Metamorphosis")) ? 10f : 35f;
+                return 35f;
             }
         }
 
@@ -137,14 +138,14 @@ namespace CLU.Classes.Warlock
                            //Demonic Fury or Pull
                            new Decorator(ret => Me.CurrentTarget != null && ((!Me.CurrentTarget.HasMyAura(603) || (Me.CurrentTarget.ActiveAuras.ContainsKey("Corruption") && Spell.CurrentDemonicFury() > 800 && Me.CurrentTarget.ActiveAuras.ContainsKey("Shadowflame")))),
                                new PrioritySelector(
-                                   Spell.CastSelfSpell("Metamorphosis", ret => !Me.ActiveAuras.ContainsKey("Metamorphosis"), "Metamorphosis for Doom"),
+                                   Spell.CastSelfSpell("Metamorphosis", ret => Me.Shapeshift!=ShapeshiftForm.Metamorphosis, "Metamorphosis for Doom"),
                                    Spell.CastSpell(603, ret => !Me.CurrentTarget.HasMyAura(603), "Doom"),
                                    Spell.CastSpell(103964,ret=>true,"Touch of Chaos")
                                    )),
-                           Spell.CancelMyAura("Metamorphosis", ret => Me.CurrentTarget != null && Me.ActiveAuras.ContainsKey("Metamorphosis") && Me.CurrentTarget.HasMyAura(603) && Me.GetPowerInfo(Styx.WoWPowerType.DemonicFury).CurrentI < 200, "Metamorphosis"),
+                           Spell.CancelMyAura("Metamorphosis", ret => Me.Shapeshift==ShapeshiftForm.Metamorphosis && Me.CurrentTarget != null && Me.CurrentTarget.HasMyAura(603) && Me.GetPowerInfo(Styx.WoWPowerType.DemonicFury).CurrentI < 200, "Metamorphosis"),
                            Spell.CastSelfSpell("Life Tap",                ret => Me.ManaPercent <= 30 && !Spell.PlayerIsChanneling && Me.HealthPercent > 40 && !Buff.UnitHasHasteBuff(Me) && !Buff.PlayerHasBuff("Metamorphosis") && !Buff.PlayerHasBuff("Demon Soul: Felguard"), "Life tap - mana < 30%"),
                            Spell.CastSelfSpell("Life Tap",                ret => Me.IsMoving && Me.HealthPercent > Me.ManaPercent && Me.ManaPercent < 80, "Life tap while moving"),
-                           new Decorator(ret => Me.CurrentTarget != null && !Me.ActiveAuras.ContainsKey("Metamorphosis") && Me.CurrentTarget.HasMyAura(603) && Me.GetPowerInfo(Styx.WoWPowerType.DemonicFury).CurrentI < 800,
+                           new Decorator(ret => Me.CurrentTarget != null && Me.Shapeshift!=ShapeshiftForm.Metamorphosis && Me.CurrentTarget.HasMyAura(603) && Me.GetPowerInfo(Styx.WoWPowerType.DemonicFury).CurrentI < 800,
                                new PrioritySelector(
                                     Buff.CastDebuff("Corruption", ret => true, "Corruption"),
                                     Spell.CastSpell(105174, ret => !WoWSpell.FromId(105174).Cooldown &&  !Me.CurrentTarget.ActiveAuras.ContainsKey("Shadowflame"), "Hand of Guld'an"),
@@ -152,7 +153,7 @@ namespace CLU.Classes.Warlock
                                     Spell.CastSpell("Shadow Bolt",ret => !Me.IsMoving,"Shadow Bolt"),
                                     Spell.CastSpell("Fel Flame",ret => Me.IsMoving,"Fel Flame")
                                    )),
-                           Spell.CastSelfSpell("Life Tap",                ret => Me.ManaPercent < 100 && !Spell.PlayerIsChanneling && Me.HealthPercent > 40, "Life tap - mana < 100%"));
+                           Spell.CastSelfSpell("Life Tap", ret => Me.ManaPercent < 100 && !Spell.PlayerIsChanneling && Me.HealthPercent > 40, "Life tap - mana < 100%"));
 
             }
         }

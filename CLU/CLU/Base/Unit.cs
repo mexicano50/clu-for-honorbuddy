@@ -16,7 +16,6 @@ namespace CLU.Base
     using System.Collections.Generic;
     using System.Linq;
     using Styx;
-    using Styx.Combat.CombatRoutine;
     using Styx.CommonBot;
     using Styx.CommonBot.POI;
     using Styx.WoWInternals;
