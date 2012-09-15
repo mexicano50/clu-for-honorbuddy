@@ -83,9 +83,6 @@ namespace CLU.Classes.Warrior
         private static bool TasteForBloodStacks { get { return Buff.PlayerCountBuff("Taste For Blood") > 5; } }
         private static bool IsColossusSmashOnCoolDownHeroicStrike { get { return Spell.SpellCooldown("Colossus Smash").TotalSeconds > 0.3; } }
 
-
-
-
         public override Composite SingleRotation
         {
             get
@@ -96,6 +93,9 @@ namespace CLU.Classes.Warrior
 
                                 // For DS Encounters.
                                 EncounterSpecific.ExtraActionButton(),
+
+                                // Kill flying units.
+                                Common.HandleFlyingUnits,
 
                                 new Decorator(
                                     ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget),

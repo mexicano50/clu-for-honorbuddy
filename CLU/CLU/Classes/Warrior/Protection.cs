@@ -91,6 +91,9 @@ NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagr
                      // For DS Encounters.
                      EncounterSpecific.ExtraActionButton(),
 
+                     // Kill flying units.
+                     Common.HandleFlyingUnits,
+
                      // Trinkets & Cooldowns
                          new Decorator(
                              ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget),

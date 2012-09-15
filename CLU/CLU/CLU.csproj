@@ -90,6 +90,7 @@
     <Compile Include="Classes\Warlock\Demonology.cs" />
     <Compile Include="Classes\Warlock\Destruction.cs" />
     <Compile Include="Classes\Warrior\Arms.cs" />
+    <Compile Include="Classes\Warrior\Common.cs" />
     <Compile Include="Classes\Warrior\Fury.cs" />
     <Compile Include="Classes\Warrior\Protection.cs" />
     <Compile Include="CLU.cs" />
