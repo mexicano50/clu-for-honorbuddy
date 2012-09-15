@@ -18,13 +18,11 @@ using CommonBehaviors.Actions;
 using Styx;
 using Styx.TreeSharp;
 using CLU.Base;
-
 using Rest = CLU.Base.Rest;
 using Styx.CommonBot;
 
 namespace CLU.Classes.DeathKnight
 {
-
     class Unholy : RotationBase
     {
         public override string Name
@@ -41,7 +39,6 @@ namespace CLU.Classes.DeathKnight
             }
         }
 
-        // adding some help
         public override string Help
         {
             get {
@@ -191,7 +188,7 @@ namespace CLU.Classes.DeathKnight
                         //soul_reaper,if=target.health.pct<=35|((target.health.pct-3*(target.health.pct%target.time_to_die))<=35)
                         Spell.CastSpell("Soul Reaper", ret => StyxWoW.Me.CurrentTarget.HealthPercent <= 35, "Soul Reaping"),
                         //unholy_blight,if=talent.unholy_blight.enabled&(dot.frost_fever.remains<3|dot.blood_plague.remains<3)
-                        Spell.CastSelfSpell("Unholy Blight", ret => SpellManager.HasSpell("Unholy Blight") && Me.CurrentTarget != null && Me.CurrentTarget.DistanceSqr < 10 * 10 &&
+                        Spell.CastSelfSpell("Unholy Blight", ret => SpellManager.HasSpell("Unholy Blight") && Me.CurrentTarget != null && Me.CurrentTarget.DistanceSqr <= 10 * 10 &&
                             (Buff.TargetDebuffTimeLeft("Frost Fever").Seconds < 3 || Buff.TargetDebuffTimeLeft("Blood Plague").Seconds < 3), "Unholy Blight"),
                         //chains_of_ice,if=!dot.frost_fever.ticking
                         Spell.CastSpell("Chains of Ice", ret => !Buff.TargetHasDebuff("Frost Fever"), "Chains of Ice"),
