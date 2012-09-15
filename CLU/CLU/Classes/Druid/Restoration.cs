@@ -136,7 +136,7 @@ namespace CLU.Classes.Druid
                            // Cooldowns
                            //Healer.FindAreaHeal(a => CLUSettings.Instance.UseCooldowns && StyxWoW.Me.Combat, 10, 65, 38f, (Me.IsInRaid ? 6 : 4),"party healing: Avg: 10-65, 38yrds, count: 6 or 4",
                            //                    Item.UseTrinkets(),
-                           //                    Spell.UseRacials(),
+                           //                    Racials.UseRacials(),
                            //                    Buff.CastBuff("Lifeblood", ret => true, "Lifeblood"),
                            //                    Item.UseEngineerGloves()
                            //),

@@ -103,7 +103,7 @@ namespace CLU.Classes.Shaman
                                ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget),
                                new PrioritySelector(
                                    Item.UseTrinkets(),
-                                   Spell.UseRacials(),
+                                   Racials.UseRacials(),
                                    Buff.CastBuff("Lifeblood", ret => true, "Lifeblood"), // Thanks Kink
                                    Item.UseEngineerGloves())),
                            // PvP TRICK.
@@ -120,7 +120,7 @@ namespace CLU.Classes.Shaman
                            new Decorator(
                                ret => !Me.IsMoving && Me.CurrentTarget != null && Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 10) > 1 && !BossList.IgnoreAoE.Contains(Unit.CurrentTargetEntry),
                                new PrioritySelector(
-                                   Spell.CastSpellAtLocation("Earthquake", u => Me.CurrentTarget, ret => Me.CurrentTarget != null && !Me.IsMoving && !Me.CurrentTarget.IsMoving && Me.ManaPercent > 60 && Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 10) > 4, "Earthquake"),
+                                   Spell.CastOnUnitLocation("Earthquake", u => Me.CurrentTarget, ret => Me.CurrentTarget != null && !Me.IsMoving && !Me.CurrentTarget.IsMoving && Me.ManaPercent > 60 && Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 10) > 4, "Earthquake"),
                                    Spell.CastSelfSpell("Thunderstorm",    ret => Me.ManaPercent < 16 || Unit.CountEnnemiesInRange(Me.Location, 10) > 1, "Thunderstorm"),
                                    Spell.CastSpell("Earth Shock",         ret => Buff.PlayerCountBuff("Lightning Shield") == 9, "Earth Shock"),
                                    Spell.CastSpell("Chain Lightning",     ret => true, "Chain Lightning")

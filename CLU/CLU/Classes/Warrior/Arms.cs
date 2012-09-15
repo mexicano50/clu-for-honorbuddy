@@ -101,7 +101,7 @@ namespace CLU.Classes.Warrior
                                     ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget),
                                         new PrioritySelector(
                                         Item.UseTrinkets(),
-                                        Spell.UseRacials(),
+                                        Racials.UseRacials(),
                                         Buff.CastBuff("Lifeblood", ret => true, "Lifeblood"), // Thanks Kink
                                         Item.UseEngineerGloves())),
                                     // Interupts
@@ -155,7 +155,7 @@ namespace CLU.Classes.Warrior
                         //charge,if=!currenttarget.iswithinmeleerenage
                         Spell.CastSpell("Charge", ret => Me.CurrentTarget != null && Me.CurrentTarget.DistanceSqr > 3.2 * 3.2, "Charge"),
                         //heroic_leap,if=!currenttarget.iswithinmeleerange&spell.charge.down
-                        Spell.CastSpellAtLocation("Heroic Leap", ret => Me.CurrentTarget, ret => Me.CurrentTarget != null && Me.CurrentTarget.DistanceSqr > 3.2 * 3.2 &&
+                        Spell.CastOnUnitLocation("Heroic Leap", ret => Me.CurrentTarget, ret => Me.CurrentTarget != null && Me.CurrentTarget.DistanceSqr > 3.2 * 3.2 &&
                             SpellManager.Spells["Charge"].CooldownTimeLeft.Seconds > 1 && SpellManager.Spells["Charge"].CooldownTimeLeft.Seconds < 18, "Heroic Leap"),
                         //mogu_power_potion,if=(target.health.pct<20&buff.recklessness.up)|buff.bloodlust.react|target.time_to_die<=25
                         //recklessness,use_off_gcd=1,if=((debuff.colossus_smash.remains>=5|cooldown.colossus_smash.remains<=4)&((!talent.avatar.enabled|!set_bonus.tier14_4pc_melee)&((target.health.pct<20|target.time_to_die>315|(target.time_to_die>165&set_bonus.tier14_4pc_melee)))|(talent.avatar.enabled&set_bonus.tier14_4pc_melee&buff.avatar.up)))|target.time_to_die<=18
@@ -164,7 +164,7 @@ namespace CLU.Classes.Warrior
                         //berserker_rage,use_off_gcd=1,if=!buff.enrage.up
                         Spell.CastSelfSpell("Berserker Rage", ret => Me.CurrentTarget.IsWithinMeleeRange && !Buff.PlayerHasActiveBuff("Enrage"), "Berserker Rage"),
                         //heroic_leap,use_off_gcd=1,if=debuff.colossus_smash.up
-                        Spell.CastSpellAtLocation("Heroic Leap", ret => Me.CurrentTarget, ret => Buff.TargetHasDebuff("Colossus Smash"), "Heroic Leap"),
+                        Spell.CastOnUnitLocation("Heroic Leap", ret => Me.CurrentTarget, ret => Buff.TargetHasDebuff("Colossus Smash"), "Heroic Leap"),
                         //deadly_calm,use_off_gcd=1,if=rage>=40
                         Spell.CastSelfSpell("Deadly Calm", ret => Me.CurrentRage >= 40, "Deadly Calm"),
                         //heroic_strike,use_off_gcd=1,if=((buff.taste_for_blood.up&buff.taste_for_blood.remains<=2)|(buff.taste_for_blood.stack=5&buff.overpower.up)|(buff.taste_for_blood.up&debuff.colossus_smash.remains<=2&!cooldown.colossus_smash.remains=0)|buff.deadly_calm.up|rage>110)&target.health.pct>=20&debuff.colossus_smash.up
@@ -240,7 +240,7 @@ namespace CLU.Classes.Warrior
                             Spell.CastSpell("Charge", ret => Me.CurrentTarget != null && CLU.LocationContext == GroupLogic.Battleground && (Macro.Manual || Unit.IsTrainingDummy(Me.CurrentTarget)) &&
                                 Me.CurrentTarget.DistanceSqr > 3.2 * 3.2, "Charge"),
                             //heroic_leap,if=!currenttarget.iswithinmeleerange&spell.charge.down
-                            Spell.CastSpellAtLocation("Heroic Leap", ret => Me.CurrentTarget, ret => Me.CurrentTarget != null && CLU.LocationContext == GroupLogic.Battleground && (Macro.Manual ||
+                            Spell.CastOnUnitLocation("Heroic Leap", ret => Me.CurrentTarget, ret => Me.CurrentTarget != null && CLU.LocationContext == GroupLogic.Battleground && (Macro.Manual ||
                                 Unit.IsTrainingDummy(Me.CurrentTarget)) && Me.CurrentTarget.DistanceSqr > 3.2 * 3.2 && SpellManager.Spells["Charge"].CooldownTimeLeft.Seconds > 1 &&
                                 SpellManager.Spells["Charge"].CooldownTimeLeft.Seconds < 18, "Heroic Leap"))
                 ));
@@ -262,7 +262,7 @@ namespace CLU.Classes.Warrior
                             new Decorator(ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget),
                                 new PrioritySelector(
                                     Item.UseTrinkets(),
-                                    Spell.UseRacials(),
+                                    Racials.UseRacials(),
                                     Buff.CastBuff("Lifeblood", ret => true, "Lifeblood"),
                                     Item.UseEngineerGloves(),
                                     new Action(delegate

@@ -144,7 +144,7 @@ namespace CLU.Classes.Rogue
                                ret => Me.CurrentTarget != null && (Unit.IsTargetWorthy(Me.CurrentTarget)),
                                new PrioritySelector(
                                    Item.UseTrinkets(),
-                                   Spell.UseRacials(),
+                                   Racials.UseRacials(),
                                    Buff.CastBuff("Lifeblood", ret => true, "Lifeblood"), // Thanks Kink
                                    Item.UseEngineerGloves())),
 

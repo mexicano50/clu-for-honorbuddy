@@ -118,7 +118,7 @@ namespace CLU.Classes.Priest
                            //// Cooldowns // currently slowing the CC down
                            //Healer.FindAreaHeal(a => CLUSettings.Instance.UseCooldowns && StyxWoW.Me.Combat, 10, 65, 40f, (Me.IsInRaid ? 6 : 3), "Cooldowns: Avg: 10-65, 40yrds, count: 6 or 3",
                            //                    Item.UseTrinkets(),
-                           //                    Spell.UseRacials(),
+                           //                    Racials.UseRacials(),
                            //                    Spell.CastSelfSpell("Archangel", ret => IsAtonementSpec && Buff.PlayerCountBuff("Evangelism") > 4, "Archangel"),
                     //                    Spell.CastSpell("Power Infusion", ret => Me, a => !Buff.UnitHasHasteBuff(Me), "Power Infusion"),
                            //                    Buff.CastBuff("Lifeblood", ret => true, "Lifeblood"),
@@ -181,7 +181,7 @@ namespace CLU.Classes.Priest
 
                            // Party Barrier
                            Healer.FindAreaHeal(a => CLUSettings.Instance.UseCooldowns && StyxWoW.Me.Combat && Spell.SpellCooldown("Power Word: Barrier").TotalSeconds < 0.5, CLUSettings.Instance.Priest.PowerWordBarrierPartyminAH, CLUSettings.Instance.Priest.PowerWordBarrierPartymaxAH, CLUSettings.Instance.Priest.PowerWordBarrierPartymaxDBP, (Me.IsInRaid ? 5 : CLUSettings.Instance.Priest.PowerWordBarrierPartyminPlayers), "party barrier: Avg: 10-70, 30yrds, count: 5 or 4",
-                                               Spell.CastSpellAtLocation("Power Word: Barrier", u => Me.CurrentTarget, a => NotMoving, "Power Word: Barrier")),
+                                               Spell.CastOnUnitLocation("Power Word: Barrier", u => Me.CurrentTarget, a => NotMoving, "Power Word: Barrier")),
 
                            // // party healing with Holy Nova
                            // Healer.FindAreaHeal(a => IsAtonementSpec, 10, 80, 11f, (Me.IsInRaid ? 4 : 3), "party healing: Avg: 10-80, 30yrds, count: 4 or 3",

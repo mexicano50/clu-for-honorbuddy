@@ -147,7 +147,7 @@ namespace CLU.Classes.Shaman
 					//// Cooldowns
 					//Healer.FindAreaHeal(a => CLUSettings.Instance.UseCooldowns && StyxWoW.Me.Combat, 10, 65, 38f, (Me.IsInRaid ? 6 : 4), "Cooldowns: Avg: 10-65, 38yrds, count: 6 or 3",
 					//                    Item.UseTrinkets(),
-					//                    Spell.UseRacials(),
+					//                    Racials.UseRacials(),
 					//                    Buff.CastBuff("Lifeblood", ret => true, "Lifeblood"),
 					//                    Item.UseEngineerGloves()
 					//),
@@ -179,7 +179,7 @@ namespace CLU.Classes.Shaman
 
 					// party healing
 					Healer.FindAreaHeal(a => Spell.SpellCooldown("Healing Rain").TotalSeconds < 0.4 && Me.ManaPercent > 30, 10, (Me.IsInRaid ? 90 : 85), 20f, (Me.IsInRaid ? 5 : 4), "Healing Rain party healing: Avg: 10-90 or 85, 30yrds, count: 6 or 4",
-					                    Spell.CastSpellAtLocation("Healing Rain", u => Me.CurrentTarget, a => true, "Healing Rain")
+					                    Spell.CastOnUnitLocation("Healing Rain", u => Me.CurrentTarget, a => true, "Healing Rain")
 					                   ),
 
 

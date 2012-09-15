@@ -96,7 +96,7 @@ namespace CLU.Classes.DeathKnight
                                ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget),
                                new PrioritySelector(
                                    Item.UseTrinkets(),
-                                   Spell.UseRacials(),
+                                   Racials.UseRacials(),
                                    Buff.CastBuff("Lifeblood", ret => true, "Lifeblood"), // Thanks Kink
                                    Item.UseEngineerGloves())),
                            
@@ -177,7 +177,7 @@ namespace CLU.Classes.DeathKnight
                         Spell.CastSpell("Death Grip", ret => Me.CurrentTarget != null && Me.CurrentTarget.DistanceSqr > 3.2 * 3.2 && !Buff.TargetHasDebuff("Chains of Ice") &&
                             !SpellManager.CanCast("Chains of Ice"), "Death Grip"),
                         //blood_fury,if=time>=10
-                        Spell.UseRacials(),
+                        Racials.UseRacials(),
                         //mogu_power_potion,if=target.time_to_die<=60&buff.pillar_of_frost.up
                         //use_item,name=gauntlets_of_the_lost_catacomb,if=(frost>=1|death>=1)
                         Item.UseEngineerGloves(),
@@ -254,7 +254,7 @@ namespace CLU.Classes.DeathKnight
                                 //frost_strike
                                 Spell.CastSpell("Frost Strike", ret => true, "Frost Strike"),
                                 //death_and_decay
-                                Spell.CastSpellAtLocation("Death and Decay", u => StyxWoW.Me.CurrentTarget, ret => true, "Death and Decay"),
+                                Spell.CastOnUnitLocation("Death and Decay", u => StyxWoW.Me.CurrentTarget, ret => true, "Death and Decay"),
                                 //plague_strike
                                 Spell.CastSpell("Plague Strike", ret => true, "Plague Strike"),
                                 //blood_tap,if=talent.blood_tap.enabled

@@ -96,7 +96,7 @@ NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagr
                                     ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget),
                                         new PrioritySelector(
                                         Item.UseTrinkets(),
-                                        Spell.UseRacials(),
+                                        Racials.UseRacials(),
                                         Buff.CastBuff("Lifeblood", ret => true, "Lifeblood"), // Thanks Kink
                                         Item.UseEngineerGloves())),
                                     // Interupts
@@ -118,7 +118,7 @@ NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagr
                                     Spell.CastSpell("Execute",                 ret => true, "Execute"),
                                     Spell.CastSpell("Storm Bolt",              ret => SpellManager.HasSpell("Storm Bolt"), "Storm Bolt"),
                                     Spell.CastSpell("Raging Blow",             ret => Buff.PlayerHasActiveBuff("Raging Blow!"), "Raging Blow"),
-                                    Spell.CastSpell("Wild Strike",             ret => Me.CurrentTarget != null && (Buff.PlayerHasBuff("Bloodsurge") && Me.CurrentTarget.HealthPercent >= 20), "Wild Strike"),
+                                    Spell.CastSpell("Wild Strike",             ret => Me.CurrentTarget != null && (Buff.PlayerHasActiveBuff("Bloodsurge") && Me.CurrentTarget.HealthPercent >= 20), "Wild Strike"),
                                     Spell.CastConicSpell("Shockwave", 11f, 33f, ret => CLUSettings.Instance.Warrior.UseShockwave, "Shockwave"),
                                     Spell.CastConicSpell("Dragon Roar", 11f, 33f, ret => CLUSettings.Instance.Warrior.UseDragonRoar, "Dragon Roar"),
                                     Spell.CastSpell("Heroic Throw",            ret => StyxWoW.Me.Inventory.Equipped.MainHand != null, "Heroic Throw"),
@@ -160,7 +160,7 @@ NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagr
                             Spell.CastSpell("Charge", ret => Me.CurrentTarget != null && CLU.LocationContext == GroupLogic.Battleground && 
                                 (Macro.Manual || Unit.IsTrainingDummy(Me.CurrentTarget)) && Me.CurrentTarget.DistanceSqr > 3.2 * 3.2, "Charge"),
 
-                            Spell.CastSpellAtLocation("Heroic Leap", ret => Me.CurrentTarget, ret => Me.CurrentTarget != null && 
+                            Spell.CastOnUnitLocation("Heroic Leap", ret => Me.CurrentTarget, ret => Me.CurrentTarget != null && 
                                 CLU.LocationContext == GroupLogic.Battleground && (Macro.Manual ||
                                 Unit.IsTrainingDummy(Me.CurrentTarget)) && Me.CurrentTarget.DistanceSqr > 3.2 * 3.2 && 
                                 SpellManager.Spells["Charge"].CooldownTimeLeft.Seconds > 1 &&

@@ -99,7 +99,7 @@ NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagr
                              ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget),
                                  new PrioritySelector(
                                          Item.UseTrinkets(),
-                                         Spell.UseRacials(),
+                                         Racials.UseRacials(),
                                          Item.UseEngineerGloves(),
                                          Buff.CastBuff("Lifeblood", ret => true, "Lifeblood"),
                                          Spell.CastSpell("Shattering Throw", ret => Me.CurrentTarget != null && (Me.CurrentTarget.HealthPercent < 20 || Buff.UnitHasHasteBuff(Me)) && CLUSettings.Instance.Warrior.UseShatteringThrow, "Shattering Throw"),

@@ -538,7 +538,7 @@ namespace CLU.Base
             },
             new Sequence(
                 new Action(a => CLU.Log(" [Casting Debuff] {0} : (RefreshTime={1}) had {2} second(s) left", label, DotDelta(name), TargetDebuffTimeLeft(name).TotalSeconds)),
-                new Action(a => Spell.CastMySpell(name)),
+                new Action(a => SpellManager.Cast(name)),
                 new Action(a => CombatLogEvents.Locks[name] = DateTime.Now.AddSeconds(Spell.CastTime(name) * 1.5 + CombatLogEvents.ClientLag))));
         }
 
@@ -574,7 +574,7 @@ namespace CLU.Base
             },
             new Sequence(
                 new Action(a => CLU.Log(" [Casting TargetBuff] {0} : (RefreshTime={1}) had {2} second(s) left", label, DotDelta(name), TargetDebuffTimeLeft(name).TotalSeconds)),
-                new Action(a => Spell.CastMySpell(name)),
+                new Action(a => SpellManager.Cast(name)),
                 new Action(a => CombatLogEvents.Locks[name] = DateTime.Now.AddSeconds(Spell.CastTime(name) * 1.5 + CombatLogEvents.ClientLag))));
         }
 
@@ -614,7 +614,7 @@ namespace CLU.Base
                         label,
                         buff,
                         PlayerBuffTimeLeft(buff))),
-                new Action(a => Spell.CastMySpell(spell)),
+                new Action(a => SpellManager.Cast(spell)),
                 new Action(a => CombatLogEvents.Locks[spell] = DateTime.Now.AddSeconds(Spell.CastTime(spell) * 1.5 + CombatLogEvents.ClientLag)))); // cast time * Max Flight time (from 40yards) + Clientlag = (2.54 * 1.5 + 1 = 4.81s lock for soul fire)
         }
 
@@ -721,7 +721,7 @@ namespace CLU.Base
             },
             new Sequence(
                 new Action(a => CLU.Log(" [Raid Buff] {0} ", label)),
-                new Action(a => Spell.CastMySpell(name))));
+                new Action(a => SpellManager.Cast(name))));
         }
 
         /// <summary>
@@ -748,7 +748,7 @@ namespace CLU.Base
             },
             new Sequence(
                 new Action(a => CLU.Log(" [Buff] {0} ", label)),
-                new Action(a => Spell.CastMySpell(name))));
+                new Action(a => SpellManager.Cast(name))));
         }
 
         /// <summary>Casts a Buff on a specified unit</summary>
@@ -774,7 +774,7 @@ namespace CLU.Base
             },
             new Sequence(
                 new Action(a => CLU.Log(" [Casting] {0} on {1}", label, CLU.SafeName(onUnit(a)))),
-                new Action(a => Spell.CastMySpell(name, onUnit(a)))));
+                new Action(a => SpellManager.Cast(name, onUnit(a)))));
         }
 
 

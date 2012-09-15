@@ -219,7 +219,7 @@ namespace CLU.Classes.Shaman
         {
             //CLU.Log("Recalling totems!");
             if (SpellManager.HasSpell("Totemic Recall")) {
-                Spell.CastMySpell("Totemic Recall");
+                SpellManager.Cast("Totemic Recall");
                 return;
             }
 

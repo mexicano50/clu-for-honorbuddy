@@ -229,7 +229,7 @@ namespace CLU.Classes.Rogue
                      ( ( Unit.IsTargetWorthy(Me.CurrentTarget) || Buff.TargetHasDebuff("Vendetta") ) ),
                      //Switched to || instead of &&, we want to use trinkets on Cd and not every 2min
                      new PrioritySelector
-                         (Item.UseTrinkets(), Spell.UseRacials(), Buff.CastBuff("Lifeblood", ret => true, "Lifeblood"),
+                         (Item.UseTrinkets(), Racials.UseRacials(), Buff.CastBuff("Lifeblood", ret => true, "Lifeblood"),
                           // Thanks Kink
                           Item.UseEngineerGloves()));
             }

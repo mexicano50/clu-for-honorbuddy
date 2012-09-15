@@ -90,7 +90,7 @@ namespace CLU.Classes.Warlock
                         ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget),
                         new PrioritySelector(
                             Item.UseTrinkets(),
-                            Spell.UseRacials(),
+                            Racials.UseRacials(),
                             Buff.CastBuff("Lifeblood", ret => true, "Lifeblood"), // Thanks Kink
                             Item.UseEngineerGloves())),
                             //Buffs
@@ -105,14 +105,14 @@ namespace CLU.Classes.Warlock
                             Spell.CreateWaitForLagDuration(),
                             PetManager.CastPetSummonSpell(691, ret => true, "Summon Pet"))),
                     //Grimoire of Service
-                    Spell.CastSpellByID(111897, ret => Me.GotAlivePet && !WoWSpell.FromId(111897).Cooldown && TalentManager.HasTalent(14), "Grimoire of Service"),
+                    Spell.CastSpell(111897, ret => Me.GotAlivePet && !WoWSpell.FromId(111897).Cooldown && TalentManager.HasTalent(14), "Grimoire of Service"),
                     //Sacrifice Pet
-                    Spell.CastSelfSpellByID(108503, ret => Me.GotAlivePet && TalentManager.HasTalent(15) && !Buff.PlayerHasActiveBuff(108503) && !WoWSpell.FromId(108503).Cooldown, "Grimoire of Sacrifice"),
+                    Spell.CastSelfSpell(108503, ret => Me.GotAlivePet && TalentManager.HasTalent(15) && !Buff.PlayerHasActiveBuff(108503) && !WoWSpell.FromId(108503).Cooldown, "Grimoire of Sacrifice"),
                     //Cooldowns
                     new Decorator(ret=> CLUSettings.Instance.UseCooldowns,
                         new PrioritySelector(
                             Buff.CastBuff("Dark Soul: Misery", ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget) && !Me.IsMoving, "Dark Soul: Misery"),
-                            Spell.CastSpellByID(18540, ret => !WoWSpell.FromId(18540).Cooldown && Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget), "Summon Doomguard"),
+                            Spell.CastSpell(18540, ret => !WoWSpell.FromId(18540).Cooldown && Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget), "Summon Doomguard"),
                             Spell.CastSelfSpell("Unending Resolve", ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget) && Me.HealthPercent < 40, "Unending Resolve (Save my life)"),
                             Spell.CastSelfSpell("Twilight Warden", ret => Me.CurrentTarget != null && Me.CurrentTarget.IsCasting && Unit.IsTargetWorthy(Me.CurrentTarget) && Me.HealthPercent < 80, "Twilight Warden (Protect me from magical damage)"))),
                             //Basic DPSing
@@ -132,8 +132,8 @@ namespace CLU.Classes.Warlock
                     Buff.CastDebuff("Unstable Affliction", ret => !Me.ActiveAuras.ContainsKey("Soulburn"), "Unstable Affliction"),
                     //Basic DPSing
                     Buff.CastDebuff("Haunt", ret => !Spell.PlayerIsChanneling  , "Haunt"),
-                    Spell.CastSelfSpellByID(1454, ret => Me.ManaPercent < 20 && Me.HealthPercent > 40, "Life Tap"),
-                    Spell.CastSpellByID(77799, ret => Me.IsMoving, "Fel flame while moving"),
+                    Spell.CastSelfSpell(1454, ret => Me.ManaPercent < 20 && Me.HealthPercent > 40, "Life Tap"),
+                    Spell.CastSpell(77799, ret => Me.IsMoving, "Fel flame while moving"),
                     Spell.ChannelSpell("Malefic Grasp", ret => Me.CurrentTarget != null && (Me.CurrentTarget.HealthPercent >= 20 && Me.GetPowerInfo(Styx.WoWPowerType.SoulShards).CurrentI > 0) && !Me.IsMoving && !Spell.PlayerIsChanneling, "Malefic Grasp"),
                     Spell.ChannelSpell("Drain Soul", ret => Me.CurrentTarget != null && (Me.CurrentTarget.HealthPercent < 20 || Me.GetPowerInfo(Styx.WoWPowerType.SoulShards).CurrentI == 0) && !Me.IsMoving && !Spell.PlayerIsChanneling, "Drain Soul"));
             }
@@ -155,7 +155,7 @@ namespace CLU.Classes.Warlock
                         new Decorator(ret => !Me.Mounted && !Me.IsDead && !Me.Combat && !Me.IsFlying && !Me.IsOnTransport && !Me.HasAura("Food") && !Me.HasAura("Drink"),
                             new PrioritySelector(
                                 Buff.CastBuff("Dark Intent", ret => true, "Dark Intent"),
-                                Spell.CastSelfSpellByID(108503, ret => Me.GotAlivePet && TalentManager.HasTalent(15) && !Buff.PlayerHasActiveBuff(108503) && !WoWSpell.FromId(108503).Cooldown, "Grimoire of Sacrifice"),
+                                Spell.CastSelfSpell(108503, ret => Me.GotAlivePet && TalentManager.HasTalent(15) && !Buff.PlayerHasActiveBuff(108503) && !WoWSpell.FromId(108503).Cooldown, "Grimoire of Sacrifice"),
                                 PetManager.CastPetSummonSpell(691, ret => !Me.IsMoving && !Me.GotAlivePet && !Buff.PlayerHasActiveBuff(108503), "Summon Pet"))));
             }
         }

@@ -117,7 +117,7 @@ NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagr
                                ret => Me.CurrentTarget != null && (Unit.IsTargetWorthy(Me.CurrentTarget) && !Buff.PlayerHasBuff("Feign Death")),
                                new PrioritySelector(
                                    Item.UseTrinkets(),
-                                   Spell.UseRacials(),
+                                   Racials.UseRacials(),
                                    Buff.CastBuff("Lifeblood", ret => true, "Lifeblood"), // Thanks Kink
                                    Item.UseEngineerGloves())),
 

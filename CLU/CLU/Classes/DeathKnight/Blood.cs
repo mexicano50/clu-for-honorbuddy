@@ -110,7 +110,7 @@ Credits to Weischbier, because he owns the buisness and I want him to have my ba
                                ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget),
                                new PrioritySelector(
                                    Item.UseTrinkets(),
-                                   Spell.UseRacials(),
+                                   Racials.UseRacials(),
                                    Item.UseEngineerGloves(),
                                    Buff.CastBuff("Lifeblood", ret => true, "Lifeblood"))),
                            // Encounter Specific (Uncomment the two lines below for HC Deathwing) //thanks to gniegsch fo his input!

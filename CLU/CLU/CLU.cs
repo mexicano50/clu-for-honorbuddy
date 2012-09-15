@@ -423,7 +423,7 @@ namespace CLU
             TroubleshootLog(" Behaviors created!");
             // Racials
             TroubleshootLog("Retrieving Racial Abilities");
-            foreach ( WoWSpell racial in Spell.CurrentRacials )
+            foreach ( WoWSpell racial in Racials.CurrentRacials )
             {
                 TroubleshootLog(" Character Racial Abilitie: {0} ", racial.Name);
             }

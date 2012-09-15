@@ -98,7 +98,7 @@ namespace CLU.Classes.Mage
                         ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget),
                         new PrioritySelector(
                             Item.UseTrinkets(),
-                            Spell.UseRacials(),
+                            Racials.UseRacials(),
                             Buff.CastBuff("Lifeblood", ret => true, "Lifeblood"), // Thanks Kink
                             Item.UseBagItem("Volcanic Potion", ret => Buff.UnitHasHasteBuff(Me), "Volcanic Potion Heroism/Bloodlust"),
                             Item.UseEngineerGloves())),
@@ -122,7 +122,7 @@ namespace CLU.Classes.Mage
                             new Decorator(
                                ret => !Me.IsMoving && Me.CurrentTarget != null && Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 15) > 2,
                                new PrioritySelector(
-                                   Spell.CastSpellAtLocation("Flamestrike", u => Me.CurrentTarget, ret => Me.CurrentTarget != null && !Buff.TargetHasDebuff("Flamestrike") && !BossList.IgnoreAoE.Contains(Unit.CurrentTargetEntry) && Me.ManaPercent > 30 && Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 15) > 3, "Flamestrike")
+                                   Spell.CastOnUnitLocation("Flamestrike", u => Me.CurrentTarget, ret => Me.CurrentTarget != null && !Buff.TargetHasDebuff("Flamestrike") && !BossList.IgnoreAoE.Contains(Unit.CurrentTargetEntry) && Me.ManaPercent > 30 && Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 15) > 3, "Flamestrike")
                                )),
                             // Default Rotaion
                             //Tier5 Talent

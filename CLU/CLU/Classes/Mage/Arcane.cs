@@ -94,7 +94,7 @@ namespace CLU.Classes.Mage
                         ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget),
                         new PrioritySelector(
                             Item.UseTrinkets(),
-                            Spell.UseRacials(),
+                            Racials.UseRacials(),
                             Buff.CastBuff("Lifeblood", ret => true, "Lifeblood"), // Thanks Kink
                             Item.UseBagItem("Volcanic Potion", ret => Buff.UnitHasHasteBuff(Me), "Volcanic Potion Heroism/Bloodlust"),
                             Item.UseEngineerGloves())),
@@ -119,7 +119,7 @@ namespace CLU.Classes.Mage
 
                             Spell.CastSpell("Fire Blast", ret => Me.CurrentTarget.HasMyAura("Living Bomb") && Unit.NearbyNonControlledUnits(Me.CurrentTarget.Location, 10f, false).Count(a => !a.IsFriendly && a.Combat) >= 3, "Fire Blast (Spreading the news...)"),
                             Spell.CastSpell("Frost Bomb", ret => Unit.NearbyNonControlledUnits(Me.CurrentTarget.Location, 10f, false).Count(a => !a.IsFriendly && a.Combat) >= 3, "Frost Bomb"),
-                            Spell.CastSpellAtLocation("Flametrike", ret => Me.CurrentTarget, ret => Unit.NearbyNonControlledUnits(Me.CurrentTarget.Location, 10f, false).Count(a => !a.IsFriendly && a.Combat) >= 3, "Flamestrike"),
+                            Spell.CastOnUnitLocation("Flametrike", ret => Me.CurrentTarget, ret => Unit.NearbyNonControlledUnits(Me.CurrentTarget.Location, 10f, false).Count(a => !a.IsFriendly && a.Combat) >= 3, "Flamestrike"),
                             Spell.CastSpell("Arcane Explosion", ret => Unit.NearbyNonControlledUnits(Me.Location, 10f, false).Count(a => !a.IsFriendly && a.Combat) >= 3, "Arcane Explsion")
 
                         )

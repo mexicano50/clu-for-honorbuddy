@@ -131,7 +131,7 @@ namespace CLU.Classes.Priest
                            //// Cooldowns
                            //Healer.FindAreaHeal(a => CLUSettings.Instance.UseCooldowns && StyxWoW.Me.Combat && !IsSpiritofRedemption, 10, 65, 40f, (Me.IsInRaid ? 6 : 3), "Cooldowns: Avg: 10-65, 40yrds, count: 6 or 3",
                            //                    Item.UseTrinkets(),
-                           //                    Spell.UseRacials(),
+                           //                    Racials.UseRacials(),
                            //                    Spell.CastSelfSpell("Power Infusion", a => !Buff.UnitHasHasteBuff(Me), "Power Infusion"),
                            //                    Buff.CastBuff("Lifeblood", ret => true, "Lifeblood"),
                            //                    Item.UseEngineerGloves()
@@ -187,7 +187,7 @@ namespace CLU.Classes.Priest
 
                            // Lightwell
                            Healer.FindAreaHeal(a => CLUSettings.Instance.Priest.PlaceLightwell && StyxWoW.Me.Combat && Spell.SpellCooldown("Lightwell").TotalSeconds < 0.5, 10, 80, 20f, 2, "Lightwell: Avg: 10-80, 30yrds, count: 2",
-                                               Spell.CastSpellAtLocation("Lightwell", u => Me.CurrentTarget, a => !IsSpiritofRedemption, "Lightwell")),
+                                               Spell.CastOnUnitLocation("Lightwell", u => Me.CurrentTarget, a => !IsSpiritofRedemption, "Lightwell")),
 
                            // single target healing
                            Healer.FindRaidMember(a => true, x => x.ToUnit().InLineOfSight && !x.ToUnit().IsDead && x.HealthPercent < 92, (a, b) => (int)(a.CurrentHealth - b.CurrentHealth), "single target healing",

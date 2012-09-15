@@ -93,7 +93,7 @@ NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagr
                                ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget),
                                new PrioritySelector(
                                    Item.UseTrinkets(),
-                                   Spell.UseRacials(),
+                                   Racials.UseRacials(),
                                    Buff.CastBuff("Lifeblood", ret => true, "Lifeblood"),
                                    Buff.CastBuff("Avenging Wrath", ret => true, "Avenging Wrath"),
                                    Item.UseEngineerGloves())),
@@ -122,7 +122,7 @@ NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagr
                            Spell.CastSpell("Avenger's Shield",            ret => true, "Avengers Shield"),
                            Spell.CastSpell("Hammer of Wrath",             ret => Me.CurrentTarget != null && Me.CurrentTarget.HealthPercent < 20, "Hammer of Wrath"),
                            Spell.CastSpell("Execution Sentence",          ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget), "Execution Sentence"),
-                           Spell.CastSpellAtLocation("Consecration", ret => Me.CurrentTarget, a => Me.CurrentTarget != null && !BossList.IgnoreAoE.Contains(Unit.CurrentTargetEntry) && Me.ManaPercent > CLUSettings.Instance.Paladin.ConsecrationManaPercent && TalentManager.HasGlyph("Consecration"), "Consecration (Targeted)"),
+                           Spell.CastOnGround("Consecration", ret => Me.CurrentTarget.Location, a => Me.CurrentTarget != null && !BossList.IgnoreAoE.Contains(Unit.CurrentTargetEntry) && Me.ManaPercent > CLUSettings.Instance.Paladin.ConsecrationManaPercent && TalentManager.HasGlyph("Consecration")),
                            Spell.CastSpell("Consecration",                ret => Me.CurrentTarget != null && !BossList.IgnoreAoE.Contains(Unit.CurrentTargetEntry) && Me.ManaPercent > CLUSettings.Instance.Paladin.ConsecrationManaPercent && !Me.IsMoving && !Me.CurrentTarget.IsMoving && Me.IsWithinMeleeRange && Unit.EnemyUnits.Count() >= CLUSettings.Instance.Paladin.ConsecrationCount && !TalentManager.HasGlyph("Consecration"), "Consecration"),
                            Spell.CastSpell("Holy Wrath",                  ret => true, "Holy Wrath"),
                            Buff.CastBuff("Divine Plea",                   ret => Me.ManaPercent < 20 || Me.CurrentHolyPower < 3, "Divine Plea"));

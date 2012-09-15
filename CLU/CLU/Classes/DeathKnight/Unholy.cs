@@ -101,7 +101,7 @@ namespace CLU.Classes.DeathKnight
                             Item.UseTrinkets(),
                             Buff.CastBuff("Lifeblood", ret => true, "Lifeblood"), // Thanks Kink
                             Item.UseEngineerGloves(),
-                            Spell.UseRacials()
+                            Racials.UseRacials()
                             )
                         ),
 
@@ -178,7 +178,7 @@ namespace CLU.Classes.DeathKnight
                         Spell.CastSpell("Death Grip", ret => Me.CurrentTarget != null && Me.CurrentTarget.DistanceSqr > 3.2 * 3.2 && !Buff.TargetHasDebuff("Chains of Ice") &&
                             !SpellManager.CanCast("Chains of Ice"), "Death Grip"),
                         //blood_fury,if=time>=2
-                        Spell.UseRacials(),
+                        Racials.UseRacials(),
                         //mogu_power_potion,if=buff.dark_transformation.up&target.time_to_die<=35
                         //unholy_frenzy,if=time>=4
                         Spell.CastSpell("Unholy Frenzy", ret => true, "Unholy Frenzy"),

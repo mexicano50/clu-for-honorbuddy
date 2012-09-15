@@ -76,7 +76,7 @@ namespace CLU.Base
                             new Sequence(
                                 new Action(ret => Navigator.PlayerMover.MoveStop()),
                                 Spell.CreateWaitForLagDuration(),
-                                new Action(ret => Spell.CastMySpell("Cannibalize")),
+                                new Action(ret => SpellManager.Cast("Cannibalize")),
                                 new WaitContinue(1, ret => false, new ActionAlwaysSucceed()))),
                         // Check if we're allowed to eat (and make sure we have some food. Don't bother going further if we have none.
                         new Decorator(
