@@ -73,7 +73,7 @@ namespace CLU.Classes.Rogue
         {
             return new PrioritySelector(
                        new Decorator(
-                           ret => NeedsPoison && !Buff.PlayerHasActiveBuff(MainHandPoison) && SpellManager.HasSpell(MainHandPoison),
+                           ret => NeedsPoison && !StyxWoW.Me.HasAura(MainHandPoison) && SpellManager.HasSpell(MainHandPoison),
                            new Sequence(
                                new Action(ret => CLU.TroubleshootLog("Applying {0} to main hand", CLUSettings.Instance.Rogue.MainHandPoison)),
                                new Action(ret => Navigator.PlayerMover.MoveStop()),
