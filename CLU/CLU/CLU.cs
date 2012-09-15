@@ -74,6 +74,13 @@ namespace CLU
         private readonly Timer _clupulsetimer = new Timer(10000); // A timer for keybinds
         private RotationBase _rotationBase;
         private List<RotationBase> _rotations; // list of Rotations
+        private Composite _combatBehavior;
+        private Composite _combatBuffBehavior;
+        private Composite _preCombatBuffBehavior;
+        private Composite _pullBehavior;
+        private Composite _restBehavior;
+        internal static event EventHandler<LocationContextEventArg> OnLocationContextChanged;
+        internal static GroupLogic LastLocationContext { get; set; }
 
         #endregion
 
@@ -100,9 +107,15 @@ namespace CLU
 
         #region Public Properties
 
+        public override bool WantButton { get { return true; } }
+
         public static CLU Instance { get; private set; }
 
         public static bool IsHealerRotationActive { get; private set; }
+
+        public override WoWClass Class { get { return StyxWoW.Me.Class; } }
+
+        public override string Name { get { return "CLU (Codified Likeness Utility) " + Version; } }
 
         /// <summary>
         /// If we havnt loaded a rotation for our character then do so by querying our character's class tree based on a Keyspell.
@@ -119,16 +132,12 @@ namespace CLU
                     {
                         if ( TalentManager.CurrentSpec == WoWSpec.None)
                         {
-                            Log
-                                (" Greetings, level {0} user. Unfortunelty CLU does not support such Low Level players at this time",
-                                 Me.Level);
+                            Log(" Greetings, level {0} user. Unfortunelty CLU does not support such Low Level players at this time", Me.Level);
                             StopBot("Unable to find Active Rotation");
                         }
                         else
                         {
-                            Log
-                                (" Greetings, level {0} user. Unfortunelty CLU could not find a rotation for you.",
-                                 Me.Level);
+                            Log(" Greetings, level {0} user. Unfortunelty CLU could not find a rotation for you.", Me.Level);
                             StopBot("Unable to find Active Rotation");
                         }
                     }
@@ -138,71 +147,93 @@ namespace CLU
             }
         }
 
-        public override WoWClass Class
-        {
-            get { return StyxWoW.Me.Class; }
-        }
-
         /// <summary>
-        /// HB Behavior used in combat. - pulses in combat
+        /// Depending on if we are grouped or solo, and if we are in a dungeon or battleground, return the rotation we will use.
         /// </summary>
-        public override Composite CombatBehavior
-        {
-            get { return new Decorator(ret => AllowPulse, this.Rotation); }
-        }
-
-        /// <summary>
-        /// HB Behavior used for combat buffs. eg; 'Horn of Winter', 'Power Infusion' etc..
-        /// </summary>
-        public override Composite CombatBuffBehavior
-        {
-            get { return new Decorator(ret => AllowPulse, this.Medic); }
-        }
-
-        public override string Name
-        {
-            get { return "CLU (Codified Likeness Utility) " + Version; }
-        }
-
-        /// <summary>
-        /// HB Behavior used for buffing, regular buffs like 'Power Word: Fortitude', 'MotW' etc..
-        /// </summary>
-        public override Composite PreCombatBuffBehavior
-        {
-            get { return new Decorator(ret => AllowPulse, this.PreCombat); }
-        }
-
-        /// <summary>
-        /// HB Behavior used when engaging mobs in combat.
-        /// </summary>
-        public override Composite PullBehavior
-        {
-            get { return new Decorator(ret => AllowPulse, this.Rotation); }
-        }
-
-        /// <summary>
-        /// HB Pulldistance.
-        /// </summary>
-        public override double? PullDistance
-        {
-            get { return this.ActiveRotation.CombatMaxDistance; }
-        }
-
-        /// <summary>
-        /// HB Behavior used when resting. - pulses out of combat
-        /// </summary>
-        public override Composite RestBehavior
+        private Composite Rotation
         {
             get
             {
-                return new Decorator
-                    (ret => !( CLUSettings.Instance.NeverDismount && IsMounted ) && !Me.IsFlying, this.Resting);
+                Composite currentrotation = null;
+                switch (GroupType)
+                {
+                    case GroupType.Party:
+                    case GroupType.Raid:
+                        switch (LocationContext)
+                        {
+                            case GroupLogic.PVE:
+                                currentrotation = this.ActiveRotation.PVERotation;
+                                break;
+                            case GroupLogic.Battleground:
+                                currentrotation = this.ActiveRotation.PVPRotation;
+                                break;
+                        }
+                        break;
+                    default:
+                        currentrotation = this.ActiveRotation.SingleRotation;
+                        break;
+                }
+
+                return new Sequence
+                    (new DecoratorContinue(x => CLUSettings.Instance.EnableMovement, Movement.MovingFacingBehavior()),
+                     new DecoratorContinue(x => Me.CurrentTarget != null, currentrotation));
             }
         }
 
-        public override bool WantButton
+        /// <summary>
+        /// CLU Combat heal/buffs Behavior
+        /// </summary>
+        private Composite Medic { get { return this.ActiveRotation.Medic; } }
+
+        /// <summary>
+        /// CLU Pre Combat buffs Behavior
+        /// </summary>
+        private Composite PreCombat { get { return this.ActiveRotation.PreCombat; } }
+
+        /// <summary>
+        /// CLU Rest Behavior
+        /// </summary>
+        private Composite Resting { get { return this.ActiveRotation.Resting; } }
+
+
+        public override double? PullDistance { get { return this.ActiveRotation.CombatMaxDistance; } }
+
+        public override Composite CombatBehavior { get { return this._combatBehavior; } }
+        
+        public override Composite CombatBuffBehavior { get { return this._combatBuffBehavior; } }
+
+        public override Composite PreCombatBuffBehavior { get { return this._preCombatBuffBehavior; } }
+        
+        public override Composite PullBehavior { get { return this._pullBehavior; } }
+
+        public override Composite RestBehavior { get { return this._restBehavior; } }
+            
+       
+        public bool CreateBehaviors()
         {
-            get { return true; }
+            TroubleshootLog("CreateBehaviors called.");
+            // let behaviors be notified if context changes.
+            if (OnLocationContextChanged != null)
+                OnLocationContextChanged(this, new LocationContextEventArg(LocationContext, LastLocationContext));
+
+            //Caching the context to not recreate same behaviors repeatedly.
+            LastLocationContext = LocationContext;
+
+            _rotationBase = null;
+
+            if (_combatBehavior != null) this._combatBehavior = new Decorator(ret => AllowPulse, this.Rotation);
+
+            if (_combatBuffBehavior != null) this._combatBuffBehavior = new Decorator(ret => AllowPulse, this.Medic);
+
+            if (_preCombatBuffBehavior != null) this._preCombatBuffBehavior = new Decorator(ret => AllowPulse, this.PreCombat);
+
+            if (_restBehavior != null) this._restBehavior = new Decorator(ret => !(CLUSettings.Instance.NeverDismount && IsMounted) && !Me.IsFlying, this.Resting);
+
+            if (_pullBehavior != null) this._pullBehavior = new Decorator(ret => AllowPulse, this.Rotation);
+
+            if (_restBehavior != null) this._restBehavior = new Decorator(ret => !(CLUSettings.Instance.NeverDismount && IsMounted) && !Me.IsFlying, this.Resting);
+
+            return true;
         }
 
         #endregion
@@ -221,6 +252,7 @@ namespace CLU
                 return Me.IsInRaid ? GroupType.Raid : GroupType.Solo;
             }
         }
+
 
         internal static GroupLogic LocationContext
         {
@@ -278,63 +310,6 @@ namespace CLU
         private static LocalPlayer Me
         {
             get { return ObjectManager.Me; }
-        }
-
-        /// <summary>
-        /// CLU Combat heal/buffs Behavior
-        /// </summary>
-        private Composite Medic
-        {
-            get { return this.ActiveRotation.Medic; }
-        }
-
-        /// <summary>
-        /// CLU Pre Combat buffs Behavior
-        /// </summary>
-        private Composite PreCombat
-        {
-            get { return this.ActiveRotation.PreCombat; }
-        }
-
-        /// <summary>
-        /// CLU Rest Behavior
-        /// </summary>
-        private Composite Resting
-        {
-            get { return this.ActiveRotation.Resting; }
-        }
-
-        /// <summary>
-        /// Depending on if we are grouped or solo, and if we are in a dungeon or battleground, return the rotation we will use.
-        /// </summary>
-        private Composite Rotation
-        {
-            get
-            {
-                Composite currentrotation = null;
-                switch (GroupType)
-                {
-                    case GroupType.Party:
-                    case GroupType.Raid:
-                        switch (LocationContext)
-                        {
-                            case GroupLogic.PVE:
-                                currentrotation = this.ActiveRotation.PVERotation;
-                                break;
-                            case GroupLogic.Battleground:
-                                currentrotation = this.ActiveRotation.PVPRotation;
-                                break;
-                        }
-                        break;
-                    default:
-                        currentrotation = this.ActiveRotation.SingleRotation;
-                        break;
-                }
-
-                return new Sequence
-                    (new DecoratorContinue(x => CLUSettings.Instance.EnableMovement, Movement.MovingFacingBehavior()),
-                     new DecoratorContinue(x => Me.CurrentTarget != null, currentrotation));
-            }
         }
 
         #endregion
@@ -404,6 +379,7 @@ namespace CLU
             BotEvents.OnBotStarted += CombatLogEvents.Instance.CombatLogEventsOnStarted;
             BotEvents.OnBotStopped += CombatLogEvents.Instance.CombatLogEventsOnStopped;
             BotEvents.Player.OnMapChanged += CombatLogEvents.Instance.Player_OnMapChanged;
+            RoutineManager.Reloaded += this.RoutineManagerReloaded;
 
             ///////////////////////////////////////////////////////////////////
             // Start non invasive user information
@@ -423,6 +399,30 @@ namespace CLU
                 StopBot(e.ToString());
             }
             TroubleshootLog(" Character Current Build: {0}", TalentManager.CurrentSpec.ToString());
+
+            // Intialize Behaviors....TODO: Change this ?
+            if (_combatBehavior == null)
+                _combatBehavior = new PrioritySelector();
+
+            if (_combatBuffBehavior == null)
+                _combatBuffBehavior = new PrioritySelector();
+
+            if (_preCombatBuffBehavior == null)
+                _preCombatBuffBehavior = new PrioritySelector();
+
+            if (_pullBehavior == null)
+                _pullBehavior = new PrioritySelector();
+
+            if (_restBehavior == null)
+                _restBehavior = new PrioritySelector();
+
+
+            // Behaviors
+            if (!CreateBehaviors())
+            {
+                return;
+            }
+            TroubleshootLog(" Behaviors created!");
             // Racials
             TroubleshootLog("Retrieving Racial Abilities");
             foreach ( WoWSpell racial in Spell.CurrentRacials )
@@ -479,6 +479,12 @@ namespace CLU
             this._clupulsetimer.AutoReset = true; // To keep raising the Elapsed event
 
             GC.KeepAlive(this._clupulsetimer);
+        }
+
+        void RoutineManagerReloaded(object sender, EventArgs e)
+        {
+            TroubleshootLog("Routines were reloaded, re-creating behaviors");
+            CreateBehaviors();
         }
 
         public override void OnButtonPress()
@@ -669,6 +675,19 @@ namespace CLU
             }
         }
 
+        #endregion
+
+        #region Nested type: LocationContextEventArg
+        public class LocationContextEventArg : EventArgs
+        {
+            public LocationContextEventArg(GroupLogic currentLocationContext, GroupLogic prevLocationContext)
+            {
+                CurrentLocationContext = currentLocationContext;
+                PreviousLocationContext = prevLocationContext;
+            }
+            public readonly GroupLogic CurrentLocationContext;
+            public readonly GroupLogic PreviousLocationContext;
+        }
         #endregion
 
         //private const OracleWatchMode OracleWatchFlags = OracleWatchMode.Tank;

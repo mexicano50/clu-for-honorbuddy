@@ -79,7 +79,7 @@ namespace CLU.Managers
             {
                 CLU.TroubleshootLog("Your spec has been changed. Rebuilding rotation");
                 //SpellManager.Update();
-                CLU.Instance.QueryClassTree();
+                CLU.Instance.CreateBehaviors();
             }
         }
 

@@ -128,7 +128,7 @@ namespace CLU.Classes.DeathKnight
                                new PrioritySelector(
                                     Common.SpreadDiseasesBehavior(ret => Me.CurrentTarget), // Used to spread your Diseases based upon your Tier one Talent. -- wulf
                                     Spell.CastAreaSpell("Death and Decay", 10, true, 3, 0.0, 0.0, ret => Me.CurrentTarget != null && !BossList.IgnoreAoE.Contains(Unit.CurrentTargetEntry) && Me.UnholyRuneCount == 2 && Unit.EnemyUnits.Count() >= 3 && !Me.IsMoving && !Me.CurrentTarget.IsMoving, "Death and Decay"),
-                                    Spell.CastSpell("Scourge Strike",ret => Spell.SpellOnCooldown("Death and Decay"),""),
+                                    Spell.CastSpell("Scourge Strike", ret => Spell.SpellOnCooldown("Death and Decay"), "Scourge Strike"),
                                     Spell.CastAreaSpell("Blood Boil", 10, false, 3, 0.0, 0.0, ret => Me.BloodRuneCount >= 1, "Blood Boil"),
                                     Spell.CastSpell("Death Coil", ret => Me.ActiveAuras.ContainsKey("Sudden Doom"), "Death Coil (Sudden Doom)"),// need ActiveAuras, don't mess with me! Seriously... -- Weischbier
                                     Spell.CastSpell("Blood Tap", ret => Me.CurrentTarget, ret => Buff.PlayerCountBuff("Blood Charge") >= 5 && (Common.FrostRuneSlotsActive == 0 || Common.UnholyRuneSlotsActive == 0 || Common.BloodRuneSlotsActive == 0), "Blood Tap (Refreshed a depleted Rune)"),  //Don't waste it on Unholy Runes

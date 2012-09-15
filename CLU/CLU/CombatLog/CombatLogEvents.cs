@@ -113,6 +113,16 @@ namespace CLU.CombatLog
         public void Player_OnMapChanged(BotEvents.Player.MapChangedEventArgs args)
         {
             try {
+
+                //Why would we create same behaviors all over ?
+                if (CLU.LastLocationContext == CLU.LocationContext)
+                {
+                    return;
+                }
+
+                CLU.TroubleshootLog("Context changed. New context: " + CLU.LocationContext + ". Rebuilding behaviors.");
+                CLU.Instance.CreateBehaviors();
+
                 if (CLU.IsHealerRotationActive && StyxWoW.IsInGame) {
                     CLU.TroubleshootLog( "CombatLogEvents: Party Members Changed - Re-Initialize list Of HealableUnits");
                     switch (CLUSettings.Instance.SelectedHealingAquisition) {
