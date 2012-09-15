@@ -229,12 +229,8 @@ namespace CLU.Classes.Warrior
                             //flask,type=winters_bite
                             //food,type=black_pepper_ribs_and_shrimp
                             //stance,choose=battle
-<<<<<<< .mine
                             Buff.CastBuff("Berserker Stance", ret => StyxWoW.Me.Shapeshift != CLUSettings.Instance.Warrior.StanceSelection && CLUSettings.Instance.Warrior.StanceSelection == ShapeshiftForm.BerserkerStance, "Stance is Berserker"),
                             Buff.CastBuff("Battle Stance", ret => StyxWoW.Me.Shapeshift != CLUSettings.Instance.Warrior.StanceSelection && CLUSettings.Instance.Warrior.StanceSelection == ShapeshiftForm.BattleStance, "Stance is Battle"),
-=======
-                            Buff.CastBuff("Battle Stance", ret => Me.Shapeshift != ShapeshiftForm.BattleStance, "Battle Stance"),
->>>>>>> .r294
                             //mogu_power_potion
                             //battle_shout,if=!buff_exists
                             Buff.CastRaidBuff("Battle Shout", ret => true, "Battle Shout"),
