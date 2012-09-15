@@ -153,10 +153,10 @@ namespace CLU.Classes.Warrior
                 return (
                     new PrioritySelector(
                         //charge,if=!currenttarget.iswithinmeleerenage
-                        Spell.CastSpell("Charge", ret => Me.CurrentTarget != null && Me.CurrentTarget.DistanceSqr > 3.2 * 3.2, "Charge"),
+                        Spell.CastSpell("Charge", ret => !Me.CurrentTarget.IsWithinMeleeRange, "Charge"),
                         //heroic_leap,if=!currenttarget.iswithinmeleerange&spell.charge.down
-                        Spell.CastOnUnitLocation("Heroic Leap", ret => Me.CurrentTarget, ret => Me.CurrentTarget != null && Me.CurrentTarget.DistanceSqr > 3.2 * 3.2 &&
-                            SpellManager.Spells["Charge"].CooldownTimeLeft.Seconds > 1 && SpellManager.Spells["Charge"].CooldownTimeLeft.Seconds < 18, "Heroic Leap"),
+                        Spell.CastOnUnitLocation("Heroic Leap", ret => Me.CurrentTarget, ret => Me.CurrentTarget.IsWithinMeleeRange && SpellManager.Spells["Charge"].CooldownTimeLeft.Seconds > 1 &&
+                            SpellManager.Spells["Charge"].CooldownTimeLeft.Seconds < 18, "Heroic Leap"),
                         //mogu_power_potion,if=(target.health.pct<20&buff.recklessness.up)|buff.bloodlust.react|target.time_to_die<=25
                         //recklessness,use_off_gcd=1,if=((debuff.colossus_smash.remains>=5|cooldown.colossus_smash.remains<=4)&((!talent.avatar.enabled|!set_bonus.tier14_4pc_melee)&((target.health.pct<20|target.time_to_die>315|(target.time_to_die>165&set_bonus.tier14_4pc_melee)))|(talent.avatar.enabled&set_bonus.tier14_4pc_melee&buff.avatar.up)))|target.time_to_die<=18
                         //avatar,use_off_gcd=1,if=talent.avatar.enabled&(((cooldown.recklessness.remains>=180|buff.recklessness.up)|(target.health.pct>=20&target.time_to_die>195)|(target.health.pct<20&set_bonus.tier14_4pc_melee))|target.time_to_die<=20)
@@ -166,7 +166,7 @@ namespace CLU.Classes.Warrior
                         //heroic_leap,use_off_gcd=1,if=debuff.colossus_smash.up
                         Spell.CastOnUnitLocation("Heroic Leap", ret => Me.CurrentTarget, ret => Buff.TargetHasDebuff("Colossus Smash"), "Heroic Leap"),
                         //deadly_calm,use_off_gcd=1,if=rage>=40
-                        Spell.CastSelfSpell("Deadly Calm", ret => Me.CurrentRage >= 40, "Deadly Calm"),
+                        Spell.CastSelfSpell("Deadly Calm", ret => Me.CurrentTarget.IsWithinMeleeRange && Me.CurrentRage >= 40, "Deadly Calm"),
                         //heroic_strike,use_off_gcd=1,if=((buff.taste_for_blood.up&buff.taste_for_blood.remains<=2)|(buff.taste_for_blood.stack=5&buff.overpower.up)|(buff.taste_for_blood.up&debuff.colossus_smash.remains<=2&!cooldown.colossus_smash.remains=0)|buff.deadly_calm.up|rage>110)&target.health.pct>=20&debuff.colossus_smash.up
                         Spell.CastSpell("Heroic Strike", ret => ((Buff.PlayerHasActiveBuff("Taste for Blood") && Buff.PlayerActiveBuffTimeLeft("Taste for Blood").Seconds <= 2) ||
                             (Buff.PlayerCountBuff("Taste for Blood") == 5 && SpellManager.CanCast("Overpower")) || (Buff.PlayerHasActiveBuff("Taste for Blood") &&
@@ -237,12 +237,11 @@ namespace CLU.Classes.Warrior
                             //commanding_shout,if=!buff_exists
                             Buff.CastRaidBuff("Commanding Shout", ret => true, "Commanding Shout"),
                             //charge,if=!currenttarget.iswithinmeleerenage
-                            Spell.CastSpell("Charge", ret => Me.CurrentTarget != null && CLU.LocationContext == GroupLogic.Battleground && (Macro.Manual || Unit.IsTrainingDummy(Me.CurrentTarget)) &&
-                                Me.CurrentTarget.DistanceSqr > 3.2 * 3.2, "Charge"),
+                            Spell.CastSpell("Charge", ret => CLU.LocationContext == GroupLogic.Battleground && (Macro.Manual || Unit.IsTrainingDummy(Me.CurrentTarget)) && Me.CurrentTarget.IsWithinMeleeRange,
+                                "Charge"),
                             //heroic_leap,if=!currenttarget.iswithinmeleerange&spell.charge.down
-                            Spell.CastOnUnitLocation("Heroic Leap", ret => Me.CurrentTarget, ret => Me.CurrentTarget != null && CLU.LocationContext == GroupLogic.Battleground && (Macro.Manual ||
-                                Unit.IsTrainingDummy(Me.CurrentTarget)) && Me.CurrentTarget.DistanceSqr > 3.2 * 3.2 && SpellManager.Spells["Charge"].CooldownTimeLeft.Seconds > 1 &&
-                                SpellManager.Spells["Charge"].CooldownTimeLeft.Seconds < 18, "Heroic Leap"))
+                            Spell.CastOnUnitLocation("Heroic Leap", ret => Me.CurrentTarget, ret => CLU.LocationContext == GroupLogic.Battleground && (Macro.Manual || Unit.IsTrainingDummy(Me.CurrentTarget)) && 
+                                Me.CurrentTarget.IsWithinMeleeRange && SpellManager.Spells["Charge"].CooldownTimeLeft.Seconds > 1 && SpellManager.Spells["Charge"].CooldownTimeLeft.Seconds < 18, "Heroic Leap"))
                 ));
             }
         }
