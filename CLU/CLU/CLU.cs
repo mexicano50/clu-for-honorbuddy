@@ -231,8 +231,6 @@ namespace CLU
 
             if (_pullBehavior != null) this._pullBehavior = new Decorator(ret => AllowPulse, this.Rotation);
 
-            if (_restBehavior != null) this._restBehavior = new Decorator(ret => !(CLUSettings.Instance.NeverDismount && IsMounted) && !Me.IsFlying, this.Resting);
-
             return true;
         }
 
