@@ -254,7 +254,7 @@ namespace CLU.Classes.DeathKnight
                                 //frost_strike
                                 Spell.CastSpell("Frost Strike", ret => true, "Frost Strike"),
                                 //death_and_decay
-                                Spell.CastOnUnitLocation("Death and Decay", u => StyxWoW.Me.CurrentTarget, ret => true, "Death and Decay"),
+                                Spell.CastOnUnitLocation("Death and Decay", ret => Me.CurrentTarget, ret => true, "Death and Decay"),
                                 //plague_strike
                                 Spell.CastSpell("Plague Strike", ret => true, "Plague Strike"),
                                 //blood_tap,if=talent.blood_tap.enabled
@@ -305,11 +305,11 @@ namespace CLU.Classes.DeathKnight
                             //army_of_the_dead
                             //mogu_power_potion
                             //chains_of_ice,if=!currenttarget.iswithinmeleerenage
-                            Spell.CastSpell("Chains of Ice", ret => Me.CurrentTarget != null && (CLU.LocationContext == GroupLogic.Battleground && Macro.Manual || Unit.IsTrainingDummy(Me.CurrentTarget)) &&
+                            Spell.CastSpell("Chains of Ice", ret => Me.CurrentTarget != null && Macro.Manual && (CLU.LocationContext == GroupLogic.Battleground || Unit.IsTrainingDummy(Me.CurrentTarget)) &&
                                 Me.CurrentTarget.DistanceSqr > 3.2 * 3.2 && !Buff.TargetHasDebuff("Chains of Ice"), "Chains of Ice"),
                             //death_grip,if=!currenttarget.iswithinmeleerange&spell.chains_of_ice.down
-                            Spell.CastSpell("Death Grip", ret => Me.CurrentTarget != null && CLU.LocationContext == GroupLogic.Battleground && Macro.Manual && Me.CurrentTarget.DistanceSqr > 3.2 * 3.2 &&
-                                !Buff.TargetHasDebuff("Chains of Ice") && !SpellManager.CanCast("Chains of Ice"), "Death Grip")
+                            Spell.CastSpell("Death Grip", ret => Me.CurrentTarget != null && Macro.Manual && (CLU.LocationContext == GroupLogic.Battleground || Unit.IsTrainingDummy(Me.CurrentTarget)) &&
+                                Me.CurrentTarget.DistanceSqr > 3.2 * 3.2 && !Buff.TargetHasDebuff("Chains of Ice") && !SpellManager.CanCast("Chains of Ice"), "Death Grip")
                 )));
             }
         }

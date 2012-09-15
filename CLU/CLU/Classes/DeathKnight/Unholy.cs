@@ -267,11 +267,11 @@ namespace CLU.Classes.DeathKnight
                             Spell.CastSelfSpell("Raise Dead", ret => (Me.Pet == null || Me.Pet.IsDead), "Raise Dead"),
                             //mogu_power_potion
                             //chains_of_ice,if=!currenttarget.iswithinmeleerenage
-                            Spell.CastSpell("Chains of Ice", ret => Me.CurrentTarget != null && (CLU.LocationContext == GroupLogic.Battleground && Macro.Manual || Unit.IsTrainingDummy(Me.CurrentTarget)) &&
+                            Spell.CastSpell("Chains of Ice", ret => Me.CurrentTarget != null && Macro.Manual && (CLU.LocationContext == GroupLogic.Battleground || Unit.IsTrainingDummy(Me.CurrentTarget)) &&
                                 Me.CurrentTarget.DistanceSqr > 3.2 * 3.2 && !Buff.TargetHasDebuff("Chains of Ice"), "Chains of Ice"),
                             //death_grip,if=!currenttarget.iswithinmeleerange&spell.chains_of_ice.down
-                            Spell.CastSpell("Death Grip", ret => Me.CurrentTarget != null && CLU.LocationContext == GroupLogic.Battleground && Macro.Manual && Me.CurrentTarget.DistanceSqr > 3.2 * 3.2 &&
-                                !Buff.TargetHasDebuff("Chains of Ice") && !SpellManager.CanCast("Chains of Ice"), "Death Grip")
+                            Spell.CastSpell("Death Grip", ret => Me.CurrentTarget != null && Macro.Manual && (CLU.LocationContext == GroupLogic.Battleground || Unit.IsTrainingDummy(Me.CurrentTarget)) &&
+                                Me.CurrentTarget.DistanceSqr > 3.2 * 3.2 && !Buff.TargetHasDebuff("Chains of Ice") && !SpellManager.CanCast("Chains of Ice"), "Death Grip")
                 )));
             }
         }
