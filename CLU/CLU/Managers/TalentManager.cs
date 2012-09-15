@@ -16,14 +16,13 @@ namespace CLU.Managers
 {
     using System;
     using System.Collections.Generic;
-    using System.Globalization;
     using System.Linq;
     using Styx;
     using Styx.Combat.CombatRoutine;
     using Styx.WoWInternals;
 
-    using global::CLU.Base;
-    using global::CLU.Settings;
+    using Base;
+    using Settings;
 
     internal static class TalentManager
     {
@@ -38,14 +37,16 @@ namespace CLU.Managers
 
         public static WoWSpec CurrentSpec { get; private set; }
 
-        public static List<Talent> Talents { get; private set; }
+        private static List<Talent> Talents { get; set; }
 
-        public static HashSet<string> Glyphs { get; private set; }
+        private static HashSet<string> Glyphs { get; set; }
 
+/*
         public static int GetCount(int index)
         {
             return Talents.FirstOrDefault(t => t.Index == index).Count;
         }
+*/
 
         /// <summary>
         ///   Checks if we have a glyph or not
@@ -151,10 +152,10 @@ namespace CLU.Managers
                     {
                         List<string> glyphInfo = Lua.GetReturnValues(String.Format("return GetGlyphSocketInfo({0})", i),"glyphs.lua");
                         var lua = String.Format("local enabled, glyphType, glyphTooltipIndex, glyphSpellID, icon = GetGlyphSocketInfo({0});if (enabled) then return glyphSpellID else return 0 end",i);
-                        int glyphSpellId = Lua.GetReturnVal<int>(lua,0);
+                        var glyphSpellId = Lua.GetReturnVal<int>(lua,0);
                         try
                         {
-                            if (glyphSpellId != null && glyphSpellId > 0)
+                            if (glyphSpellId > 0)
                             {
                                 CLU.TroubleshootLog("Glyphdetection - SpellId: {0},Name:{1} ,WoWSpell: {2}", glyphSpellId, WoWSpell.FromId(glyphSpellId).Name, WoWSpell.FromId(glyphSpellId));
                                 Glyphs.Add(WoWSpell.FromId(glyphSpellId).Name.Replace("Glyph of ", ""));
@@ -174,7 +175,8 @@ namespace CLU.Managers
             }
 
         }
-        public struct Talent
+
+        private struct Talent
         {
             public int Count;
             public int Index;

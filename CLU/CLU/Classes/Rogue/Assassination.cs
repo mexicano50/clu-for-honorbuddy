@@ -1,4 +1,5 @@
 ﻿#region Revision info
+
 /*
  * $Author$
  * $Date$
@@ -8,14 +9,20 @@
  * $LastChangedBy$
  * $ChangesMade$
  */
+
 #endregion
 
 using System.Linq;
+
 using CLU.Base;
 using CLU.Helpers;
+using CLU.Managers;
 using CLU.Settings;
+
 using CommonBehaviors.Actions;
+
 using JetBrains.Annotations;
+
 using Styx;
 using Styx.CommonBot;
 using Styx.TreeSharp;
@@ -203,6 +210,15 @@ namespace CLU.Classes.Rogue
             }
         }
 
+        private static bool BuffsSafeForVanish
+        {
+            get
+            {
+                return Buff.PlayerActiveBuffTimeLeft("Slice and Dice").TotalSeconds > 6 &&
+                       Buff.TargetDebuffTimeLeft("Rupture").TotalSeconds > 4;
+            }
+        }
+
         private static Decorator Cooldowns
         {
             get
@@ -246,6 +262,11 @@ namespace CLU.Classes.Rogue
                          // Envenom if SnD is about to fall off. This should never happen.
                          ));
             }
+        }
+
+        private static bool HasShadowFocus
+        {
+            get { return TalentManager.HasTalent(3); }
         }
 
         /// <summary>
@@ -336,11 +357,15 @@ namespace CLU.Classes.Rogue
                 // Only Do this if SnD is up, Rupture is up, Target is CD-worthy and we've got spare points.
                 return new Decorator
                     (x =>
-                     Buff.PlayerActiveBuffTimeLeft("Slice and Dice").TotalSeconds > 6 &&
-                     Buff.TargetDebuffTimeLeft("Rupture").TotalSeconds > 4 && Unit.IsTargetWorthy(Me.CurrentTarget) &&
-                     Me.ComboPoints < 4 && Me.CurrentTarget.IsWithinMeleeRange,
+                     BuffsSafeForVanish && Unit.IsTargetWorthy(Me.CurrentTarget) && Me.ComboPoints < 4 &&
+                     VanishWithShadowFocus && Me.CurrentTarget.IsWithinMeleeRange,
                      Spell.CastSelfSpell("Vanish", x => true, "Vanish"));
             }
+        }
+
+        private static bool VanishWithShadowFocus
+        {
+            get { return ( ( HasShadowFocus && Me.EnergyPercent < 50 ) || !HasShadowFocus ); }
         }
 
         #endregion
