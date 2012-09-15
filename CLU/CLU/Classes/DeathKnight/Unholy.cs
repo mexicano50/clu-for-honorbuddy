@@ -174,7 +174,9 @@ namespace CLU.Classes.DeathKnight
             {
                 return (
                     new PrioritySelector(
+                        //chains_of_ice,if=!currenttarget.iswithinmeleerenage
                         Spell.CastSpell("Chains of Ice", ret => Me.CurrentTarget != null && Me.CurrentTarget.DistanceSqr > 3.2 * 3.2 && !Buff.TargetHasDebuff("Chains of Ice"), "Chains of Ice"),
+                        //death_grip,if=!currenttarget.iswithinmeleerange&spell.chains_of_ice.down
                         Spell.CastSpell("Death Grip", ret => Me.CurrentTarget != null && Me.CurrentTarget.DistanceSqr > 3.2 * 3.2 && !Buff.TargetHasDebuff("Chains of Ice") &&
                             !SpellManager.CanCast("Chains of Ice"), "Death Grip"),
                         //blood_fury,if=time>=2
@@ -189,8 +191,8 @@ namespace CLU.Classes.DeathKnight
                         //soul_reaper,if=target.health.pct<=35|((target.health.pct-3*(target.health.pct%target.time_to_die))<=35)
                         Spell.CastSpell("Soul Reaper", ret => StyxWoW.Me.CurrentTarget.HealthPercent <= 35, "Soul Reaping"),
                         //unholy_blight,if=talent.unholy_blight.enabled&(dot.frost_fever.remains<3|dot.blood_plague.remains<3)
-                        Spell.CastSpell("Unholy Blight", ret => SpellManager.HasSpell("Unholy Blight") && (Buff.TargetDebuffTimeLeft("Frost Fever").Seconds < 3 ||
-                            Buff.TargetDebuffTimeLeft("Blood Plague").Seconds < 3), "Unholy Blight"),
+                        Spell.CastSelfSpell("Unholy Blight", ret => SpellManager.HasSpell("Unholy Blight") && Me.CurrentTarget != null && Me.CurrentTarget.DistanceSqr < 10 * 10 &&
+                            (Buff.TargetDebuffTimeLeft("Frost Fever").Seconds < 3 || Buff.TargetDebuffTimeLeft("Blood Plague").Seconds < 3), "Unholy Blight"),
                         //chains_of_ice,if=!dot.frost_fever.ticking
                         Spell.CastSpell("Chains of Ice", ret => !Buff.TargetHasDebuff("Frost Fever"), "Chains of Ice"),
                         //plague_strike,if=!dot.blood_plague.ticking
@@ -213,7 +215,8 @@ namespace CLU.Classes.DeathKnight
                         //death_coil,if=buff.sudden_doom.react
                         Spell.CastSpell("Death Coil", ret => Buff.PlayerHasBuff("Sudden Doom"), "Death Coil"),
                         //blood_tap,if=talent.blood_tap.enabled
-                        Spell.CastSpell("Blood Tap", ret => SpellManager.HasSpell("Blood Tap") && Buff.PlayerCountBuff("Blood Charge") >= 5 && (Common.FrostRuneSlotsActive == 0 || Common.UnholyRuneSlotsActive == 0 || Common.BloodRuneSlotsActive == 0), "Blood Tap"),
+                        Spell.CastSpell("Blood Tap", ret => SpellManager.HasSpell("Blood Tap") && Buff.PlayerCountBuff("Blood Charge") >= 5 && (Common.FrostRuneSlotsActive == 0 ||
+                            Common.UnholyRuneSlotsActive == 0 || Common.BloodRuneSlotsActive == 0), "Blood Tap"),
                         //necrotic_strike,if=base_rotation.disabled
                         Spell.CastSpell("Necrotic Strike", ret => !Macro.rotationSwap, "Necrotic Strike"),
                         //scourge_strike
@@ -223,7 +226,7 @@ namespace CLU.Classes.DeathKnight
                         //death_coil,if=cooldown.summon_gargoyle.remains>8
                         Spell.CastSpell("Death Coil", ret => SpellManager.Spells["Summon Gargoyle"].CooldownTimeLeft.Seconds > 8, "Death Coil"),
                         //horn_of_winter
-                        Buff.CastBuff("Horn of Winter", ret => true, "Horn of Winter"),
+                        Buff.CastRaidBuff("Horn of Winter", ret => true, "Horn of Winter"),
                         //empower_rune_weapon
                         Spell.CastSpell("Empower Rune Weapon", ret => true, "Empower Rune Weapon")
                 ));
@@ -266,8 +269,10 @@ namespace CLU.Classes.DeathKnight
                             //raise_dead
                             Spell.CastSelfSpell("Raise Dead", ret => (Me.Pet == null || Me.Pet.IsDead), "Raise Dead"),
                             //mogu_power_potion
+                            //chains_of_ice,if=!currenttarget.iswithinmeleerenage
                             Spell.CastSpell("Chains of Ice", ret => Me.CurrentTarget != null && (CLU.LocationContext == GroupLogic.Battleground && Macro.Manual || Unit.IsTrainingDummy(Me.CurrentTarget)) &&
                                 Me.CurrentTarget.DistanceSqr > 3.2 * 3.2 && !Buff.TargetHasDebuff("Chains of Ice"), "Chains of Ice"),
+                            //death_grip,if=!currenttarget.iswithinmeleerange&spell.chains_of_ice.down
                             Spell.CastSpell("Death Grip", ret => Me.CurrentTarget != null && CLU.LocationContext == GroupLogic.Battleground && Macro.Manual && Me.CurrentTarget.DistanceSqr > 3.2 * 3.2 &&
                                 !Buff.TargetHasDebuff("Chains of Ice") && !SpellManager.CanCast("Chains of Ice"), "Death Grip")
                 )));
@@ -290,9 +295,6 @@ namespace CLU.Classes.DeathKnight
                         new Decorator(ret => Macro.Manual || BotChecker.BotBaseInUse("BGBuddy"),
                             new Decorator(ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget),
                                 new PrioritySelector(
-                                    //Spell.CastSpell("Chains of Ice", ret => Me.CurrentTarget != null &&Me.CurrentTarget.DistanceSqr > 3.2 * 3.2 && !Buff.TargetHasDebuff("Chains of Ice"), "Chains of Ice"),
-                                    //Spell.CastSpell("Death Grip", ret => Me.CurrentTarget != null &&Me.CurrentTarget.DistanceSqr > 3.2 * 3.2 && !Buff.TargetHasDebuff("Chains of Ice") &&
-                                        //!SpellManager.CanCast("Chains of Ice"), "Death Grip"),
                                     Item.UseTrinkets(),
                                     Buff.CastBuff("Lifeblood", ret => true, "Lifeblood"),
                                     new Action(delegate
