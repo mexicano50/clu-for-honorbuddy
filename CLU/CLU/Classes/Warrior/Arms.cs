@@ -237,10 +237,10 @@ namespace CLU.Classes.Warrior
                             //commanding_shout,if=!buff_exists
                             Buff.CastRaidBuff("Commanding Shout", ret => true, "Commanding Shout"),
                             //charge,if=!currenttarget.iswithinmeleerenage
-                            Spell.CastSpell("Charge", ret => Me.CurrentTarget != null && (CLU.LocationContext == GroupLogic.Battleground && Macro.Manual || Unit.IsTrainingDummy(Me.CurrentTarget)) &&
+                            Spell.CastSpell("Charge", ret => Me.CurrentTarget != null && Macro.Manual && (CLU.LocationContext == GroupLogic.Battleground || Unit.IsTrainingDummy(Me.CurrentTarget)) &&
                                 Me.CurrentTarget.DistanceSqr > 3.2 * 3.2, "Charge"),
                             //heroic_leap,if=!currenttarget.iswithinmeleerange&spell.charge.down
-                            Spell.CastOnUnitLocation("Heroic Leap", ret => Me.CurrentTarget, ret => Me.CurrentTarget != null && (CLU.LocationContext == GroupLogic.Battleground && Macro.Manual ||
+                            Spell.CastOnUnitLocation("Heroic Leap", ret => Me.CurrentTarget, ret => Me.CurrentTarget != null && Macro.Manual && (CLU.LocationContext == GroupLogic.Battleground ||
                                 Unit.IsTrainingDummy(Me.CurrentTarget)) && Me.CurrentTarget.DistanceSqr > 3.2 * 3.2 && SpellManager.Spells["Charge"].CooldownTimeLeft.Seconds > 1 &&
                                 SpellManager.Spells["Charge"].CooldownTimeLeft.Seconds < 18, "Heroic Leap"))
                 ));
