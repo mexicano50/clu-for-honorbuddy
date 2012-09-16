@@ -42,7 +42,7 @@ namespace CLU.Base
             {
                 switch (spell.Name)
                 {
-                    case "":
+                    case "Berserker Rage":
                         return false;
                     default:
                         return false;

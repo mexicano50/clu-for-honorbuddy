@@ -170,9 +170,12 @@ namespace CLU.Lists
         }
 
         #region _spellsThatBreakCrowdControl
+        /// <summary>
+        /// Please add spells which can break movement imparing effects here
+        /// </summary>
         private static readonly HashSet<string> _spellsThatBreakCrowdControl = new HashSet<string>
         {
-            "",
+            "Berserker Rage",
             "",
             "",
             "",
