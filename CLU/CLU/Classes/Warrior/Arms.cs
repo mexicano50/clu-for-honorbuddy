@@ -271,6 +271,7 @@ namespace CLU.Classes.Warrior
             {
                 return (
                     new PrioritySelector(
+                        CrowdControl.freeMe(),
                         new Decorator(ret => Macro.Manual || BotChecker.BotBaseInUse("BGBuddy"),
                             new Decorator(ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget),
                                 new PrioritySelector(

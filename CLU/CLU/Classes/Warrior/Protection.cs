@@ -23,10 +23,10 @@ using Styx.WoWInternals;
 namespace CLU.Classes.Warrior
 {
     using Styx;
+    using Styx.CommonBot;
 
     class Protection : RotationBase
     {
-
         private const int ItemSetId = -466; // Tier set ID Colossal Dragonplate Armor
 
         public override string Name
@@ -46,16 +46,17 @@ namespace CLU.Classes.Warrior
         {
             get { return "Shield Slam"; }
         }
+
         public override int KeySpellId
         {
             get { return 23922; }
         }
+
         public override float CombatMaxDistance
         {
             get { return 3.2f; }
         }
 
-        // adding some help
         public override string Help
         {
             get
@@ -75,7 +76,7 @@ This Rotation will:
     ==> UseRacials 
     ==> UseEngineerGloves
     ==> Avatar, Bloodbath, Death Wish
-NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagradt changes that.
+NOTE: PvP rotations have been implemented in the most basic form, once MoP is released I will go back & revise the rotations for optimal functionality 'Dagradt'.
 ----------------------------------------------------------------------" + twopceinfo + "\n" + fourpceinfo + "\n";
             }
         }
@@ -135,6 +136,54 @@ NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagr
             }
         }
 
+        public Composite burstRotation
+        {
+            get
+            {
+                return (
+                    new PrioritySelector(
+                ));
+            }
+        }
+
+        public Composite baseRotation
+        {
+            get
+            {
+                return (
+                    new PrioritySelector(
+                        //charge,if=!currenttarget.iswithinmeleerenage
+                        Spell.CastSpell("Charge", ret => !Me.CurrentTarget.IsWithinMeleeRange, "Charge"),
+                        //heroic_leap,if=!currenttarget.iswithinmeleerange&spell.charge.down
+                        Spell.CastOnUnitLocation("Heroic Leap", ret => Me.CurrentTarget, ret => Me.CurrentTarget.IsWithinMeleeRange && SpellManager.Spells["Charge"].CooldownTimeLeft.Seconds > 1 &&
+                            SpellManager.Spells["Charge"].CooldownTimeLeft.Seconds < 18, "Heroic Leap"),
+                        //hamstring,if=!debuff.hamstring.up
+                        Spell.CastSpell("Hamstring", ret => !Buff.TargetHasDebuff("Hamstring"), "Hamstring"),
+                        //earthen_potion,if=health_pct<35&buff.earthen_potion.down
+                        //blood_fury
+                        Racials.UseRacials(),
+                        //last_stand,if=health<30000
+                        Spell.CastSelfSpell("Last Stand", ret => Me.CurrentHealth < 30000, "Last Stand"),
+                        //heroic_strike,if=buff.ultimatum.up,use_off_gcd=1
+                        Spell.CastSpell("Heroic Strike", ret => Buff.PlayerHasActiveBuff("Ultimatum"), "Heroic Strike"),
+                        //berserker_rage,use_off_gcd=1
+                        Spell.CastSelfSpell("Berserker Rage", ret => Me.CurrentTarget.IsWithinMeleeRange, "Berserker Rage"),
+                        //shield_slam,if=rage<75
+                        Spell.CastSpell("Shield Slam", ret => Me.CurrentRage < 75, "Shield Slam"),
+                        //revenge,if=rage<75
+                        Spell.CastSpell("Revenge", ret => Me.CurrentRage < 75, "revenge"),
+                        //D	49.77	shield_block
+                        Spell.CastSpell("Shield Block", ret => true, "Shield Block"),
+                        //thunder_clap
+                        Spell.CastSpell("Thunder Clap", ret => true, "Thunder Clap"),
+                        //battle_shout,if=rage<80
+                        Buff.CastBuff("Battle Shout", ret => Me.CurrentRage < 80, "Battle Shout"),
+                        //devastate
+                        Spell.CastSpell("Devastate", ret => true, "Devastate")
+                ));
+            }
+        }
+
         public override Composite Medic
         {
             get
@@ -160,9 +209,23 @@ NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagr
                         new Decorator(
                             ret => !Me.Mounted && !Me.IsDead && !Me.Combat && !Me.IsFlying && !Me.IsOnTransport && !Me.HasAura("Food") && !Me.HasAura("Drink"),
                             new PrioritySelector(
+                                //flask,type=earth
+                                //food,type=great_pandaren_banquet
+                                //stance,choose=defensive
+                                Buff.CastBuff("Defensive Stance", ret => StyxWoW.Me.Shapeshift != ShapeshiftForm.DefensiveStance, "Defensive Stance"),
+                                //earthen_potion
+                                //commanding_shout,if=!buff_exists
                                 Buff.CastRaidBuff("Commanding Shout", ret => true, "Commanding Shout"),
+                                //battle_shout,if=!buff_exists
                                 Buff.CastRaidBuff("Battle Shout", ret => true, "Battle Shout"),
-                                Buff.CastBuff("Defensive Stance", ret => StyxWoW.Me.Shapeshift != ShapeshiftForm.DefensiveStance, "Defensive Stance We need it!"))));
+                                //charge,if=!currenttarget.iswithinmeleerenage
+                                Spell.CastSpell("Charge", ret => Me.CurrentTarget != null && Macro.Manual && (CLU.LocationContext == GroupLogic.Battleground || Unit.IsTrainingDummy(Me.CurrentTarget)) &&
+                                    Me.CurrentTarget.Distance >= 8d && Me.CurrentTarget.Distance <= 25d, "Charge"),
+                                //heroic_leap,if=!currenttarget.iswithinmeleerange&spell.charge.down
+                                Spell.CastOnUnitLocation("Heroic Leap", ret => Me.CurrentTarget, ret => Me.CurrentTarget != null && Macro.Manual && (CLU.LocationContext == GroupLogic.Battleground ||
+                                    Unit.IsTrainingDummy(Me.CurrentTarget)) && Me.CurrentTarget.Distance >= 8d && Me.CurrentTarget.Distance <= 40d && SpellManager.Spells["Charge"].CooldownTimeLeft.Seconds > 1 &&
+                                    SpellManager.Spells["Charge"].CooldownTimeLeft.Seconds < 18, "Heroic Leap"))
+                ));
             }
         }
 
@@ -173,7 +236,26 @@ NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagr
 
         public override Composite PVPRotation
         {
-            get { return this.SingleRotation; }
+            get
+            {
+                return (
+                    new PrioritySelector(
+                        CrowdControl.freeMe(),
+                        new Decorator(ret => Macro.Manual || BotChecker.BotBaseInUse("BGBuddy"),
+                            new Decorator(ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget),
+                                new PrioritySelector(
+                                    Item.UseTrinkets(),
+                                    Buff.CastBuff("Lifeblood", ret => true, "Lifeblood"),
+                                    Item.UseEngineerGloves(),
+                                    new Action(delegate
+                                    {
+                                        Macro.isMultiCastMacroInUse();
+                                        return RunStatus.Failure;
+                                    }),
+                                    new Decorator(ret => Macro.Burst, burstRotation),
+                                    new Decorator(ret => !Macro.Burst || BotChecker.BotBaseInUse("BGBuddy"), baseRotation)))
+                )));
+            }
         }
 
         public override Composite PVERotation
