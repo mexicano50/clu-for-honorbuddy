@@ -77,7 +77,7 @@ namespace CLU.Classes.Monk
                        "3. \n" +
                        "4. Best Suited for end game raiding\n" +
                        "NOTE: PvP uses single target rotation - It's not designed for PvP use. \n" +
-                       "Credits: alxaw for basic rotation" +
+                       "Credits: alxaw for extending the basic rotation" +
                        "----------------------------------------------------------------------\n";
             }
         }
@@ -89,6 +89,14 @@ namespace CLU.Classes.Monk
                 return StyxWoW.Me.GetCurrentPower(WoWPowerType.LightForce);    // Me.Chi
             }
         }
+
+        // TODO: CHECK COMBO BREAKER NAMES.
+        // TODO: CHECK CHI
+        // TODO: FIND AWAY TO RETURN ENERGY REGEN RATE
+        // TODO: CHECK ALL SPELL NAMES FROM "SPELLS" DUMP
+        // TODO: CHECK ALL AURAS
+        // TODO: CHECK JAB IS NOT AFFECTED BY THE WEAPON YOU ARE CARRYING AND WE ONLY NEED TO USE JAB AND THE SPELLID AND ICON WILL CHANGE.
+
 
         private static readonly List<string> JabSpellList = new List<string> { "Jab", "Club", "Slice", "Sever", "Pike", "Clobber" };
         private static bool RisingSunKickCoolDown { get { return Spell.SpellCooldown("Rising Sun Kick").TotalSeconds > 40.0; } }
@@ -119,7 +127,7 @@ namespace CLU.Classes.Monk
                            Spell.CastSpell("Tiger Plam", ret => Buff.PlayerCountBuff("Tiger Power") < 3 || Buff.PlayerBuffTimeLeft("Tiger Power") < 3, "Tiger Power"),
                            Spell.CastSpell("Tigereye Brew", ret => !Buff.PlayerHasBuff("Tigereye Brew Use") && Buff.PlayerCountBuff("Tigereye Brew") > 10 && CLUSettings.Instance.UseCooldowns, "Tigerye Brew"),
                            //Spell.CastSpell("Energizing Brew",   ret => Buff. //Get back to this later.
-                           Spell.CastSpell("Invoke Xuen", ret => TalentManager.HasTalent(17), "Invoke Xuen"),
+                           Spell.CastSelfSpell("Invoke Xuen, the White Tiger", ret => TalentManager.HasTalent(17), "Invoke Xuen"),
                            Spell.CastSpell("Rushing Jade Wind", ret => TalentManager.HasTalent(16), "Rushing Jade Wind"),
                            Spell.CastSpell("Fists of Fury", ret => !Buff.PlayerHasActiveBuff("Energizing Brew") && Me.CurrentEnergy > 80 && Buff.PlayerBuffTimeLeft("Tiger Power") > 4 && Buff.PlayerCountBuff("Tiger Power") > 3, "Fists of Fury"),
                            Spell.CastSpell("Blackout Kick", ret => Buff.PlayerHasActiveBuff("Combo Breaker"), "Blackout Kick"),
@@ -136,7 +144,7 @@ namespace CLU.Classes.Monk
                             // AoE
                            Spell.CastAreaSpell("Fists of Fury", 8, false, 3, 0.0, 0.0, ret => true, "Fists of Fury"),
                            Spell.CastAreaSpell("Spinning Crane Kick", 8, false, 3, 0.0, 0.0, ret => true, "Spinning Crane Kick"), // no really required but will leave in for low levels
-                           Spell.CastSelfSpell("Invoke Xuen, the White Tiger", ret => TalentManager.HasTalent(16) && CLUSettings.Instance.UseCooldowns, "Invoke Xuen, the White Tiger"), // if=talent.invoke_xuen.enabled (TalentManager.HasTalent(1, 1) is bogus but I put it in here to remind me to check for this to be talented)
+                           Spell.CastSelfSpell("Invoke Xuen, the White Tiger", ret => TalentManager.HasTalent(17) && CLUSettings.Instance.UseCooldowns, "Invoke Xuen, the White Tiger"), // if=talent.invoke_xuen.enabled (TalentManager.HasTalent(1, 1) is bogus but I put it in here to remind me to check for this to be talented)
                            Spell.CastSpell("Blackout Kick", ret => Buff.PlayerHasActiveBuff("Combo Breaker: Blackout Kick"), "Blackout Kick"),
                            Spell.CastSpell("Tiger Palm", ret => Buff.PlayerHasActiveBuff("Combo Breaker: Tiger Palm"), "Tiger Palm"),
                            Spell.CastSpell("Blackout Kick", ret => Chi >= 1, "Blackout Kick"),
