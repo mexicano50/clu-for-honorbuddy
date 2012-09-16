@@ -175,6 +175,14 @@ namespace CLU.Managers
 
         }
 
+        public static void Dumpglyphs()
+        {
+            foreach (var glyph in Glyphs)
+            {
+                CLU.TroubleshootLog("{0}", glyph);
+            }
+        }
+
         private struct Talent
         {
             public int Count;
