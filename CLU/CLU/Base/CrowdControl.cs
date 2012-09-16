@@ -43,7 +43,7 @@ namespace CLU.Base
                 switch (spell.Name)
                 {
                     case "Berserker Rage":
-                        return false;
+                        return StyxWoW.Me.GetAllAuras().Any(a => a.Spell.Mechanic == WoWSpellMechanic.Fleeing || a.Spell.Mechanic == WoWSpellMechanic.Sapped || a.Spell.Mechanic == WoWSpellMechanic.Incapacitated);
                     default:
                         return false;
                 }
