@@ -800,6 +800,22 @@ namespace CLU.Base
             return CastOnGround(spell, onLocation, requirements, true);
         }
 
+        /// <summary>
+        ///   Creates a behavior to cast a spell by Id, on the ground at the specified location. Returns RunStatus.Success if successful, RunStatus.Failure otherwise.
+        /// </summary>
+        /// <remarks>
+        ///   Created 5/2/2011.
+        /// </remarks>
+        /// <param name = "spellid">The spell Id</param>
+        /// <param name = "onLocation">The on location.</param>
+        /// <param name = "requirements">The requirements.</param>
+        /// <returns>.</returns>
+        public static Composite CastOnGround(int spellid, LocationRetriever onLocation,
+            CanRunDecoratorDelegate requirements)
+        {
+            return CastOnGround(spellid, onLocation, requirements, true);
+        }
+
 
         /// <summary>
         ///   Creates a behavior to cast a spell by name, on the ground at the specified location. Returns RunStatus.Success if successful, RunStatus.Failure otherwise.
@@ -830,6 +846,37 @@ namespace CLU.Base
                                 ret =>
                                 StyxWoW.Me.CurrentPendingCursorSpell != null &&
                                 StyxWoW.Me.CurrentPendingCursorSpell.Name == spell, new ActionAlwaysSucceed())),
+
+                        new Action(ret => SpellManager.ClickRemoteLocation(onLocation(ret)))));
+        }
+
+        /// <summary>
+        ///   Creates a behavior to cast a spell by Id, on the ground at the specified location. Returns RunStatus.Success if successful, RunStatus.Failure otherwise.
+        /// </summary>
+        /// <remarks>
+        ///   Created 5/2/2011.
+        /// </remarks>
+        /// <param name = "spellid">The spell Id</param>
+        /// <param name = "onLocation">The on location.</param>
+        /// <param name = "requirements">The requirements.</param>
+        /// <param name="waitForSpell">Waits for spell to become active on cursor if true. </param>
+        /// <returns>.</returns>
+        public static Composite CastOnGround(int spellid, LocationRetriever onLocation,
+            CanRunDecoratorDelegate requirements, bool waitForSpell)
+        {
+            return
+                new Decorator(
+                    ret =>
+                    requirements(ret) && onLocation != null && CLUSettings.Instance.UseAoEAbilities,
+                    new Sequence(
+                        new Action(ret => CLU.Log("Casting {0} at location {1}", spellid, onLocation(ret))),
+                        new Action(ret => SpellManager.Cast(spellid)),
+
+                        new DecoratorContinue(ctx => waitForSpell,
+                            new WaitContinue(1,
+                                ret =>
+                                StyxWoW.Me.CurrentPendingCursorSpell != null &&
+                                StyxWoW.Me.CurrentPendingCursorSpell.Id == spellid, new ActionAlwaysSucceed())),
 
                         new Action(ret => SpellManager.ClickRemoteLocation(onLocation(ret)))));
         }

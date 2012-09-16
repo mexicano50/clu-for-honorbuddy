@@ -62,10 +62,15 @@ namespace CLU.GUI
                     spellname_lbl.Text = test.Name;
                     spellCancast_lbl.Text = test.CanCast.ToString(CultureInfo.InvariantCulture);
                     smIsValid_lbl.Text = test.IsValid.ToString(CultureInfo.InvariantCulture);
+                    smCooldownTimeLeftid_lbl.Text = test.CooldownTimeLeft.ToString();
+                    smCooldownid_lbl.Text = test.Cooldown.ToString(CultureInfo.InvariantCulture);
+                    smCooldownTimeLeft_lbl.Text = SpellManager.Spells[spellname].CooldownTimeLeft.ToString();
                 }
 
 
         }
+
+        
 
         void Timer1Tick(object sender, EventArgs e)
         {

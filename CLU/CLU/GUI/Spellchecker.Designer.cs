@@ -48,6 +48,16 @@ namespace CLU.GUI
             this.spellname_txt = new System.Windows.Forms.TextBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.smCooldownTimeLeft_lbl = new System.Windows.Forms.Label();
+            this.label12 = new System.Windows.Forms.Label();
+            this.smCooldownid_lbl = new System.Windows.Forms.Label();
+            this.label10 = new System.Windows.Forms.Label();
+            this.smCooldownTimeLeftid_lbl = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.smIsValid_lbl = new System.Windows.Forms.Label();
+            this.spellCancast_lbl = new System.Windows.Forms.Label();
+            this.spellname_lbl = new System.Windows.Forms.Label();
+            this.smCanCast_lbl = new System.Windows.Forms.Label();
             this.smHasSpell_lbl = new System.Windows.Forms.Label();
             this.spellid_lbl = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
@@ -57,10 +67,6 @@ namespace CLU.GUI
             this.label5 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.Timer1 = new System.Windows.Forms.Timer(this.components);
-            this.smCanCast_lbl = new System.Windows.Forms.Label();
-            this.spellname_lbl = new System.Windows.Forms.Label();
-            this.spellCancast_lbl = new System.Windows.Forms.Label();
-            this.smIsValid_lbl = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.spellid_input)).BeginInit();
             this.groupBox2.SuspendLayout();
@@ -75,7 +81,7 @@ namespace CLU.GUI
             this.groupBox1.Controls.Add(this.spellname_txt);
             this.groupBox1.Location = new System.Drawing.Point(13, 13);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(410, 86);
+            this.groupBox1.Size = new System.Drawing.Size(551, 86);
             this.groupBox1.TabIndex = 1;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Spell Input";
@@ -83,7 +89,7 @@ namespace CLU.GUI
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(254, 21);
+            this.label2.Location = new System.Drawing.Point(229, 21);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(72, 13);
             this.label2.TabIndex = 4;
@@ -91,7 +97,7 @@ namespace CLU.GUI
             // 
             // spellid_input
             // 
-            this.spellid_input.Location = new System.Drawing.Point(254, 40);
+            this.spellid_input.Location = new System.Drawing.Point(229, 40);
             this.spellid_input.Maximum = new decimal(new int[] {
             1000000,
             0,
@@ -122,13 +128,19 @@ namespace CLU.GUI
             this.groupBox2.Controls.Add(this.panel1);
             this.groupBox2.Location = new System.Drawing.Point(13, 105);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(410, 191);
+            this.groupBox2.Size = new System.Drawing.Size(554, 191);
             this.groupBox2.TabIndex = 2;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Output";
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.smCooldownTimeLeft_lbl);
+            this.panel1.Controls.Add(this.label12);
+            this.panel1.Controls.Add(this.smCooldownid_lbl);
+            this.panel1.Controls.Add(this.label10);
+            this.panel1.Controls.Add(this.smCooldownTimeLeftid_lbl);
+            this.panel1.Controls.Add(this.label3);
             this.panel1.Controls.Add(this.smIsValid_lbl);
             this.panel1.Controls.Add(this.spellCancast_lbl);
             this.panel1.Controls.Add(this.spellname_lbl);
@@ -141,15 +153,106 @@ namespace CLU.GUI
             this.panel1.Controls.Add(this.label6);
             this.panel1.Controls.Add(this.label5);
             this.panel1.Controls.Add(this.label4);
-            this.panel1.Location = new System.Drawing.Point(7, 20);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel1.Location = new System.Drawing.Point(3, 16);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(397, 165);
+            this.panel1.Size = new System.Drawing.Size(548, 172);
             this.panel1.TabIndex = 0;
+            // 
+            // smCooldownTimeLeft_lbl
+            // 
+            this.smCooldownTimeLeft_lbl.AutoSize = true;
+            this.smCooldownTimeLeft_lbl.Location = new System.Drawing.Point(199, 67);
+            this.smCooldownTimeLeft_lbl.Name = "smCooldownTimeLeft_lbl";
+            this.smCooldownTimeLeft_lbl.Size = new System.Drawing.Size(22, 13);
+            this.smCooldownTimeLeft_lbl.TabIndex = 20;
+            this.smCooldownTimeLeft_lbl.Text = "xxx";
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(22, 67);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(166, 13);
+            this.label12.TabIndex = 18;
+            this.label12.Text = "SpellManager.CooldownTimeLeft:";
+            // 
+            // smCooldownid_lbl
+            // 
+            this.smCooldownid_lbl.AutoSize = true;
+            this.smCooldownid_lbl.Location = new System.Drawing.Point(450, 115);
+            this.smCooldownid_lbl.Name = "smCooldownid_lbl";
+            this.smCooldownid_lbl.Size = new System.Drawing.Size(22, 13);
+            this.smCooldownid_lbl.TabIndex = 16;
+            this.smCooldownid_lbl.Text = "xxx";
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(292, 115);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(111, 13);
+            this.label10.TabIndex = 15;
+            this.label10.Text = "WoWSpell.Cooldown:";
+            // 
+            // smCooldownTimeLeftid_lbl
+            // 
+            this.smCooldownTimeLeftid_lbl.AutoSize = true;
+            this.smCooldownTimeLeftid_lbl.Location = new System.Drawing.Point(450, 139);
+            this.smCooldownTimeLeftid_lbl.Name = "smCooldownTimeLeftid_lbl";
+            this.smCooldownTimeLeftid_lbl.Size = new System.Drawing.Size(22, 13);
+            this.smCooldownTimeLeftid_lbl.TabIndex = 14;
+            this.smCooldownTimeLeftid_lbl.Text = "xxx";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(292, 139);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(152, 13);
+            this.label3.TabIndex = 13;
+            this.label3.Text = "WoWSpell.CooldownTimeLeft:";
+            // 
+            // smIsValid_lbl
+            // 
+            this.smIsValid_lbl.AutoSize = true;
+            this.smIsValid_lbl.Location = new System.Drawing.Point(450, 92);
+            this.smIsValid_lbl.Name = "smIsValid_lbl";
+            this.smIsValid_lbl.Size = new System.Drawing.Size(22, 13);
+            this.smIsValid_lbl.TabIndex = 12;
+            this.smIsValid_lbl.Text = "xxx";
+            // 
+            // spellCancast_lbl
+            // 
+            this.spellCancast_lbl.AutoSize = true;
+            this.spellCancast_lbl.Location = new System.Drawing.Point(450, 70);
+            this.spellCancast_lbl.Name = "spellCancast_lbl";
+            this.spellCancast_lbl.Size = new System.Drawing.Size(22, 13);
+            this.spellCancast_lbl.TabIndex = 11;
+            this.spellCancast_lbl.Text = "xxx";
+            // 
+            // spellname_lbl
+            // 
+            this.spellname_lbl.AutoSize = true;
+            this.spellname_lbl.Location = new System.Drawing.Point(450, 45);
+            this.spellname_lbl.Name = "spellname_lbl";
+            this.spellname_lbl.Size = new System.Drawing.Size(22, 13);
+            this.spellname_lbl.TabIndex = 10;
+            this.spellname_lbl.Text = "xxx";
+            // 
+            // smCanCast_lbl
+            // 
+            this.smCanCast_lbl.AutoSize = true;
+            this.smCanCast_lbl.Location = new System.Drawing.Point(199, 45);
+            this.smCanCast_lbl.Name = "smCanCast_lbl";
+            this.smCanCast_lbl.Size = new System.Drawing.Size(22, 13);
+            this.smCanCast_lbl.TabIndex = 9;
+            this.smCanCast_lbl.Text = "xxx";
             // 
             // smHasSpell_lbl
             // 
             this.smHasSpell_lbl.AutoSize = true;
-            this.smHasSpell_lbl.Location = new System.Drawing.Point(149, 20);
+            this.smHasSpell_lbl.Location = new System.Drawing.Point(199, 20);
             this.smHasSpell_lbl.Name = "smHasSpell_lbl";
             this.smHasSpell_lbl.Size = new System.Drawing.Size(22, 13);
             this.smHasSpell_lbl.TabIndex = 8;
@@ -158,7 +261,7 @@ namespace CLU.GUI
             // spellid_lbl
             // 
             this.spellid_lbl.AutoSize = true;
-            this.spellid_lbl.Location = new System.Drawing.Point(295, 20);
+            this.spellid_lbl.Location = new System.Drawing.Point(450, 20);
             this.spellid_lbl.Name = "spellid_lbl";
             this.spellid_lbl.Size = new System.Drawing.Size(22, 13);
             this.spellid_lbl.TabIndex = 7;
@@ -167,7 +270,7 @@ namespace CLU.GUI
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(194, 92);
+            this.label9.Location = new System.Drawing.Point(292, 92);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(95, 13);
             this.label9.TabIndex = 6;
@@ -176,7 +279,7 @@ namespace CLU.GUI
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(194, 70);
+            this.label8.Location = new System.Drawing.Point(292, 70);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(103, 13);
             this.label8.TabIndex = 5;
@@ -185,7 +288,7 @@ namespace CLU.GUI
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(194, 45);
+            this.label7.Location = new System.Drawing.Point(292, 45);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(92, 13);
             this.label7.TabIndex = 4;
@@ -194,7 +297,7 @@ namespace CLU.GUI
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(194, 20);
+            this.label6.Location = new System.Drawing.Point(292, 20);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(75, 13);
             this.label6.TabIndex = 3;
@@ -224,50 +327,17 @@ namespace CLU.GUI
             this.Timer1.Interval = 500;
             this.Timer1.Tick += new System.EventHandler(this.Timer1Tick);
             // 
-            // smCanCast_lbl
-            // 
-            this.smCanCast_lbl.AutoSize = true;
-            this.smCanCast_lbl.Location = new System.Drawing.Point(147, 45);
-            this.smCanCast_lbl.Name = "smCanCast_lbl";
-            this.smCanCast_lbl.Size = new System.Drawing.Size(22, 13);
-            this.smCanCast_lbl.TabIndex = 9;
-            this.smCanCast_lbl.Text = "xxx";
-            // 
-            // spellname_lbl
-            // 
-            this.spellname_lbl.AutoSize = true;
-            this.spellname_lbl.Location = new System.Drawing.Point(295, 45);
-            this.spellname_lbl.Name = "spellname_lbl";
-            this.spellname_lbl.Size = new System.Drawing.Size(22, 13);
-            this.spellname_lbl.TabIndex = 10;
-            this.spellname_lbl.Text = "xxx";
-            // 
-            // spellCancast_lbl
-            // 
-            this.spellCancast_lbl.AutoSize = true;
-            this.spellCancast_lbl.Location = new System.Drawing.Point(296, 70);
-            this.spellCancast_lbl.Name = "spellCancast_lbl";
-            this.spellCancast_lbl.Size = new System.Drawing.Size(22, 13);
-            this.spellCancast_lbl.TabIndex = 11;
-            this.spellCancast_lbl.Text = "xxx";
-            // 
-            // smIsValid_lbl
-            // 
-            this.smIsValid_lbl.AutoSize = true;
-            this.smIsValid_lbl.Location = new System.Drawing.Point(298, 92);
-            this.smIsValid_lbl.Name = "smIsValid_lbl";
-            this.smIsValid_lbl.Size = new System.Drawing.Size(22, 13);
-            this.smIsValid_lbl.TabIndex = 12;
-            this.smIsValid_lbl.Text = "xxx";
-            // 
             // Spellchecker
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(436, 308);
+            this.ClientSize = new System.Drawing.Size(579, 308);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "Spellchecker";
+            this.ShowIcon = false;
             this.Text = "Spellchecker";
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
@@ -301,6 +371,12 @@ namespace CLU.GUI
         private System.Windows.Forms.Label spellname_lbl;
         private System.Windows.Forms.Label spellCancast_lbl;
         private System.Windows.Forms.Label smIsValid_lbl;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label smCooldownTimeLeftid_lbl;
+        private System.Windows.Forms.Label smCooldownid_lbl;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.Label smCooldownTimeLeft_lbl;
+        private System.Windows.Forms.Label label12;
 
     }
 }

@@ -984,5 +984,12 @@ namespace CLU.Base
             return player != null && player.IsCasting && ChanneledInteruptableSpells.Contains(player.CastingSpellId);
         }
 
+        /// <summary>Returns true if the player has one of the supplied crowd control.</summary>
+        /// <returns>The player is crowd controlled</returns>
+        public static bool PlayerHasCrowdControl(WoWSpellMechanic cc)
+        {
+            return StyxWoW.Me.GetAllAuras().Any(a => a.Spell.Mechanic == cc);
+        }
+
     }
 }
