@@ -40,7 +40,7 @@ namespace CLU.Base
         private static IEnumerable<WoWPartyMember> GroupMemberInfos
         {
             get {
-                return !Me.IsInRaid ? Me.PartyMemberInfos : Me.RaidMemberInfos;
+                return !Me.IsInRaid ? Me.GroupInfo.PartyMembers : Me.GroupInfo.RaidMembers;
             }
         }
 
@@ -115,7 +115,7 @@ namespace CLU.Base
 
         public static bool IsInParty
         {
-            get { return Me.RaidMemberGuids != null && Me.RaidMemberGuids.Length > 0; }
+            get { return Me.GroupInfo.RaidMemberGuids != null && Me.GroupInfo.RaidMemberGuids.Length > 0; }
         }
 
         /// <summary>
@@ -499,7 +499,7 @@ namespace CLU.Base
                 if ((StyxWoW.Me.Role & WoWPartyMember.GroupRole.Tank) != 0)
                     result.Add(StyxWoW.Me);
 
-                var members = StyxWoW.Me.IsInRaid ? StyxWoW.Me.RaidMemberInfos : StyxWoW.Me.PartyMemberInfos;
+                var members = StyxWoW.Me.IsInRaid ? StyxWoW.Me.GroupInfo.RaidMembers : StyxWoW.Me.GroupInfo.PartyMembers;
 
                 var tanks = members.Where(p => (p.Role & WoWPartyMember.GroupRole.Tank) != 0);
 
@@ -577,7 +577,7 @@ namespace CLU.Base
                 if ((StyxWoW.Me.Role & WoWPartyMember.GroupRole.Healer) != 0)
                     result.Add(StyxWoW.Me);
 
-                var members = StyxWoW.Me.IsInRaid ? StyxWoW.Me.RaidMemberInfos : StyxWoW.Me.PartyMemberInfos;
+                var members = StyxWoW.Me.IsInRaid ? StyxWoW.Me.GroupInfo.RaidMembers : StyxWoW.Me.GroupInfo.PartyMembers;
 
                 var tanks = members.Where(p => (p.Role & WoWPartyMember.GroupRole.Healer) != 0);
 
@@ -1059,7 +1059,7 @@ namespace CLU.Base
         /// <returns>The player by class prio.</returns>
         private static WoWUnit GetPlayerByClassPrio(float range, bool includeDead, params WoWClass[] classes)
         {
-            return (from woWClass in classes select StyxWoW.Me.PartyMemberInfos.FirstOrDefault(p => p.ToPlayer() != null && p.ToPlayer().Distance < range && p.ToPlayer().Class == woWClass) into unit where unit != null where !includeDead && unit.Dead || unit.Ghost select unit.ToPlayer()).FirstOrDefault();
+            return (from woWClass in classes select StyxWoW.Me.GroupInfo.PartyMembers.FirstOrDefault(p => p.ToPlayer() != null && p.ToPlayer().Distance < range && p.ToPlayer().Class == woWClass) into unit where unit != null where !includeDead && unit.Dead || unit.Ghost select unit.ToPlayer()).FirstOrDefault();
         }
 
 

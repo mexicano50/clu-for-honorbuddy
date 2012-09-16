@@ -161,6 +161,14 @@ namespace CLU
                 Composite currentrotation = null;
                 switch (GroupType)
                 {
+                    case GroupType.Solo: //If you EVER change that Wulf... I'll rape a Koala in front of you!
+                        switch (LocationContext)
+                        {
+                            case GroupLogic.Solo:
+                                currentrotation = this.ActiveRotation.SingleRotation;
+                                break;
+                        }
+                        break;
                     case GroupType.Party:
                     case GroupType.Raid:
                         switch (LocationContext)
@@ -172,9 +180,6 @@ namespace CLU
                                 currentrotation = this.ActiveRotation.PVPRotation;
                                 break;
                         }
-                        break;
-                    default:
-                        currentrotation = this.ActiveRotation.SingleRotation;
                         break;
                 }
 

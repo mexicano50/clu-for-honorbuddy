@@ -365,7 +365,7 @@ namespace CLU.Helpers
         public static LocalPlayer Me { get { return StyxWoW.Me; } }
         public static bool IsInGroup { get { return Me.IsInRaid || Me.IsInParty; } }
         public static List<WoWPlayer> GroupMembers { get { return !Me.IsInRaid ? Me.PartyMembers : Me.RaidMembers; } }
-        public static List<WoWPartyMember> GroupMemberInfos { get { return !Me.IsInRaid ? Me.PartyMemberInfos : Me.RaidMemberInfos; } }
+        public static IEnumerable<WoWPartyMember> GroupMemberInfos { get { return !Me.IsInRaid ? Me.GroupInfo.PartyMembers : Me.GroupInfo.RaidMembers; } }
 
         /// <summary>
         ///  List of healable units by Raid or Party Information

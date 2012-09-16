@@ -157,7 +157,7 @@ namespace CLU.Helpers
         /// <returns>true or false</returns>
         public bool IsMyHourofTwilightSoak(int myGroupNumber)
         {
-            return Me.RaidMemberInfos.Any(x => x.GroupNumber == myGroupNumber && x.Guid == Me.Guid);
+            return Me.GroupInfo.RaidMembers.Any(x => x.GroupNumber == myGroupNumber && x.Guid == Me.Guid);
         }
 
         /// <summary>Handles pushing the extra action button in DS Encounters</summary>
