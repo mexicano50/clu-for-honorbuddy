@@ -18,6 +18,7 @@ using CLU.Base;
 using Styx.CommonBot;
 using Rest = CLU.Base.Rest;
 using Styx;
+using Styx.WoWInternals;
 
 namespace CLU.Classes.Warrior
 {
@@ -232,6 +233,10 @@ namespace CLU.Classes.Warrior
                             Buff.CastBuff("Berserker Stance", ret => StyxWoW.Me.Shapeshift != CLUSettings.Instance.Warrior.StanceSelection && CLUSettings.Instance.Warrior.StanceSelection == ShapeshiftForm.BerserkerStance, "Stance is Berserker"),
                             Buff.CastBuff("Battle Stance", ret => StyxWoW.Me.Shapeshift != CLUSettings.Instance.Warrior.StanceSelection && CLUSettings.Instance.Warrior.StanceSelection == ShapeshiftForm.BattleStance, "Stance is Battle"),
                             //mogu_power_potion
+                            //defensive_mode
+                            new Decorator(ret => Macro.rotationSwap, wepSwapDefensive),
+                            //offensive_mode
+                            new Decorator(ret => !Macro.rotationSwap, wepSwapOffensive),
                             //battle_shout,if=!buff_exists
                             Buff.CastRaidBuff("Battle Shout", ret => true, "Battle Shout"),
                             //commanding_shout,if=!buff_exists
@@ -284,22 +289,23 @@ namespace CLU.Classes.Warrior
         }
 
         #region Add your weapon names here
-        public string mainHandItemName = "Ruthless Gladiator's Hacker";//Name of the mainHandItemName
-        public string offHandItemName = "Ruthless Gladiator's Shield Wall";//Name of the offHandItemName
-        public string TwoHandItemName = "Ruthless Gladiator's Decapitator";//Name of the TwoHandItemName
+        public string mainHandItemName = "Cataclysmic Gladiator's Hacker";//Name of the mainHandItemName
+        public string offHandItemName = "Cataclysmic Gladiator's Shield Wall";//Name of the offHandItemName
+        public string TwoHandItemName = "Cataclysmic Gladiator's Decapitator";//Name of the TwoHandItemName
 
         public Composite wepSwapDefensive
         {
             get
             {
                 return (
-                    new Decorator(ret => StyxWoW.Me.Inventory.Equipped.OffHand == null,
+                    new Decorator(ret => Me.Inventory.Equipped.OffHand == null,
                         new Action(delegate
-                            {
-                                Item.RunMacroText("/equipslot 16" + mainHandItemName, ret => true, "");
-                                Item.RunMacroText("/equipslot 17" + offHandItemName , ret => true, "");
-                                return RunStatus.Failure;
-                            })
+                        {
+                            CLU.Log("Switching to defensive mode");
+                            Lua.DoString("RunMacroText(\"/equipslot 16 " + mainHandItemName + "\")");
+                            Lua.DoString("RunMacroText(\"/equipslot 17 " + offHandItemName + "\")");
+                            return RunStatus.Failure;
+                        })
                 ));
             }
         }
@@ -309,11 +315,13 @@ namespace CLU.Classes.Warrior
             get
             {
                 return (
-                    new Decorator(ret => StyxWoW.Me.Inventory.Equipped.OffHand != null,
+                    new Decorator(ret => Me.Inventory.Equipped.OffHand != null,
                         new Action(delegate
-                            {
-                                Item.RunMacroText("/equipslot 16 " + TwoHandItemName, ret => true, "");
-                            })
+                        {
+                            CLU.Log("Switching to offensive mode");
+                            Lua.DoString("RunMacroText(\"/equipslot 16 " + TwoHandItemName + "\")");
+                            return RunStatus.Failure;
+                        })
                 ));
             }
         }
