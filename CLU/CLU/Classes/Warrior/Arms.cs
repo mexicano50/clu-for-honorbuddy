@@ -293,16 +293,19 @@ namespace CLU.Classes.Warrior
         }
 
         #region Add your weapon names here
-        public string mainHandItemName = "Cataclysmic Gladiator's Hacker";//Name of the mainHandItemName
-        public string offHandItemName = "Cataclysmic Gladiator's Shield Wall";//Name of the offHandItemName
-        public string TwoHandItemName = "Cataclysmic Gladiator's Decapitator";//Name of the TwoHandItemName
+        public string mainHandItemName = CLUSettings.Instance.Warrior.PvPMainHandItemName; //Name of the mainHandItemName
+        public string offHandItemName = CLUSettings.Instance.Warrior.PvPOffHandItemName; // Name of the offHandItemName
+        public string TwoHandItemName = CLUSettings.Instance.Warrior.PvPTwoHandItemName; // Name of the TwoHandItemName
 
         public Composite wepSwapDefensive
         {
             get
             {
                 return (
-                    new Decorator(ret => Me.Inventory.Equipped.OffHand == null,
+                    new Decorator(ret => Me.Inventory.Equipped.OffHand == null && 
+                        !string.IsNullOrEmpty(CLUSettings.Instance.Warrior.PvPMainHandItemName) &&
+                        !string.IsNullOrEmpty(CLUSettings.Instance.Warrior.PvPOffHandItemName) &&
+                        !string.IsNullOrEmpty(CLUSettings.Instance.Warrior.PvPTwoHandItemName),
                         new Action(delegate
                         {
                             CLU.Log("Switching to defensive mode");

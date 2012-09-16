@@ -331,5 +331,30 @@ namespace CLU.Settings
 
         #endregion
 
+        #region PvP
+
+        [Setting]
+        [DefaultValue("Input the name of your mainhand weapon here")]
+        [Category("PvP")]
+        [DisplayName("PvP Main Hand Item Name")]
+        [Description("Type in the name for your main Hand to use when switching to offensive and devensive (Only used in PvP using Dagradt's PvP Rotations)")]
+        public string PvPMainHandItemName { get; set; }
+
+        [Setting]
+        [DefaultValue("Input the name of your offhand weapon here")]
+        [Category("PvP")]
+        [DisplayName("PvP Off Hand Item Name")]
+        [Description("Type in the name for your off Hand to use when switching to offensive and devensive (Only used in PvP using Dagradt's PvP Rotations)")]
+        public string PvPOffHandItemName { get; set; }
+
+        [Setting]
+        [DefaultValue("Input the name of your TwoHand weapon here")]
+        [Category("PvP")]
+        [DisplayName("PvP Two Hand Item Name")]
+        [Description("Type in the name for your Two Hand to use when switching to offensive and devensive (Only used in PvP using Dagradt's PvP Rotations)")]
+        public string PvPTwoHandItemName { get; set; }
+
+        #endregion
+
     }
 }
