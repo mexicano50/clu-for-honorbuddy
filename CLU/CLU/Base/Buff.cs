@@ -52,14 +52,14 @@ namespace CLU.Base
             117667,     //Legacy of The Emperor
             1126,       //Mark of The Wild
             20217,      //Blessing Of Kings
-            //90363,      //Embrace of the Shale Spider
+            90363,      //Embrace of the Shale Spider
         };
 
         private static readonly HashSet<int> Stamina = new HashSet<int> {
             469,        //Commanding Shout
             6307,       //Imp. Blood Pact
             21562,      //Power Word: Fortitude
-            //90364,      //Qiraji Fortitude
+            90364,      //Qiraji Fortitude
         };
 
         private static readonly HashSet<int> AttackPower = new HashSet<int> {
@@ -73,15 +73,15 @@ namespace CLU.Base
             109773,     //Dark Intent
             61316,      //Dalaran Brilliance
             1459,       //Arcane Brilliance 
-            //126309,     //Still Water
+            126309,     //Still Water
         };
 
         private static readonly HashSet<int> AttackSpeed = new HashSet<int> {
             30809,      //Unleashed Rage
             113742,     //Swiftblade's Cunning
             55610,      //Improved Icy Talons
-            //128432,     //Cackling Howl
-            //50498,      //Tear Armor
+            128432,     //Cackling Howl
+            50498,      //Tear Armor
 
         };
 
@@ -96,19 +96,19 @@ namespace CLU.Base
             61316,     //Dalaran Brilliance
             24932,     //Leader of The Pact
             116781,    //Legacy of the White Tiger
-            //97229,     //Bellowing Roar
-            //24604,    //Furious Howl
-            //90309,    //Terrifying Roar
-            //126373,   //Fearless Roar
-            //126309,   //Still Water
+            97229,     //Bellowing Roar
+            24604,    //Furious Howl
+            90309,    //Terrifying Roar
+            126373,   //Fearless Roar
+            126309,   //Still Water
 
         };
 
         private static readonly HashSet<int> Mastery = new HashSet<int> {
             116956,    //Grace of Air
             19740,     //Blessing of Might
-            //93435,    //Roar of Courage
-            //128997,  //Spirit Beast Blessing
+            93435,    //Roar of Courage
+            128997,  //Spirit Beast Blessing
         };
 
         // ==================== Debuffs ====================
