@@ -153,6 +153,10 @@ namespace CLU.Classes.Warrior
             {
                 return (
                     new PrioritySelector(
+                        //battle_stance,if=rotationswap.disabled
+                        Buff.CastBuff("Battle Stance", ret => !Macro.rotationSwap && Me.Shapeshift != ShapeshiftForm.BattleStance, "Battle Stance"),
+                        //defensive_stance,if=rotationswap.enabled
+                        Buff.CastBuff("Defensive Stance", ret => Macro.rotationSwap && Me.Shapeshift != ShapeshiftForm.DefensiveStance, "Defensive Stance"),
                         //charge,if=!currenttarget.iswithinmeleerenage
                         Spell.CastSpell("Charge", ret => !Me.CurrentTarget.IsWithinMeleeRange, "Charge"),
                         //heroic_leap,if=!currenttarget.iswithinmeleerange&spell.charge.down
