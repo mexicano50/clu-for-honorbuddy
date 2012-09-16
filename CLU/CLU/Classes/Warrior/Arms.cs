@@ -304,8 +304,7 @@ namespace CLU.Classes.Warrior
                 return (
                     new Decorator(ret => Me.Inventory.Equipped.OffHand == null && 
                         !string.IsNullOrEmpty(CLUSettings.Instance.Warrior.PvPMainHandItemName) &&
-                        !string.IsNullOrEmpty(CLUSettings.Instance.Warrior.PvPOffHandItemName) &&
-                        !string.IsNullOrEmpty(CLUSettings.Instance.Warrior.PvPTwoHandItemName),
+                        !string.IsNullOrEmpty(CLUSettings.Instance.Warrior.PvPOffHandItemName),
                         new Action(delegate
                         {
                             CLU.Log("Switching to defensive mode");
@@ -322,7 +321,7 @@ namespace CLU.Classes.Warrior
             get
             {
                 return (
-                    new Decorator(ret => Me.Inventory.Equipped.OffHand != null,
+                    new Decorator(ret => Me.Inventory.Equipped.OffHand != null && !string.IsNullOrEmpty(CLUSettings.Instance.Warrior.PvPTwoHandItemName),
                         new Action(delegate
                         {
                             CLU.Log("Switching to offensive mode");
