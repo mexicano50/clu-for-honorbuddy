@@ -162,6 +162,8 @@ namespace CLU.Classes.Warrior
                         //heroic_leap,if=!currenttarget.iswithinmeleerange&spell.charge.down
                         Spell.CastOnUnitLocation("Heroic Leap", ret => Me.CurrentTarget, ret => Me.CurrentTarget.IsWithinMeleeRange && SpellManager.Spells["Charge"].CooldownTimeLeft.Seconds > 1 &&
                             SpellManager.Spells["Charge"].CooldownTimeLeft.Seconds < 18, "Heroic Leap"),
+                        //hamstring,if=!debuff.hamstring.up
+                        Spell.CastSpell("Hamstring", ret => !Buff.TargetHasDebuff("Hamstring"), "Hamstring"),
                         //mogu_power_potion,if=(target.health.pct<20&buff.recklessness.up)|buff.bloodlust.react|target.time_to_die<=25
                         //recklessness,use_off_gcd=1,if=((debuff.colossus_smash.remains>=5|cooldown.colossus_smash.remains<=4)&((!talent.avatar.enabled|!set_bonus.tier14_4pc_melee)&((target.health.pct<20|target.time_to_die>315|(target.time_to_die>165&set_bonus.tier14_4pc_melee)))|(talent.avatar.enabled&set_bonus.tier14_4pc_melee&buff.avatar.up)))|target.time_to_die<=18
                         //avatar,use_off_gcd=1,if=talent.avatar.enabled&(((cooldown.recklessness.remains>=180|buff.recklessness.up)|(target.health.pct>=20&target.time_to_die>195)|(target.health.pct<20&set_bonus.tier14_4pc_melee))|target.time_to_die<=20)
@@ -199,7 +201,7 @@ namespace CLU.Classes.Warrior
                         Buff.CastBuff("Battle Shout", ret => Me.CurrentRage < 70 && !Buff.TargetHasDebuff("Colossus Smash"), "Battle Shout"),
                         //bladestorm,if=talent.bladestorm.enabled&cooldown.colossus_smash.remains>=5&!debuff.colossus_smash.up&cooldown.bloodthirst.remains>=2&target.health.pct>=20
                         Spell.CastSpell("Bladestorm", ret => SpellManager.HasSpell("Bladestorm") && SpellManager.Spells["Colossus Smash"].CooldownTimeLeft.Seconds >= 5 && !Buff.TargetHasDebuff("Colossus Smash")
-                            && SpellManager.Spells["Bloodthirst"].CooldownTimeLeft.Seconds >= 2 && Me.CurrentTarget.HealthPercent >= 20, "Bladestorm"),
+                            && SpellManager.Spells["Bloodthirst"].CooldownTimeLeft.Seconds >= 2 && Me.CurrentTarget.HealthPercent >= 20, "Bladestorm"),//<~ add GUI option for user descretion
                         //slam,if=target.health.pct>=20
                         Spell.CastSpell("Slam", ret => Me.CurrentTarget.HealthPercent >= 20, "Slam"),
                         //impending_victory,if=talent.impending_victory.enabled&target.health.pct>=20
@@ -234,8 +236,10 @@ namespace CLU.Classes.Warrior
                             //flask,type=winters_bite
                             //food,type=black_pepper_ribs_and_shrimp
                             //stance,choose=battle
-                            Buff.CastBuff("Berserker Stance", ret => StyxWoW.Me.Shapeshift != CLUSettings.Instance.Warrior.StanceSelection && CLUSettings.Instance.Warrior.StanceSelection == ShapeshiftForm.BerserkerStance, "Stance is Berserker"),
-                            Buff.CastBuff("Battle Stance", ret => StyxWoW.Me.Shapeshift != CLUSettings.Instance.Warrior.StanceSelection && CLUSettings.Instance.Warrior.StanceSelection == ShapeshiftForm.BattleStance, "Stance is Battle"),
+                            Buff.CastBuff("Berserker Stance", ret => StyxWoW.Me.Shapeshift != CLUSettings.Instance.Warrior.StanceSelection && CLUSettings.Instance.Warrior.StanceSelection ==
+                                ShapeshiftForm.BerserkerStance, "Stance is Berserker"),
+                            Buff.CastBuff("Battle Stance", ret => StyxWoW.Me.Shapeshift != CLUSettings.Instance.Warrior.StanceSelection && CLUSettings.Instance.Warrior.StanceSelection ==
+                                ShapeshiftForm.BattleStance, "Stance is Battle"),
                             //mogu_power_potion
                             //defensive_mode
                             new Decorator(ret => Macro.rotationSwap, wepSwapDefensive),

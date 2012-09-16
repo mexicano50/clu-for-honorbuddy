@@ -25,6 +25,7 @@ namespace CLU.Lists
             }
         }
 
+        #region _racials
         private static readonly HashSet<string> _racials = new HashSet<string> {
             "Stoneform",
             // Activate to remove poison, disease, and bleed effects; +10% Armor; Lasts 8 seconds. 2 minute cooldown.
@@ -53,7 +54,7 @@ namespace CLU.Lists
             "Rocket Barrage",
             // Launches your belt rockets at an enemy, dealing X-Y fire damage. (24-30 at level 1; 1654-2020 at level 80). 2 min. cooldown.
         };
-
+        #endregion
 
         public static HashSet<string> GCDFreeAbilities
         {
@@ -62,6 +63,7 @@ namespace CLU.Lists
             }
         }
 
+        #region _gcdFreeAbilities
         private static readonly HashSet<string> _gcdFreeAbilities = new HashSet<string> {
             "Alter Time",
             "Ancient Guardian",
@@ -157,5 +159,38 @@ namespace CLU.Lists
             "Wind Shear",
             "Zealotry",
         };
+        #endregion
+
+        internal static HashSet<string> spellsThatBreakCrowdControl
+        {
+            get
+            {
+                return _spellsThatBreakCrowdControl;
+            }
+        }
+
+        #region _spellsThatBreakCrowdControl
+        private static readonly HashSet<string> _spellsThatBreakCrowdControl = new HashSet<string>
+        {
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+        };
+        #endregion
     }
 }
