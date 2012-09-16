@@ -158,10 +158,10 @@ namespace CLU.Classes.Warrior
                         //defensive_stance,if=rotationswap.enabled
                         Buff.CastBuff("Defensive Stance", ret => Macro.rotationSwap && Me.Shapeshift != ShapeshiftForm.DefensiveStance, "Defensive Stance"),
                         //charge,if=!currenttarget.iswithinmeleerenage
-                        Spell.CastSpell("Charge", ret => !Me.CurrentTarget.IsWithinMeleeRange, "Charge"),
+                        Spell.CastSpell("Charge", ret => Me.CurrentTarget.Distance > 8d && Me.CurrentTarget.Distance < 25d, "Charge"),
                         //heroic_leap,if=!currenttarget.iswithinmeleerange&spell.charge.down
-                        Spell.CastOnUnitLocation("Heroic Leap", ret => Me.CurrentTarget, ret => Me.CurrentTarget.IsWithinMeleeRange && SpellManager.Spells["Charge"].CooldownTimeLeft.Seconds > 1 &&
-                            SpellManager.Spells["Charge"].CooldownTimeLeft.Seconds < 18, "Heroic Leap"),
+                        Spell.CastOnUnitLocation("Heroic Leap", ret => Me.CurrentTarget, ret => Me.CurrentTarget.Distance > 8d && Me.CurrentTarget.Distance < 40d && 
+                            SpellManager.Spells["Charge"].CooldownTimeLeft.Seconds > 1 && SpellManager.Spells["Charge"].CooldownTimeLeft.Seconds < 18, "Heroic Leap"),
                         //hamstring,if=!debuff.hamstring.up
                         Spell.CastSpell("Hamstring", ret => !Buff.TargetHasDebuff("Hamstring"), "Hamstring"),
                         //mogu_power_potion,if=(target.health.pct<20&buff.recklessness.up)|buff.bloodlust.react|target.time_to_die<=25
@@ -251,10 +251,10 @@ namespace CLU.Classes.Warrior
                             Buff.CastRaidBuff("Commanding Shout", ret => true, "Commanding Shout"),
                             //charge,if=!currenttarget.iswithinmeleerenage
                             Spell.CastSpell("Charge", ret => Me.CurrentTarget != null && Macro.Manual && (CLU.LocationContext == GroupLogic.Battleground || Unit.IsTrainingDummy(Me.CurrentTarget)) &&
-                                Me.CurrentTarget.DistanceSqr > 3.2 * 3.2, "Charge"),
+                                Me.CurrentTarget.Distance > 8d && Me.CurrentTarget.Distance < 25d, "Charge"),
                             //heroic_leap,if=!currenttarget.iswithinmeleerange&spell.charge.down
                             Spell.CastOnUnitLocation("Heroic Leap", ret => Me.CurrentTarget, ret => Me.CurrentTarget != null && Macro.Manual && (CLU.LocationContext == GroupLogic.Battleground ||
-                                Unit.IsTrainingDummy(Me.CurrentTarget)) && Me.CurrentTarget.DistanceSqr > 3.2 * 3.2 && SpellManager.Spells["Charge"].CooldownTimeLeft.Seconds > 1 &&
+                                Unit.IsTrainingDummy(Me.CurrentTarget)) && Me.CurrentTarget.Distance > 8d && Me.CurrentTarget.Distance < 40d && SpellManager.Spells["Charge"].CooldownTimeLeft.Seconds > 1 &&
                                 SpellManager.Spells["Charge"].CooldownTimeLeft.Seconds < 18, "Heroic Leap"))
                 ));
             }

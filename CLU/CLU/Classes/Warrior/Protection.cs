@@ -153,10 +153,10 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
                 return (
                     new PrioritySelector(
                         //charge,if=!currenttarget.iswithinmeleerenage
-                        Spell.CastSpell("Charge", ret => !Me.CurrentTarget.IsWithinMeleeRange, "Charge"),
+                        Spell.CastSpell("Charge", ret => Me.CurrentTarget.Distance > 8d && Me.CurrentTarget.Distance < 25d, "Charge"),
                         //heroic_leap,if=!currenttarget.iswithinmeleerange&spell.charge.down
-                        Spell.CastOnUnitLocation("Heroic Leap", ret => Me.CurrentTarget, ret => Me.CurrentTarget.IsWithinMeleeRange && SpellManager.Spells["Charge"].CooldownTimeLeft.Seconds > 1 &&
-                            SpellManager.Spells["Charge"].CooldownTimeLeft.Seconds < 18, "Heroic Leap"),
+                        Spell.CastOnUnitLocation("Heroic Leap", ret => Me.CurrentTarget, ret => Me.CurrentTarget.Distance > 8d && Me.CurrentTarget.Distance < 40d &&
+                            SpellManager.Spells["Charge"].CooldownTimeLeft.Seconds > 1 && SpellManager.Spells["Charge"].CooldownTimeLeft.Seconds < 18, "Heroic Leap"),
                         //hamstring,if=!debuff.hamstring.up
                         Spell.CastSpell("Hamstring", ret => !Buff.TargetHasDebuff("Hamstring"), "Hamstring"),
                         //earthen_potion,if=health_pct<35&buff.earthen_potion.down
@@ -231,7 +231,7 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
 
         public override Composite Resting
         {
-            get { return Rest.CreateDefaultRestBehaviour(); }
+            get { return Base.Rest.CreateDefaultRestBehaviour(); }
         }
 
         public override Composite PVPRotation
