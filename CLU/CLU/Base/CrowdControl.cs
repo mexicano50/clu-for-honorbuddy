@@ -12,6 +12,10 @@ namespace CLU.Base
 {
     internal static class CrowdControl
     {
+        /// <summary>
+        /// Frees you from movement imparing effects if a usable spell exists
+        /// </summary>
+        /// <returns>More win then Wulf's UseRacial call</returns>
         public static Composite freeMe()
         {
             return(
@@ -27,6 +31,11 @@ namespace CLU.Base
             );
         }
 
+        /// <summary>
+        /// Returns true if the movement imparing effects are breakable via a usable spell
+        /// </summary>
+        /// <param name="spell">The spell to check for</param>
+        /// <returns>True if we should use the spell</returns>
         private static bool freeMeSpellUsage(WoWSpell spell)
         {
             if (spell != null)
@@ -42,6 +51,9 @@ namespace CLU.Base
             return false;
         }
 
+        /// <summary>
+        /// Returns a list of spells that break movement imparing effects
+        /// </summary>
         public static IEnumerable<WoWSpell> freeMeSpellList
         {
             get
