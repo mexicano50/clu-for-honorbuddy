@@ -261,6 +261,8 @@ namespace CLU.Classes.Warrior
                         new Decorator(ret => Macro.Manual || BotChecker.BotBaseInUse("BGBuddy"),
                             new Decorator(ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget),
                                 new PrioritySelector(
+                                    new Decorator(ret => Macro.rotationSwap, wepSwapDefensive),
+                                    new Decorator(ret => !Macro.rotationSwap, wepSwapOffensive),
                                     Item.UseTrinkets(),
                                     Racials.UseRacials(),
                                     Buff.CastBuff("Lifeblood", ret => true, "Lifeblood"),
@@ -280,5 +282,41 @@ namespace CLU.Classes.Warrior
         {
             get { return this.SingleRotation; }
         }
+
+        #region Add your weapon names here
+        public string mainHandItemName = "Ruthless Gladiator's Hacker";//Name of the mainHandItemName
+        public string offHandItemName = "Ruthless Gladiator's Shield Wall";//Name of the offHandItemName
+        public string TwoHandItemName = "Ruthless Gladiator's Decapitator";//Name of the TwoHandItemName
+
+        public Composite wepSwapDefensive
+        {
+            get
+            {
+                return (
+                    new Decorator(ret => StyxWoW.Me.Inventory.Equipped.OffHand == null,
+                        new Action(delegate
+                            {
+                                Item.RunMacroText("/equipslot 16" + mainHandItemName, ret => true, "");
+                                Item.RunMacroText("/equipslot 17" + offHandItemName , ret => true, "");
+                                return RunStatus.Failure;
+                            })
+                ));
+            }
+        }
+
+        public Composite wepSwapOffensive
+        {
+            get
+            {
+                return (
+                    new Decorator(ret => StyxWoW.Me.Inventory.Equipped.OffHand != null,
+                        new Action(delegate
+                            {
+                                Item.RunMacroText("/equipslot 16 " + TwoHandItemName, ret => true, "");
+                            })
+                ));
+            }
+        }
+        #endregion
     }
 }
