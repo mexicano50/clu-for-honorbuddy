@@ -269,7 +269,8 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
 
         public override Composite PreCombat
         {
-            get {
+            get
+            {
                 return (
                     new Decorator(ret => !Me.Mounted && !Me.IsDead && !Me.Combat && !Me.IsFlying && !Me.IsOnTransport && !Me.HasAura("Food") && !Me.HasAura("Drink") && !Buff.PlayerHasBuff("Feign Death"),
                         new PrioritySelector(

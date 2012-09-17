@@ -207,8 +207,13 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
                                 Buff.CastRaidBuff("Commanding Shout",       ret => true, "Commanding Shout"),
                                 Buff.CastRaidBuff("Battle Shout",           ret => true, "Battle Shout"),
                                 Spell.CastSpell("Charge",                   ret => Me.CurrentTarget != null && Macro.Manual && (CLU.LocationContext == GroupLogic.Battleground || Unit.IsTrainingDummy(Me.CurrentTarget)) && Me.CurrentTarget.Distance >= 8d && Me.CurrentTarget.Distance <= 25d, "Charge"),
-                                Spell.CastOnUnitLocation("Heroic Leap",     ret => Me.CurrentTarget, ret => Me.CurrentTarget != null && Macro.Manual && (CLU.LocationContext == GroupLogic.Battleground || Unit.IsTrainingDummy(Me.CurrentTarget)) && Me.CurrentTarget.Distance >= 8d && Me.CurrentTarget.Distance <= 40d && SpellManager.Spells["Charge"].CooldownTimeLeft.Seconds > 1 && SpellManager.Spells["Charge"].CooldownTimeLeft.Seconds < 18, "Heroic Leap"))
-                )));
+                                Spell.CastOnUnitLocation("Heroic Leap",     ret => Me.CurrentTarget, ret => Me.CurrentTarget != null && Macro.Manual && (CLU.LocationContext == GroupLogic.Battleground || Unit.IsTrainingDummy(Me.CurrentTarget)) && Me.CurrentTarget.Distance >= 8d && Me.CurrentTarget.Distance <= 40d && SpellManager.Spells["Charge"].CooldownTimeLeft.Seconds > 1 && SpellManager.Spells["Charge"].CooldownTimeLeft.Seconds < 18, "Heroic Leap"),
+                                new Action(delegate
+                                {
+                                    Macro.isMultiCastMacroInUse();
+                                    return RunStatus.Failure;
+                                })
+                ))));
             }
         }
 

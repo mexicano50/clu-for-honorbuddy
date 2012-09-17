@@ -253,7 +253,8 @@ namespace CLU.Classes.DeathKnight
 
         public override Composite PreCombat
         {
-            get {
+            get
+            {
                 return (
                     new Decorator(ret => !Me.Mounted && !Me.IsDead && !Me.Combat && !Me.IsFlying && !Me.IsOnTransport && !Me.HasAura("Food") && !Me.HasAura("Drink"),
                         new PrioritySelector(
@@ -264,7 +265,12 @@ namespace CLU.Classes.DeathKnight
                             //army_of_the_dead
                             //mogu_power_potion
                             Spell.CastSpell("Chains of Ice", ret => Me.CurrentTarget != null && Macro.Manual && (CLU.LocationContext == GroupLogic.Battleground || Unit.IsTrainingDummy(Me.CurrentTarget)) && !Me.CurrentTarget.IsWithinMeleeRange && Me.CurrentTarget.Distance <= 30d && !Buff.TargetHasDebuff("Chains of Ice"), "Chains of Ice"),
-                            Spell.CastSpell("Death Grip", ret => Me.CurrentTarget != null && Macro.Manual && (CLU.LocationContext == GroupLogic.Battleground || Unit.IsTrainingDummy(Me.CurrentTarget)) && !Me.CurrentTarget.IsWithinMeleeRange && Me.CurrentTarget.Distance <= 30d && !Buff.TargetHasDebuff("Chains of Ice") && !SpellManager.CanCast("Chains of Ice"), "Death Grip")
+                            Spell.CastSpell("Death Grip", ret => Me.CurrentTarget != null && Macro.Manual && (CLU.LocationContext == GroupLogic.Battleground || Unit.IsTrainingDummy(Me.CurrentTarget)) && !Me.CurrentTarget.IsWithinMeleeRange && Me.CurrentTarget.Distance <= 30d && !Buff.TargetHasDebuff("Chains of Ice") && !SpellManager.CanCast("Chains of Ice"), "Death Grip"),
+                            new Action(delegate
+                            {
+                                Macro.isMultiCastMacroInUse();
+                                return RunStatus.Failure;
+                            })
                 )));
             }
         }
