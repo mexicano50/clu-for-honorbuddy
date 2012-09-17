@@ -111,7 +111,7 @@ namespace CLU.Classes.Shaman
 					// Totem management
 					new Decorator(
 						ret => StyxWoW.Me.Combat,
-						Totems.CreateSetTotems()),
+                        Totems.CreateTotemsBehavior()),
 
 					// Urgent Dispel
 					Healer.FindRaidMember(a => CLUSettings.Instance.EnableDispel, x => x.ToUnit().InLineOfSight && !x.ToUnit().IsDead && x.ToUnit().HasAuraToDispel(true), (a, b) => (int)(a.CurrentHealth - b.CurrentHealth), "Urgent Dispel",

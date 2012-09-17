@@ -1,210 +1,160 @@
-﻿#region Revision info
-/*
- * $Author$
- * $Date$
- * $ID$
- * $Revision$
- * $URL$
- * $LastChangedBy$
- * $ChangesMade$
- */
+﻿#region Revision Info
+
+// This file was part of Singular - A community driven Honorbuddy CC
+// $Author bobby53$
+// $Date$
+// $HeadURL$
+// $LastChangedBy wulf$
+// $LastChangedDate$
+// $LastChangedRevision$
+// $Revision$
+
 #endregion
+
+using System.Collections.Generic;
+using System.Linq;
+
+using CLU.Base;
+
+using Styx;
+
+using Styx.CommonBot;
+using Styx.WoWInternals;
+using Styx.WoWInternals.WoWObjects;
+
+using Styx.TreeSharp;
+using CommonBehaviors.Actions;
 
 namespace CLU.Classes.Shaman
 {
-    using System.Collections.Generic;
-    using System.Linq;
-    using Styx;
-    using Styx.CommonBot;
-    using Styx.WoWInternals;
-    using Styx.WoWInternals.WoWObjects;
-    using Styx.TreeSharp;
-    using CommonBehaviors.Actions;
-    using global::CLU.Base;
-    using global::CLU.Managers;
-    using global::CLU.Settings;
-
+    
+    // yes this is from singular...no I do not want to write totem support all over again..that is all..all credit to the singular devs.
     internal static class Totems
     {
+        private static LocalPlayer Me { get { return StyxWoW.Me; } }
 
-        private static readonly Dictionary<MultiCastSlot, WoWTotem> LastSetTotems = new Dictionary<MultiCastSlot, WoWTotem>();
-
-        public static Composite CreateSetTotems()
+        public static int ToSpellId(this WoWTotem totem)
         {
-            return new PrioritySelector(
-
-                       // gtfo if the user dosnt want us to mess with his totems.
-                       new Decorator(ret => !CLUSettings.Instance.Shaman.HandleTotems, new ActionAlwaysSucceed()),
-
-                       new Decorator(
-                           ret => !SpellManager.HasSpell("Call of the Elements"),
-                           new PrioritySelector(
-                               new PrioritySelector(
-                                   ctx => StyxWoW.Me.Totems.FirstOrDefault(t => t.WoWTotem == GetEarthTotem()),
-                                   new Decorator(
-                                       ret => GetEarthTotem() != WoWTotem.None && (ret == null || ((WoWTotemInfo)ret).Unit == null ||
-                                               ((WoWTotemInfo)ret).Unit.Distance > GetTotemRange(GetEarthTotem())),
-                                       new Sequence(
-                                           new Action(ret => CLU.Log("Casting {0} Totem", GetEarthTotem().ToString().CamelToSpaced())),
-                                           new Action(ret => SpellManager.Cast(GetEarthTotem().GetTotemSpellId()))))),
-                               new PrioritySelector(
-                                   ctx => StyxWoW.Me.Totems.FirstOrDefault(t => t.WoWTotem == GetAirTotem()),
-                                   new Decorator(
-                                       ret => GetAirTotem() != WoWTotem.None && (ret == null || ((WoWTotemInfo)ret).Unit == null ||
-                                               ((WoWTotemInfo)ret).Unit.Distance > GetTotemRange(GetAirTotem())),
-                                       new Sequence(
-                                           new Action(ret => CLU.Log("Casting {0} Totem", GetAirTotem().ToString().CamelToSpaced())),
-                                           new Action(ret => SpellManager.Cast(GetAirTotem().GetTotemSpellId()))))),
-                               new PrioritySelector(
-                                   ctx => StyxWoW.Me.Totems.FirstOrDefault(t => t.WoWTotem == GetWaterTotem()),
-                                   new Decorator(
-                                       ret => GetWaterTotem() != WoWTotem.None && (ret == null || ((WoWTotemInfo)ret).Unit == null ||
-                                               ((WoWTotemInfo)ret).Unit.Distance > GetTotemRange(GetWaterTotem())),
-                                       new Sequence(
-                                           new Action(ret => CLU.Log("Casting {0} Totem", GetWaterTotem().ToString().CamelToSpaced())),
-                                           new Action(ret => SpellManager.Cast(GetWaterTotem().GetTotemSpellId())))))
-                               //new PrioritySelector(
-                               //    ctx => StyxWoW.Me.Totems.FirstOrDefault(t => t.WoWTotem == GetFireTotem()),
-                               //    new Decorator(
-                               //        ret => GetFireTotem() != WoWTotem.None && (ret == null || ((WoWTotemInfo)ret).Unit == null ||
-                               //                ((WoWTotemInfo)ret).Unit.Distance > GetTotemRange(GetFireTotem())),
-                               //        new Sequence(
-                               //            new Action(ret => CLU.Log("Casting {0} Totem", GetFireTotem().ToString().CamelToSpaced())),
-                               //            new Action(ret => SpellManager.Cast(GetFireTotem().GetTotemSpellId())))))
-                           )),
-                       new Decorator(
-            ret => {
-                // Hell yeah this is long, but its all clear to read
-                if (!SpellManager.HasSpell("Call of the Elements"))
-                    return false;
-
-                // Air Checks
-                var bestAirTotem = GetAirTotem();
-                var currentAirTotem = StyxWoW.Me.Totems.FirstOrDefault(t => t.WoWTotem == bestAirTotem);
-
-                if (currentAirTotem == null)
-                {
-                    return true;
-                }
-
-                var airTotemAsUnit = currentAirTotem.Unit;
-                if (airTotemAsUnit == null)
-                {
-                    return true;
-                }
-
-                if (airTotemAsUnit.Distance > GetTotemRange(bestAirTotem))
-                {
-                    return true;
-                }
-
-                // Earth Checks
-                var bestEarthTotem = GetEarthTotem();
-                var currentEarthTotem = StyxWoW.Me.Totems.FirstOrDefault(t => t.WoWTotem == bestEarthTotem);
-
-                if (currentEarthTotem == null)
-                {
-                    return true;
-                }
-
-                var earthTotemAsUnit = currentEarthTotem.Unit;
-                if (earthTotemAsUnit == null)
-                {
-                    return true;
-                }
-
-                if (earthTotemAsUnit.Distance > GetTotemRange(bestEarthTotem))
-                {
-                    return true;
-                }
-
-                //Water Checks
-                var bestWaterTotem = GetWaterTotem();
-                var currentWaterTotem = StyxWoW.Me.Totems.FirstOrDefault(t => t.WoWTotem == bestWaterTotem);
-
-                if (currentWaterTotem == null)
-                {
-                    return true;
-                }
-
-                var waterTotemAsUnit = currentWaterTotem.Unit;
-                if (waterTotemAsUnit == null)
-                {
-                    return true;
-                }
-
-                if (waterTotemAsUnit.Distance > GetTotemRange(bestWaterTotem))
-                {
-                    return true;
-                }
-
-                // Fire Checks
-                //var bestFireTotem = GetFireTotem();
-                //var currentFireTotem = StyxWoW.Me.Totems.FirstOrDefault(t => t.WoWTotem == bestFireTotem);
-
-                //if (currentFireTotem == null)
-                //{
-                //    return true;
-                //}
-
-                //var fireTotemAsUnit = currentFireTotem.Unit;
-                //if (fireTotemAsUnit == null)
-                //{
-                //    return true;
-                //}
-
-                //if (fireTotemAsUnit.Distance > GetTotemRange(bestFireTotem))
-                //{
-                //    return true;
-                //}
-
-                return false;
-            },
-            new Sequence(
-                new Action(ret => SetupTotemBar()),
-                Spell.CastSelfSpell("Call of the Elements", ret => true, "Call of the Elements"))));
+            return (int)(((long)totem) & ((1 << 32) - 1));
         }
 
-        public static void SetupTotemBar()
+        public static WoWTotemType ToType(this WoWTotem totem)
         {
-            // If the user has given specific totems to use, then use them. Otherwise, fall back to our automagical ones
-            WoWTotem earth;
-            WoWTotem air;
-            WoWTotem water;
-            // WoWTotem fire;
+            return (WoWTotemType)((long)totem >> 32);
+        }
 
-            switch (TalentManager.CurrentSpec) {
-            case WoWSpec.ShamanElemental:
-                earth = CLUSettings.Instance.Shaman.ElementalEarthTotem;
-                air = CLUSettings.Instance.Shaman.ElementalAirTotem;
-                water = CLUSettings.Instance.Shaman.ElementalWaterTotem;
-                // fire = CLUSettings.Instance.Shaman.ElementalFireTotem;
-                break;
-            case WoWSpec.ShamanEnhancement:
-                earth = CLUSettings.Instance.Shaman.EnhancementEarthTotem;
-                air = CLUSettings.Instance.Shaman.EnhancementAirTotem;
-                water = CLUSettings.Instance.Shaman.EnhancementWaterTotem;
-                //fire = CLUSettings.Instance.Shaman.EnhancementFireTotem;
-                break;
-            case WoWSpec.ShamanRestoration:
-                earth = CLUSettings.Instance.Shaman.RestorationEarthTotem;
-                air = CLUSettings.Instance.Shaman.RestorationAirTotem;
-                water = CLUSettings.Instance.Shaman.RestorationWaterTotem;
-                //fire = CLUSettings.Instance.Shaman.RestorationFireTotem;
-                break;
-            default:
-                earth = WoWTotem.None;
-                air = WoWTotem.None;
-                water = WoWTotem.None;
-                //fire = WoWTotem.None;
-                break;
-            }
 
-            SetTotemBarSlot(MultiCastSlot.ElementsEarth, earth != WoWTotem.None ? earth : GetEarthTotem());
-            SetTotemBarSlot(MultiCastSlot.ElementsAir, air != WoWTotem.None ? air : GetAirTotem());
-            SetTotemBarSlot(MultiCastSlot.ElementsWater, water != WoWTotem.None ? water : GetWaterTotem());
-            SetTotemBarSlot(MultiCastSlot.ElementsFire, StyxWoW.Me.Totems.All(t => t.WoWTotem == WoWTotem.FireElemental) ? WoWTotem.FireElemental : WoWTotem.None);
-            //SetTotemBarSlot(MultiCastSlot.ElementsFire, fire != WoWTotem.None ? fire : GetFireTotem());
+        public static Composite CreateTotemsBehavior()
+        {
+            Composite tb;
+            tb = CreateTotemsNormalBehavior();
+
+            if (CLU.LocationContext == GroupLogic.Battleground)
+                tb = CreateTotemsPvPBehavior();
+            else if (CLU.LocationContext != GroupLogic.PVE)
+                tb = CreateTotemsPvEBehavior();
+            else
+                tb = CreateTotemsNormalBehavior();
+
+            return tb;
+        }
+
+        private const int StressMobCount = 3;
+
+        public static Composite CreateTotemsNormalBehavior()
+        {
+            // create Fire Totems behavior first, then wrap if needed
+            Composite fireTotemBehavior =
+                new PrioritySelector(
+                    Spell.CastSelfSpell("Fire Elemental",
+                        ret => ((bool)ret)
+                            || (Unit.EnemyUnits.Count() >= StressMobCount && !SpellManager.CanBuff(WoWTotem.EarthElemental.ToSpellId(), false)), "Fire Elemental"),
+                /*  Magma - handle within AoE DPS logic only
+                                    Spell.BuffSelf("Magma Totem",
+                                        ret => Unit.NearbyUnitsInCombatWithMe.Count(u => u.Distance <= GetTotemRange(WoWTotem.Magma)) >= StressMobCount
+                                            && !Exist( WoWTotem.FireElemental),"Magma Totem"),
+                */
+                    Spell.CastSelfSpell("Searing Totem",
+                        ret => Me.GotTarget
+                            && Me.CurrentTarget.Distance < GetTotemRange(WoWTotem.Searing) - 2f
+                            && !Exist(WoWTotemType.Fire), "Searing Totem")
+                    );
+
+            if (Me.Specialization == WoWSpec.ShamanRestoration)
+                fireTotemBehavior = new Decorator(ret => StyxWoW.Me.Combat && StyxWoW.Me.GotTarget && !Me.IsInParty, fireTotemBehavior);
+
+            // now 
+            return new PrioritySelector(
+
+                // check for stress - enemy player or elite within 8 levels nearby
+                // .. dont use NearbyUnitsInCombatWithMe since it checks .Tagged and we only care if we are being attacked 
+                ctx => Unit.EnemyUnits.Count() >= StressMobCount
+                    || Unit.EnemyUnits.Any(u => u.IsTargetingMeOrPet && (u.IsPlayer || (u.Elite && u.Level + 8 > Me.Level))),
+
+                // earth totems
+                Spell.CastSelfSpell(WoWTotem.EarthElemental.ToSpellId(),
+                    ret => (bool)ret && !Exist(WoWTotem.StoneBulwark),"Earth Elemental"),
+
+                Spell.CastSelfSpell(WoWTotem.StoneBulwark.ToSpellId(),
+                    ret => Me.HealthPercent < 50 && !Exist(WoWTotem.EarthElemental),"Stone Bulwark"),
+
+                new PrioritySelector(
+                    ctx => Unit.EnemyUnits.Any(u => u.IsTargetingMeOrPet && u.IsPlayer && u.Combat),
+
+                    Spell.CastSelfSpell(WoWTotem.Earthgrab.ToSpellId(),
+                        ret => (bool)ret && !Exist(WoWTotem.StoneBulwark, WoWTotem.EarthElemental, WoWTotem.Earthbind),"Earth Grab"),
+
+                    Spell.CastSelfSpell(WoWTotem.Earthbind.ToSpellId(),
+                        ret => (bool)ret && !Exist(WoWTotem.StoneBulwark, WoWTotem.EarthElemental, WoWTotem.Earthgrab), "Earth Bind")
+                    ),
+
+                Spell.CastSelfSpell(WoWTotem.Tremor.ToSpellId(),
+                    ret => Me.Fleeing && !Exist(WoWTotem.StoneBulwark, WoWTotem.EarthElemental), "Tremor"),
+
+
+                // fire totems
+                fireTotemBehavior,
+
+                // water totems
+                Spell.CastSpell("Mana Tide Totem", ret => ((bool)ret) && StyxWoW.Me.ManaPercent < 80
+                    && !Exist(WoWTotem.HealingTide),"Mana Tide Totem"),
+
+/* Healing...: handle within Helaing logic
+                Spell.Cast("Healing Tide Totem", ret => ((bool)ret) && StyxWoW.Me.HealthPercent < 50
+                    && !Exist(WoWTotem.ManaTide)),
+
+                Spell.Cast("Healing Stream Totem", ret => ((bool)ret) && StyxWoW.Me.HealthPercent < 80
+                    && !Exist( WoWTotemType.Water)),
+*/
+
+                // air totems
+                Spell.CastSpell("Grounding Totem",
+                    ret => ((bool)ret)
+                        && Unit.EnemyUnits.Any(u => u.Distance < 40 && u.IsTargetingMeOrPet && u.IsCasting)
+                        && !Exist(WoWTotemType.Air), "Grounding Totem"),
+
+                Spell.CastSpell("Capacitor Totem",
+                    ret => ((bool)ret)
+                        && Unit.EnemyUnits.Any(u => u.Distance < GetTotemRange(WoWTotem.Capacitor))
+                        && !Exist(WoWTotemType.Air),"Capacitor Totem"),
+
+                Spell.CastSpell("Stormlash Totem",
+                    ret => ((bool)ret)
+                        && Me.HasAnyAura(Me.IsHorde ? "Bloodlust" : "Heroism", "Timewarp", "Ancient Hysteria")
+                        && !Exist(WoWTotemType.Air),"Stormlash Totem")
+
+                );
+
+        }
+
+        public static Composite CreateTotemsPvPBehavior()
+        {
+            return new Decorator(ret => false, new ActionAlwaysFail());
+        }
+
+        public static Composite CreateTotemsPvEBehavior()
+        {
+            return new Decorator(ret => false, new ActionAlwaysFail());
         }
 
         /// <summary>
@@ -215,15 +165,18 @@ namespace CLU.Classes.Shaman
         /// </remarks>
         public static void RecallTotems()
         {
-            //CLU.Log("Recalling totems!");
-            if (SpellManager.HasSpell("Totemic Recall")) {
+            CLU.TroubleshootLog("Recalling totems!");
+            if (SpellManager.HasSpell("Totemic Recall"))
+            {
                 SpellManager.Cast("Totemic Recall");
                 return;
             }
 
             List<WoWTotemInfo> totems = StyxWoW.Me.Totems;
-            foreach (WoWTotemInfo t in totems) {
-                if (t != null && t.Unit != null) {
+            foreach (WoWTotemInfo t in totems)
+            {
+                if (t != null && t.Unit != null)
+                {
                     DestroyTotem(t.Type);
                 }
             }
@@ -238,204 +191,112 @@ namespace CLU.Classes.Shaman
         /// <param name = "type">The type.</param>
         public static void DestroyTotem(WoWTotemType type)
         {
-            if (type == WoWTotemType.None) {
+            if (type == WoWTotemType.None)
+            {
                 return;
             }
 
             Lua.DoString("DestroyTotem({0})", (int)type);
         }
 
-        /// <summary>
-        ///   Sets a totem bar slot to the specified totem!.
-        /// </summary>
-        /// <remarks>
-        ///   Created 3/26/2011.
-        /// </remarks>
-        /// <param name = "slot">The slot.</param>
-        /// <param name = "totem">The totem.</param>
-        public static void SetTotemBarSlot(MultiCastSlot slot, WoWTotem totem)
-        {
-            // Make sure we have the totem bars to set. Highest first kthx
-            if (slot >= MultiCastSlot.SpiritsFire && !SpellManager.HasSpell("Call of the Spirits")) {
-                return;
-            }
-            if (slot >= MultiCastSlot.AncestorsFire && !SpellManager.HasSpell("Call of the Ancestors")) {
-                return;
-            }
-            if (!SpellManager.HasSpell("Call of the Elements")) {
-                return;
-            }
 
-            if (LastSetTotems.ContainsKey(slot) && LastSetTotems[slot] == totem) {
-                return;
-            }
+        private static readonly Dictionary<WoWTotemType, WoWTotem> LastSetTotems = new Dictionary<WoWTotemType, WoWTotem>();
 
-            if (!LastSetTotems.ContainsKey(slot)) {
-                LastSetTotems.Add(slot, totem);
-            } else {
-                LastSetTotems[slot] = totem;
-            }
-
-            CLU.Log("Setting totem slot Call of the" + slot.ToString().CamelToSpaced() + " to " + totem.ToString().CamelToSpaced());
-
-            Lua.DoString("SetMultiCastSpell({0}, {1})", (int)slot, totem.GetTotemSpellId());
-        }
-
-        private static WoWTotem GetEarthTotem()
-        {
-            if (TalentManager.CurrentSpec == WoWSpec.None)
-            {
-                return WoWTotem.None;
-            }
-            if (TotemIsKnown(WoWTotem.EarthElemental))
-            {
-                return WoWTotem.EarthElemental;
-            }
-            if (TotemIsKnown(WoWTotem.Earthbind))
-            {
-                return WoWTotem.Earthbind;
-            }
-            if (TotemIsKnown(WoWTotem.Earthgrab))
-            {
-                return WoWTotem.Earthgrab;
-            }
-            if (TotemIsKnown(WoWTotem.Tremor))
-            {
-                return WoWTotem.Tremor;
-            }
-
-            return WoWTotem.None;
-        }
-
-        public static WoWTotem GetAirTotem()
-        {
-            if (TalentManager.CurrentSpec == WoWSpec.None)
-            {
-                return WoWTotem.None;
-            }
-
-            if (TotemIsKnown(WoWTotem.Stormlash)) 
-            {
-                return WoWTotem.Stormlash;
-            }
-            if (TotemIsKnown(WoWTotem.Windwalk))
-            {
-                return WoWTotem.Windwalk;
-            } 
-            if (TotemIsKnown(WoWTotem.Grounding))
-            {
-                return WoWTotem.Grounding;
-            }
-            if (TotemIsKnown(WoWTotem.Capacitor))
-            {
-                return WoWTotem.Capacitor;
-            }
-            return WoWTotem.None;
-        }
-
-        public static WoWTotem GetWaterTotem()
-        {
-            switch (TalentManager.CurrentSpec) {
-                case WoWSpec.ShamanElemental:
-                if (CLUSettings.Instance.Shaman.ElementalWaterTotem != WoWTotem.None) return CLUSettings.Instance.Shaman.ElementalWaterTotem;
-                break;
-                case WoWSpec.ShamanEnhancement:
-                if (CLUSettings.Instance.Shaman.EnhancementWaterTotem != WoWTotem.None) return CLUSettings.Instance.Shaman.EnhancementWaterTotem;
-                break;
-                case WoWSpec.ShamanRestoration:
-                if (CLUSettings.Instance.Shaman.RestorationWaterTotem != WoWTotem.None) return CLUSettings.Instance.Shaman.RestorationWaterTotem;
-                break;
-            }
-
-            // Plain and simple. If we're resto, we never want a different water totem out. Thats all there is to it.
-            if (TalentManager.CurrentSpec == WoWSpec.ShamanRestoration)
-            {
-                if (TotemIsKnown(WoWTotem.HealingStream)) {
-                    return WoWTotem.HealingStream;
-                }
-
-                return WoWTotem.None;
-            }
-
-            // Solo play. Only healing stream
-            if (!StyxWoW.Me.IsInParty && !StyxWoW.Me.IsInRaid) {
-                if (TotemIsKnown(WoWTotem.HealingStream)) {
-                    return WoWTotem.HealingStream;
-                }
-
-                return WoWTotem.None;
-            }
-
-            if (TotemIsKnown(WoWTotem.HealingTide))
-            {
-                return WoWTotem.HealingTide;
-            }
-
-            // ... yea
-            if (TotemIsKnown(WoWTotem.HealingStream)) {
-                return WoWTotem.HealingStream;
-            }
-
-            return WoWTotem.None;
-        }
-
-        public static WoWTotem GetFireTotem()
-        {
-            if (TalentManager.CurrentSpec == WoWSpec.None)
-            {
-                return WoWTotem.None;
-            }
-
-            switch (TalentManager.CurrentSpec) {
-                case WoWSpec.ShamanElemental:
-                // if (CLUSettings.Instance.Shaman.ElementalFireTotem != WoWTotem.None) return CLUSettings.Instance.Shaman.ElementalFireTotem;
-                break;
-                case WoWSpec.ShamanEnhancement:
-                //if (CLUSettings.Instance.Shaman.EnhancementFireTotem != WoWTotem.None) return CLUSettings.Instance.Shaman.EnhancementFireTotem;
-                break;
-            case WoWSpec.ShamanRestoration:
-                // if (CLUSettings.Instance.Shaman.RestorationFireTotem != WoWTotem.None) return CLUSettings.Instance.Shaman.RestorationFireTotem;
-                break;
-            }
-
-            bool isEnhance = TalentManager.CurrentSpec == WoWSpec.ShamanEnhancement;
-            bool isElemental = TalentManager.CurrentSpec == WoWSpec.ShamanElemental;
-            // Enhance || Elemental
-            if (isEnhance || isElemental) {
-                if (TotemIsKnown(WoWTotem.Searing)) {
-                    return WoWTotem.Searing;
-                }
-
-                return WoWTotem.None;
-            }
-
-            // Well..Flametongue seems a good choice
-            return TotemIsKnown(WoWTotem.Magma) ? WoWTotem.Magma : WoWTotem.FireElemental;
-        }
 
         #region Helper shit
 
         public static bool NeedToRecallTotems
         {
-            get {
-                return TotemsInRange == 0 && StyxWoW.Me.Totems.Count(t => t.Unit != null) != 0;
+            get
+            {
+#if PRE_504_TOTEM_LOGIC
+                return TotemsInRange == 0 && StyxWoW.Me.Totems.Count(t => t.Unit != null) != 0; 
+#else
+                return false;
+#endif
             }
-        }
-        public static int TotemsInRange
-        {
-            get {
-                return TotemsInRangeOf(StyxWoW.Me);
-            }
-        }
-
-        public static int TotemsInRangeOf(WoWUnit unit)
-        {
-            return StyxWoW.Me.Totems.Where(t => t.Unit != null).Count(t => unit.Location.Distance(t.Unit.Location) < GetTotemRange(t.WoWTotem));
         }
 
         public static bool TotemIsKnown(WoWTotem totem)
         {
-            return SpellManager.HasSpell(totem.GetTotemSpellId());
+            return SpellManager.HasSpell(totem.ToSpellId());
+        }
+
+
+        #region Totem Existance
+
+        public static bool Exist(WoWTotem ti)
+        {
+            return ti != WoWTotem.None
+                && ti != WoWTotem.DummyAir
+                && ti != WoWTotem.DummyEarth
+                && ti != WoWTotem.DummyFire
+                && ti != WoWTotem.DummyWater;
+        }
+
+        public static bool Exist(WoWTotemInfo ti)
+        {
+            return Exist(ti.WoWTotem);
+        }
+
+        public static bool Exist(WoWTotemType type)
+        {
+            WoWTotem wt = GetTotem(type).WoWTotem;
+            return Exist(wt);
+        }
+
+        public static bool Exist(params WoWTotem[] wt)
+        {
+            return wt.Any(t => Exist(t));
+        }
+
+        public static bool ExistInRange(WoWPoint pt, WoWTotem tt)
+        {
+            if (!Exist(tt))
+                return false;
+
+            WoWTotemInfo ti = GetTotem(tt);
+            return ti.Unit != null && ti.Unit.Location.Distance(pt) < GetTotemRange(tt);
+        }
+
+        public static bool ExistInRange(WoWPoint pt, params WoWTotem[] awt)
+        {
+            return awt.Any(t => ExistInRange(pt, t));
+        }
+
+        public static bool ExistInRange(WoWPoint pt, WoWTotemType type)
+        {
+            WoWTotemInfo ti = GetTotem(type);
+            return Exist(ti) && ti.Unit != null && ti.Unit.Location.Distance(pt) < GetTotemRange(ti.WoWTotem);
+        }
+
+        #endregion
+
+        /// <summary>
+        /// gets reference to array element in Me.Totems[] corresponding to WoWTotemType of wt.  Return is always non-null and does not indicate totem existance
+        /// </summary>
+        /// <param name="wt">WoWTotem of slot to reference</param>
+        /// <returns>WoWTotemInfo reference</returns>
+        public static WoWTotemInfo GetTotem(WoWTotem wt)
+        {
+            return GetTotem(wt.ToType());
+        }
+
+        /// <summary>
+        /// gets reference to array element in Me.Totems[] corresponding to type.  Return is always non-null and does not indicate totem existance
+        /// </summary>
+        /// <param name="type">WoWTotemType of slot to reference</param>
+        /// <returns>WoWTotemInfo reference</returns>
+        public static WoWTotemInfo GetTotem(WoWTotemType type)
+        {
+            return Me.Totems[(int)type - 1];
+        }
+
+        public static int TotemsInRange { get { return TotemsInRangeOf(StyxWoW.Me); } }
+
+        public static int TotemsInRangeOf(WoWUnit unit)
+        {
+            return StyxWoW.Me.Totems.Where(t => t.Unit != null).Count(t => unit.Location.Distance(t.Unit.Location) < GetTotemRange(t.WoWTotem));
         }
 
         /// <summary>
@@ -448,73 +309,62 @@ namespace CLU.Classes.Shaman
         /// <returns>The calculated totem range.</returns>
         public static float GetTotemRange(WoWTotem totem)
         {
-            switch (totem) {
-                case WoWTotem.Windwalk:
-                case WoWTotem.HealingTide:
+            switch (totem)
+            {
                 case WoWTotem.HealingStream:
-                return 40f;
-
-                case WoWTotem.Stormlash:
                 case WoWTotem.Tremor:
-                return 30f;
+                    return 30f;
 
                 case WoWTotem.Searing:
-                if (SpellManager.HasSpell(29000))
-                    return 35f;
-                return 20f;
+                    if (SpellManager.HasSpell(29000))
+                        return 35f;
+                    return 20f;
 
                 case WoWTotem.Earthbind:
-                return 10f;
+                    return 10f;
 
                 case WoWTotem.Grounding:
-                case WoWTotem.Capacitor:
                 case WoWTotem.Magma:
-                return 8f;
+                    return 8f;
 
                 case WoWTotem.EarthElemental:
                 case WoWTotem.FireElemental:
-                // Not really sure about these 3.
-                return 20f;
+                    // Not really sure about these 3.
+                    return 20f;
+
                 case WoWTotem.ManaTide:
-                // Again... not sure :S
-                return 30f;
+                    // Again... not sure :S
+                    return 40f;
+
+
+                case WoWTotem.Earthgrab:
+                    return 10f;
+
+                case WoWTotem.StoneBulwark:
+                    // No idea, unlike former glyphed stoneclaw it has a 5 sec pluse shield component so range is more important
+                    return 40f;
+
+                case WoWTotem.HealingTide:
+                    return 40f;
+
+                case WoWTotem.Capacitor:
+                    return 8f;
+
+                case WoWTotem.Stormlash:
+                    return 30f;
+
+                case WoWTotem.Windwalk:
+                    return 40f;
+
+                case WoWTotem.SpiritLink:
+                    return 10f;
             }
+
             return 0f;
         }
 
         #endregion
 
-        #region Nested type: MultiCastSlot
-
-        /// <summary>
-        ///   A small enum to make specifying specific totem bar slots easier.
-        /// </summary>
-        /// <remarks>
-        ///   Created 3/26/2011.
-        /// </remarks>
-        internal enum MultiCastSlot {
-            // Enums increment by 1 after the first defined value. So don't touch this. Its the way it is for a reason.
-            // If these numbers change in the future, feel free to fill this out completely. I'm too lazy to do it - Apoc
-            //
-            // Note: To get the totem 'slot' just do MultiCastSlot & 3 - will return 0-3 for the totem slot this is for.
-            // I'm not entirely sure how WoW shows which ones are 'current' in the slot, so we'll just set it up for ourselves
-            // and remember which is which.
-            ElementsFire = 133,
-            ElementsEarth,
-            ElementsWater,
-            ElementsAir,
-
-            AncestorsFire,
-            AncestorsEarth,
-            AncestorsWater,
-            AncestorsAir,
-
-            SpiritsFire,
-            SpiritsEarth,
-            SpiritsWater,
-            SpiritsAir
-        }
-
-        #endregion
     }
+
 }

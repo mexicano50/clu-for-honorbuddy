@@ -110,7 +110,7 @@ namespace CLU.Classes.Shaman
                            // Threat
                            Buff.CastBuff("Wind Shear",                ret => Me.CurrentTarget != null && Me.CurrentTarget.ThreatInfo.RawPercent > 90, "Wind Shear (Threat)"),
                            // Totem management
-                           Totems.CreateSetTotems(),
+                           Totems.CreateTotemsBehavior(),
                            // AoE
                            new Decorator(
                                ret => !Me.IsMoving && Me.CurrentTarget != null && Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 8) >= 2 && !BossList.IgnoreAoE.Contains(Unit.CurrentTargetEntry),
