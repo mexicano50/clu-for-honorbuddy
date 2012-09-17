@@ -86,6 +86,7 @@
     <Compile Include="Classes\Rogue\Assassination.cs" />
     <Compile Include="Classes\Rogue\Subtlety.cs" />
     <Compile Include="Classes\RotationBase.cs" />
+    <Compile Include="Classes\Shaman\Common.cs" />
     <Compile Include="Classes\Shaman\Elemental.cs" />
     <Compile Include="Classes\Shaman\Enhancement.cs" />
     <Compile Include="Classes\Shaman\Restoration.cs" />

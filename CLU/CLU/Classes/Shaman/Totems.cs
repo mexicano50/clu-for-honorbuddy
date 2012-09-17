@@ -459,6 +459,8 @@ namespace CLU.Classes.Shaman
                 return 30f;
 
                 case WoWTotem.Searing:
+                if (SpellManager.HasSpell(29000))
+                    return 35f;
                 return 20f;
 
                 case WoWTotem.Earthbind:

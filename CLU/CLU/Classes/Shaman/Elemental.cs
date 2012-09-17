@@ -112,8 +112,6 @@ namespace CLU.Classes.Shaman
                            Spell.CastInterupt("Wind Shear",                    ret => true, "Wind Shear"),
                            // Threat
                            Buff.CastBuff("Wind Shear",                         ret => Me.CurrentTarget != null && Me.CurrentTarget.ThreatInfo.RawPercent > 90, "Wind Shear (Threat)"),
-                           // Weapon enchants
-                           //Buff.CastBuff("Flametongue Weapon",                 ret => !Item.HasWeaponImbue(WoWInventorySlot.MainHand, "Flametongue", 8024) && Item.HasSuitableWeapon(WoWInventorySlot.MainHand), "Flametongue Weapon"),
                            // Totem management
                            Totems.CreateSetTotems(),
                            // AoE
@@ -143,38 +141,31 @@ namespace CLU.Classes.Shaman
 
         public override Composite Medic
         {
-            get {
-                return new Decorator(
+            get
+            {
+                return new PrioritySelector(
+                    Common.HandleCompulsoryShamanBuffs(),
+                    Common.HandleTotemRecall(),
+                    // Healing shit.
+                    new Decorator(
                            ret => Me.HealthPercent < 100 && CLUSettings.Instance.EnableSelfHealing,
                            new PrioritySelector(
-                               new Decorator(
-                                   ret => Totems.NeedToRecallTotems,
-                                   new Sequence(
-                                       new Action(ret => CLU.Log(" [Totems] Recalling Totems")),
-                                       new Action(ret => Totems.RecallTotems()))),
-                               Item.UseBagItem("Healthstone",          ret => Me.HealthPercent < 30, "Healthstone"),
-                               Buff.CastBuff("Lightning Shield",       ret => true, "Lightning Shield"),
-                               Buff.CastBuff("Shamanistic Rage",       ret => Me.CurrentTarget != null && (Me.HealthPercent < 60 || (Me.ManaPercent < 65 && Me.CurrentTarget.HealthPercent >= 75)), "Shamanistic Rage"),
-                               Spell.CastSelfSpell("Healing Surge",    ret => Me.HealthPercent < 35, "Healing Surge")
-                               //Buff.CastBuff("Flametongue Weapon",     ret => !Item.HasWeaponImbue(WoWInventorySlot.MainHand, "Flametongue", 8024) && Item.HasSuitableWeapon(WoWInventorySlot.MainHand), "Flametongue Weapon")
-                           ));
+                               Item.UseBagItem("Healthstone", ret => Me.HealthPercent < 30, "Healthstone"),
+                               Buff.CastBuff("Shamanistic Rage", ret => Me.CurrentTarget != null && (Me.HealthPercent < 60 || (Me.ManaPercent < 65 && Me.CurrentTarget.HealthPercent >= 75)), "Shamanistic Rage"),
+                               Spell.CastSelfSpell("Healing Surge", ret => Me.HealthPercent < 35, "Healing Surge"))));
             }
         }
 
         public override Composite PreCombat
         {
-            get {
+            get
+            {
                 return new Decorator(
                            ret => !Me.Mounted && !Me.IsDead && !Me.Combat && !Me.IsFlying && !Me.IsOnTransport && !Me.HasAura("Food") && !Me.HasAura("Drink"),
                            new PrioritySelector(
-                               new Decorator(
-                                   ret => Totems.NeedToRecallTotems,
-                                   new Sequence(
-                                       new Action(ret => CLU.Log(" [Totems] Recalling Totems")),
-                                       new Action(ret => Totems.RecallTotems()))),
-                               Buff.CastBuff("Lightning Shield",   ret => true, "Lightning Shield")
-                              // Buff.CastBuff("Flametongue Weapon", ret => !Item.HasWeaponImbue(WoWInventorySlot.MainHand, "Flametongue", 8024) && Item.HasSuitableWeapon(WoWInventorySlot.MainHand), "Flametongue Weapon")
-                           ));
+                                Common.HandleCompulsoryShamanBuffs(),
+                                Common.HandleTotemRecall()
+                              ));
             }
         }
 

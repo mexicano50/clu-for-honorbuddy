@@ -488,7 +488,7 @@ namespace CLU
             GC.KeepAlive(this._clupulsetimer);
         }
 
-        void RoutineManagerReloaded(object sender, EventArgs e)
+        private void RoutineManagerReloaded(object sender, EventArgs e)
         {
             TroubleshootLog("Routines were reloaded, re-creating behaviors");
             CreateBehaviors();
@@ -688,13 +688,14 @@ namespace CLU
         #region Nested type: LocationContextEventArg
         public class LocationContextEventArg : EventArgs
         {
+            public readonly GroupLogic CurrentLocationContext;
+            public readonly GroupLogic PreviousLocationContext;
+
             public LocationContextEventArg(GroupLogic currentLocationContext, GroupLogic prevLocationContext)
             {
                 CurrentLocationContext = currentLocationContext;
                 PreviousLocationContext = prevLocationContext;
             }
-            public readonly GroupLogic CurrentLocationContext;
-            public readonly GroupLogic PreviousLocationContext;
         }
         #endregion
 

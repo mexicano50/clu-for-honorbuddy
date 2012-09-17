@@ -108,8 +108,6 @@ namespace CLU.Classes.Shaman
                     Spell.CastSpell("Riptide", ret => Me, a => !Buff.PlayerHasActiveBuff("Riptide") && Me.HealthPercent < 40, "Riptide on me, emergency"),
                     Spell.CastSpell("Healing Surge", ret => Me, a => Me.HealthPercent < 40, "Healing Surge on me, emergency"),
 
-					Buff.CastBuff("Water Shield", ret => true, "Water Shield"),
-
 					// Totem management
 					new Decorator(
 						ret => StyxWoW.Me.Combat,
@@ -127,22 +125,13 @@ namespace CLU.Classes.Shaman
 					// Threat
 					Buff.CastBuff("Wind Shear", ret => CLUSettings.Instance.UseCooldowns && Me.CurrentTarget != null && Me.CurrentTarget.ThreatInfo.RawPercent > 90, "Wind Shear (Threat)"),
 
-					// Totem management
-					new Decorator(
-						ret => Totems.NeedToRecallTotems,
-						new Sequence(
-							new Action(ret => CLU.Log(" [Totems] Recalling Totems")),
-							new Action(ret => Totems.RecallTotems()))),
-
 					new Decorator(
 						ret => StyxWoW.Me.Combat,
 						new PrioritySelector(
 							Spell.CastTotem("Mana Tide Totem", ret => Me.Totems.All(t => t.WoWTotem != WoWTotem.ManaTide) && Me.ManaPercent <= 65 && CLUSettings.Instance.UseCooldowns, "Mana Tide Totem"),
                             Spell.CastTotem("Flametongue Totem", ret => Me.CurrentTarget != null && Me.CurrentTarget.Distance < Totems.GetTotemRange(WoWTotem.Searing) - 2f && !Me.Totems.Any(t => t.Unit != null && t.WoWTotem == WoWTotem.Searing && t.Unit.Location.Distance(Me.CurrentTarget.Location) < Totems.GetTotemRange(WoWTotem.Searing)) && Me.Totems.All(t => t.WoWTotem != WoWTotem.FireElemental), "Flametongue Totem")
 						)),
-
-					// Weapon Imbue
-					//Buff.CastBuff("Earthliving Weapon", ret => !Item.HasWeaponImbue(WoWInventorySlot.MainHand, "Earthliving", 3345) && Item.HasSuitableWeapon(WoWInventorySlot.MainHand), "Earthliving Weapon"),
+                    
 
 					//// Cooldowns
 					//Healer.FindAreaHeal(a => CLUSettings.Instance.UseCooldowns && StyxWoW.Me.Combat, 10, 65, 38f, (Me.IsInRaid ? 6 : 4), "Cooldowns: Avg: 10-65, 38yrds, count: 6 or 3",
@@ -184,7 +173,7 @@ namespace CLU.Classes.Shaman
 
 
 					// party healing
-					Healer.FindAreaHeal(a => Spell.SpellCooldown("Chain Heal").TotalSeconds < 0.4, 10, (Me.IsInRaid ? 93 : 90), 12f, 3, "Chain Heal party healing: Avg: 10- 90, 12yrds, count: 3",
+					Healer.FindAreaHeal(a => Spell.SpellCooldown("Chain Heal").TotalSeconds < 0.4, 10, (Me.IsInRaid ? 93 : 90), TalentManager.HasGlyph("Chaining")? 25f : 12f, 3, "Chain Heal party healing: Avg: 10- 90, 12yrds, count: 3",
 					                    Spell.CastSpell("Chain Heal", a => true, "Chain Heal")
 					                   ),
 
@@ -221,38 +210,39 @@ namespace CLU.Classes.Shaman
 			}
 		}
 
-		public override Composite Medic
-		{
-			get {
-				return new Decorator(
-					ret => Me.HealthPercent < 100 && CLUSettings.Instance.EnableSelfHealing,
-					new PrioritySelector(
-						Item.UseBagItem("Healthstone",                  ret => Me.HealthPercent < 30, "Healthstone"),
-						Buff.CastBuff("Spiritwalker's Grace",           ret => Me.IsMoving, "Spiritwalker's Grace")
-					));
-			}
-		}
 
-		public override Composite PreCombat
-		{
-			get {
-				return new Decorator(
-					ret => !Me.Mounted && !Me.IsDead && !Me.Combat && !Me.IsFlying && !Me.IsOnTransport && !Me.HasAura("Food") && !Me.HasAura("Drink"),
-					new PrioritySelector(
-						new Decorator(
-							ret => Totems.NeedToRecallTotems,
-							new Sequence(
-								new Action(ret => CLU.Log(" [Totems] Recalling Totems")),
-								new Action(ret => Totems.RecallTotems()))),
-						// Earth Shield
-						Healer.FindTank(a => CanEarthshield, x => !x.ToUnit().IsDead && x.ToUnit().InLineOfSight && !x.ToUnit().HasMyAura("Earth Shield") && x.EarthShield, (a, b) => (int)(a.MaxHealth - b.MaxHealth), "Earth Shield on tank precombat",
-						                Buff.CastTargetBuff("Earth Shield", a => true, "Earth Shield on tank")
-						               ),
-						Buff.CastBuff("Water Shield",        ret => true, "Water Shield")
-						//Buff.CastBuff("Earthliving Weapon",  ret => !Item.HasWeaponImbue(WoWInventorySlot.MainHand, "Earthliving", 3345) && Item.HasSuitableWeapon(WoWInventorySlot.MainHand), "Earthliving Weapon")
-					));
-			}
-		}
+        public override Composite Medic
+        {
+            get
+            {
+                return new PrioritySelector(
+                    Common.HandleCompulsoryShamanBuffs(),
+                    Common.HandleTotemRecall(),
+                    // Healing shit.
+                    new Decorator(
+                           ret => Me.HealthPercent < 100 && CLUSettings.Instance.EnableSelfHealing,
+                           new PrioritySelector(
+                               Item.UseBagItem("Healthstone", ret => Me.HealthPercent < 30, "Healthstone"),
+                               Buff.CastBuff("Spiritwalker's Grace", ret => Me.IsMoving, "Spiritwalker's Grace"))));
+            }
+        }
+
+        public override Composite PreCombat
+        {
+            get
+            {
+                return new Decorator(
+                           ret => !Me.Mounted && !Me.IsDead && !Me.Combat && !Me.IsFlying && !Me.IsOnTransport && !Me.HasAura("Food") && !Me.HasAura("Drink"),
+                           new PrioritySelector(
+                                Common.HandleCompulsoryShamanBuffs(),
+                                // Earth Shield
+                                Healer.FindTank(a => CanEarthshield, x => !x.ToUnit().IsDead && x.ToUnit().InLineOfSight && !x.ToUnit().HasMyAura("Earth Shield") && x.EarthShield, (a, b) => (int)(a.MaxHealth - b.MaxHealth), "Earth Shield on tank precombat",
+                                        Buff.CastTargetBuff("Earth Shield", a => true, "Earth Shield on tank")
+                                        ),
+                                Common.HandleTotemRecall()
+                              ));
+            }
+        }
 
 		public override Composite Resting
 		{
