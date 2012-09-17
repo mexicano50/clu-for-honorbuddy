@@ -162,7 +162,7 @@ namespace CLU.Classes.Shaman
 					                     ),
 
 					// Earth Shield Earth Shield on tank
-					Healer.FindTank(a => true, x => !x.ToUnit().IsDead && x.ToUnit().InLineOfSight && !x.ToUnit().HasMyAura("Earth Shield") && x.EarthShield, (a, b) => (int)(a.MaxHealth - b.MaxHealth), "Earth Shield on tank",
+                    Healer.FindTank(a => true, x => !x.ToUnit().IsDead && x.ToUnit().InLineOfSight && !x.ToUnit().HasMyAura("Earth Shield") && x.EarthShield, (a, b) => (int)(a.MaxHealth - b.MaxHealth), "Earth Shield on tank",
 					                Buff.CastTargetBuff("Earth Shield", a => true, "Earth Shield on tank")
 					               ),
 
@@ -235,10 +235,6 @@ namespace CLU.Classes.Shaman
                            ret => !Me.Mounted && !Me.IsDead && !Me.Combat && !Me.IsFlying && !Me.IsOnTransport && !Me.HasAura("Food") && !Me.HasAura("Drink"),
                            new PrioritySelector(
                                 Common.HandleCompulsoryShamanBuffs(),
-                                // Earth Shield
-                                Healer.FindTank(a => CanEarthshield, x => !x.ToUnit().IsDead && x.ToUnit().InLineOfSight && !x.ToUnit().HasMyAura("Earth Shield") && x.EarthShield, (a, b) => (int)(a.MaxHealth - b.MaxHealth), "Earth Shield on tank precombat",
-                                        Buff.CastTargetBuff("Earth Shield", a => true, "Earth Shield on tank")
-                                        ),
                                 Common.HandleTotemRecall()
                               ));
             }
