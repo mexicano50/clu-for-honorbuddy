@@ -111,9 +111,8 @@ namespace CLU.Classes.Warlock
                                    // Threat
                            Buff.CastBuff("Soulshatter",                    ret => Me.CurrentTarget != null && Me.GotTarget && Me.CurrentTarget.ThreatInfo.RawPercent > 90 && !Spell.PlayerIsChanneling, "Soulshatter"),
                            // Multi-Dotting will occour if there are between 1 or more and less than 6 enemys within 15yrds of your current target and you have more than 50%. //Can be disabled within the GUI
-                           Unit.FindMultiDotTarget(a => Me.CurrentTarget != null && Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 15) > 1 && Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 15) < 5 && Me.ManaPercent > 50, "Immolate"),
-                           Unit.FindMultiDotTarget(a => Me.CurrentTarget != null && Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 15) > 1 && Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 15) < 5 && Me.ManaPercent > 50, "Corruption"),
-                           // Cooldown
+                           //Unit.FindMultiDotTarget(a => Me.CurrentTarget != null && Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 15) > 1 && Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 15) < 5 && Me.ManaPercent > 50, "Immolate"),
+                           //Unit.FindMultiDotTarget(a => Me.CurrentTarget != null && Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 15) > 1 && Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 15) < 5 && Me.ManaPercent > 50, "Corruption"),
                     //Cooldowns
                     new Decorator(ret => CLUSettings.Instance.UseCooldowns,
                         new PrioritySelector(
@@ -123,7 +122,7 @@ namespace CLU.Classes.Warlock
                             Spell.CastSelfSpell("Twilight Warden", ret => Me.CurrentTarget != null && Me.CurrentTarget.IsCasting && Unit.IsTargetWorthy(Me.CurrentTarget) && Me.HealthPercent < 80, "Twilight Warden (Protect me from magical damage)"))),
                     Buff.CastDebuff("Curse of the Elements",       ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget) && Me.CurrentTarget.HealthPercent > 70 && !Buff.UnitHasMagicVulnerabilityDeBuffs(Me.CurrentTarget), "Curse of the Elements"),
                     Buff.CastDebuff("Immolate", ret => true, "Immolate"),
-                    Spell.CastSpell("Havoc", u => Unit.BestBaneOfHavocTarget, ret => true, "Havoc on "), // + Unit.BestBaneOfHavocTarget.Name
+                    //Spell.CastSpell("Havoc", u => Unit.BestBaneOfHavocTarget, ret => true, "Havoc on "), // + Unit.BestBaneOfHavocTarget.Name
                     Spell.CastSpell("Conflagrate", ret => Me.CurrentTarget != null && Buff.HasMyAura(Me.CurrentTarget, "Immolate"), "Conflagrate"),
                     Spell.CastSpell("Chaos Bolt", ret => Buff.GetAuraStack(Me, "Backdraft", true) < 3 && Me.GetCurrentPower(Styx.WoWPowerType.BurningEmbers)>0 && Me.CurrentTarget.HealthPercent >= 20, "Chaos Bolt"),
                     Spell.CastSpell("Shadowburn", ret => Buff.GetAuraStack(Me, "Backdraft", true) < 3 && Me.GetCurrentPower(Styx.WoWPowerType.BurningEmbers) > 0 && Me.CurrentTarget.HealthPercent < 20, "Chaos Bolt"),
