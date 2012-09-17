@@ -184,6 +184,10 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
                     new PrioritySelector(
                         //new Action(a => { CLU.Log("I am the start of public Composite baseRotation"); return RunStatus.Failure; }),
                         //PvP Utilities
+                        Spell.CastSpell("Concussive Shot", ret => Me.CurrentTarget != null && Me.CurrentTarget.Distance <= 25d, "Concussive Shot"),
+                        Spell.CastSpell("Widow Venom", ret => !Buff.TargetHasDebuff("Widow Venom"), "Widow Venom"),
+                        Spell.CastSpell("Tranquilizing Shot", ret => Buff.TargetHasBuff("Enrage"), "Tranquilizing Shot"),
+                        Buff.CastBuff("Mend Pet", ret => Me.Pet.HealthPercent <= 90 && !Me.Pet.HasAura("Mend Pet"), "Mend Pet"),
 
                         //Rotation
                         //virmens_bite_potion,if=buff.bloodlust.react|target.time_to_die<=60
@@ -195,9 +199,9 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
                         //explosive_trap,if=target.adds>0
 
                         //focus_fire,five_stacks=1
-                        Buff.CastBuff("Focus Fire",                 ret => Buff.PlayerHasActiveBuff("Frenzy") && !Buff.PlayerHasActiveBuff("Focus Fire"), "Focus Fire"),
+                        Buff.CastBuff("Focus Fire",                 ret => Me.ActiveAuras["Frenzy"].StackCount == 5 && Buff.PlayerHasActiveBuff("Frenzy") && !Buff.PlayerHasActiveBuff("Focus Fire"), "Focus Fire"),
                         //serpent_sting,if=!ticking
-                        Spell.CastSpell("Serpent Sting",            ret => Me.CurrentTarget != null && Me.CurrentTarget.Distance <= 40d && !Buff.TargetHasDebuff("Serpent Sting"), "Serpent Sting"),
+                        Spell.CastSpell("Serpent Sting",            ret => !Buff.TargetHasDebuff("Serpent Sting"), "Serpent Sting"),
                         //blood_fury
                         Racials.UseRacials(),
                         //fervor,if=enabled&!ticking&focus<=65
@@ -213,35 +217,35 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
                         //stampede
                         Spell.CastSpell("Stampede",                 ret => true, "Stampede"),
                         //kill_shot
-                        Spell.CastSpell("Kill Shot",                ret => Me.CurrentTarget != null && Me.CurrentTarget.Distance <= 45d, "Kill Shot"),
+                        Spell.CastSpell("Kill Shot",                ret => true, "Kill Shot"),
                         //kill_command
                         Spell.CastSpell("Kill Command",             ret => Me.CurrentTarget != null && Me.Pet.Location.Distance(Me.CurrentTarget.Location) <= 25d && Me.GotAlivePet, "Kill Command"),
                         //a_murder_of_crows,if=enabled&!ticking
-                        Spell.CastSpell("A Murder of Crows",        ret => Me.CurrentTarget != null && Me.CurrentTarget.Distance <= 40d && SpellManager.HasSpell("A Murder of Crows") && !Buff.TargetHasDebuff("A Murder of Crows"), "A Murder of Crows"),
+                        Spell.CastSpell("A Murder of Crows",        ret => SpellManager.HasSpell("A Murder of Crows") && !Buff.TargetHasDebuff("A Murder of Crows"), "A Murder of Crows"),
                         //glaive_toss,if=enabled
-                        Spell.CastSpell("Glaive Toss",              ret => Me.CurrentTarget != null && Me.CurrentTarget.Distance <= 40d && SpellManager.HasSpell("Glaive Toss"), "Glaive Toss"),
+                        Spell.CastSpell("Glaive Toss",              ret => SpellManager.HasSpell("Glaive Toss"), "Glaive Toss"),
                         //lynx_rush,if=enabled&!ticking
                         Spell.CastSpell("Lynx Rush",                ret => Me.CurrentTarget != null && Me.Pet.Location.Distance(Me.CurrentTarget.Location) <= 10d && Me.GotAlivePet && SpellManager.HasSpell("Lynx Rush") && !SpellManager.Spells["Lynx Rush"].Cooldown, "Lynx Rush"),
                         //dire_beast,if=enabled&focus<=90
-                        Spell.CastSpell("Dire Beast",               ret => Me.CurrentTarget != null && Me.CurrentTarget.Distance <= 40d && SpellManager.HasSpell("Dire Beast") && Me.CurrentFocus <= 90, "Dire Beast"),
+                        Spell.CastSpell("Dire Beast",               ret => SpellManager.HasSpell("Dire Beast") && Me.CurrentFocus <= 90, "Dire Beast"),
                         //barrage,if=enabled
-                        Spell.CastSpell("Barrage",                  ret => Me.CurrentTarget != null && Me.CurrentTarget.Distance <= 40d && SpellManager.HasSpell("Barrage"), "Barage"),
+                        Spell.CastSpell("Barrage",                  ret => SpellManager.HasSpell("Barrage"), "Barage"),
                         //powershot,if=enabled
-                        Spell.CastSpell("Powershot",                ret => Me.CurrentTarget != null & Me.CurrentTarget.Distance <= 40d && SpellManager.HasSpell("Powershot"), "Powershot"),
+                        Spell.CastSpell("Powershot",                ret => SpellManager.HasSpell("Powershot"), "Powershot"),
                         //blink_strike,if=enabled
                         Spell.CastSpell("Blink Strike",             ret => Me.CurrentTarget != null && Me.Pet.Location.Distance(Me.CurrentTarget.Location) <= 40d && Me.GotAlivePet && SpellManager.HasSpell("Blink Strike"), "Blink Strike"),
                         //readiness,wait_for_rapid_fire=1
                         Spell.CastSelfSpell("Readiness",            ret => Buff.PlayerHasActiveBuff("Rapid Fire"), "Readiness"),
                         //arcane_shot,if=buff.thrill_of_the_hunt.react
-                        Spell.CastSpell("Arcane Shot",              ret => Me.CurrentTarget != null && Me.CurrentTarget.Distance <= 40d && Buff.PlayerHasActiveBuff("Thrill of the Hunt"), "Arcane Shot"),
+                        Spell.CastSpell("Arcane Shot",              ret => Buff.PlayerHasActiveBuff("Thrill of the Hunt"), "Arcane Shot"),
                         //focus_fire,five_stacks=1,if=!ticking&!buff.beast_within.up
-                        Buff.CastBuff("Focus Fire",                 ret => Buff.PlayerHasActiveBuff("Frenzy") && !Buff.PlayerHasActiveBuff("Focus Fire") && !Buff.PlayerHasActiveBuff("Beast Within"), "Focus Fire"),
+                        Buff.CastBuff("Focus Fire",                 ret => Me.ActiveAuras["Frenzy"].StackCount == 5 && Buff.PlayerHasActiveBuff("Frenzy") && !Buff.PlayerHasActiveBuff("Focus Fire") && !Buff.PlayerHasActiveBuff("Beast Within"), "Focus Fire"),
                         //cobra_shot,if=dot.serpent_sting.remains<6
-                        Spell.CastSpell("Cobra Shot",               ret => Me.CurrentTarget != null && Me.CurrentTarget.Distance <= 40d && Buff.TargetDebuffTimeLeft("Serpent Sting").Seconds < 6, "Cobra Shot"),
+                        Spell.CastSpell("Cobra Shot",               ret => Buff.TargetDebuffTimeLeft("Serpent Sting").Seconds < 6, "Cobra Shot"),
                         //arcane_shot,if=focus>=61|buff.beast_within.up
-                        Spell.CastSpell("Arcane Shot",              ret => Me.CurrentTarget != null && Me.CurrentTarget.Distance <= 40d && Me.CurrentFocus >= 61 || Buff.PlayerHasActiveBuff("Beast Within"), "Arcane Shot"),
+                        Spell.CastSpell("Arcane Shot",              ret => Me.CurrentFocus >= 61 || Buff.PlayerHasActiveBuff("Beast Within"), "Arcane Shot"),
                         //cobra_shot
-                        Spell.CastSpell("Cobra Shot",               ret => Me.CurrentTarget != null && Me.CurrentTarget.Distance <= 40d, "Cobra Shot")
+                        Spell.CastSpell("Cobra Shot",               ret => true, "Cobra Shot")
                 ));
             }
         }
@@ -274,9 +278,10 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
                             //hunters_mark,if=target.time_to_die>=21&!debuff.ranged_vulnerability.up
                             Spell.CastSpell("Hunter's Mark", ret => Me.CurrentTarget != null && Me.CurrentTarget.Distance <= 100d && !Buff.TargetHasDebuff("Hunter's Mark"), "Hunter's Mark"),
                             //summon_pet
+                            Common.HunterCallPetBehavior(CLUSettings.Instance.Hunter.ReviveInCombat)
                             //trueshot_aura
                             //virmens_bite_potion
-                            Common.HunterCallPetBehavior(CLUSettings.Instance.Hunter.ReviveInCombat)
+                            
                 )));
             }
         }
@@ -305,11 +310,12 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
                                     Item.UseEngineerGloves(),
                                     new Action(delegate
                                     {
+                                        Macro.isTrapMacroInUse();
                                         Macro.isMultiCastMacroInUse();
                                         return RunStatus.Failure;
                                     }),
-                                    new Decorator(ret => Macro.Burst, burstRotation),
-                                    new Decorator(ret => !Macro.Burst || BotChecker.BotBaseInUse("BGBuddy"), baseRotation)))
+                                    new Decorator(ret => Macro.Burst && !Buff.PlayerHasBuff("Feign Death") && !Buff.PlayerHasBuff("Trap Launcher"), burstRotation),
+                                    new Decorator(ret => (!Macro.Burst || BotChecker.BotBaseInUse("BGBuddy")) && !Buff.PlayerHasBuff("Feign Death") && !Buff.PlayerHasBuff("Trap Launcher"), baseRotation)))
                 )));
             }
         }
