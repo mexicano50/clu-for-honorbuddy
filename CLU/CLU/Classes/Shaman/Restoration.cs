@@ -128,8 +128,8 @@ namespace CLU.Classes.Shaman
 					new Decorator(
 						ret => StyxWoW.Me.Combat,
 						new PrioritySelector(
-							Spell.CastTotem("Mana Tide Totem", ret => Me.Totems.All(t => t.WoWTotem != WoWTotem.ManaTide) && Me.ManaPercent <= 65 && CLUSettings.Instance.UseCooldowns, "Mana Tide Totem"),
-                            Spell.CastTotem("Flametongue Totem", ret => Me.CurrentTarget != null && Me.CurrentTarget.Distance < Totems.GetTotemRange(WoWTotem.Searing) - 2f && !Me.Totems.Any(t => t.Unit != null && t.WoWTotem == WoWTotem.Searing && t.Unit.Location.Distance(Me.CurrentTarget.Location) < Totems.GetTotemRange(WoWTotem.Searing)) && Me.Totems.All(t => t.WoWTotem != WoWTotem.FireElemental), "Flametongue Totem")
+							 Spell.CastSpell("Healing Tide Totem", ret => ((bool)ret) && StyxWoW.Me.HealthPercent < 50 && !Totems.Exist(WoWTotem.ManaTide),"Healing Tide Totem"),
+                             Spell.CastSpell("Healing Stream Totem", ret => ((bool)ret) && StyxWoW.Me.HealthPercent < 80 && !Totems.Exist( WoWTotemType.Water),"Healing Stream Totem")
 						)),
                     
 
