@@ -278,10 +278,15 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
                             //hunters_mark,if=target.time_to_die>=21&!debuff.ranged_vulnerability.up
                             Spell.CastSpell("Hunter's Mark", ret => Me.CurrentTarget != null && Me.CurrentTarget.Distance <= 100d && !Buff.TargetHasDebuff("Hunter's Mark"), "Hunter's Mark"),
                             //summon_pet
-                            Common.HunterCallPetBehavior(CLUSettings.Instance.Hunter.ReviveInCombat)
+                            Common.HunterCallPetBehavior(CLUSettings.Instance.Hunter.ReviveInCombat),
                             //trueshot_aura
                             //virmens_bite_potion
-                            
+                            new Action(delegate
+                            {
+                                Macro.isTrapMacroInUse();
+                                Macro.isMultiCastMacroInUse();
+                                return RunStatus.Failure;
+                            })    
                 )));
             }
         }

@@ -108,15 +108,20 @@ namespace CLU.Base
             {
                 if (whatSpell == null)
                 {
-                    CLU.Log("Invalid Spell!");
+                    CLU.Log("Please enter a spell!");
                     resetAllMacros();
                 }
                 else
                 {
                     SpellManager.Spells.TryGetValue(whatSpell, out _Spell);
-                    if (!_Spell.IsValid || _Spell.CooldownTimeLeft > SpellManager.GlobalCooldownLeft)
+                    if (!_Spell.IsValid)
                     {
-                        CLU.Log("Can't Cast Spell!");
+                        CLU.Log("Can't Cast Spell, invalid!");
+                        resetAllMacros();
+                    }
+                    if (_Spell.CooldownTimeLeft > SpellManager.GlobalCooldownLeft)
+                    {
+                        CLU.Log("Can't Cast Spell, on CD!");
                         resetAllMacros();
                     }
                 }
@@ -131,6 +136,7 @@ namespace CLU.Base
                     {
                         Lua.DoString("RunMacroText(\"/cast " + whatSpell + "\")");
                         SpellManager.ClickRemoteLocation(Me.CurrentTarget.Location);
+                        CLU.Log("Casting " + whatSpell);
                         resetMacro("MultiCastMT");
                     }
                 }
@@ -149,6 +155,7 @@ namespace CLU.Base
                     {
                         Lua.DoString("RunMacroText(\"/cast [@focus] " + whatSpell + "\")");
                         SpellManager.ClickRemoteLocation(Me.FocusedUnit.Location);
+                        CLU.Log("Casting " + whatSpell);
                         resetMacro("MultiCastFT");
                     }
                 }
