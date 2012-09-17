@@ -271,7 +271,7 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
         {
             get {
                 return (
-                    new Decorator(ret => !Me.Mounted && !Me.IsDead && !Me.Combat && !Me.IsFlying && !Me.IsOnTransport && !Me.HasAura("Food") && !Me.HasAura("Drink") && !Buff.PlayerHasBuff("Feign Death") && !Buff.PlayerHasBuff("Trap Launcher"),
+                    new Decorator(ret => !Me.Mounted && !Me.IsDead && !Me.Combat && !Me.IsFlying && !Me.IsOnTransport && !Me.HasAura("Food") && !Me.HasAura("Drink") && !Buff.PlayerHasBuff("Feign Death"),
                         new PrioritySelector(
                             //flask,type=spring_blossoms
                             //food,type=sea_mist_rice_noodles
@@ -314,8 +314,8 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
                                         Macro.isMultiCastMacroInUse();
                                         return RunStatus.Failure;
                                     }),
-                                    new Decorator(ret => Macro.Burst && !Buff.PlayerHasBuff("Feign Death") && !Buff.PlayerHasBuff("Trap Launcher"), burstRotation),
-                                    new Decorator(ret => (!Macro.Burst || BotChecker.BotBaseInUse("BGBuddy")) && !Buff.PlayerHasBuff("Feign Death") && !Buff.PlayerHasBuff("Trap Launcher"), baseRotation)))
+                                    new Decorator(ret => Macro.Burst && !Buff.PlayerHasBuff("Feign Death"), burstRotation),
+                                    new Decorator(ret => (!Macro.Burst || BotChecker.BotBaseInUse("BGBuddy")) && !Buff.PlayerHasBuff("Feign Death"), baseRotation)))
                 )));
             }
         }
