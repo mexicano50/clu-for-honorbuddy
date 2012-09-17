@@ -152,34 +152,24 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
             {
                 return (
                     new PrioritySelector(
-                        //charge,if=!currenttarget.iswithinmeleerenage
-                        Spell.CastSpell("Charge", ret => Me.CurrentTarget.Distance > 8d && Me.CurrentTarget.Distance < 25d, "Charge"),
-                        //heroic_leap,if=!currenttarget.iswithinmeleerange&spell.charge.down
-                        Spell.CastOnUnitLocation("Heroic Leap", ret => Me.CurrentTarget, ret => Me.CurrentTarget.Distance > 8d && Me.CurrentTarget.Distance < 40d &&
-                            SpellManager.Spells["Charge"].CooldownTimeLeft.Seconds > 1 && SpellManager.Spells["Charge"].CooldownTimeLeft.Seconds < 18, "Heroic Leap"),
-                        //hamstring,if=!debuff.hamstring.up
-                        Spell.CastSpell("Hamstring", ret => !Buff.TargetHasDebuff("Hamstring"), "Hamstring"),
+                        new Action(a => { CLU.Log("I am the start of public Composite baseRotation"); return RunStatus.Failure; }),
+                        //PvP Utilities
+                        Spell.CastSpell("Charge",                   ret => Me.CurrentTarget.Distance >= 8d && Me.CurrentTarget.Distance <= 25d, "Charge"),
+                        Spell.CastOnUnitLocation("Heroic Leap",     ret => Me.CurrentTarget, ret => Me.CurrentTarget.Distance >= 8d && Me.CurrentTarget.Distance <= 40d && SpellManager.Spells["Charge"].CooldownTimeLeft.Seconds > 1 && SpellManager.Spells["Charge"].CooldownTimeLeft.Seconds < 18, "Heroic Leap"),
+                        Spell.CastSpell("Hamstring",                ret => !Buff.TargetHasDebuff("Hamstring"), "Hamstring"),
+
+                        //Rotation
                         //earthen_potion,if=health_pct<35&buff.earthen_potion.down
-                        //blood_fury
                         Racials.UseRacials(),
-                        //last_stand,if=health<30000
-                        Spell.CastSelfSpell("Last Stand", ret => Me.CurrentHealth < 30000, "Last Stand"),
-                        //heroic_strike,if=buff.ultimatum.up,use_off_gcd=1
-                        Spell.CastSpell("Heroic Strike", ret => Buff.PlayerHasActiveBuff("Ultimatum"), "Heroic Strike"),
-                        //berserker_rage,use_off_gcd=1
-                        Spell.CastSelfSpell("Berserker Rage", ret => Me.CurrentTarget.IsWithinMeleeRange, "Berserker Rage"),
-                        //shield_slam,if=rage<75
-                        Spell.CastSpell("Shield Slam", ret => Me.CurrentRage < 75, "Shield Slam"),
-                        //revenge,if=rage<75
-                        Spell.CastSpell("Revenge", ret => Me.CurrentRage < 75, "revenge"),
-                        //D	49.77	shield_block
-                        Spell.CastSpell("Shield Block", ret => true, "Shield Block"),
-                        //thunder_clap
-                        Spell.CastSpell("Thunder Clap", ret => true, "Thunder Clap"),
-                        //battle_shout,if=rage<80
-                        Buff.CastBuff("Battle Shout", ret => Me.CurrentRage < 80, "Battle Shout"),
-                        //devastate
-                        Spell.CastSpell("Devastate", ret => true, "Devastate")
+                        Spell.CastSelfSpell("Last Stand",           ret => Me.CurrentHealth < 30000, "Last Stand"),
+                        Spell.CastSpell("Heroic Strike",            ret => Buff.PlayerHasActiveBuff("Ultimatum"), "Heroic Strike"),
+                        Spell.CastSelfSpell("Berserker Rage",       ret => Me.CurrentTarget.IsWithinMeleeRange, "Berserker Rage"),
+                        Spell.CastSpell("Shield Slam",              ret => Me.CurrentRage < 75, "Shield Slam"),
+                        Spell.CastSpell("Revenge",                  ret => Me.CurrentRage < 75, "revenge"),
+                        Spell.CastSpell("Shield Block",             ret => true, "Shield Block"),
+                        Spell.CastSpell("Thunder Clap",             ret => true, "Thunder Clap"),
+                        Buff.CastBuff("Battle Shout",               ret => Me.CurrentRage < 80, "Battle Shout"),
+                        Spell.CastSpell("Devastate",                ret => true, "Devastate")
                 ));
             }
         }
@@ -188,16 +178,17 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
         {
             get
             {
-                return new Decorator(
-                    ret => Me.HealthPercent < 100 && CLUSettings.Instance.EnableSelfHealing,
-                    new PrioritySelector(
-                        Spell.CastSelfSpell("Last Stand",       ret => Me.HealthPercent < CLUSettings.Instance.Warrior.LastStandPercent && !Buff.PlayerHasBuff("Shield Wall") && !Buff.PlayerHasBuff("Rallying Cry") && !Buff.PlayerHasBuff("Enraged Regeneration"), "Last Stand"),
-                        Spell.CastSelfSpell("Shield Block",     ret => Me.HealthPercent < CLUSettings.Instance.Warrior.ShieldBlockPercent && Me.RagePercent >= 60 && !Buff.PlayerHasBuff("Shield Block"), "Shield Block"),
-                        Spell.CastSelfSpell("Shield Barrier",   ret => Me.HealthPercent < CLUSettings.Instance.Warrior.ShieldBarrierPercent && Me.RagePercent >= 60 && !Buff.PlayerHasBuff("Shield Barrier"), "Shield Block"),
-                        Spell.CastSpell("Impending Victory",    ret => Me.CurrentTarget != null && Me.HealthPercent < CLUSettings.Instance.Warrior.ImpendingVictoryPercent && Me.RagePercent > 10, "Impending Victory"),
-                        Spell.CastSelfSpell("Shield Wall",      ret => Me.HealthPercent < CLUSettings.Instance.Warrior.ShieldWallPercent && !Buff.PlayerHasBuff("Last Stand") && !Buff.PlayerHasBuff("Rallying Cry"), "Shield Wall"),
-                        Spell.CastSelfSpell("Rallying Cry",     ret => Me.HealthPercent > CLUSettings.Instance.Warrior.RallyingCryPercent && !Buff.PlayerHasBuff("Last Stand") && !Buff.PlayerHasBuff("Shield Wall") && Unit.WarriorRallyingCryPlayers, "Rallying Cry - Somebody needs me!"),
-                        Item.UseBagItem("Healthstone",          ret => Me.HealthPercent < CLUSettings.Instance.Warrior.HealthstonePercent, "Healthstone")));
+                return (
+                    new Decorator(ret => Me.HealthPercent < 100 && CLUSettings.Instance.EnableSelfHealing,
+                        new PrioritySelector(
+                            Spell.CastSelfSpell("Last Stand",       ret => Me.HealthPercent < CLUSettings.Instance.Warrior.LastStandPercent && !Buff.PlayerHasBuff("Shield Wall") && !Buff.PlayerHasBuff("Rallying Cry") && !Buff.PlayerHasBuff("Enraged Regeneration"), "Last Stand"),
+                            Spell.CastSelfSpell("Shield Block",     ret => Me.HealthPercent < CLUSettings.Instance.Warrior.ShieldBlockPercent && Me.RagePercent >= 60 && !Buff.PlayerHasBuff("Shield Block"), "Shield Block"),
+                            Spell.CastSelfSpell("Shield Barrier",   ret => Me.HealthPercent < CLUSettings.Instance.Warrior.ShieldBarrierPercent && Me.RagePercent >= 60 && !Buff.PlayerHasBuff("Shield Barrier"), "Shield Block"),
+                            Spell.CastSpell("Impending Victory",    ret => Me.CurrentTarget != null && Me.HealthPercent < CLUSettings.Instance.Warrior.ImpendingVictoryPercent && Me.RagePercent > 10, "Impending Victory"),
+                            Spell.CastSelfSpell("Shield Wall",      ret => Me.HealthPercent < CLUSettings.Instance.Warrior.ShieldWallPercent && !Buff.PlayerHasBuff("Last Stand") && !Buff.PlayerHasBuff("Rallying Cry"), "Shield Wall"),
+                            Spell.CastSelfSpell("Rallying Cry",     ret => Me.HealthPercent > CLUSettings.Instance.Warrior.RallyingCryPercent && !Buff.PlayerHasBuff("Last Stand") && !Buff.PlayerHasBuff("Shield Wall") && Unit.WarriorRallyingCryPlayers, "Rallying Cry - Somebody needs me!"),
+                            Item.UseBagItem("Healthstone",          ret => Me.HealthPercent < CLUSettings.Instance.Warrior.HealthstonePercent, "Healthstone")
+                )));
             }
         }
 
@@ -205,27 +196,19 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
         {
             get
             {
-                return new PrioritySelector(
-                        new Decorator(
-                            ret => !Me.Mounted && !Me.IsDead && !Me.Combat && !Me.IsFlying && !Me.IsOnTransport && !Me.HasAura("Food") && !Me.HasAura("Drink"),
+                return (
+                    new PrioritySelector(
+                        new Decorator(ret => !Me.Mounted && !Me.IsDead && !Me.Combat && !Me.IsFlying && !Me.IsOnTransport && !Me.HasAura("Food") && !Me.HasAura("Drink"),
                             new PrioritySelector(
                                 //flask,type=earth
                                 //food,type=great_pandaren_banquet
-                                //stance,choose=defensive
-                                Buff.CastBuff("Defensive Stance", ret => StyxWoW.Me.Shapeshift != ShapeshiftForm.DefensiveStance, "Defensive Stance"),
+                                Buff.CastBuff("Defensive Stance",           ret => StyxWoW.Me.Shapeshift != ShapeshiftForm.DefensiveStance, "Defensive Stance"),
                                 //earthen_potion
-                                //commanding_shout,if=!buff_exists
-                                Buff.CastRaidBuff("Commanding Shout", ret => true, "Commanding Shout"),
-                                //battle_shout,if=!buff_exists
-                                Buff.CastRaidBuff("Battle Shout", ret => true, "Battle Shout"),
-                                //charge,if=!currenttarget.iswithinmeleerenage
-                                Spell.CastSpell("Charge", ret => Me.CurrentTarget != null && Macro.Manual && (CLU.LocationContext == GroupLogic.Battleground || Unit.IsTrainingDummy(Me.CurrentTarget)) &&
-                                    Me.CurrentTarget.Distance >= 8d && Me.CurrentTarget.Distance <= 25d, "Charge"),
-                                //heroic_leap,if=!currenttarget.iswithinmeleerange&spell.charge.down
-                                Spell.CastOnUnitLocation("Heroic Leap", ret => Me.CurrentTarget, ret => Me.CurrentTarget != null && Macro.Manual && (CLU.LocationContext == GroupLogic.Battleground ||
-                                    Unit.IsTrainingDummy(Me.CurrentTarget)) && Me.CurrentTarget.Distance >= 8d && Me.CurrentTarget.Distance <= 40d && SpellManager.Spells["Charge"].CooldownTimeLeft.Seconds > 1 &&
-                                    SpellManager.Spells["Charge"].CooldownTimeLeft.Seconds < 18, "Heroic Leap"))
-                ));
+                                Buff.CastRaidBuff("Commanding Shout",       ret => true, "Commanding Shout"),
+                                Buff.CastRaidBuff("Battle Shout",           ret => true, "Battle Shout"),
+                                Spell.CastSpell("Charge",                   ret => Me.CurrentTarget != null && Macro.Manual && (CLU.LocationContext == GroupLogic.Battleground || Unit.IsTrainingDummy(Me.CurrentTarget)) && Me.CurrentTarget.Distance >= 8d && Me.CurrentTarget.Distance <= 25d, "Charge"),
+                                Spell.CastOnUnitLocation("Heroic Leap",     ret => Me.CurrentTarget, ret => Me.CurrentTarget != null && Macro.Manual && (CLU.LocationContext == GroupLogic.Battleground || Unit.IsTrainingDummy(Me.CurrentTarget)) && Me.CurrentTarget.Distance >= 8d && Me.CurrentTarget.Distance <= 40d && SpellManager.Spells["Charge"].CooldownTimeLeft.Seconds > 1 && SpellManager.Spells["Charge"].CooldownTimeLeft.Seconds < 18, "Heroic Leap"))
+                )));
             }
         }
 
@@ -240,6 +223,7 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
             {
                 return (
                     new PrioritySelector(
+                        new Action(a => { CLU.Log("I am the start of public override Composite PVPRotation"); return RunStatus.Failure; }),
                         CrowdControl.freeMe(),
                         new Decorator(ret => Macro.Manual || BotChecker.BotBaseInUse("BGBuddy"),
                             new Decorator(ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget),

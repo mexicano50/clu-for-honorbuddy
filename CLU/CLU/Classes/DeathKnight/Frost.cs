@@ -171,98 +171,59 @@ namespace CLU.Classes.DeathKnight
             {
                 return (
                     new PrioritySelector(
-                        //chains_of_ice,if=!currenttarget.iswithinmeleerenage
-                        Spell.CastSpell("Chains of Ice", ret => Me.CurrentTarget != null && Me.CurrentTarget.DistanceSqr > 3.2 * 3.2 && !Buff.TargetHasDebuff("Chains of Ice"), "Chains of Ice"),
-                        //death_grip,if=!currenttarget.iswithinmeleerange&spell.chains_of_ice.down
-                        Spell.CastSpell("Death Grip", ret => Me.CurrentTarget != null && Me.CurrentTarget.DistanceSqr > 3.2 * 3.2 && !Buff.TargetHasDebuff("Chains of Ice") &&
-                            !SpellManager.CanCast("Chains of Ice"), "Death Grip"),
-                        //blood_fury,if=time>=10
+                        new Action(a => { CLU.Log("I am the start of public Composite baseRotation"); return RunStatus.Failure; }),
+                        //PvP Utilities
+                        Spell.CastSpell("Chains of Ice", ret => Me.CurrentTarget != null && !Me.CurrentTarget.IsWithinMeleeRange && Me.CurrentTarget.Distance <= 30d && !Buff.TargetHasDebuff("Chains of Ice"), "Chains of Ice"),
+                        Spell.CastSpell("Death Grip", ret => Me.CurrentTarget != null && !Me.CurrentTarget.IsWithinMeleeRange && Me.CurrentTarget.Distance <= 30d && !Buff.TargetHasDebuff("Chains of Ice") && !SpellManager.CanCast("Chains of Ice"), "Death Grip"),
+
+                        //Rotation
                         Racials.UseRacials(),
                         //mogu_power_potion,if=target.time_to_die<=60&buff.pillar_of_frost.up
-                        //use_item,name=gauntlets_of_the_lost_catacomb,if=(frost>=1|death>=1)
-                        Item.UseEngineerGloves(),
-                        //pillar_of_frost
-                        Buff.CastBuff("Pillar of Frost", ret => Unit.IsTargetWorthy(StyxWoW.Me.CurrentTarget) && StyxWoW.Me.IsWithinMeleeRange && StyxWoW.Me.CurrentTarget != null, "Pillar of Frost"),
+                        Item.UseEngineerGloves(),//~> use_item,name=gauntlets_of_the_lost_catacomb,if=(frost>=1|death>=1)
+                        Buff.CastBuff("Pillar of Frost", ret => Me.IsWithinMeleeRange, "Pillar of Frost"),
                         //raise_dead
-                        //outbreak,if=dot.frost_fever.remains<3|dot.blood_plague.remains<3
                         Spell.CastSpell("Outbreak", ret => Buff.TargetDebuffTimeLeft("Frost Fever").Seconds < 3 || Buff.TargetDebuffTimeLeft("Blood Plague").Seconds < 3, "Outbreak"),
-                        //soul_reaper,if=target.health.pct<=35|((target.health.pct-3*(target.health.pct%target.time_to_die))<=35)
-                        Spell.CastSpell("Soul Reaper", ret => StyxWoW.Me.CurrentTarget.HealthPercent <= 35, "Soul Reaping"),
-                        //unholy_blight,if=talent.unholy_blight.enabled&(dot.frost_fever.remains<3|dot.blood_plague.remains<3)
-                        Spell.CastSelfSpell("Unholy Blight", ret => SpellManager.HasSpell("Unholy Blight") && Me.CurrentTarget != null && Me.CurrentTarget.DistanceSqr <= 10 * 10 &&
-                            (Buff.TargetDebuffTimeLeft("Frost Fever").Seconds < 3 || Buff.TargetDebuffTimeLeft("Blood Plague").Seconds < 3), "Unholy Blight"),
-                        //howling_blast,if=!dot.frost_fever.ticking
+                        Spell.CastSpell("Soul Reaper", ret => Me.CurrentTarget.HealthPercent <= 35, "Soul Reaping"),//~> soul_reaper,if=target.health.pct<=35|((target.health.pct-3*(target.health.pct%target.time_to_die))<=35)
+                        Spell.CastSelfSpell("Unholy Blight", ret => SpellManager.HasSpell("Unholy Blight") && (Buff.TargetDebuffTimeLeft("Frost Fever").Seconds < 3 || Buff.TargetDebuffTimeLeft("Blood Plague").Seconds < 3), "Unholy Blight"),
                         Spell.CastSpell("Howling Blast", ret => !Buff.TargetHasDebuff("Frost Fever"), "Howling Blast"),
-                        //plague_strike,if=!dot.blood_plague.ticking
                         Spell.CastSpell("Plague Strike", ret => !Buff.TargetHasDebuff("Blood Plague"), "Plague Strike"),
+
+                        //2H
                         new Decorator(ret => Common.IsWieldingTwoHandedWeapon(),
                             new PrioritySelector(
-                                //plague_leech,if=talent.plague_leech.enabled&((cooldown.outbreak.remains<1)|(buff.rime.react&dot.blood_plague.remains<3&(unholy>=1|death>=1)))
-                                Spell.CastSpell("Plague Leech", ret => SpellManager.HasSpell("Plague Leech") && ((SpellManager.Spells["Outbreak"].CooldownTimeLeft.Seconds < 1) ||
-                                    (Buff.PlayerHasBuff("Freezing Fog") && Buff.TargetDebuffTimeLeft("Blood Plague").Seconds < 3 && (StyxWoW.Me.UnholyRuneCount >= 1 || StyxWoW.Me.DeathRuneCount >= 1))),
-                                    "Plague Leech"),
-                                //necrotic_strike,if=base_rotation.enabled
+                                Spell.CastSpell("Plague Leech", ret => SpellManager.HasSpell("Plague Leech") && ((SpellManager.Spells["Outbreak"].CooldownTimeLeft.Seconds < 1) || (Buff.PlayerHasBuff("Freezing Fog") && Buff.TargetDebuffTimeLeft("Blood Plague").Seconds < 3 && (Me.UnholyRuneCount >= 1 || Me.DeathRuneCount >= 1))), "Plague Leech"),
                                 Spell.CastSpell("Necrotic Strike", ret => !Macro.rotationSwap, "Necrotic Strike"),
-                                //howling_blast,if=buff.rime.react
                                 Spell.CastSpell("Howling Blast", ret => Buff.PlayerHasBuff("Freezing Fog"), "Howling Blast"),
-                                //obliterate,if=base_rotation.enabled&runic_power<=76
-                                Spell.CastSpell("Obliterate", ret => Macro.rotationSwap && StyxWoW.Me.CurrentRunicPower <= 76, "Obliterate"),
-                                //obliterate,if=base_rotation.disabled&runic_power<=76&frost>=1|unholy>=1
-                                Spell.CastSpell("Obliterate", ret => !Macro.rotationSwap && StyxWoW.Me.CurrentRunicPower <= 76 && StyxWoW.Me.FrostRuneCount >= 1 && StyxWoW.Me.UnholyRuneCount >= 1, "Obliterate"),
+                                Spell.CastSpell("Obliterate", ret => Macro.rotationSwap && Me.CurrentRunicPower <= 76, "Obliterate"),
+                                Spell.CastSpell("Obliterate", ret => !Macro.rotationSwap && Me.CurrentRunicPower <= 76 && Me.FrostRuneCount >= 1 && Me.UnholyRuneCount >= 1, "Obliterate"),
                                 //empower_rune_weapon,if=target.time_to_die<=60&buff.mogu_power_potion.up
-                                //frost_strike,if=!buff.killing_machine.react
                                 Spell.CastSpell("Frost Strike", ret => !Buff.PlayerHasBuff("Killing Machine"), "Frost Strike"),
-                                //obliterate,if=base_rotation.enabled&buff.killing_machine.react
                                 Spell.CastSpell("Obliterate", ret => Macro.rotationSwap && Buff.PlayerHasBuff("Killing Machine"), "Obliterate"),
-                                //obliterate,if=base_rotation.disabled&buff.killing_machine.react&frost>=1|unholy>=1
-                                Spell.CastSpell("Obliterate", ret => !Macro.rotationSwap && Buff.PlayerHasBuff("Killing Machine") && StyxWoW.Me.FrostRuneCount >= 1 && StyxWoW.Me.UnholyRuneCount >= 1,
-                                    "Obliterate"),
-                                //blood_tap,if=talent.blood_tap.enabled
-                                Spell.CastSpell("Blood Tap", ret => SpellManager.HasSpell("Blood Tap") &&  Buff.PlayerCountBuff("Blood Charge") >= 5 && (Common.FrostRuneSlotsActive == 0 ||
-                                    Common.UnholyRuneSlotsActive == 0 || Common.BloodRuneSlotsActive == 0), "Blood Tap"),
-                                //frost_strike
+                                Spell.CastSpell("Obliterate", ret => !Macro.rotationSwap && Buff.PlayerHasBuff("Killing Machine") && Me.FrostRuneCount >= 1 && Me.UnholyRuneCount >= 1, "Obliterate"),
+                                Spell.CastSpell("Blood Tap", ret => SpellManager.HasSpell("Blood Tap") &&  Buff.PlayerCountBuff("Blood Charge") >= 5 && (Common.FrostRuneSlotsActive == 0 || Common.UnholyRuneSlotsActive == 0 || Common.BloodRuneSlotsActive == 0), "Blood Tap"),
                                 Spell.CastSpell("Frost Strike", ret => true, "Frost Strike"),
-                                //horn_of_winter
                                 Buff.CastRaidBuff("Horn of Winter", ret => true, "Horn of Winter"),
-                                //empower_rune_weapon
                                 Spell.CastSpell("Empower Rune Weapon", ret => true, "Empower Rune Weapon"))),
+
+                        //DW
                         new Decorator(ret => !Common.IsWieldingTwoHandedWeapon(),
                             new PrioritySelector(
-                                //plague_leech,if=talent.plague_leech.enabled&!((buff.killing_machine.react&runic_power<10)|(unholy=2|frost=2|death=2))
-                                Spell.CastSpell("Plague Leech", ret => SpellManager.HasSpell("Plague Leech") && !((Buff.PlayerHasBuff("Killing Machine") && StyxWoW.Me.CurrentRunicPower < 10) ||
-                                    (StyxWoW.Me.UnholyRuneCount == 2 || StyxWoW.Me.FrostRuneCount == 2 || StyxWoW.Me.DeathRuneCount == 2)), "Plague Leech"),
-                                //necrotic_strike,if=base_rotation.enabled
+                                Spell.CastSpell("Plague Leech", ret => SpellManager.HasSpell("Plague Leech") && !((Buff.PlayerHasBuff("Killing Machine") && Me.CurrentRunicPower < 10) || (Me.UnholyRuneCount == 2 || Me.FrostRuneCount == 2 || Me.DeathRuneCount == 2)), "Plague Leech"),
                                 Spell.CastSpell("Necrotic Strike", ret => !Macro.rotationSwap, "Necrotic Strike"),
-                                //howling_blast,if=buff.rime.react
                                 Spell.CastSpell("Howling Blast", ret => Buff.PlayerHasBuff("Freezing Fog"), "Howling Blast"),
-                                //frost_strike,if=runic_power>=88
-                                Spell.CastSpell("Frost Strike", ret => StyxWoW.Me.CurrentRunicPower >= 88, "Frost Strike"),
+                                Spell.CastSpell("Frost Strike", ret => Me.CurrentRunicPower >= 88, "Frost Strike"),
                                 //empower_rune_weapon,if=target.time_to_die<=60&buff.mogu_power_potion.up
-                                //frost_strike,if=buff.killing_machine.react
                                 Spell.CastSpell("Frost Strike", ret => Buff.PlayerHasBuff("Killing Machine"), "Frost Strike"),
-                                //obliterate,if=base_rotation.enabled&buff.killing_machine.react&runic_power<10
-                                Spell.CastSpell("Obliterate", ret => Macro.rotationSwap && Buff.PlayerHasBuff("Killing Machine") && StyxWoW.Me.CurrentRunicPower < 10, "Obliterate"),
-                                //obliterate,if=base_rotation.disabled&buff.killing_machine.react&runic_power<10&frost>=1|unholy>=1
-                                Spell.CastSpell("Obliterate", ret => !Macro.rotationSwap && Buff.PlayerHasBuff("Killing Machine") && StyxWoW.Me.CurrentRunicPower < 10 && StyxWoW.Me.FrostRuneCount >= 1 &&
-                                    StyxWoW.Me.UnholyRuneCount >= 1, "Obliterate"),
-                                //obliterate,if=base_rotation.enabled&(unholy=2|frost=2|death=2)
-                                Spell.CastSpell("Obliterate", ret => Macro.rotationSwap && (StyxWoW.Me.UnholyRuneCount == 2 || StyxWoW.Me.FrostRuneCount == 2 || StyxWoW.Me.DeathRuneCount == 2), "Obliterate"),
-                                //obliterate,if=base_rotation.disabled&(unholy=2|frost=2)
-                                Spell.CastSpell("Obliterate", ret => !Macro.rotationSwap && (StyxWoW.Me.UnholyRuneCount == 2 || StyxWoW.Me.FrostRuneCount == 2), "Obliterate"),
-                                //howling_blast
+                                Spell.CastSpell("Obliterate", ret => Macro.rotationSwap && Buff.PlayerHasBuff("Killing Machine") && Me.CurrentRunicPower < 10, "Obliterate"),
+                                Spell.CastSpell("Obliterate", ret => !Macro.rotationSwap && Buff.PlayerHasBuff("Killing Machine") && Me.CurrentRunicPower < 10 && Me.FrostRuneCount >= 1 && Me.UnholyRuneCount >= 1, "Obliterate"),
+                                Spell.CastSpell("Obliterate", ret => Macro.rotationSwap && (Me.UnholyRuneCount == 2 || Me.FrostRuneCount == 2 || Me.DeathRuneCount == 2), "Obliterate"),
+                                Spell.CastSpell("Obliterate", ret => !Macro.rotationSwap && (Me.UnholyRuneCount == 2 || Me.FrostRuneCount == 2), "Obliterate"),
                                 Spell.CastSpell("Howling Blast", ret => true, "Howling Blast"),
-                                //frost_strike
                                 Spell.CastSpell("Frost Strike", ret => true, "Frost Strike"),
-                                //death_and_decay
                                 Spell.CastOnUnitLocation("Death and Decay", ret => Me.CurrentTarget, ret => true, "Death and Decay"),
-                                //plague_strike
                                 Spell.CastSpell("Plague Strike", ret => true, "Plague Strike"),
-                                //blood_tap,if=talent.blood_tap.enabled
-                                Spell.CastSpell("Blood Tap", ret => SpellManager.HasSpell("Blood Tap") &&  Buff.PlayerCountBuff("Blood Charge") >= 5 && (Common.FrostRuneSlotsActive == 0 ||
-                                    Common.UnholyRuneSlotsActive == 0 || Common.BloodRuneSlotsActive == 0), "Blood Tap"),
-                                //horn_of_winter
+                                Spell.CastSpell("Blood Tap", ret => SpellManager.HasSpell("Blood Tap") &&  Buff.PlayerCountBuff("Blood Charge") >= 5 && (Common.FrostRuneSlotsActive == 0 || Common.UnholyRuneSlotsActive == 0 || Common.BloodRuneSlotsActive == 0), "Blood Tap"),
                                 Buff.CastRaidBuff("Horn of Winter", ret => true, "Horn of Winter"),
-                                //empower_rune_weapon
                                 Spell.CastSpell("Empower Rune Weapon", ret => true, "Empower Rune Weapon")))
                 ));
             }
@@ -298,18 +259,12 @@ namespace CLU.Classes.DeathKnight
                         new PrioritySelector(
                             //flask,type=winters_bite
                             //food,type=black_pepper_ribs_and_shrimp
-                            //frost_presence
                             Buff.CastBuff("Frost Presence", ret => !Me.HasMyAura("Frost Presence"), "Frost Presence"),
-                            //horn_of_winter
                             Buff.CastRaidBuff("Horn of Winter", ret => CLUSettings.Instance.DeathKnight.UseHornofWinter && Me.CurrentTarget != null && !Me.CurrentTarget.IsFriendly, "Horn of Winter"),
                             //army_of_the_dead
                             //mogu_power_potion
-                            //chains_of_ice,if=!currenttarget.iswithinmeleerenage
-                            Spell.CastSpell("Chains of Ice", ret => Me.CurrentTarget != null && Macro.Manual && (CLU.LocationContext == GroupLogic.Battleground || Unit.IsTrainingDummy(Me.CurrentTarget)) &&
-                                Me.CurrentTarget.DistanceSqr > 3.2 * 3.2 && !Buff.TargetHasDebuff("Chains of Ice"), "Chains of Ice"),
-                            //death_grip,if=!currenttarget.iswithinmeleerange&spell.chains_of_ice.down
-                            Spell.CastSpell("Death Grip", ret => Me.CurrentTarget != null && Macro.Manual && (CLU.LocationContext == GroupLogic.Battleground || Unit.IsTrainingDummy(Me.CurrentTarget)) &&
-                                Me.CurrentTarget.DistanceSqr > 3.2 * 3.2 && !Buff.TargetHasDebuff("Chains of Ice") && !SpellManager.CanCast("Chains of Ice"), "Death Grip")
+                            Spell.CastSpell("Chains of Ice", ret => Me.CurrentTarget != null && Macro.Manual && (CLU.LocationContext == GroupLogic.Battleground || Unit.IsTrainingDummy(Me.CurrentTarget)) && !Me.CurrentTarget.IsWithinMeleeRange && Me.CurrentTarget.Distance <= 30d && !Buff.TargetHasDebuff("Chains of Ice"), "Chains of Ice"),
+                            Spell.CastSpell("Death Grip", ret => Me.CurrentTarget != null && Macro.Manual && (CLU.LocationContext == GroupLogic.Battleground || Unit.IsTrainingDummy(Me.CurrentTarget)) && !Me.CurrentTarget.IsWithinMeleeRange && Me.CurrentTarget.Distance <= 30d && !Buff.TargetHasDebuff("Chains of Ice") && !SpellManager.CanCast("Chains of Ice"), "Death Grip")
                 )));
             }
         }
@@ -327,6 +282,8 @@ namespace CLU.Classes.DeathKnight
             {
                 return (
                     new PrioritySelector(
+                        new Action(a => { CLU.Log("I am the start of public override Composite PVPRotation"); return RunStatus.Failure; }),
+                        CrowdControl.freeMe(),
                         new Decorator(ret => Macro.Manual || BotChecker.BotBaseInUse("BGBuddy"),
                             new Decorator(ret => StyxWoW.Me.CurrentTarget != null && Unit.IsTargetWorthy(StyxWoW.Me.CurrentTarget),
                                 new PrioritySelector(
