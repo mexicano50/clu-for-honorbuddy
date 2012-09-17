@@ -128,8 +128,8 @@ namespace CLU.Classes.Shaman
 					new Decorator(
 						ret => StyxWoW.Me.Combat,
 						new PrioritySelector(
-							 Spell.CastSpell("Healing Tide Totem", ret => ((bool)ret) && StyxWoW.Me.HealthPercent < 50 && !Totems.Exist(WoWTotem.ManaTide),"Healing Tide Totem"),
-                             Spell.CastSpell("Healing Stream Totem", ret => ((bool)ret) && StyxWoW.Me.HealthPercent < 80 && !Totems.Exist( WoWTotemType.Water),"Healing Stream Totem")
+							 Spell.CastSpell("Healing Tide Totem", ret => StyxWoW.Me.HealthPercent < 50 && !Totems.Exist(WoWTotem.ManaTide),"Healing Tide Totem"),
+                             Spell.CastSpell("Healing Stream Totem", ret => StyxWoW.Me.HealthPercent < 80 && !Totems.Exist( WoWTotemType.Water),"Healing Stream Totem")
 						)),
                     
 
