@@ -212,13 +212,5 @@ namespace CLU.Classes.Shaman
                                             Buff.CastBuff("Water Shield", ret => true, "Water Shield"),
                                             CreateShamanImbueMainHandBehavior(Imbue.Earthliving, Imbue.Flametongue)))));
         }
-
-        public static bool InGCD
-        {
-            get
-            {
-                return SpellManager.GlobalCooldown;
-            }
-        }
     }
 }

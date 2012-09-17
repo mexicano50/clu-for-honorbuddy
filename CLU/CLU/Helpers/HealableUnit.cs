@@ -217,7 +217,7 @@ namespace CLU.Helpers
         public bool OffTank
         {
             get {
-                // Retrieve our main tank.
+                // Retrieve our off tank.
                 var result = listofHealableUnits.Where(x => x != null && x.Tank);
                 if (result.Any(x => x != null && (x.ToUnit().Guid == this.UnitObject.Guid && !this.MainTank)))
                 {
@@ -416,7 +416,7 @@ namespace CLU.Helpers
                             tank = true;
                         }
 
-                        bool maintank = ObjectManager.Me.IsInRaid ? p.IsMainTank : tank;
+                        bool maintank = Me.GroupInfo.GroupSize < 6 ? tank : p.IsMainTank;
                         bool offtank = p.IsMainAssist;
 
                         list.Add(new HealableUnit { UnitObject = p.ToPlayer(), Tank = tank, Healer = healer, Damage = damage, GroupNumber = groupnumber, MainTank = maintank, OffTank = offtank, });
