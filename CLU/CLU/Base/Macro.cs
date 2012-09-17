@@ -271,5 +271,18 @@ namespace CLU.Base
                 }
             }
         }
+
+        /// <summary>
+        /// Checks to see if MultiCast MT or FT are active
+        /// </summary>
+        /// <returns>Returns false if active</returns>
+        public static bool canIContinue()
+        {
+            if (MultiCastMacroMT > 0 || MultiCastMacroFT > 0)
+            {
+                return false;
+            }
+            return true;
+        }
     }
 }
