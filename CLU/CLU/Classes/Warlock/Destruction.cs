@@ -13,6 +13,7 @@
 using CLU.Helpers;
 using CommonBehaviors.Actions;
 using Styx.TreeSharp;
+using Styx.WoWInternals;
 using CLU.Lists;
 using CLU.Settings;
 using CLU.Base;
@@ -96,40 +97,31 @@ namespace CLU.Classes.Warlock
                                    Racials.UseRacials(),
                                    Buff.CastBuff("Lifeblood", ret => true, "Lifeblood"), // Thanks Kink
                                    Item.UseEngineerGloves())),
-                           PetManager.CastPetSummonSpell("Summon Imp", ret => !Me.GotAlivePet && (Buff.PlayerHasBuff("Demonic Rebirth") || Buff.PlayerHasBuff("Soulburn")), "Summoning Pet Imp"),
-                           PetManager.CastPetSummonSpell("Summon Imp", ret => !Me.GotAlivePet, "Summoning Pet Imp"),
+                           PetManager.CastPetSummonSpell(691, ret => !Me.GotAlivePet && (Buff.PlayerHasBuff("Demonic Rebirth") || Buff.PlayerHasBuff("Soulburn")), "Summon Pet"),
+                           PetManager.CastPetSummonSpell(691, ret => !Me.GotAlivePet, "Summon Pet"),
                            // Threat
                            Buff.CastBuff("Soulshatter",                    ret => Me.CurrentTarget != null && Me.GotTarget && Me.CurrentTarget.ThreatInfo.RawPercent > 90 && !Spell.PlayerIsChanneling, "Soulshatter"),
                            // Multi-Dotting will occour if there are between 1 or more and less than 6 enemys within 15yrds of your current target and you have more than 50%. //Can be disabled within the GUI
                            Unit.FindMultiDotTarget(a => Me.CurrentTarget != null && Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 15) > 1 && Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 15) < 5 && Me.ManaPercent > 50, "Immolate"),
                            Unit.FindMultiDotTarget(a => Me.CurrentTarget != null && Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 15) > 1 && Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 15) < 5 && Me.ManaPercent > 50, "Corruption"),
                            // Cooldown
-                           Spell.CastSelfSpell("Demon Soul", ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget) && !Me.IsMoving, "Demon Soul while not moving"),
-                           // AoE here
-                           Spell.ChannelAreaSpell("Rain of Fire", 10, true, 4, 0.0, 0.0, ret => !Me.IsMoving && !BossList.IgnoreAoE.Contains(Unit.CurrentTargetEntry), "Rain of Fire"),
-                           Spell.CastAreaSpell("Shadowfury", 10, true, 4, 0.0, 0.0, ret => Me.ManaPercent > 40, "Shadowfury"),
-                           // End AoE
-                           Buff.CastDebuff("Curse of the Elements",       ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget) && Me.CurrentTarget.HealthPercent > 70 && !Buff.UnitHasMagicVulnerabilityDeBuffs(Me.CurrentTarget), "Curse of the Elements"),
-                           //Spell.CastSelfSpell("Soulburn",                ret => !Buff.UnitHasHasteBuff(Me), "Soulburn"),
-                           Spell.CastSpell("Soul Fire",                   ret => Buff.PlayerHasBuff("Soulburn"), "Soul Fire with soulburn"),
-                           Buff.CastDebuff("Immolate",                    ret => true, "Immolate"),
-                           Spell.CastSpell("Conflagrate",                 ret => true, "Conflagrate"),
-                           Buff.CastDebuff("Immolate",                    ret => Buff.UnitHasHasteBuff(Me) && (Buff.PlayerBuffTimeLeft("Bloodlust") > 32 || Buff.PlayerBuffTimeLeft("Heroism") > 32 || Buff.PlayerBuffTimeLeft("Time Warp") > 32 || Buff.PlayerBuffTimeLeft("Ancient Hysteria") > 32) && (Spell.SpellCooldown("Conflagrate").TotalSeconds <= 3), "Immolate"),
-                           Buff.CastDebuff("Bane of Doom",                ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget) && Unit.TimeToDeath(Me.CurrentTarget) > 60 && !Buff.UnitsHasMyBuff("Bane of Doom"), "Bane of Doom TTL=" + Unit.TimeToDeath(Me.CurrentTarget)),
-                           Buff.CastDebuff("Agony",               ret => Me.CurrentTarget != null && !Unit.IsTargetWorthy(Me.CurrentTarget) || (Unit.IsTargetWorthy(Me.CurrentTarget) && (Unit.TimeToDeath(Me.CurrentTarget) < 60 || Unit.TimeToDeath(Me.CurrentTarget) == 9999) && (!Buff.UnitsHasMyBuff("Bane of Doom") || !Buff.TargetHasDebuff("Bane of Doom"))), "Agony TTL=" + Unit.TimeToDeath(Me.CurrentTarget)),
-                           Spell.CastSpell("Bane of Havoc", u => Unit.BestBaneOfHavocTarget, ret => true, "Bane of Havoc on "), // + Unit.BestBaneOfHavocTarget.Name
-                           //Buff.CastDebuff("Corruption",                  ret => true, "Corruption"),
-                           Spell.CastConicSpell("Shadowflame", 11f, 33f,  ret => true, "ShadowFlame"),
-                           Spell.CastSpell("Chaos Bolt",                  ret => (Spell.CastTime("Chaos Bolt") > 0.9), "Chaos Bolt"),
-                           //Spell.CastSelfSpell("Summon Doomguard",        ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget), "Doomguard"),
-                           Spell.CastSpell("Soul Fire",                   ret => Buff.PlayerHasBuff("Empowered Imp"), "Soul Fire with Empowered Imp"),
-                           // Buff.CastOffensiveBuff("Soul Fire", "Empowered Imp", Buff.PlayerBuffTimeLeft("Improved Soul Fire").TotalSeconds, "Soul Fire with Improved Soul Fire... (Empowered Imp=" + Buff.PlayerBuffTimeLeft("Empowered Imp").TotalSeconds + ")"),
-                           Buff.CastOffensiveBuff("Soul Fire", "Improved Soul Fire", Spell.CastTime("Soul Fire") + 1.5 + Spell.CastTime("Incinerate") + Spell.GCD, "Soul Fire... (Soul Fire.cast_time+travel_time+incinerate.cast_time+gcd=" + (Spell.CastTime("Soul Fire") + 1.5 + Spell.CastTime("Incinerate") + Spell.GCD) + ")"),
-                           Spell.CastSpell("Shadowburn",                  ret => true, "Shadowburn"),
-                           Spell.CastSpell("Incinerate",                  ret => true, "Incinerate"),
-                           Spell.CastSelfSpell("Life Tap",                ret => Me.IsMoving && Me.HealthPercent > Me.ManaPercent && Me.ManaPercent < 80, "Life tap while moving"),
-                           Spell.CastSpell("Fel Flame",                   ret => Me.IsMoving, "Fel flame while moving"),
-                           Spell.CastSelfSpell("Life Tap",                ret => Me.ManaPercent < 100 && !Spell.PlayerIsChanneling && Me.HealthPercent > 40, "Life tap while mana < 100%"));
+                    //Cooldowns
+                    new Decorator(ret => CLUSettings.Instance.UseCooldowns,
+                        new PrioritySelector(
+                            Buff.CastBuff("Dark Soul: Instability", ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget) && !Me.IsMoving, "Dark Soul: Misery"),
+                            Spell.CastSpell(18540, ret => !WoWSpell.FromId(18540).Cooldown && Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget), "Summon Doomguard"),
+                            Spell.CastSelfSpell("Unending Resolve", ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget) && Me.HealthPercent < 40, "Unending Resolve (Save my life)"),
+                            Spell.CastSelfSpell("Twilight Warden", ret => Me.CurrentTarget != null && Me.CurrentTarget.IsCasting && Unit.IsTargetWorthy(Me.CurrentTarget) && Me.HealthPercent < 80, "Twilight Warden (Protect me from magical damage)"))),
+                    Buff.CastDebuff("Curse of the Elements",       ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget) && Me.CurrentTarget.HealthPercent > 70 && !Buff.UnitHasMagicVulnerabilityDeBuffs(Me.CurrentTarget), "Curse of the Elements"),
+                    Buff.CastDebuff("Immolate", ret => true, "Immolate"),
+                    Spell.CastSpell("Havoc", u => Unit.BestBaneOfHavocTarget, ret => true, "Havoc on "), // + Unit.BestBaneOfHavocTarget.Name
+                    Spell.CastSpell("Conflagrate", ret => Me.CurrentTarget != null && Buff.HasMyAura(Me.CurrentTarget, "Immolate"), "Conflagrate"),
+                    Spell.CastSpell("Chaos Bolt", ret => Buff.GetAuraStack(Me, "Backdraft", true) < 3 && Me.GetCurrentPower(Styx.WoWPowerType.BurningEmbers)>0 && Me.CurrentTarget.HealthPercent >= 20, "Chaos Bolt"),
+                    Spell.CastSpell("Shadowburn", ret => Buff.GetAuraStack(Me, "Backdraft", true) < 3 && Me.GetCurrentPower(Styx.WoWPowerType.BurningEmbers) > 0 && Me.CurrentTarget.HealthPercent < 20, "Chaos Bolt"),
+                    Spell.CastSpell("Incinerate", ret => true, "Incinerate"),
+                    Spell.CastSelfSpell("Life Tap", ret => Me.IsMoving && Me.HealthPercent > Me.ManaPercent && Me.ManaPercent < 80, "Life tap while moving"),
+                    Spell.CastSpell("Fel Flame", ret => Me.IsMoving, "Fel flame while moving"),
+                    Spell.CastSelfSpell("Life Tap", ret => Me.ManaPercent < 100 && !Spell.PlayerIsChanneling && Me.HealthPercent > 40, "Life tap while mana < 100%"));
             }
         }
 

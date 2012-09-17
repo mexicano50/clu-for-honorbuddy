@@ -1036,7 +1036,7 @@ namespace CLU.Base
                 //    return null;
 
                 // If the player has a focus target set, use it instead.
-                if (Me.CurrentTarget != null && (Me.CurrentTarget != StyxWoW.Me.FocusedUnit) && StyxWoW.Me.FocusedUnitGuid != 0 && Me.FocusedUnit.InLineOfSpellSight && Me.FocusedUnit.IsAlive && !Me.FocusedUnit.GetAllAuras().Any(a => a.Name == "Bane of Havoc"))
+                if (Me.CurrentTarget != null && (Me.CurrentTarget != StyxWoW.Me.FocusedUnit) && StyxWoW.Me.FocusedUnitGuid != 0 && Me.FocusedUnit.InLineOfSpellSight && Me.FocusedUnit.IsAlive && !Me.FocusedUnit.GetAllAuras().Any(a => a.Name == "Havoc"))
                     return StyxWoW.Me.FocusedUnit;
 
                 var bestHostileEnemy =
@@ -1044,7 +1044,7 @@ namespace CLU.Base
                         t => t != Me.CurrentTarget).OrderBy(
                         t => t.DistanceSqr).FirstOrDefault(t => t.IsAlive && !UnitIsControlled(t, true));
 
-                if (bestHostileEnemy != null && !bestHostileEnemy.GetAllAuras().Any(a => a.Name == "Bane of Havoc") && StyxWoW.Me.FocusedUnit == null)
+                if (bestHostileEnemy != null && !bestHostileEnemy.GetAllAuras().Any(a => a.Name == "Havoc") && StyxWoW.Me.FocusedUnit == null)
                     return bestHostileEnemy;
 
                 return null;
