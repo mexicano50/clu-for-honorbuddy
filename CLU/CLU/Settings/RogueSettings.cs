@@ -93,9 +93,22 @@ namespace CLU.Settings
             set;
         }
 
+       
+
         #endregion
 
         #region Combat
+
+        [Setting]
+        [DefaultValue(6)]
+        [Category("Combat Spec")]
+        [DisplayName("Fan of Knives Add Count")]
+        [Description("Will use Fan of Knives when agro mob count is equal to or higher then this value.")]
+        public int CombatFanOfKnivesCount
+        {
+            get;
+            set;
+        }
 
         //[Setting]
         //[DefaultValue(true)]
@@ -126,9 +139,32 @@ namespace CLU.Settings
             set;
         }
 
+        [Setting]
+        [DefaultValue(6)]
+        [Category("Subtlety")]
+        [DisplayName("Fan of Knives Add Count")]
+        [Description("Will use Fan of Knives when agro mob count is equal to or higher then this value.")]
+        public int SubtletyFanOfKnivesCount
+        {
+            get;
+            set;
+        }
+
         #endregion
 
         #region Assassination
+
+        [Setting]
+        [DefaultValue(4)]
+        [Category("Assasination Spec")]
+        [DisplayName("Fan of Knives Add Count")]
+        [Description("Will use Fan of Knives when agro mob count is equal to or higher then this value.")]
+        public int AssasinationFanOfKnivesCount
+        {
+            get;
+            set;
+        }
+
         #endregion
     }
 }

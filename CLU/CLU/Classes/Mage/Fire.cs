@@ -22,6 +22,7 @@ using Rest = CLU.Base.Rest;
 
 namespace CLU.Classes.Mage
 {
+    using global::CLU.Managers;
 
     class Fire : RotationBase
     {
@@ -132,7 +133,9 @@ namespace CLU.Classes.Mage
                             Buff.CastDebuff("Frost Bomb", ret => true, "Frost Bomb"),
                             Spell.CastSpell("Pyroblast",ret => Me.HasMyAura("Pyroblast!"),"Pyroblast with Pyroblast! proc"),
                             Spell.CastSpell("Inferno Blast", ret => Me.HasMyAura("Heating Up") && !Spell.SpellOnCooldown("Inferno Blast"), "Inferno Blast with Heating Up proc"),
+                            Spell.CastSpell("Scorch", ret => Me.IsMoving && TalentManager.HasTalent(2), "Scorch (Moving)"),
                             Spell.CastSpell("Fireball", ret => !Me.HasMyAura("Heating Up") || Spell.SpellOnCooldown("Inferno Blast") || (Me.HasMyAura("Heating Up") && Spell.SpellOnCooldown("Inferno Blast")), "Fireball")
+                            
                        );
             }
         }

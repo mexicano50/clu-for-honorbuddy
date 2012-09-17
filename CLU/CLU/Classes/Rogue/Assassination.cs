@@ -206,7 +206,7 @@ namespace CLU.Classes.Rogue
                           ret => Unit.EnemyUnits.Any(a => !a.HasMyAura("Crimson Tempest") && Me.ComboPoints > 3),
                           "Crimson Tempest"),
                      Spell.CastAreaSpell
-                         ("Fan of Knives", 8, false, 4, 0.0, 0.0, ret => Me.ComboPoints < 5, "Fan of Knives"));
+                         ("Fan of Knives", 8, false, CLUSettings.Instance.Rogue.AssasinationFanOfKnivesCount, 0.0, 0.0, ret => Me.ComboPoints < 5, "Fan of Knives"));
             }
         }
 

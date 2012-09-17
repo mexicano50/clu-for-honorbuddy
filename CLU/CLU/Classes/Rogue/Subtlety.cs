@@ -172,7 +172,7 @@ namespace CLU.Classes.Rogue
                                    Spell.CastSpell("Feint",                 ret => Me.CurrentTarget != null && (Me.CurrentTarget.ThreatInfo.RawPercent > 80 || EncounterSpecific.IsMorchokStomp()), "Feint"),
                                    Spell.CastInterupt("Kick",               ret => true, "Kick"),
                                    Spell.CastSpell("Redirect",              ret => Me.RawComboPoints > 0 && Me.ComboPoints < 1, "Redirect"),
-                                    // Spell.CastAreaSpell("Fan of Knives", 8, false, 6, 0.0, 0.0, ret => true, "Fan of Knives"),
+                    // Spell.CastAreaSpell("Fan of Knives", 8, false, CLUSettings.Instance.Rogue.SubtletyFanOfKnivesCount, 0.0, 0.0, ret => true, "Fan of Knives"),
                                    Spell.CastSpell("Tricks of the Trade", u => Unit.BestTricksTarget, ret => CLUSettings.Instance.Rogue.UseTricksOfTheTrade, "Tricks of the Trade"),
                                    Spell.CastSpell("Shadow Dance",          ret => Me.CurrentEnergy > 85 && Me.ComboPoints < 5 && (!Buff.PlayerHasActiveBuff("Vanish") || !Buff.PlayerHasActiveBuff("Stealth")), "Shadow Dance"),
                                    Spell.CastSpell("Vanish",                ret => Me.CurrentEnergy > 60 && Me.ComboPoints <= 1 && Spell.SpellCooldown("Shadowstep").TotalSeconds <= 0 && !Buff.PlayerHasActiveBuff("Shadow Dance") && !Buff.PlayerHasActiveBuff("Master of Subtlety") && !Buff.TargetHasDebuff("Find Weakness"), "Vanish"),
