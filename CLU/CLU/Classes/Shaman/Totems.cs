@@ -149,12 +149,12 @@ namespace CLU.Classes.Shaman
 
         public static Composite CreateTotemsPvPBehavior()
         {
-            return new Decorator(ret => false, new ActionAlwaysFail());
+            return CreateTotemsNormalBehavior();
         }
 
         public static Composite CreateTotemsPvEBehavior()
         {
-            return new Decorator(ret => false, new ActionAlwaysFail());
+            return CreateTotemsNormalBehavior();
         }
 
         /// <summary>
