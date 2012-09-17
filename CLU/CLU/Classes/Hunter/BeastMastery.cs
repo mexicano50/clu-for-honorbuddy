@@ -182,7 +182,7 @@ NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagr
             {
                 return (
                     new PrioritySelector(
-                        new Action(a => { CLU.Log("I am the start of public Composite baseRotation"); return RunStatus.Failure; }),
+                        //new Action(a => { CLU.Log("I am the start of public Composite baseRotation"); return RunStatus.Failure; }),
                         //PvP Utilities
 
                         //Rotation
@@ -194,7 +194,7 @@ NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagr
                         //explosive_trap,if=target.adds>0
 
                         //focus_fire,five_stacks=1
-                        Buff.CastBuff("Focus Fire", ret => Buff.PlayerCountBuff("Frenzy") == 5, "Focus Fire"),
+                        Buff.CastBuff("Focus Fire", ret => Buff.PlayerHasActiveBuff("Frenzy") && !Buff.PlayerHasActiveBuff("Focus Fire"), "Focus Fire"),
                         //serpent_sting,if=!ticking
                         Spell.CastSpell("Serpent Sting", ret => !Buff.TargetHasDebuff("Serpent Sting"), "Serpent Sting"),
                         //blood_fury
@@ -202,7 +202,7 @@ NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagr
                         //fervor,if=enabled&!ticking&focus<=65
                         Buff.CastBuff("Fervor", ret => SpellManager.HasSpell("Feror") && !Buff.PlayerHasActiveBuff("Fervor") && Me.CurrentFocus <= 65, "Fervor"),
                         //bestial_wrath,if=focus>60&!buff.beast_within.up
-                        Buff.CastBuff("Beastial Wrath", ret => Me.CurrentFocus > 60 && !Buff.PlayerHasActiveBuff("Beast Within"), "Beastial Wrath"),
+                        Buff.CastBuff("Bestial Wrath", ret => Me.CurrentFocus > 60 && !Buff.PlayerHasActiveBuff("Beast Within"), "Bestial Wrath"),
                         //multi_shot,if=target.adds>5
 
                         //cobra_shot,if=target.adds>5
@@ -234,7 +234,7 @@ NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagr
                         //arcane_shot,if=buff.thrill_of_the_hunt.react
                         Spell.CastSpell("Arcane Shot", ret => Buff.PlayerHasActiveBuff("Thrill of the Hunt"), "Arcane Shot"),
                         //focus_fire,five_stacks=1,if=!ticking&!buff.beast_within.up
-                        Buff.CastBuff("Focus Fire", ret => Buff.PlayerCountBuff("Frenzy") == 5 && !Buff.PlayerHasActiveBuff("Focus Fire") && !Buff.PlayerHasActiveBuff("Beast Within"), "Focus Fire"),
+                        Buff.CastBuff("Focus Fire", ret => Buff.PlayerHasActiveBuff("Frenzy") && !Buff.PlayerHasActiveBuff("Focus Fire") && !Buff.PlayerHasActiveBuff("Beast Within"), "Focus Fire"),
                         //cobra_shot,if=dot.serpent_sting.remains<6
                         Spell.CastSpell("Cobra Shot", ret => Buff.TargetDebuffTimeLeft("Serpent Sting").Seconds < 6, "Cobra Shot"),
                         //arcane_shot,if=focus>=61|buff.beast_within.up
@@ -293,7 +293,7 @@ NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagr
             {
                 return (
                     new PrioritySelector(
-                        new Action(a => { CLU.Log("I am the start of public override Composite PVPRotation"); return RunStatus.Failure; }),
+                        //new Action(a => { CLU.Log("I am the start of public override Composite PVPRotation"); return RunStatus.Failure; }),
                         CrowdControl.freeMe(),
                         new Decorator(ret => Macro.Manual || BotChecker.BotBaseInUse("BGBuddy"),
                             new Decorator(ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget),
