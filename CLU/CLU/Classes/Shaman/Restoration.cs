@@ -13,7 +13,7 @@
 
 using CLU.Helpers;
 using Styx.TreeSharp;
-using System.Linq;
+
 using CommonBehaviors.Actions;
 using Styx;
 using Styx.WoWInternals;

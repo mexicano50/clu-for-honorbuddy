@@ -805,7 +805,7 @@ namespace CLU.GUI
 
         private void button6_Click(object sender, EventArgs e)
         {
-            CLU.Instance.QueryClassTree();
+            CLU.Instance.CreateBehaviors();
         }
 
         private void DisplaySpellchecker(object sender, EventArgs e)

@@ -265,6 +265,10 @@ namespace CLU
         {
             get
             {
+                // setting to overide the LocationContext so that you can test and PvP, PvE, Single rotation without bieng in the normal context
+                //if (CLUSettings.Instance.EnableRotationOveride) return CLUSettings.Instance.RotationOveride; 
+                // TODO: commented for now until i have more time to look at it..its returning System.NullReferenceException: Object reference not set to an instance of an object.
+
                 Map map = StyxWoW.Me.CurrentMap;
 
                 if ( map.IsBattleground || map.IsArena )
@@ -300,7 +304,7 @@ namespace CLU
             }
         }
 
-        private static bool IsMounted
+        public static bool IsMounted
         {
             get
             {

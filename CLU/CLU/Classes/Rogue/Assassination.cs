@@ -308,7 +308,7 @@ namespace CLU.Classes.Rogue
                      new PrioritySelector
                          (Spell.CastSelfSpell
                               ("Stealth",
-                               ret => !Buff.PlayerHasBuff("Stealth") && CLUSettings.Instance.Rogue.EnableAlwaysStealth,
+                               ret => !Buff.PlayerHasBuff("Stealth") && CLUSettings.Instance.Rogue.EnableAlwaysStealth && !CLU.IsMounted,
                                "Stealth"), Poisons.CreateApplyPoisons()));
             }
         }

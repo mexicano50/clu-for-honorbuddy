@@ -24,6 +24,7 @@ namespace CLU.Settings
     using System;
 
     using Styx.Common;
+    using Styx.TreeSharp;
 
     internal class CLUSettings : Styx.Helpers.Settings
     {
@@ -125,6 +126,28 @@ namespace CLU.Settings
 
         #region Category: General
 
+        [Setting]
+        [DefaultValue(false)]
+        [Category("Do not Touch")]
+        [DisplayName("Enable Rotation Override")]
+        [Description("Do not mess with this if you do not know what it is doing! // setting to overide the LocationContext so that you can test and PvP, PvE, Single rotation without bieng in the normal context")]
+        public bool EnableRotationOveride
+        {
+            get;
+            set;
+        }
+
+        [Setting]
+        [DefaultValue(GroupLogic.Solo)]
+        [Category("Do not Touch")]
+        [DisplayName("Rotation Override")]
+        [Description("Do not mess with this if you do not know what it is doing! // setting to overide the LocationContext so that you can test and PvP, PvE, Single rotation without bieng in the normal context")]
+        public GroupLogic RotationOveride
+        {
+            get;
+            set;
+        }
+        
         [Setting]
         [DefaultValue(65)]
         [Category("General")]
