@@ -141,7 +141,7 @@ namespace CLU.Settings
 
         [Setting]
         [DefaultValue(6)]
-        [Category("Subtlety")]
+        [Category("Subtlety Spec")]
         [DisplayName("Fan of Knives Add Count")]
         [Description("Will use Fan of Knives when agro mob count is equal to or higher then this value.")]
         public int SubtletyFanOfKnivesCount
