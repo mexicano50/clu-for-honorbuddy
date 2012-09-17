@@ -183,8 +183,9 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
                 return (
                     new PrioritySelector(
                         //new Action(a => { CLU.Log("I am the start of public Composite baseRotation"); return RunStatus.Failure; }),
+                        //MultiCast & Trap Macro
                         //PvP Utilities
-                        Spell.CastSpell("Concussive Shot", ret => Me.CurrentTarget != null && Me.CurrentTarget.Distance <= 25d, "Concussive Shot"),
+                        Spell.CastSpell("Concussive Shot", ret => Me.CurrentTarget != null && Me.CurrentTarget.DistanceSqr <= 25 * 25, "Concussive Shot"),
                         Spell.CastSpell("Widow Venom", ret => !Buff.TargetHasDebuff("Widow Venom"), "Widow Venom"),
                         Spell.CastSpell("Tranquilizing Shot", ret => Buff.TargetHasBuff("Enrage"), "Tranquilizing Shot"),
                         Buff.CastBuff("Mend Pet", ret => Me.Pet.HealthPercent <= 90 && !Me.Pet.HasAura("Mend Pet"), "Mend Pet"),
@@ -219,13 +220,13 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
                         //kill_shot
                         Spell.CastSpell("Kill Shot",                ret => true, "Kill Shot"),
                         //kill_command
-                        Spell.CastSpell("Kill Command",             ret => Me.CurrentTarget != null && Me.Pet.Location.Distance(Me.CurrentTarget.Location) <= 25d && Me.GotAlivePet, "Kill Command"),
+                        Spell.CastSpell("Kill Command",             ret => Me.CurrentTarget != null && Me.Pet.Location.DistanceSqr(Me.CurrentTarget.Location) <= 25 * 25 && Me.GotAlivePet, "Kill Command"),
                         //a_murder_of_crows,if=enabled&!ticking
                         Spell.CastSpell("A Murder of Crows",        ret => SpellManager.HasSpell("A Murder of Crows") && !Buff.TargetHasDebuff("A Murder of Crows"), "A Murder of Crows"),
                         //glaive_toss,if=enabled
                         Spell.CastSpell("Glaive Toss",              ret => SpellManager.HasSpell("Glaive Toss"), "Glaive Toss"),
                         //lynx_rush,if=enabled&!ticking
-                        Spell.CastSpell("Lynx Rush",                ret => Me.CurrentTarget != null && Me.Pet.Location.Distance(Me.CurrentTarget.Location) <= 10d && Me.GotAlivePet && SpellManager.HasSpell("Lynx Rush") && !SpellManager.Spells["Lynx Rush"].Cooldown, "Lynx Rush"),
+                        Spell.CastSpell("Lynx Rush",                ret => Me.CurrentTarget != null && Me.Pet.Location.DistanceSqr(Me.CurrentTarget.Location) <= 10 * 10 && Me.GotAlivePet && SpellManager.HasSpell("Lynx Rush") && !SpellManager.Spells["Lynx Rush"].Cooldown, "Lynx Rush"),
                         //dire_beast,if=enabled&focus<=90
                         Spell.CastSpell("Dire Beast",               ret => SpellManager.HasSpell("Dire Beast") && Me.CurrentFocus <= 90, "Dire Beast"),
                         //barrage,if=enabled
@@ -233,7 +234,7 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
                         //powershot,if=enabled
                         Spell.CastSpell("Powershot",                ret => SpellManager.HasSpell("Powershot"), "Powershot"),
                         //blink_strike,if=enabled
-                        Spell.CastSpell("Blink Strike",             ret => Me.CurrentTarget != null && Me.Pet.Location.Distance(Me.CurrentTarget.Location) <= 40d && Me.GotAlivePet && SpellManager.HasSpell("Blink Strike"), "Blink Strike"),
+                        Spell.CastSpell("Blink Strike",             ret => Me.CurrentTarget != null && Me.Pet.Location.DistanceSqr(Me.CurrentTarget.Location) <= 40 * 40 && Me.GotAlivePet && SpellManager.HasSpell("Blink Strike"), "Blink Strike"),
                         //readiness,wait_for_rapid_fire=1
                         Spell.CastSelfSpell("Readiness",            ret => Buff.PlayerHasActiveBuff("Rapid Fire"), "Readiness"),
                         //arcane_shot,if=buff.thrill_of_the_hunt.react
@@ -277,7 +278,7 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
                             //flask,type=spring_blossoms
                             //food,type=sea_mist_rice_noodles
                             //hunters_mark,if=target.time_to_die>=21&!debuff.ranged_vulnerability.up
-                            Spell.CastSpell("Hunter's Mark", ret => Me.CurrentTarget != null && Me.CurrentTarget.Distance <= 100d && !Buff.TargetHasDebuff("Hunter's Mark"), "Hunter's Mark"),
+                            Buff.CastDebuff("Hunter's Mark", ret => !TalentManager.HasGlyph("Marked for Death") || (CLU.LocationContext == GroupLogic.Battleground && Me.CurrentTarget != null && Me.CurrentTarget.DistanceSqr > 40 * 40), "Hunter's Mark"),
                             //summon_pet
                             Common.HunterCallPetBehavior(CLUSettings.Instance.Hunter.ReviveInCombat),
                             //trueshot_aura
