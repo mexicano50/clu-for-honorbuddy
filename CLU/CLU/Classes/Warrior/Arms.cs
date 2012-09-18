@@ -125,13 +125,13 @@ namespace CLU.Classes.Warrior
                                     Spell.CastSpell("Heroic Strike",        ret => Buff.PlayerHasBuff("Taste For Blood") && IsColossusSmashOnCoolDownHeroicStrike && HasColossusSmash2, "Heroic Strike"),
                                     Spell.CastSpell("Mortal Strike",        ret => true, "Mortal Strike"),
                                     Spell.CastSpell("Colossus Smash",       ret => Buff.TargetDebuffTimeLeft("Colossus Smash").TotalSeconds <= 1.5 || IsMortalStrikeOnCooldown, "Colossus Smash"),
-                                    Spell.CastSpell("Execute",              ret => Me.CurrentTarget.HealthPercent > 20, "Execute"),
+                                    Spell.CastSpell("Execute",              ret => Me.CurrentTarget != null && Me.CurrentTarget.HealthPercent > 20, "Execute"),
                                     Spell.CastSpell("Heroic Strike",        ret => TasteForBloodStacks && SpellManager.CanCast("Overpower"), "Heroic Strike"),
                                     Spell.CastSpell("Heroic Throw",         ret => true, "Heroic Throw"),
                                     Spell.CastSpell("Heroic Strike",        ret => Buff.PlayerHasBuff("Taste for Blood") && IsTasteForBloodOnCooldown, "Heroic Strike"),
                                     Spell.CastSpell("Overpower",            ret => true, "Overpower"),
-                                    Spell.CastSpell("Slam",                 ret => Me.CurrentRage > 70 && Buff.TargetHasDebuff("Colossus Smash") && Me.CurrentTarget.HealthPercent > 20, "Slam"),
-                                    Spell.CastSpell("Slam",                 ret => Me.CurrentTarget.HealthPercent > 20, "Slam"),
+                                    Spell.CastSpell("Slam",                 ret => Me.CurrentTarget != null && Me.CurrentRage > 70 && Buff.TargetHasDebuff("Colossus Smash") && Me.CurrentTarget.HealthPercent > 20, "Slam"),
+                                    Spell.CastSpell("Slam",                 ret => Me.CurrentTarget != null && Me.CurrentTarget.HealthPercent > 20, "Slam"),
                                     Spell.CastSpell("Commanding Shout",     ret => Me.RagePercent < 60 && CLUSettings.Instance.Warrior.ShoutSelection == WarriorShout.Commanding, "Commanding Shout for Rage"),
                                     Spell.CastSpell("Battle Shout",         ret => Me.RagePercent < 60 && CLUSettings.Instance.Warrior.ShoutSelection == WarriorShout.Battle, "Battle Shout for Rage"));
             }
@@ -174,15 +174,15 @@ namespace CLU.Classes.Warrior
                         Spell.CastSpell("Colossus Smash",           ret => Buff.TargetDebuffTimeLeft("Colossus Smash").TotalSeconds <= 1.5, "Colossus Smash"),
                         Spell.CastSpell("Execute",                  ret => true, "Execute"),
                         Spell.CastSpell("Storm Bolt",               ret => SpellManager.HasSpell("Storm Bolt"), "Storm Bolt"),
-                        Spell.CastSpell("Overpower",                ret => true, "Overpwoer"),
+                        Spell.CastSpell("Overpower",                ret => true, "Overpower"),
                         Spell.CastSpell("Shockwave",                ret => SpellManager.HasSpell("Shockwave"), "Shockwave"),
                         Spell.CastSpell("Dragon Roar",              ret => SpellManager.HasSpell("Dragon Roar"), "Dragon Roar"),
-                        Spell.CastSpell("Slam",                     ret => (Me.CurrentRage >= 70 || Buff.TargetHasDebuff("Colossus Smash")) && Me.CurrentTarget.HealthPercent >= 20, "Slam"),
+                        Spell.CastSpell("Slam",                     ret => Me.CurrentTarget != null && (Me.CurrentRage >= 70 || Buff.TargetHasDebuff("Colossus Smash")) && Me.CurrentTarget.HealthPercent >= 20, "Slam"),
                         Spell.CastSpell("Heroic Throw",             ret => true, "Heroic Throw"),
                         Buff.CastBuff("Battle Shout",               ret => Me.CurrentRage < 70 && !Buff.TargetHasDebuff("Colossus Smash"), "Battle Shout"),
                         Spell.CastSpell("Bladestorm",               ret => SpellManager.HasSpell("Bladestorm") && SpellManager.Spells["Colossus Smash"].CooldownTimeLeft.Seconds >= 5 && !Buff.TargetHasDebuff("Colossus Smash") && SpellManager.Spells["Bloodthirst"].CooldownTimeLeft.Seconds >= 2 && Me.CurrentTarget.HealthPercent >= 20, "Bladestorm"),//<~ add GUI option for user descretion
-                        Spell.CastSpell("Slam",                     ret => Me.CurrentTarget.HealthPercent >= 20, "Slam"),
-                        Spell.CastSpell("Impending Victory",        ret => SpellManager.HasSpell("Impending Victory") && Me.CurrentTarget.HealthPercent >= 20, "Impending Victory"),
+                        Spell.CastSpell("Slam",                     ret => Me.CurrentTarget != null && Me.CurrentTarget.HealthPercent >= 20, "Slam"),
+                        Spell.CastSpell("Impending Victory",        ret => Me.CurrentTarget != null && SpellManager.HasSpell("Impending Victory") && Me.CurrentTarget.HealthPercent >= 20, "Impending Victory"),
                         Buff.CastBuff("Battle Shout",               ret => Me.CurrentRage < 70, "Battle Shout")
                 ));
             }

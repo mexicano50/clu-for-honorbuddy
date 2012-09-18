@@ -97,9 +97,7 @@ NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagr
                                    Buff.CastBuff("Lifeblood", ret => true, "Lifeblood"),
                                    Buff.CastBuff("Avenging Wrath", ret => true, "Avenging Wrath"),
                                    Item.UseEngineerGloves())),
-                           // Seal Swapping for AoE
-                           Buff.CastBuff("Seal of Righteousness",         ret => Unit.EnemyUnits.Count() >= CLUSettings.Instance.Paladin.SealofRighteousnessCount, "Seal of Righteousness"),
-                           Buff.CastBuff("Seal of Truth",                 ret => Me.ManaPercent > CLUSettings.Instance.Paladin.SealofInsightMana && Unit.EnemyUnits.Count() < CLUSettings.Instance.Paladin.SealofRighteousnessCount, "Seal of Truth"),
+
                            //Main Rotation
                            Spell.CastSpell("Hammer of the Righteous",     ret => Me.CurrentTarget != null && !Buff.UnitHasWeakenedBlows(Me.CurrentTarget), "Hammer of the Righteous for Weakened Blows"),
                            Buff.CastBuff("Holy Shield",                   ret => true, "Holy Shield"),
@@ -132,7 +130,8 @@ NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagr
         public override Composite Medic
         {
             get {
-                return new Decorator(
+                return new PrioritySelector(
+                    new Decorator(
                            ret => Me.HealthPercent < 100 && CLUSettings.Instance.EnableSelfHealing,
                            new PrioritySelector(
                                new Decorator(
@@ -145,9 +144,13 @@ NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagr
                                Buff.CastBuff("Guardian of Ancient Kings",  ret => Me.HealthPercent < CLUSettings.Instance.Paladin.GuardianofAncientKingsHealthProt && !Buff.PlayerHasBuff("Ardent Defender"), "Guardian of Ancient Kings"),
                                Buff.CastBuff("Ardent Defender",            ret => Me.HealthPercent < CLUSettings.Instance.Paladin.ArdentDefenderHealth && !Buff.PlayerHasBuff("Guardian of Ancient Kings"), "Ardent Defender"),
                                Item.UseBagItem("Healthstone",              ret => Me.HealthPercent < CLUSettings.Instance.Paladin.HealthstonePercent, "Healthstone"),
-                               Buff.CastBuff("Divine Protection",          ret => Me.HealthPercent < CLUSettings.Instance.Paladin.ProtectionDPPercent, "Divine Protection"),
-                               Buff.CastBuff("Seal of Truth",              ret => Me.ManaPercent > CLUSettings.Instance.Paladin.SealofInsightMana && Unit.EnemyUnits.Count() < CLUSettings.Instance.Paladin.SealofRighteousnessCount, "Seal of Truth"),
-                               Buff.CastBuff("Seal of Insight",            ret => Me.ManaPercent < CLUSettings.Instance.Paladin.SealofInsightMana && !Buff.PlayerHasBuff("Seal of Righteousness"), "Seal of Insight for Mana Gen")));
+                               Buff.CastBuff("Divine Protection",          ret => Me.HealthPercent < CLUSettings.Instance.Paladin.ProtectionDPPercent, "Divine Protection"))),
+                    // Seal Swapping for AoE
+                    Buff.CastBuff("Seal of Righteousness",  ret => Unit.EnemyUnits.Count() >= CLUSettings.Instance.Paladin.SealofRighteousnessCount, "Seal of Righteousness"),
+                    Buff.CastBuff("Seal of Truth",          ret => Me.ManaPercent > CLUSettings.Instance.Paladin.SealofInsightMana && Unit.EnemyUnits.Count() < CLUSettings.Instance.Paladin.SealofRighteousnessCount, "Seal of Truth"),
+                    Buff.CastBuff("Seal of Insight",        ret => Me.ManaPercent < CLUSettings.Instance.Paladin.SealofInsightMana && !Buff.PlayerHasBuff("Seal of Righteousness"), "Seal of Insight for Mana Gen")
+                    
+                    );
             }
         }
 

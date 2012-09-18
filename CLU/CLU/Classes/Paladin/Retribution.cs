@@ -114,9 +114,6 @@ NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagr
                            Spell.CastInterupt("Rebuke", ret => Unit.MeleePvPUnits.OrderBy(u => Me.IsFacing(u) && u.IsCasting && u.CastingSpell.CooldownTimeLeft > TimeSpan.FromMilliseconds(500) && (u.CanInteruptCastSpell() || u.CanInteruptChannelSpell())).FirstOrDefault(), ret => CLU.LocationContext == GroupLogic.Battleground, "Rebuke"),
                            // Threat
                            Buff.CastBuff("Hand of Salvation",      ret => Me.CurrentTarget != null && Me.GotTarget && Me.CurrentTarget.ThreatInfo.RawPercent > 90, "Hand of Salvation"),
-                           // Seal Swapping for AoE
-                           Buff.CastBuff("Seal of Righteousness",  ret => Unit.EnemyUnits.Count() >= CLUSettings.Instance.Paladin.SealofRighteousnessCount, "Seal of Righteousness"),
-                           Buff.CastBuff("Seal of Truth",          ret => Unit.EnemyUnits.Count() < CLUSettings.Instance.Paladin.SealofRighteousnessCount, "Seal of Truth"),
                            new Decorator(
                                ret => Buff.PlayerHasBuff("Holy Avenger"),
                                new PrioritySelector(
@@ -158,7 +155,8 @@ NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagr
         public override Composite Medic
         {
             get {
-                return new Decorator(
+                return new PrioritySelector(
+                    new Decorator(
                            ret => Me.HealthPercent < 100 && CLUSettings.Instance.EnableSelfHealing,
                            new PrioritySelector(
                                Buff.CastBuff("Hand of Freedom",            ret => Me.MovementInfo.ForwardSpeed < 8.05 && CLUSettings.Instance.Paladin.UseHandofFreedom, "Hand of Freedom"),
@@ -170,7 +168,14 @@ NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagr
                                    new PrioritySelector(
                                        Buff.CastBuff("Lay on Hands",       ret => Me.HealthPercent < CLUSettings.Instance.Paladin.RetributionLoHPercent, "Lay on Hands"),
                                        Buff.CastBuff("Divine Shield", ret => Me.HealthPercent < CLUSettings.Instance.Paladin.RetributionDSPercent && !Me.IsCarryingFlag(), "Divine Shield"),
-                                       Buff.CastBuff("Hand of Protection", ret => Me.HealthPercent < CLUSettings.Instance.Paladin.RetributionHoPPercent, "Hand of Protection")))));
+                                       Buff.CastBuff("Hand of Protection", ret => Me.HealthPercent < CLUSettings.Instance.Paladin.RetributionHoPPercent, "Hand of Protection"))))),
+                    
+                     // Seal Swapping for AoE
+                     Buff.CastBuff("Seal of Righteousness",  ret => Unit.EnemyUnits.Count() >= CLUSettings.Instance.Paladin.SealofRighteousnessCount, "Seal of Righteousness"),
+                     Buff.CastBuff("Seal of Truth",          ret => Unit.EnemyUnits.Count() < CLUSettings.Instance.Paladin.SealofRighteousnessCount, "Seal of Truth")
+                    ); 
+                    
+                    
             }
         }
 
