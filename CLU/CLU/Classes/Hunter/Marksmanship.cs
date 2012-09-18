@@ -269,7 +269,7 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
                             //flask,type=spring_blossoms
                             //food,type=sea_mist_rice_noodles
                             //hunters_mark,if=target.time_to_die>=21&!debuff.ranged_vulnerability.up
-                            Buff.CastDebuff("Hunter's Mark", ret => !TalentManager.HasGlyph("Marked for Death") || (CLU.LocationContext == GroupLogic.Battleground && Me.CurrentTarget != null && Me.CurrentTarget.DistanceSqr > 40 * 40), "Hunter's Mark"),
+                            Buff.CastDebuff("Hunter's Mark", ret => Unit.TimeToDeath(Me.CurrentTarget) >= 21 && !TalentManager.HasGlyph("Marked for Death") || (CLU.LocationContext == GroupLogic.Battleground && Me.CurrentTarget != null && Me.CurrentTarget.DistanceSqr > 40 * 40), "Hunter's Mark"),
                             //summon_pet
                             Common.HunterCallPetBehavior(CLUSettings.Instance.Hunter.ReviveInCombat),
                             //trueshot_aura

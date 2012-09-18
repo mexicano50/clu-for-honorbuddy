@@ -212,13 +212,13 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
                         //multi_shot,if=target.adds>2
                         //cobra_shot,if=target.adds>2
                         //serpent_sting,if=!ticking&target.time_to_die>=10
-                        Spell.CastSpell("Serpent Sting", ret => !Buff.TargetHasDebuff("Serpent Sting"), "Serpent Sting"),
+                        Spell.CastSpell("Serpent Sting", ret => !Buff.TargetHasDebuff("Serpent Sting") && Unit.TimeToDeath(Me.CurrentTarget) >= 10, "Serpent Sting"),
                         //explosive_shot,if=cooldown_react
                         Spell.CastSpell("Explosive Shot", ret => true, "Explosive Shot"),
                         //kill_shot
                         Spell.CastSpell("Kill Shot", ret => true, "Kill Shot"),
                         //black_arrow,if=!ticking&target.time_to_die>=8
-                        Spell.CastSpell("Black Arrow", ret => !Buff.TargetHasDebuff("Black Arrow"), "Black Arrow"),
+                        Spell.CastSpell("Black Arrow", ret => !Buff.TargetHasDebuff("Black Arrow") && Unit.TimeToDeath(Me.CurrentTarget) >= 8, "Black Arrow"),
                         //multi_shot,if=buff.thrill_of_the_hunt.react
                         Spell.CastSpell("Multi Shot", ret => Buff.PlayerHasActiveBuff("Thrill of the Hunt"), "Multi Shot"),
                         //dire_beast,if=enabled
@@ -268,7 +268,7 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
                             //flask,type=spring_blossoms
                             //food,type=sea_mist_rice_noodles
                             //hunters_mark,if=target.time_to_die>=21&!debuff.ranged_vulnerability.up
-                            Buff.CastDebuff("Hunter's Mark", ret => !TalentManager.HasGlyph("Marked for Death") || (CLU.LocationContext == GroupLogic.Battleground && Me.CurrentTarget != null && Me.CurrentTarget.DistanceSqr > 40 * 40), "Hunter's Mark"),
+                            Buff.CastDebuff("Hunter's Mark", ret => Unit.TimeToDeath(Me.CurrentTarget) >= 21 && !TalentManager.HasGlyph("Marked for Death") || (CLU.LocationContext == GroupLogic.Battleground && Me.CurrentTarget != null && Me.CurrentTarget.DistanceSqr > 40 * 40), "Hunter's Mark"),
                             //summon_pet
                             Common.HunterCallPetBehavior(CLUSettings.Instance.Hunter.ReviveInCombat),
                             //trueshot_aura
