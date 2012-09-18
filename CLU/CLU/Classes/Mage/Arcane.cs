@@ -112,7 +112,7 @@ namespace CLU.Classes.Mage
                     Spell.CastSelfSpell("Mirror Image", ret => Buff.PlayerHasBuff("Arcane Power") && Unit.IsTargetWorthy(Me.CurrentTarget), "Mirror Image"),
                     Spell.CastSelfSpell("Presence of Mind", ret => !Buff.PlayerHasBuff("Invisibility"), "Presence of Mind"),
                     Spell.CastSelfSpell("Arcane Power", ret => Me.CurrentTarget != null && Buff.PlayerHasBuff("Improved Mana Gem") || Unit.IsTargetWorthy(Me.CurrentTarget), "Arcane Power"),
-                    Item.RunMacroText("/cast Conjure Mana Gem",ret => Buff.PlayerHasBuff("Presence of Mind") && !Item.HaveManaGem(),"Conjure Mana Gem"),
+                    Item.RunMacroText("/cast Conjure Mana Gem",ret => Buff.PlayerHasBuff("Presence of Mind") && !Item.HaveManaGem() && Me.Level > 50,"Conjure Mana Gem"),
                     // AoE
                     new Decorator(ret => CLUSettings.Instance.UseAoEAbilities,
                         new PrioritySelector(
@@ -156,8 +156,8 @@ namespace CLU.Classes.Mage
                            new PrioritySelector(
                                Buff.CastBuff("Frost Armor",                     ret => true, "Frost Armor"),
                     //Buff.CastRaidBuff("Dalaran Brilliance",         ret => true, "Dalaran Brilliance"), //Commentet out as it is of no real importance except for 10yrd extra range.
-                               Buff.CastRaidBuff("Arcane Brilliance",          ret => true, "Arcane Brilliance"), 
-                               Item.RunMacroText("/cast Conjure Mana Gem",     ret => !Me.IsMoving && !Item.HaveManaGem(), "Conjure Mana Gem")));
+                               Buff.CastRaidBuff("Arcane Brilliance",          ret => true, "Arcane Brilliance"),
+                               Item.RunMacroText("/cast Conjure Mana Gem", ret => !Me.IsMoving && !Item.HaveManaGem() && Me.Level > 50, "Conjure Mana Gem")));
             }
         }
 

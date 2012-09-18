@@ -135,7 +135,7 @@ namespace CLU.Classes.Rogue
                            Spell.CastSpell("Expose Armor",                ret => Me.CurrentTarget != null && Me.ComboPoints == 5 && Unit.IsTargetWorthy(Me.CurrentTarget) && !Buff.UnitHasWeakenedArmor(Me.CurrentTarget), "Expose Armor"),
                            Spell.CastSelfSpell("Slice and Dice",          ret => Buff.PlayerBuffTimeLeft("Slice and Dice") < 2 && Me.CurrentEnergy >= 25 && Me.ComboPoints > 3, "Slice and Dice"),
                            Spell.CastSelfSpell("Killing Spree",           ret => Me.CurrentEnergy < 35 && Buff.PlayerBuffTimeLeft("Slice and Dice") > 4 && !Buff.PlayerHasBuff("Adrenaline Rush") && CLUSettings.Instance.UseCooldowns, "Killing Spree"),
-                           Spell.CastSelfSpell("Adrenaline Rush",         ret => Me.CurrentTarget != null && Me.CurrentEnergy < 35 && Unit.IsTargetWorthy(Me.CurrentTarget), "Vanish"),
+                           Spell.CastSelfSpell("Adrenaline Rush",         ret => Me.CurrentTarget != null && Me.CurrentEnergy < 35 && Unit.IsTargetWorthy(Me.CurrentTarget), "Adrenaline Rush"),
                            Spell.CastSpell("Eviscerate",                  ret => Me.ComboPoints == 5 && (Buff.PlayerHasBuff("Moderate Insight") || Buff.PlayerHasBuff("Deep Insight")), "Eviscerate & Moderate Insight or Deep Insight"),
                            Spell.CastSpell("Rupture",                     ret => Me.CurrentTarget != null && Me.ComboPoints == 5 && !Buff.TargetHasDebuff("Rupture"), "Rupture"), //removed bleed check no longer ingame --  wulf
                            Spell.CastSpell("Eviscerate",                  ret => Me.ComboPoints == 5, "Eviscerate"),

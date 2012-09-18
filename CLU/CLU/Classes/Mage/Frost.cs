@@ -106,7 +106,7 @@ namespace CLU.Classes.Mage
                            Spell.CastSpell("Spellsteal",                  ret => Spell.TargetHasStealableBuff() && !Me.IsMoving, "[Steal] Spellsteal"),
                            // Rotation based on SimCraft - Build 15211
                            Spell.CastInterupt("Counterspell",             ret => true, "Counterspell"),
-                           Item.RunMacroText("/cast Conjure Mana Gem",    ret => !Item.HaveManaGem(), "Conjure Mana Gem"),
+                           Item.RunMacroText("/cast Conjure Mana Gem", ret => !Item.HaveManaGem() && Me.Level > 50, "Conjure Mana Gem"),
                            Spell.ChannelSelfSpell("Evocation",            ret => Me.ManaPercent < 40 && !Me.IsMoving && (Buff.PlayerHasActiveBuff("Icy Veins") || Buff.UnitHasHasteBuff(Me)), "Evocation"),
                            Item.UseBagItem("Mana Gem",                    ret => Me.CurrentTarget != null && Me.ManaPercent < 90 && Unit.IsTargetWorthy(Me.CurrentTarget), "Mana Gem"),
                            Spell.CastSelfSpell("Cold Snap",               ret => Spell.SpellCooldown("Deep Freeze").TotalSeconds > 15 && Spell.SpellCooldown("Flame Orb").TotalSeconds > 30 && Spell.SpellCooldown("Icy Veins").TotalSeconds > 30, "Cold Snap"),
@@ -157,8 +157,8 @@ namespace CLU.Classes.Mage
                                PetManager.CastPetSummonSpell("Summon Water Elemental", ret => !Me.GotAlivePet, "Calling Pet Water Elemental"),
                                Buff.CastBuff("Molten Armor",               ret => true, "Molten Armor"),
                                 //Buff.CastRaidBuff("Dalaran Brilliance",         ret => true, "Dalaran Brilliance"), //Commentet out as it is of no real importance except for 10yrd extra range.
-                               Buff.CastRaidBuff("Arcane Brilliance",      ret => true, "Arcane Brilliance"), 
-                               Item.RunMacroText("/cast Conjure Mana Gem", ret => !Me.IsMoving && !Item.HaveManaGem(), "Conjure Mana Gem")));
+                               Buff.CastRaidBuff("Arcane Brilliance",      ret => true, "Arcane Brilliance"),
+                               Item.RunMacroText("/cast Conjure Mana Gem", ret => !Me.IsMoving && !Item.HaveManaGem() && Me.Level > 50, "Conjure Mana Gem")));
             }
         }
 
