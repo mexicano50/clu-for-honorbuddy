@@ -180,64 +180,64 @@ NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagr
                     new PrioritySelector(
                         //new Action(a => { CLU.Log("I am the start of public Composite baseRotation"); return RunStatus.Failure; }),
                         //PvP Utilities
-                        Spell.CastSpell("Concussive Shot", ret => Me.CurrentTarget != null && Me.CurrentTarget.DistanceSqr <= 25 * 25, "Concussive Shot"),
-                        Spell.CastSpell("Widow Venom", ret => !Buff.TargetHasDebuff("Widow Venom"), "Widow Venom"),
-                        Spell.CastSpell("Tranquilizing Shot", ret => Buff.TargetHasBuff("Enrage"), "Tranquilizing Shot"),
-                        Buff.CastBuff("Mend Pet", ret => Me.Pet.HealthPercent <= 90 && !Me.Pet.HasAura("Mend Pet"), "Mend Pet"),
+                        Spell.CastSpell("Concussive Shot",             ret => Me.CurrentTarget != null && Me.CurrentTarget.DistanceSqr <= 25 * 25, "Concussive Shot"),
+                        Spell.CastSpell("Widow Venom",                 ret => !Buff.TargetHasDebuff("Widow Venom"), "Widow Venom"),
+                        Spell.CastSpell("Tranquilizing Shot",          ret => Buff.TargetHasBuff("Enrage"), "Tranquilizing Shot"),
+                        Buff.CastBuff("Mend Pet",                      ret => Me.Pet.HealthPercent <= 90 && !Me.Pet.HasAura("Mend Pet"), "Mend Pet"),
 
                         //Rotation
                         //virmens_bite_potion,if=buff.bloodlust.react|target.time_to_die<=60
                         //aspect_of_the_hawk,moving=0
-                        Buff.CastBuff("Aspect of the Hawk",         ret => !Me.IsMoving && !Buff.PlayerHasBuff("Aspect of the Hawk") && SpellManager.HasSpell("Aspect of the Hawk"), "Aspect of the Hawk"),
-                        Buff.CastBuff("Aspect of the Iron Hawk",    ret => !Me.IsMoving && !Buff.PlayerHasBuff("Aspect of the Iron Hawk") && SpellManager.HasSpell("Aspect of the Iron Hawk"), "Aspect of the Iron Hawk"),
+                        Buff.CastBuff("Aspect of the Hawk",            ret => !Me.IsMoving && !Buff.PlayerHasBuff("Aspect of the Hawk") && SpellManager.HasSpell("Aspect of the Hawk"), "Aspect of the Hawk"),
+                        Buff.CastBuff("Aspect of the Iron Hawk",       ret => !Me.IsMoving && !Buff.PlayerHasBuff("Aspect of the Iron Hawk") && SpellManager.HasSpell("Aspect of the Iron Hawk"), "Aspect of the Iron Hawk"),
                         //aspect_of_the_fox,moving=1
-                        Buff.CastBuff("Aspect of the Fox",          ret => Me.IsMoving && !Buff.PlayerHasBuff("Aspect of the Fox"), "Aspect of the Fox"),
+                        Buff.CastBuff("Aspect of the Fox",             ret => Me.IsMoving && !Buff.PlayerHasBuff("Aspect of the Fox"), "Aspect of the Fox"),
                         //explosive_trap,if=target.adds>0
-
+                        Spell.HunterTrapBehavior("Explosive Trap",     ret => Me.CurrentTarget, ret => Me.CurrentTarget != null && Me.CurrentTarget.DistanceSqr <= 40 * 40 && Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 10) > 0),
                         //blood_fury
                         Racials.UseRacials(),
                         //glaive_toss,if=enabled
-                        Spell.CastSpell("Glaive Toss", ret => SpellManager.HasSpell("Glaive Toss"), "Glaive Toss"),
+                        Spell.CastSpell("Glaive Toss",                 ret => SpellManager.HasSpell("Glaive Toss"), "Glaive Toss"),
                         //powershot,if=enabled
-                        Spell.CastSpell("Powershot", ret => SpellManager.HasSpell("Powershot"), "Powershot"),
+                        Spell.CastSpell("Powershot",                   ret => SpellManager.HasSpell("Powershot"), "Powershot"),
                         //barrage,if=enabled
-                        Spell.CastSpell("Barrage", ret => SpellManager.HasSpell("Barrage"), "Barage"),
+                        Spell.CastSpell("Barrage",                     ret => SpellManager.HasSpell("Barrage"), "Barage"),
                         //blink_strike,if=enabled
-                        Spell.CastSpell("Blink Strike", ret => Me.CurrentTarget != null && Me.Pet.Location.DistanceSqr(Me.CurrentTarget.Location) <= 40 * 40 && Me.GotAlivePet && SpellManager.HasSpell("Blink Strike"), "Blink Strike"),
+                        Spell.CastSpell("Blink Strike",                ret => Me.CurrentTarget != null && Me.Pet.Location.DistanceSqr(Me.CurrentTarget.Location) <= 40 * 40 && Me.GotAlivePet && SpellManager.HasSpell("Blink Strike"), "Blink Strike"),
                         //lynx_rush,if=enabled&!ticking
-                        Spell.CastSpell("Lynx Rush", ret => Me.CurrentTarget != null && Me.Pet.Location.DistanceSqr(Me.CurrentTarget.Location) <= 10 * 10 && Me.GotAlivePet && SpellManager.HasSpell("Lynx Rush") && !SpellManager.Spells["Lynx Rush"].Cooldown, "Lynx Rush"),
+                        Spell.CastSpell("Lynx Rush",                   ret => Me.CurrentTarget != null && Me.Pet.Location.DistanceSqr(Me.CurrentTarget.Location) <= 10 * 10 && Me.GotAlivePet && SpellManager.HasSpell("Lynx Rush") && !SpellManager.Spells["Lynx Rush"].Cooldown, "Lynx Rush"),
                         //multi_shot,if=target.adds>5
                         //steady_shot,if=target.adds>5
                         //serpent_sting,if=!ticking&target.health.pct<=90
-                        Spell.CastSpell("Serpent Sting", ret => !Buff.TargetHasDebuff("Serpent Sting") && Me.CurrentTarget.HealthPercent <= 90, "Serpent Sting"),
+                        Spell.CastSpell("Serpent Sting",               ret => !Buff.TargetHasDebuff("Serpent Sting") && Me.CurrentTarget.HealthPercent <= 90, "Serpent Sting"),
                         //chimera_shot,if=target.health.pct<=90
-                        Spell.CastSpell("Chimera Shot", ret => Me.CurrentTarget.HealthPercent <= 90, "Chimera Shot"),
+                        Spell.CastSpell("Chimera Shot",                ret => Me.CurrentTarget.HealthPercent <= 90, "Chimera Shot"),
                         //dire_beast,if=enabled
-                        Spell.CastSpell("Dire Beast", ret => SpellManager.HasSpell("Dire Beast"), "Dire Beast"),
+                        Spell.CastSpell("Dire Beast",                  ret => SpellManager.HasSpell("Dire Beast"), "Dire Beast"),
                         //rapid_fire,if=!buff.rapid_fire.up
-                        Buff.CastBuff("Rapid Fire", ret => !Buff.PlayerHasActiveBuff("Rapid Fire"), "Rapid Fire"),
+                        Buff.CastBuff("Rapid Fire",                    ret => !Buff.PlayerHasActiveBuff("Rapid Fire"), "Rapid Fire"),
                         //stampede
-                        Spell.CastSpell("Stampede", ret => true, "Stampede"),
+                        Spell.CastSpell("Stampede",                    ret => true, "Stampede"),
                         //readiness,wait_for_rapid_fire=1
-                        Spell.CastSelfSpell("Readiness", ret => Buff.PlayerHasActiveBuff("Rapid Fire"), "Readiness"),
-                        //Q	34.57	steady_shot,if=buff.pre_steady_focus.up&buff.steady_focus.remains<3
-
+                        Spell.CastSelfSpell("Readiness",               ret => Buff.PlayerHasActiveBuff("Rapid Fire"), "Readiness"),
+                        //steady_shot,if=buff.pre_steady_focus.up&buff.steady_focus.remains<3
+                        Spell.CastSpell("Steady Shot",                 ret => Buff.PlayerActiveBuffTimeLeft("Steady Focus").Seconds < 3, "Steady Shot"),
                         //kill_shot
-                        Spell.CastSpell("Kill Shot", ret => true, "Kill Shot"),
-                        //S	17.91	aimed_shot,if=buff.master_marksman_fire.react
-
+                        Spell.CastSpell("Kill Shot",                   ret => true, "Kill Shot"),
+                        //aimed_shot,if=buff.master_marksman_fire.react
+                        Item.RunMacroText("/cast Aimed Shot!",         ret => Buff.PlayerHasActiveBuff("Fire!"), "Aimed Shot"),
                         //a_murder_of_crows,if=enabled&!ticking
-                        Spell.CastSpell("A Murder of Crows", ret => SpellManager.HasSpell("A Murder of Crows") && !Buff.TargetHasDebuff("A Murder of Crows"), "A Murder of Crows"),
+                        Spell.CastSpell("A Murder of Crows",           ret => SpellManager.HasSpell("A Murder of Crows") && !Buff.TargetHasDebuff("A Murder of Crows"), "A Murder of Crows"),
                         //arcane_shot,if=buff.thrill_of_the_hunt.react
-                        Spell.CastSpell("Arcane Shot", ret => Buff.PlayerHasActiveBuff("Thrill of the Hunt"), "Arcane Shot"),
+                        Spell.CastSpell("Arcane Shot",                 ret => Buff.PlayerHasActiveBuff("Thrill of the Hunt"), "Arcane Shot"),
                         //aimed_shot,if=target.health.pct>90|buff.rapid_fire.up|buff.bloodlust.react
-                        Spell.CastSpell("Aimed Shot", ret => Me.CurrentTarget.HealthPercent > 90 || Buff.PlayerHasActiveBuff("Rapid Fire") || Buff.UnitHasHasteBuff(Me), "Aimed Shot"),
+                        Spell.CastSpell("Aimed Shot",                  ret => Me.CurrentTarget.HealthPercent > 90 || Buff.PlayerHasActiveBuff("Rapid Fire") || Buff.UnitHasHasteBuff(Me), "Aimed Shot"),
                         //arcane_shot,if=(focus>=66|cooldown.chimera_shot.remains>=5)&(target.health.pct<90&!buff.rapid_fire.up&!buff.bloodlust.react)
-                        Spell.CastSpell("Arcane Shot", ret => (Me.CurrentFocus >= 66 || SpellManager.Spells["Chimera Shot"].CooldownTimeLeft.Seconds >= 5) && (Me.CurrentTarget.HealthPercent < 90 && !Buff.PlayerHasActiveBuff("Rapid Fire") && !Buff.UnitHasHasteBuff(Me)), "Arcane Shot"),
+                        Spell.CastSpell("Arcane Shot",                 ret => (Me.CurrentFocus >= 66 || SpellManager.Spells["Chimera Shot"].CooldownTimeLeft.Seconds >= 5) && (Me.CurrentTarget.HealthPercent < 90 && !Buff.PlayerHasActiveBuff("Rapid Fire") && !Buff.UnitHasHasteBuff(Me)), "Arcane Shot"),
                         //fervor,if=enabled&focus<=50
-                        Buff.CastBuff("Fervor", ret => SpellManager.HasSpell("Feror") && Me.CurrentFocus <= 50, "Fervor"),
+                        Buff.CastBuff("Fervor",                        ret => SpellManager.HasSpell("Feror") && Me.CurrentFocus <= 50, "Fervor"),
                         //steady_shot
-                        Spell.CastSpell("Steady Shot", ret => true, "Steady Shot")
+                        Spell.CastSpell("Steady Shot",                 ret => true, "Steady Shot")
                 ));
             }
         }
