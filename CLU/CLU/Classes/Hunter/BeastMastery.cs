@@ -183,7 +183,6 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
                 return (
                     new PrioritySelector(
                         //new Action(a => { CLU.Log("I am the start of public Composite baseRotation"); return RunStatus.Failure; }),
-                        //MultiCast & Trap Macro
                         //PvP Utilities
                         Spell.CastSpell("Concussive Shot", ret => Me.CurrentTarget != null && Me.CurrentTarget.DistanceSqr <= 25 * 25, "Concussive Shot"),
                         Spell.CastSpell("Widow Venom", ret => !Buff.TargetHasDebuff("Widow Venom"), "Widow Venom"),
@@ -307,7 +306,7 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
             {
                 return (
                     new PrioritySelector(
-                        new Action(a => { CLU.Log("I am the start of public override Composite PVPRotation"); return RunStatus.Failure; }),
+                        //new Action(a => { CLU.Log("I am the start of public override Composite PVPRotation"); return RunStatus.Failure; }),
                         CrowdControl.freeMe(),
                         new Decorator(ret => Macro.Manual || BotChecker.BotBaseInUse("BGBuddy"),
                             new Decorator(ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget),

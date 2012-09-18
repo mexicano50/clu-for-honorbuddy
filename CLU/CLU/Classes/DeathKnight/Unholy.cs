@@ -173,21 +173,21 @@ namespace CLU.Classes.DeathKnight
                     new PrioritySelector(
                         //new Action(a => { CLU.Log("I am the start of public Composite baseRotation"); return RunStatus.Failure; }),
                         //PvP Utilities
-                        Spell.CastSpell("Chains of Ice",        ret => Me.CurrentTarget != null && !Me.CurrentTarget.IsWithinMeleeRange && Me.CurrentTarget.Distance <= 30d && !Buff.TargetHasDebuff("Chains of Ice"), "Chains of Ice"),
-                        Spell.CastSpell("Death Grip",           ret => Me.CurrentTarget != null && !Me.CurrentTarget.IsWithinMeleeRange && Me.CurrentTarget.Distance <= 30d && !Buff.TargetHasDebuff("Chains of Ice") && !SpellManager.CanCast("Chains of Ice"), "Death Grip"),
+                        Spell.CastSpell("Chains of Ice",        ret => Me.CurrentTarget != null && !Me.CurrentTarget.IsWithinMeleeRange && Me.CurrentTarget.DistanceSqr <= 30 * 30 && !Buff.TargetHasDebuff("Chains of Ice"), "Chains of Ice"),
+                        Spell.CastSpell("Death Grip",           ret => Me.CurrentTarget != null && !Me.CurrentTarget.IsWithinMeleeRange && Me.CurrentTarget.DistanceSqr <= 30 * 30 && !Buff.TargetHasDebuff("Chains of Ice") && !SpellManager.CanCast("Chains of Ice"), "Death Grip"),
 
                         //Rotation
                         Racials.UseRacials(),
                         //mogu_power_potion,if=buff.dark_transformation.up&target.time_to_die<=35
-                        Spell.CastSpell("Unholy Frenzy",        ret => Me.CurrentTarget.IsWithinMeleeRange, "Unholy Frenzy"),//~> unholy_frenzy,if=time>=4
+                        Spell.CastSpell("Unholy Frenzy",        ret => Me.CurrentTarget != null && Me.CurrentTarget.IsWithinMeleeRange, "Unholy Frenzy"),//~> unholy_frenzy,if=time>=4
                         Item.UseEngineerGloves(),//~> use_item,name=gauntlets_of_the_lost_catacomb,if=time>=4
                         Spell.CastSpell("Outbreak",             ret => Buff.TargetDebuffTimeLeft("Frost Fever").Seconds < 3 || Buff.TargetDebuffTimeLeft("Blood Plague").Seconds < 3, "Outbreak"),
                         Spell.CastSpell("Soul Reaper",          ret => Me.CurrentTarget.HealthPercent <= 35, "Soul Reaping"),//~> soul_reaper,if=target.health.pct<=35|((target.health.pct-3*(target.health.pct%target.time_to_die))<=35)
-                        Spell.CastSelfSpell("Unholy Blight",    ret => SpellManager.HasSpell("Unholy Blight") && (Buff.TargetDebuffTimeLeft("Frost Fever").Seconds < 3 || Buff.TargetDebuffTimeLeft("Blood Plague").Seconds < 3), "Unholy Blight"),
+                        Buff.CastBuff("Unholy Blight",          ret => Me.CurrentTarget != null && Me.CurrentTarget.DistanceSqr <= 10 * 10 && SpellManager.HasSpell("Unholy Blight") && (Buff.TargetDebuffTimeLeft("Frost Fever").Seconds < 3 || Buff.TargetDebuffTimeLeft("Blood Plague").Seconds < 3), "Unholy Blight"),
                         Spell.CastSpell("Chains of Ice",        ret => !Buff.TargetHasDebuff("Frost Fever"), "Chains of Ice"),
                         Spell.CastSpell("Plague Strike",        ret => !Buff.TargetHasDebuff("Blood Plague"), "Plague Strike"),
                         Spell.CastSpell("Plague Leech",         ret => SpellManager.HasSpell("Plague Leech") && SpellManager.Spells["Outbreak"].CooldownTimeLeft.Seconds < 1, "Plague Leech"),
-                        Buff.CastBuff("Summon Gargoyle",        ret => true, "Summon Gargoyle"),
+                        Buff.CastBuff("Summon Gargoyle",        ret => Me.CurrentTarget != null && Me.CurrentTarget.DistanceSqr <= 30 * 30, "Summon Gargoyle"),
                         Spell.CastSpell("Dark Transformation",  ret => true, "Dark Transformation"),
                         //empower_rune_weapon,if=target.time_to_die<=60&buff.mogu_power_potion.up
                         Spell.CastSpell("Necrotic Strike",      ret => !Macro.rotationSwap, "Necrotic Strike"),
@@ -239,8 +239,8 @@ namespace CLU.Classes.DeathKnight
                             //army_of_the_dead
                             Spell.CastSelfSpell("Raise Dead",       ret => (Me.Pet == null || Me.Pet.IsDead), "Raise Dead"),
                             //mogu_power_potion
-                            Spell.CastSpell("Chains of Ice",        ret => Me.CurrentTarget != null && Macro.Manual && (CLU.LocationContext == GroupLogic.Battleground || Unit.IsTrainingDummy(Me.CurrentTarget)) && !Me.CurrentTarget.IsWithinMeleeRange && Me.CurrentTarget.Distance <= 30d && !Buff.TargetHasDebuff("Chains of Ice"), "Chains of Ice"),
-                            Spell.CastSpell("Death Grip",           ret => Me.CurrentTarget != null && Macro.Manual && (CLU.LocationContext == GroupLogic.Battleground || Unit.IsTrainingDummy(Me.CurrentTarget)) && !Me.CurrentTarget.IsWithinMeleeRange && Me.CurrentTarget.Distance <= 30d && !Buff.TargetHasDebuff("Chains of Ice") && !SpellManager.CanCast("Chains of Ice"), "Death Grip"),
+                            Spell.CastSpell("Chains of Ice",        ret => Me.CurrentTarget != null && Macro.Manual && (CLU.LocationContext == GroupLogic.Battleground || Unit.IsTrainingDummy(Me.CurrentTarget)) && !Me.CurrentTarget.IsWithinMeleeRange && Me.CurrentTarget.DistanceSqr <= 30 * 30 && !Buff.TargetHasDebuff("Chains of Ice"), "Chains of Ice"),
+                            Spell.CastSpell("Death Grip",           ret => Me.CurrentTarget != null && Macro.Manual && (CLU.LocationContext == GroupLogic.Battleground || Unit.IsTrainingDummy(Me.CurrentTarget)) && !Me.CurrentTarget.IsWithinMeleeRange && Me.CurrentTarget.DistanceSqr <= 30 * 30 && !Buff.TargetHasDebuff("Chains of Ice") && !SpellManager.CanCast("Chains of Ice"), "Death Grip"),
                             new Action(delegate
                             {
                                 Macro.isMultiCastMacroInUse();

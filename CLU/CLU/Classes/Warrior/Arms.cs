@@ -157,8 +157,8 @@ namespace CLU.Classes.Warrior
                         //PvP Utilities
                         Buff.CastBuff("Battle Stance",              ret => !Macro.rotationSwap && Me.Shapeshift != ShapeshiftForm.BattleStance, "Battle Stance"),
                         Buff.CastBuff("Defensive Stance",           ret => Macro.rotationSwap && Me.Shapeshift != ShapeshiftForm.DefensiveStance, "Defensive Stance"),
-                        Spell.CastSpell("Charge",                   ret => Me.CurrentTarget.Distance >= 8d && Me.CurrentTarget.Distance <= 25d, "Charge"),
-                        Spell.CastOnUnitLocation("Heroic Leap",     ret => Me.CurrentTarget, ret => Me.CurrentTarget.Distance >= 8d && Me.CurrentTarget.Distance <= 40d &&  SpellManager.Spells["Charge"].CooldownTimeLeft.Seconds > 1 && SpellManager.Spells["Charge"].CooldownTimeLeft.Seconds < 18, "Heroic Leap"),
+                        Spell.CastSpell("Charge",                   ret => Me.CurrentTarget != null && Me.CurrentTarget.DistanceSqr >= 8 * 8 && Me.CurrentTarget.DistanceSqr <= 25 * 25, "Charge"),
+                        Spell.CastOnUnitLocation("Heroic Leap",     ret => Me.CurrentTarget, ret => Me.CurrentTarget != null && Me.CurrentTarget.Distance >= 8 * 8 && Me.CurrentTarget.Distance <= 40 * 40 &&  SpellManager.Spells["Charge"].CooldownTimeLeft.Seconds > 1 && SpellManager.Spells["Charge"].CooldownTimeLeft.Seconds < 18, "Heroic Leap"),
                         Spell.CastSpell("Hamstring",                ret => !Buff.TargetHasDebuff("Hamstring"), "Hamstring"),
 
                         //Rotation
@@ -166,9 +166,9 @@ namespace CLU.Classes.Warrior
                         //recklessness,use_off_gcd=1,if=((debuff.colossus_smash.remains>=5|cooldown.colossus_smash.remains<=4)&((!talent.avatar.enabled|!set_bonus.tier14_4pc_melee)&((target.health.pct<20|target.time_to_die>315|(target.time_to_die>165&set_bonus.tier14_4pc_melee)))|(talent.avatar.enabled&set_bonus.tier14_4pc_melee&buff.avatar.up)))|target.time_to_die<=18
                         //avatar,use_off_gcd=1,if=talent.avatar.enabled&(((cooldown.recklessness.remains>=180|buff.recklessness.up)|(target.health.pct>=20&target.time_to_die>195)|(target.health.pct<20&set_bonus.tier14_4pc_melee))|target.time_to_die<=20)
                         //bloodbath,use_off_gcd=1,if=talent.bloodbath.enabled&(((cooldown.recklessness.remains>=10|buff.recklessness.up)|(target.health.pct>=20&(target.time_to_die<=165|(target.time_to_die<=315&!set_bonus.tier14_4pc_melee))&target.time_to_die>75))|target.time_to_die<=19)
-                        Spell.CastSelfSpell("Berserker Rage",       ret => Me.CurrentTarget.IsWithinMeleeRange && !Buff.PlayerHasActiveBuff("Enrage"), "Berserker Rage"),
+                        Spell.CastSelfSpell("Berserker Rage",       ret => Me.CurrentTarget != null && Me.CurrentTarget.IsWithinMeleeRange && !Buff.PlayerHasActiveBuff("Enrage"), "Berserker Rage"),
                         Spell.CastOnUnitLocation("Heroic Leap",     ret => Me.CurrentTarget, ret => Buff.TargetHasDebuff("Colossus Smash"), "Heroic Leap"),
-                        Spell.CastSelfSpell("Deadly Calm",          ret => Me.CurrentTarget.IsWithinMeleeRange && Me.CurrentRage >= 40, "Deadly Calm"),
+                        Spell.CastSelfSpell("Deadly Calm",          ret => Me.CurrentTarget != null && Me.CurrentTarget.IsWithinMeleeRange && Me.CurrentRage >= 40, "Deadly Calm"),
                         Spell.CastSpell("Heroic Strike",            ret => ((Buff.PlayerHasActiveBuff("Taste for Blood") && Buff.PlayerActiveBuffTimeLeft("Taste for Blood").Seconds <= 2) || (Buff.PlayerCountBuff("Taste for Blood") == 5 && SpellManager.CanCast("Overpower")) || (Buff.PlayerHasActiveBuff("Taste for Blood") && Buff.TargetDebuffTimeLeft("Colossus Smash").Seconds <= 2 && SpellManager.Spells["Colossus Smash"].CooldownTimeLeft.Seconds != 0) || Buff.PlayerHasActiveBuff("Deadly Calm") || Me.CurrentRage > 110) && Me.CurrentTarget.HealthPercent >= 20 && Buff.TargetHasDebuff("Colossus Smash"), "Heroic Strike"),
                         Spell.CastSpell("Mortal Strike",            ret => true, "Mortal Strike"),
                         Spell.CastSpell("Colossus Smash",           ret => Buff.TargetDebuffTimeLeft("Colossus Smash").TotalSeconds <= 1.5, "Colossus Smash"),
@@ -219,8 +219,8 @@ namespace CLU.Classes.Warrior
                             new Decorator(ret => !Macro.rotationSwap, wepSwapOffensive),
                             Buff.CastRaidBuff("Battle Shout",           ret => true, "Battle Shout"),
                             Buff.CastRaidBuff("Commanding Shout",       ret => true, "Commanding Shout"),
-                            Spell.CastSpell("Charge",                   ret => Me.CurrentTarget != null && Macro.Manual && (CLU.LocationContext == GroupLogic.Battleground || Unit.IsTrainingDummy(Me.CurrentTarget)) && Me.CurrentTarget.Distance >= 8d && Me.CurrentTarget.Distance <= 25d, "Charge"),
-                            Spell.CastOnUnitLocation("Heroic Leap",     ret => Me.CurrentTarget, ret => Me.CurrentTarget != null && Macro.Manual && (CLU.LocationContext == GroupLogic.Battleground || Unit.IsTrainingDummy(Me.CurrentTarget)) && Me.CurrentTarget.Distance >= 8d && Me.CurrentTarget.Distance <= 40d && SpellManager.Spells["Charge"].CooldownTimeLeft.Seconds > 1 && SpellManager.Spells["Charge"].CooldownTimeLeft.Seconds < 18, "Heroic Leap"),
+                            Spell.CastSpell("Charge",                   ret => Me.CurrentTarget != null && Macro.Manual && (CLU.LocationContext == GroupLogic.Battleground || Unit.IsTrainingDummy(Me.CurrentTarget)) && Me.CurrentTarget.DistanceSqr >= 8 * 8 && Me.CurrentTarget.DistanceSqr <= 25 * 25, "Charge"),
+                            Spell.CastOnUnitLocation("Heroic Leap",     ret => Me.CurrentTarget, ret => Me.CurrentTarget != null && Macro.Manual && (CLU.LocationContext == GroupLogic.Battleground || Unit.IsTrainingDummy(Me.CurrentTarget)) && Me.CurrentTarget.DistanceSqr >= 8 * 8 && Me.CurrentTarget.DistanceSqr <= 40 * 40 && SpellManager.Spells["Charge"].CooldownTimeLeft.Seconds > 1 && SpellManager.Spells["Charge"].CooldownTimeLeft.Seconds < 18, "Heroic Leap"),
                             new Action(delegate
                             {
                                 Macro.isMultiCastMacroInUse();

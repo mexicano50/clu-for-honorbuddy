@@ -154,8 +154,8 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
                     new PrioritySelector(
                         //new Action(a => { CLU.Log("I am the start of public Composite baseRotation"); return RunStatus.Failure; }),
                         //PvP Utilities
-                        Spell.CastSpell("Charge",                   ret => Me.CurrentTarget.Distance >= 8d && Me.CurrentTarget.Distance <= 25d, "Charge"),
-                        Spell.CastOnUnitLocation("Heroic Leap",     ret => Me.CurrentTarget, ret => Me.CurrentTarget.Distance >= 8d && Me.CurrentTarget.Distance <= 40d && SpellManager.Spells["Charge"].CooldownTimeLeft.Seconds > 1 && SpellManager.Spells["Charge"].CooldownTimeLeft.Seconds < 18, "Heroic Leap"),
+                        Spell.CastSpell("Charge",                   ret => Me.CurrentTarget != null && Me.CurrentTarget.DistanceSqr >= 8 * 8 && Me.CurrentTarget.DistanceSqr <= 25 * 25, "Charge"),
+                        Spell.CastOnUnitLocation("Heroic Leap",     ret => Me.CurrentTarget, ret => Me.CurrentTarget != null && Me.CurrentTarget.DistanceSqr >= 8 * 8  && Me.CurrentTarget.DistanceSqr <= 40 * 40 && SpellManager.Spells["Charge"].CooldownTimeLeft.Seconds > 1 && SpellManager.Spells["Charge"].CooldownTimeLeft.Seconds < 18, "Heroic Leap"),
                         Spell.CastSpell("Hamstring",                ret => !Buff.TargetHasDebuff("Hamstring"), "Hamstring"),
 
                         //Rotation
@@ -163,7 +163,7 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
                         Racials.UseRacials(),
                         Spell.CastSelfSpell("Last Stand",           ret => Me.CurrentHealth < 30000, "Last Stand"),
                         Spell.CastSpell("Heroic Strike",            ret => Buff.PlayerHasActiveBuff("Ultimatum"), "Heroic Strike"),
-                        Spell.CastSelfSpell("Berserker Rage",       ret => Me.CurrentTarget.IsWithinMeleeRange, "Berserker Rage"),
+                        Spell.CastSelfSpell("Berserker Rage",       ret => Me.CurrentTarget != null && Me.CurrentTarget.IsWithinMeleeRange, "Berserker Rage"),
                         Spell.CastSpell("Shield Slam",              ret => Me.CurrentRage < 75, "Shield Slam"),
                         Spell.CastSpell("Revenge",                  ret => Me.CurrentRage < 75, "revenge"),
                         Spell.CastSpell("Shield Block",             ret => true, "Shield Block"),
@@ -206,8 +206,8 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
                                 //earthen_potion
                                 Buff.CastRaidBuff("Commanding Shout",       ret => true, "Commanding Shout"),
                                 Buff.CastRaidBuff("Battle Shout",           ret => true, "Battle Shout"),
-                                Spell.CastSpell("Charge",                   ret => Me.CurrentTarget != null && Macro.Manual && (CLU.LocationContext == GroupLogic.Battleground || Unit.IsTrainingDummy(Me.CurrentTarget)) && Me.CurrentTarget.Distance >= 8d && Me.CurrentTarget.Distance <= 25d, "Charge"),
-                                Spell.CastOnUnitLocation("Heroic Leap",     ret => Me.CurrentTarget, ret => Me.CurrentTarget != null && Macro.Manual && (CLU.LocationContext == GroupLogic.Battleground || Unit.IsTrainingDummy(Me.CurrentTarget)) && Me.CurrentTarget.Distance >= 8d && Me.CurrentTarget.Distance <= 40d && SpellManager.Spells["Charge"].CooldownTimeLeft.Seconds > 1 && SpellManager.Spells["Charge"].CooldownTimeLeft.Seconds < 18, "Heroic Leap"),
+                                Spell.CastSpell("Charge",                   ret => Me.CurrentTarget != null && Macro.Manual && (CLU.LocationContext == GroupLogic.Battleground || Unit.IsTrainingDummy(Me.CurrentTarget)) && Me.CurrentTarget.DistanceSqr >= 8 * 8 && Me.CurrentTarget.DistanceSqr <= 25 * 25, "Charge"),
+                                Spell.CastOnUnitLocation("Heroic Leap",     ret => Me.CurrentTarget, ret => Me.CurrentTarget != null && Macro.Manual && (CLU.LocationContext == GroupLogic.Battleground || Unit.IsTrainingDummy(Me.CurrentTarget)) && Me.CurrentTarget.Distance >= 8 * 8 && Me.CurrentTarget.Distance <= 40 * 40 && SpellManager.Spells["Charge"].CooldownTimeLeft.Seconds > 1 && SpellManager.Spells["Charge"].CooldownTimeLeft.Seconds < 18, "Heroic Leap"),
                                 new Action(delegate
                                 {
                                     Macro.isMultiCastMacroInUse();
