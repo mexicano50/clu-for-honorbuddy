@@ -134,7 +134,7 @@ namespace CLU.Classes.Shaman
                     
 
 					//// Cooldowns
-					//Healer.FindAreaHeal(a => CLUSettings.Instance.UseCooldowns && StyxWoW.Me.Combat, 10, 65, 38f, (Me.IsInRaid ? 6 : 4), "Cooldowns: Avg: 10-65, 38yrds, count: 6 or 3",
+					//Healer.FindAreaHeal(a => CLUSettings.Instance.UseCooldowns && StyxWoW.Me.Combat, 10, 65, 38f, (Me.GroupInfo.IsInRaid ? 6 : 4), "Cooldowns: Avg: 10-65, 38yrds, count: 6 or 3",
 					//                    Item.UseTrinkets(),
 					//                    Racials.UseRacials(),
 					//                    Buff.CastBuff("Lifeblood", ret => true, "Lifeblood"),
@@ -148,7 +148,7 @@ namespace CLU.Classes.Shaman
 					                Spell.CastSpell("Riptide", a => !Buff.TargetHasBuff("Riptide"), "Riptide (emergency)"),
 					                Spell.CastSelfSpell("Nature’s Swiftness", ret => CLUSettings.Instance.UseCooldowns, "Nature’s Swiftness (emergency)"),
 					                Spell.CastSpell("Greater Healing Wave", a => Buff.PlayerHasActiveBuff("Nature's Swiftness"), "Greater Healing Wave"),
-					                Spell.CastSpell("Healing Surge", a => CurrentTargetHealthPercent < (Me.IsInRaid ? 20 : 45), "Healing Surge (emergency)")
+					                Spell.CastSpell("Healing Surge", a => CurrentTargetHealthPercent < (Me.GroupInfo.IsInRaid ? 20 : 45), "Healing Surge (emergency)")
 					               ),
 
 
@@ -158,7 +158,7 @@ namespace CLU.Classes.Shaman
 					                      Spell.CastSpell("Riptide", a => !Buff.TargetHasBuff("Riptide"), "Riptide (emergency)"),
 					                      Spell.CastSelfSpell("Nature’s Swiftness", ret => true, "Nature’s Swiftness (emergency)"),
 					                      Spell.CastSpell("Greater Healing Wave", a => Buff.PlayerHasActiveBuff("Nature's Swiftness"), "Greater Healing Wave"),
-					                      Spell.CastSpell("Healing Surge", a => CurrentTargetHealthPercent < (Me.IsInRaid ? 15 : 25), "Healing Surge (emergency)")
+					                      Spell.CastSpell("Healing Surge", a => CurrentTargetHealthPercent < (Me.GroupInfo.IsInRaid ? 15 : 25), "Healing Surge (emergency)")
 					                     ),
 
 					// Earth Shield Earth Shield on tank
@@ -167,27 +167,27 @@ namespace CLU.Classes.Shaman
 					               ),
 
 					// party healing
-					Healer.FindAreaHeal(a => Spell.SpellCooldown("Healing Rain").TotalSeconds < 0.4 && Me.ManaPercent > 30, 10, (Me.IsInRaid ? 90 : 85), 20f, (Me.IsInRaid ? 5 : 4), "Healing Rain party healing: Avg: 10-90 or 85, 30yrds, count: 6 or 4",
+					Healer.FindAreaHeal(a => Spell.SpellCooldown("Healing Rain").TotalSeconds < 0.4 && Me.ManaPercent > 30, 10, (Me.GroupInfo.IsInRaid ? 90 : 85), 20f, (Me.GroupInfo.IsInRaid ? 5 : 4), "Healing Rain party healing: Avg: 10-90 or 85, 30yrds, count: 6 or 4",
 					                    Spell.CastOnUnitLocation("Healing Rain", u => Me.CurrentTarget, a => true, "Healing Rain")
 					                   ),
 
 
 					// party healing
-					Healer.FindAreaHeal(a => Spell.SpellCooldown("Chain Heal").TotalSeconds < 0.4, 10, (Me.IsInRaid ? 93 : 90), TalentManager.HasGlyph("Chaining")? 25f : 12f, 3, "Chain Heal party healing: Avg: 10- 90, 12yrds, count: 3",
+					Healer.FindAreaHeal(a => Spell.SpellCooldown("Chain Heal").TotalSeconds < 0.4, 10, (Me.GroupInfo.IsInRaid ? 93 : 90), TalentManager.HasGlyph("Chaining")? 25f : 12f, 3, "Chain Heal party healing: Avg: 10- 90, 12yrds, count: 3",
 					                    Spell.CastSpell("Chain Heal", a => true, "Chain Heal")
 					                   ),
 
 
 					// Spirit Link Totem
-					Healer.FindAreaHeal(a => CLUSettings.Instance.UseCooldowns && StyxWoW.Me.Combat, 10, (Me.IsInRaid ? 55 : 65), 11f, 4, "Spirit link totem: Avg: 10-35 or 50, 10yrds, count: 3",
+					Healer.FindAreaHeal(a => CLUSettings.Instance.UseCooldowns && StyxWoW.Me.Combat, 10, (Me.GroupInfo.IsInRaid ? 55 : 65), 11f, 4, "Spirit link totem: Avg: 10-35 or 50, 10yrds, count: 3",
 					                    Spell.CastSelfSpell("Spirit Link Totem", ret => true, "Spirit Link Totem")
 					                   ),
 
 					// single target healing
-					Healer.FindRaidMember(a => true, x => x.ToUnit().InLineOfSight && !x.ToUnit().IsDead && x.HealthPercent < (Me.IsInRaid ? 95 : 90), (a, b) => (int)(a.CurrentHealth - b.CurrentHealth), "single target healing",
+					Healer.FindRaidMember(a => true, x => x.ToUnit().InLineOfSight && !x.ToUnit().IsDead && x.HealthPercent < (Me.GroupInfo.IsInRaid ? 95 : 90), (a, b) => (int)(a.CurrentHealth - b.CurrentHealth), "single target healing",
 					                      Spell.CastSpell("Unleash Elements", ret => Item.HasWeaponImbue(WoWInventorySlot.MainHand, "Earthliving", 3345), "Unleash Elements"),
 					                      Spell.CastSpell("Riptide", a => !Buff.TargetHasBuff("Riptide"), "Riptide (single target healing)"),
-					                      Spell.CastSpell("Greater Healing Wave", a => CurrentTargetHealthPercent < (Me.IsInRaid ? 20 : 70) && Buff.PlayerHasActiveBuff("Tidal Waves"), "Greater Healing Wave"),
+					                      Spell.CastSpell("Greater Healing Wave", a => CurrentTargetHealthPercent < (Me.GroupInfo.IsInRaid ? 20 : 70) && Buff.PlayerHasActiveBuff("Tidal Waves"), "Greater Healing Wave"),
 					                      Spell.CastSpell("Healing Wave", a => true, "Healing Wave")
 					                     ),
 

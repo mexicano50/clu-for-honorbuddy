@@ -109,8 +109,8 @@ namespace CLU.Classes.Priest
                            Buff.CastBuff("Inner Fire", ret => NotMoving, "Inner Fire"),
 
                            // Regain some mana
-                           Spell.CastSpell("Shadowfiend", u => ShadowfiendTarget, ret => NotMoving && (Me.ManaPercent < CLUSettings.Instance.Priest.ShadowfiendMana || (Buff.UnitHasHasteBuff(Me) && Me.ManaPercent < CLUSettings.Instance.Priest.ShadowfiendManaHasted && Me.IsInRaid)) && StyxWoW.Me.Combat && CLUSettings.Instance.UseCooldowns, "Shadowfiend"),
-                           Spell.ChannelSelfSpell("Hymn of Hope", a => NotMoving && (Me.ManaPercent < CLUSettings.Instance.Priest.HymnofHopeMana || (Buff.UnitHasHasteBuff(Me) && Me.ManaPercent < CLUSettings.Instance.Priest.HymnofHopeManaHasted && Me.IsInRaid)) && StyxWoW.Me.Combat && CLUSettings.Instance.UseCooldowns, "Hymn of Hope"),
+                           Spell.CastSpell("Shadowfiend", u => ShadowfiendTarget, ret => NotMoving && (Me.ManaPercent < CLUSettings.Instance.Priest.ShadowfiendMana || (Buff.UnitHasHasteBuff(Me) && Me.ManaPercent < CLUSettings.Instance.Priest.ShadowfiendManaHasted && Me.GroupInfo.IsInRaid)) && StyxWoW.Me.Combat && CLUSettings.Instance.UseCooldowns, "Shadowfiend"),
+                           Spell.ChannelSelfSpell("Hymn of Hope", a => NotMoving && (Me.ManaPercent < CLUSettings.Instance.Priest.HymnofHopeMana || (Buff.UnitHasHasteBuff(Me) && Me.ManaPercent < CLUSettings.Instance.Priest.HymnofHopeManaHasted && Me.GroupInfo.IsInRaid)) && StyxWoW.Me.Combat && CLUSettings.Instance.UseCooldowns, "Hymn of Hope"),
 
                            // ensure Chakra state
                            new Decorator(
@@ -129,7 +129,7 @@ namespace CLU.Classes.Priest
 
 
                            //// Cooldowns
-                           //Healer.FindAreaHeal(a => CLUSettings.Instance.UseCooldowns && StyxWoW.Me.Combat && !IsSpiritofRedemption, 10, 65, 40f, (Me.IsInRaid ? 6 : 3), "Cooldowns: Avg: 10-65, 40yrds, count: 6 or 3",
+                           //Healer.FindAreaHeal(a => CLUSettings.Instance.UseCooldowns && StyxWoW.Me.Combat && !IsSpiritofRedemption, 10, 65, 40f, (Me.GroupInfo.IsInRaid ? 6 : 3), "Cooldowns: Avg: 10-65, 40yrds, count: 6 or 3",
                            //                    Item.UseTrinkets(),
                            //                    Racials.UseRacials(),
                            //                    Spell.CastSelfSpell("Power Infusion", a => !Buff.UnitHasHasteBuff(Me), "Power Infusion"),
@@ -170,12 +170,12 @@ namespace CLU.Classes.Priest
                                           ),
 
                            // party healing
-                           Healer.FindAreaHeal(a => CLUSettings.Instance.UseCooldowns && StyxWoW.Me.Combat && Spell.SpellCooldown("Divine Hymn").TotalSeconds < 0.5, 10, (Buff.PlayerHasBuff("Chakra: Sanctuary") ? 90 : 70), 40f, (Me.IsInRaid ? 5 : 4), "party healing Divine Hymn: Avg: 10-70, 30yrds, count: 5 or 4",
+                           Healer.FindAreaHeal(a => CLUSettings.Instance.UseCooldowns && StyxWoW.Me.Combat && Spell.SpellCooldown("Divine Hymn").TotalSeconds < 0.5, 10, (Buff.PlayerHasBuff("Chakra: Sanctuary") ? 90 : 70), 40f, (Me.GroupInfo.IsInRaid ? 5 : 4), "party healing Divine Hymn: Avg: 10-70, 30yrds, count: 5 or 4",
                                                Spell.ChannelSelfSpell("Divine Hymn", a => NotMoving, "Divine Hymn")
                                               ),
 
                            // Holy Word: Sanctuary
-                           Healer.FindAreaHeal(a => NotMoving && !Spell.PlayerIsChanneling && CLUSettings.Instance.UseCooldowns && StyxWoW.Me.Combat && Buff.PlayerHasBuff("Chakra: Sanctuary") && !WoWSpell.FromId(88685).Cooldown, 10, 95, 12f, (Me.IsInRaid ? 4 : 3), "Holy Word: Sanctuary: Avg: 10-70, 30yrds, count: 3",
+                           Healer.FindAreaHeal(a => NotMoving && !Spell.PlayerIsChanneling && CLUSettings.Instance.UseCooldowns && StyxWoW.Me.Combat && Buff.PlayerHasBuff("Chakra: Sanctuary") && !WoWSpell.FromId(88685).Cooldown, 10, 95, 12f, (Me.GroupInfo.IsInRaid ? 4 : 3), "Holy Word: Sanctuary: Avg: 10-70, 30yrds, count: 3",
                                                Spell.CastSanctuaryAtLocation(u => Me.CurrentTarget, a => Me.ManaPercent > 20, "Holy Word: Sanctuary")),
 
                            // party healing // FindParty
@@ -195,7 +195,7 @@ namespace CLU.Classes.Priest
                                                  Item.RunMacroText("/cast Holy Word: Serenity", a => Buff.PlayerHasBuff("Chakra: Serenity") && !WoWSpell.FromId(88684).Cooldown, "Holy Word: Serenity (Chakra: Serenity)"),
                                                  Spell.CastSpell("Greater Heal", a => Me.CurrentTarget != null && HasSerendipity && CurrentTargetHealthPercent < 70, "Greater heal"),
                                                  Spell.CastSpell("Renew", a => !Buff.TargetHasBuff("Renew"), "Renew (single target healing)"),
-                                                 Spell.CastSpell("Flash Heal", a => Me.CurrentTarget != null && !HasSerendipity && CurrentTargetHealthPercent < (Me.IsInRaid ? 50 : 75), "Flash heal (Single Target Healing)"),
+                                                 Spell.CastSpell("Flash Heal", a => Me.CurrentTarget != null && !HasSerendipity && CurrentTargetHealthPercent < (Me.GroupInfo.IsInRaid ? 50 : 75), "Flash heal (Single Target Healing)"),
                                                  Spell.CastSpell("Heal", a => true, "heal")
                                                 ),
 

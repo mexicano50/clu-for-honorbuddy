@@ -44,7 +44,7 @@ namespace CLU.GUI
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             this.btnSaveAndClose = new System.Windows.Forms.Button();
             this.pgGeneralContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.resetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -104,6 +104,7 @@ namespace CLU.GUI
             this.groupBox9 = new System.Windows.Forms.GroupBox();
             this.button8 = new System.Windows.Forms.Button();
             this.groupBox8 = new System.Windows.Forms.GroupBox();
+            this.button9 = new System.Windows.Forms.Button();
             this.button7 = new System.Windows.Forms.Button();
             this.button5 = new System.Windows.Forms.Button();
             this.groupBox7 = new System.Windows.Forms.GroupBox();
@@ -320,9 +321,9 @@ namespace CLU.GUI
             // HealingGrid
             // 
             this.HealingGrid.AllowUserToOrderColumns = true;
-            dataGridViewCellStyle2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(203)))), ((int)(((byte)(205)))), ((int)(((byte)(217)))));
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(91)))), ((int)(((byte)(94)))), ((int)(((byte)(114)))));
-            this.HealingGrid.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(203)))), ((int)(((byte)(205)))), ((int)(((byte)(217)))));
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(91)))), ((int)(((byte)(94)))), ((int)(((byte)(114)))));
+            this.HealingGrid.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             this.HealingGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.HealingGrid.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter;
             this.HealingGrid.Location = new System.Drawing.Point(3, 22);
@@ -737,14 +738,25 @@ namespace CLU.GUI
             // 
             // groupBox8
             // 
+            this.groupBox8.Controls.Add(this.button9);
             this.groupBox8.Controls.Add(this.button7);
             this.groupBox8.Controls.Add(this.button5);
             this.groupBox8.Location = new System.Drawing.Point(242, 16);
             this.groupBox8.Name = "groupBox8";
-            this.groupBox8.Size = new System.Drawing.Size(122, 100);
+            this.groupBox8.Size = new System.Drawing.Size(122, 169);
             this.groupBox8.TabIndex = 35;
             this.groupBox8.TabStop = false;
             this.groupBox8.Text = "Dump to Log";
+            // 
+            // button9
+            // 
+            this.button9.Location = new System.Drawing.Point(17, 100);
+            this.button9.Name = "button9";
+            this.button9.Size = new System.Drawing.Size(84, 23);
+            this.button9.TabIndex = 35;
+            this.button9.Text = "GroupInfo";
+            this.button9.UseVisualStyleBackColor = true;
+            this.button9.Click += new System.EventHandler(this.DumpGroupMembers);
             // 
             // button7
             // 
@@ -969,5 +981,6 @@ namespace CLU.GUI
         private System.Windows.Forms.Button button5;
         private System.Windows.Forms.GroupBox groupBox7;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button button9;
     }
 }

@@ -134,7 +134,7 @@ namespace CLU.Classes.Druid
 
 
                            // Cooldowns
-                           //Healer.FindAreaHeal(a => CLUSettings.Instance.UseCooldowns && StyxWoW.Me.Combat, 10, 65, 38f, (Me.IsInRaid ? 6 : 4),"party healing: Avg: 10-65, 38yrds, count: 6 or 4",
+                           //Healer.FindAreaHeal(a => CLUSettings.Instance.UseCooldowns && StyxWoW.Me.Combat, 10, 65, 38f, (Me.GroupInfo.IsInRaid ? 6 : 4),"party healing: Avg: 10-65, 38yrds, count: 6 or 4",
                            //                    Item.UseTrinkets(),
                            //                    Racials.UseRacials(),
                            //                    Buff.CastBuff("Lifeblood", ret => true, "Lifeblood"),
@@ -162,7 +162,7 @@ namespace CLU.Classes.Druid
                                                 ),
 
                            // party healing
-                           Healer.FindAreaHeal(a => SpellManager.CanCast("Wild Growth"), 10, 95, 30f, (Me.IsInRaid ? 4 : 3), "Wild Growth party healing: Avg: 10-95, 30yrds, count: 5 or 3",
+                           Healer.FindAreaHeal(a => SpellManager.CanCast("Wild Growth"), 10, 95, 30f, (Me.GroupInfo.IsInRaid ? 4 : 3), "Wild Growth party healing: Avg: 10-95, 30yrds, count: 5 or 3",
                                                Spell.CastSpell("Wild Growth", ret => true, "Wild Growth")
                                               ),
 
@@ -173,12 +173,12 @@ namespace CLU.Classes.Druid
 
 
                            // Tree of Life oh shit
-                           Healer.FindAreaHeal(a => SpellManager.CanCast("Tree of Life") && StyxWoW.Me.Combat, 10, (Me.IsInRaid ? 75 : 65), 30f, (Me.IsInRaid ? 5 : 3), "Tree of Life party healing: Avg: 10-70 or 65, 30yrds, count: 5 or 3",
+                           Healer.FindAreaHeal(a => SpellManager.CanCast("Tree of Life") && StyxWoW.Me.Combat, 10, (Me.GroupInfo.IsInRaid ? 75 : 65), 30f, (Me.GroupInfo.IsInRaid ? 5 : 3), "Tree of Life party healing: Avg: 10-70 or 65, 30yrds, count: 5 or 3",
                                                Spell.CastSelfSpell("Tree of Life", ret => CLUSettings.Instance.UseCooldowns, "Tree of Life") //TODO: Check.
                                               ),
 
                            // Tranquility oh shit
-                           Healer.FindAreaHeal(a => SpellManager.CanCast("Tranquility") && !Buff.PlayerHasBuff("Tree of Life") && CLUSettings.Instance.UseCooldowns, 10, (Me.IsInRaid ? 80 : 65), 40f, (Me.IsInRaid ? 5 : 4), "Tranquility party healing: Avg: 10-70 or 65, 40yrds, count: 5 or 3",
+                           Healer.FindAreaHeal(a => SpellManager.CanCast("Tranquility") && !Buff.PlayerHasBuff("Tree of Life") && CLUSettings.Instance.UseCooldowns, 10, (Me.GroupInfo.IsInRaid ? 80 : 65), 40f, (Me.GroupInfo.IsInRaid ? 5 : 4), "Tranquility party healing: Avg: 10-70 or 65, 40yrds, count: 5 or 3",
                                                Spell.ChannelSelfSpell("Tranquility", ret => true, "Tranquility")
                                               ),
 
@@ -187,7 +187,7 @@ namespace CLU.Classes.Druid
                                                  Spell.CastSpell("Swiftmend", a =>  (Buff.TargetHasBuff("Regrowth") || Buff.TargetHasBuff("Rejuvenation")), "Swiftmend (Single)"),
                                                  Spell.CastSpell("Regrowth", a => !Buff.TargetHasBuff("Regrowth") && Buff.PlayerHasActiveBuff("Clearcasting"), "Regrowth (Single-Clearcasting)"),
                                                  Spell.CastSpell("Rejuvenation", a => !Buff.TargetHasBuff("Rejuvenation"), "Rejuvenation (Single)"),
-                                                 Spell.CastSpell("Regrowth", a => !Buff.TargetHasBuff("Regrowth") && (CurrentTargetHealthPercent < (Me.IsInRaid ? 70 : 80) || !Buff.PlayerHasBuff("Harmony")), "Regrowth (single)"),
+                                                 Spell.CastSpell("Regrowth", a => !Buff.TargetHasBuff("Regrowth") && (CurrentTargetHealthPercent < (Me.GroupInfo.IsInRaid ? 70 : 80) || !Buff.PlayerHasBuff("Harmony")), "Regrowth (single)"),
                                                  Spell.CastSpell("Healing Touch", a => CurrentTargetHealthPercent < 70 && !Buff.TargetHasBuff("Wild Growth"), "Healing Touch (Single)"),
                                                  Spell.CastSpell("Nourish", a => CanNourish, "Nourish (Single)"),
                                                  Spell.CastSpell("Rejuvenation", a => true, "Rejuvenation (Single)")

@@ -812,5 +812,10 @@ namespace CLU.GUI
         {
             Spellchecker.Display();
         }
+
+        private void DumpGroupMembers(object sender, EventArgs e)
+        {
+            Unit.DumpGroupMembers();
+        }
     }
 }

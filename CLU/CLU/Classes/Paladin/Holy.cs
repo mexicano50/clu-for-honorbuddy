@@ -156,7 +156,7 @@ namespace CLU.Classes.Paladin
                                          ),
 
                     ////// Cooldowns
-                    //Healer.FindAreaHeal(a => CLUSettings.Instance.UseCooldowns && StyxWoW.Me.Combat && PaladinCooldownsOK, 10, 65, 30f, (Me.IsInRaid ? 6 : 4), "Cooldowns: Avg: 10-65, 38yrds, count: 6 or 3",
+                    //Healer.FindAreaHeal(a => CLUSettings.Instance.UseCooldowns && StyxWoW.Me.Combat && PaladinCooldownsOK, 10, 65, 30f, (Me.GroupInfo.IsInRaid ? 6 : 4), "Cooldowns: Avg: 10-65, 38yrds, count: 6 or 3",
                     // // Item.UseTrinkets(),
                     // // Racials.UseRacials(),
                     //                    Spell.CastSelfSpell("Divine Favor", ret => !Buff.PlayerHasActiveBuff("Guardian of Ancient Kings") && !Buff.PlayerHasActiveBuff("Avenging Wrath"), "Divine Favor"),
@@ -178,11 +178,11 @@ namespace CLU.Classes.Paladin
                                    ),
 
                     // party healing
-                    Healer.FindAreaHeal(a => StyxWoW.Me.Combat, 10, 80, 30f, (Me.IsInRaid ? 4 : 2), "party healing Light of Dawn: Avg: 10-80, 30yrds, count: 4 or 2",
+                    Healer.FindAreaHeal(a => StyxWoW.Me.Combat, 10, 80, 30f, (Me.GroupInfo.IsInRaid ? 4 : 2), "party healing Light of Dawn: Avg: 10-80, 30yrds, count: 4 or 2",
                                                Spell.ChannelSelfSpell("Light of Dawn", a => HolyPower >= 3, "Light of Dawn")
                                               ),
                     // Holy Radiance
-                    Healer.FindAreaHeal(a => true, 20, 80, 12f, (Me.IsInRaid ? 4 : 3), "Holy Radiance party healing: Avg: 20-75 or 85, 11yrds, count: 4 or 3",
+                    Healer.FindAreaHeal(a => true, 20, 80, 12f, (Me.GroupInfo.IsInRaid ? 4 : 3), "Holy Radiance party healing: Avg: 20-75 or 85, 11yrds, count: 4 or 3",
                                         Spell.CastSpell("Holy Radiance", a => Me.ManaPercent > 15, "Holy Radiance")),
 
                     // single target healing not the tank

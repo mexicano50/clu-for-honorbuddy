@@ -15,6 +15,8 @@ namespace CLU.Base
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Reflection;
+
     using Styx;
     using Styx.CommonBot;
     using Styx.CommonBot.POI;
@@ -37,12 +39,11 @@ namespace CLU.Base
             }
         }
 
-        private static IEnumerable<WoWPartyMember> GroupMemberInfos
-        {
-            get {
-                return !Me.IsInRaid ? Me.GroupInfo.PartyMembers : Me.GroupInfo.RaidMembers;
-            }
-        }
+        public static LocalPlayer Me { get { return StyxWoW.Me; } }
+        internal static bool IsInDungeonParty { get { return Me.IsInParty && !Me.GroupInfo.IsInRaid; } }
+        internal static bool IsInGroup { get { return Me.GroupInfo.IsInRaid || Me.IsInParty; } }
+        internal static readonly IEnumerable<WoWPlayer> Groupofplayers = Me.GroupInfo.IsInRaid ? Me.RaidMembers : Me.PartyMembers;
+        internal static IEnumerable<WoWPartyMember> GroupMembers { get { return !Me.GroupInfo.IsInRaid ? Me.GroupInfo.PartyMembers : Me.GroupInfo.RaidMembers; } }
 
         private static readonly string[] ControlDebuffs = new[] {
             "Bind Elemental", "Hex", "Polymorph", "Hibernate", "Entangling Roots", "Freezing Trap", "Wyvern Sting",
@@ -105,18 +106,6 @@ namespace CLU.Base
         private static List<FocusedUnit> mostFocusedUnits;
 
         private static DateTime mostFocusedUnitsTimer = DateTime.MinValue;
-        
-        private static LocalPlayer Me
-        {
-            get {
-                return StyxWoW.Me;
-            }
-        }
-
-        public static bool IsInParty
-        {
-            get { return Me.GroupInfo.RaidMemberGuids != null && Me.GroupInfo.RaidMemberGuids.Length > 0; }
-        }
 
         /// <summary>
         ///     List of nearby units to heal that pass certain criteria.
@@ -146,7 +135,7 @@ namespace CLU.Base
         {
             get {
                 try {
-                    return from o in GroupMemberInfos
+                    return from o in GroupMembers
                            where o.Location3D.Distance2DSqr(Me.Location) < 40 * 40
                            && o.IsOnline
                            && o.ToPlayer().IsAlive
@@ -499,9 +488,7 @@ namespace CLU.Base
                 if ((StyxWoW.Me.Role & WoWPartyMember.GroupRole.Tank) != 0)
                     result.Add(StyxWoW.Me);
 
-                var members = StyxWoW.Me.IsInRaid ? StyxWoW.Me.GroupInfo.RaidMembers : StyxWoW.Me.GroupInfo.PartyMembers;
-
-                var tanks = members.Where(p => (p.Role & WoWPartyMember.GroupRole.Tank) != 0);
+                var tanks = GroupMembers.Where(p => (p.Role & WoWPartyMember.GroupRole.Tank) != 0);
 
                 result.AddRange(tanks.Where(t => t.ToPlayer() != null).Select(t => t.ToPlayer()));
 
@@ -577,9 +564,7 @@ namespace CLU.Base
                 if ((StyxWoW.Me.Role & WoWPartyMember.GroupRole.Healer) != 0)
                     result.Add(StyxWoW.Me);
 
-                var members = StyxWoW.Me.IsInRaid ? StyxWoW.Me.GroupInfo.RaidMembers : StyxWoW.Me.GroupInfo.PartyMembers;
-
-                var tanks = members.Where(p => (p.Role & WoWPartyMember.GroupRole.Healer) != 0);
+                var tanks = GroupMembers.Where(p => (p.Role & WoWPartyMember.GroupRole.Healer) != 0);
 
                 result.AddRange(tanks.Where(t => t.ToPlayer() != null).Select(t => t.ToPlayer()));
 
@@ -806,8 +791,7 @@ namespace CLU.Base
                 mostFocusedUnits = ret.OrderBy(x => x.Unit.DistanceSqr).ToList();
             } else {
                 // raid or party
-                var friends = Me.IsInRaid ? Me.RaidMembers : Me.PartyMembers;
-                var ret = hostile.Select(h => new FocusedUnit { Unit = h, PlayerCount = friends.Count(x => x.CurrentTargetGuid == h.Guid) }).ToList();
+                var ret = hostile.Select(h => new FocusedUnit { Unit = h, PlayerCount = Groupofplayers.Count(x => x.CurrentTargetGuid == h.Guid) }).ToList();
                 mostFocusedUnits = ret.OrderByDescending(x => x.PlayerCount).ToList();
             }
         }
@@ -926,7 +910,7 @@ namespace CLU.Base
         {
             get 
             {
-                if (!StyxWoW.Me.IsInParty && !StyxWoW.Me.IsInRaid) return null;
+                if (!IsInGroup) return null; // --wulf TODO; this may fix TotT as Me.GroupInfo.IsInRaid was returning true all the time.
                 if (!CLUSettings.Instance.Rogue.UseTricksOfTheTrade && !CLUSettings.Instance.Rogue.UseTricksOfTheTradeForce) return null;
                 if (!CLUSettings.Instance.Rogue.UseTricksOfTheTrade && BotChecker.BotBaseInUse("Questing") && BotChecker.BotBaseInUse("PartyBot")) return null;
                 if (StyxWoW.Me.IsInParty)
@@ -1002,7 +986,7 @@ namespace CLU.Base
                 if (StyxWoW.Me.FocusedUnitGuid != 0 && StyxWoW.Me.FocusedUnit.IsAlive)
                     return StyxWoW.Me.FocusedUnit;
 
-                if (!StyxWoW.Me.IsInParty && !StyxWoW.Me.IsInRaid && Me.GotAlivePet)
+                if (!IsInGroup && Me.GotAlivePet)
                     return Me.Pet;
 
                 if (StyxWoW.Me.IsInInstance) {
@@ -1032,8 +1016,8 @@ namespace CLU.Base
                 if (!CLUSettings.Instance.Warlock.ApplyBaneOfHavoc)
                     return null;
 
-                // if (!StyxWoW.Me.IsInParty && !StyxWoW.Me.IsInRaid)
-                //    return null;
+                 //if (!IsInGroup)
+                    //return null;
 
                 // If the player has a focus target set, use it instead.
                 if (Me.CurrentTarget != null && (Me.CurrentTarget != StyxWoW.Me.FocusedUnit) && StyxWoW.Me.FocusedUnitGuid != 0 && Me.FocusedUnit.InLineOfSpellSight && Me.FocusedUnit.IsAlive && !Me.FocusedUnit.GetAllAuras().Any(a => a.Name == "Havoc"))
@@ -1323,6 +1307,21 @@ namespace CLU.Base
             }
 
             return best;
+        }
+
+        /// <summary>
+        /// Use this to print all known groupmembers
+        /// </summary>
+        public static void DumpGroupMembers()
+        {
+            try
+            {
+                
+                CLU.TroubleshootLog("Dumping List of Known group Information");
+                CLU.TroubleshootLog("Me.GroupInfo.IsInRaid: {0} Me.IsInParty: {1}", Me.GroupInfo.IsInRaid, Me.IsInParty && !Me.GroupInfo.IsInRaid);
+                CLU.TroubleshootLog("End group Information");
+            }
+            catch { }
         }
 
         /// <summary>

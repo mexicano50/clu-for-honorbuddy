@@ -251,12 +251,12 @@ namespace CLU
         {
             get
             {
-                if ( Me.IsInParty )
+                if (Me.GroupInfo.IsInRaid)
                 {
-                    return GroupType.Party;
+                    return GroupType.Raid;
                 }
 
-                return Me.IsInRaid ? GroupType.Raid : GroupType.Solo;
+                return Me.IsInParty ? GroupType.Party : GroupType.Solo;
             }
         }
 
@@ -710,7 +710,7 @@ namespace CLU
         //    switch (OracleWatchFlags) {
         //    case OracleWatchMode.Healer:
         //        UnitOracle.WatchUnit(ObjectManager.Me, UnitOracle.Watch.HealthVariance);
-        //        if (ObjectManager.Me.IsInRaid) {
+        //        if (Me.GroupInfo.IsInRaid) {
         //            ObjectManager.Me.RaidMembers.ForEach(x => UnitOracle.WatchUnit(x, UnitOracle.Watch.HealthVariance));
         //        } else if (ObjectManager.Me.IsInParty) {
         //            ObjectManager.Me.PartyMembers.ForEach(x => UnitOracle.WatchUnit(x, UnitOracle.Watch.HealthVariance));
@@ -721,7 +721,7 @@ namespace CLU
         //        break;
         //    case OracleWatchMode.Tank:
         //        UnitOracle.WatchUnit(ObjectManager.Me, UnitOracle.Watch.HealthVariance);
-        //        if (ObjectManager.Me.IsInRaid) {
+        //        if (Me.GroupInfo.IsInRaid) {
         //            ObjectManager.Me.RaidMembers.ForEach(x => UnitOracle.WatchUnit(x, UnitOracle.Watch.HealthVariance));
         //        } else if (ObjectManager.Me.IsInParty) {
         //            ObjectManager.Me.PartyMembers.ForEach(x => UnitOracle.WatchUnit(x, UnitOracle.Watch.HealthVariance));

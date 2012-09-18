@@ -31,6 +31,12 @@ namespace CLU.Helpers
         private bool earthShieldUnit;
         private bool mainTank;
         private bool offTank;
+
+        public static LocalPlayer Me { get { return StyxWoW.Me; } }
+        internal static bool IsInDungeonParty { get { return Me.IsInParty && !Me.GroupInfo.IsInRaid; } }
+        internal static bool IsInGroup { get { return Me.GroupInfo.IsInRaid || Me.IsInParty; } }
+        internal static readonly IEnumerable<WoWPlayer> Groupofplayers = Me.GroupInfo.IsInRaid ? Me.RaidMembers : Me.PartyMembers;
+        internal static IEnumerable<WoWPartyMember> GroupMembers { get { return !Me.GroupInfo.IsInRaid ? Me.GroupInfo.PartyMembers : Me.GroupInfo.RaidMembers; } }
         
         // Empty Constructor
         private HealableUnit()
@@ -361,12 +367,6 @@ namespace CLU.Helpers
             return this.UnitObject;
         }
 
-
-        public static LocalPlayer Me { get { return StyxWoW.Me; } }
-        public static bool IsInGroup { get { return Me.IsInRaid || Me.IsInParty; } }
-        public static List<WoWPlayer> GroupMembers { get { return !Me.IsInRaid ? Me.PartyMembers : Me.RaidMembers; } }
-        public static IEnumerable<WoWPartyMember> GroupMemberInfos { get { return !Me.IsInRaid ? Me.GroupInfo.PartyMembers : Me.GroupInfo.RaidMembers; } }
-
         /// <summary>
         ///  List of healable units by Raid or Party Information
         /// </summary>
@@ -376,7 +376,7 @@ namespace CLU.Helpers
                 var result = new List<HealableUnit>();
                 try {
 
-                    var grps = GroupMemberInfos.Where(p => !HealableUnit.Contains(p.ToPlayer()) && HealableUnit.Filter(p.ToPlayer())).Select(g => g);
+                    var grps = GroupMembers.Where(p => !HealableUnit.Contains(p.ToPlayer()) && HealableUnit.Filter(p.ToPlayer())).Select(g => g);
 
                     var list = new List<HealableUnit>();
 
@@ -394,7 +394,7 @@ namespace CLU.Helpers
                         bool tank = false;
                         bool healer = ((role & WoWPartyMember.GroupRole.Healer) != 0);
                         bool damage = ((role & WoWPartyMember.GroupRole.Damage) != 0);
-                        uint groupnumber = ObjectManager.Me.IsInRaid ? p.GroupNumber : 0;
+                        uint groupnumber = Me.GroupInfo.IsInRaid ? p.GroupNumber : 0;
 
                         // Set tank by role
                         if ((role & WoWPartyMember.GroupRole.Tank) != 0) {
@@ -416,7 +416,7 @@ namespace CLU.Helpers
                             tank = true;
                         }
 
-                        bool maintank = Me.GroupInfo.GroupSize < 6 ? tank : p.IsMainTank;
+                        bool maintank = IsInDungeonParty ? tank : p.IsMainTank;
                         bool offtank = p.IsMainAssist;
 
                         list.Add(new HealableUnit { UnitObject = p.ToPlayer(), Tank = tank, Healer = healer, Damage = damage, GroupNumber = groupnumber, MainTank = maintank, OffTank = offtank, });

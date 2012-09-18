@@ -108,15 +108,15 @@ namespace CLU.Classes.Priest
                            Buff.CastBuff("Inner Fire", ret => NotMoving, "Inner Fire"),
 
                            // Regain some mana
-                           Spell.CastSpell("Shadowfiend", u => ShadowfiendTarget, ret => NotMoving && (Me.ManaPercent < CLUSettings.Instance.Priest.ShadowfiendMana || (Buff.UnitHasHasteBuff(Me) && Me.ManaPercent < CLUSettings.Instance.Priest.ShadowfiendManaHasted && Me.IsInRaid)) && StyxWoW.Me.Combat && CLUSettings.Instance.UseCooldowns, "Shadowfiend"),
-                           Spell.ChannelSelfSpell("Hymn of Hope", a => NotMoving && (Me.ManaPercent < CLUSettings.Instance.Priest.HymnofHopeMana || (Buff.UnitHasHasteBuff(Me) && Me.ManaPercent < CLUSettings.Instance.Priest.HymnofHopeManaHasted && Me.IsInRaid)) && StyxWoW.Me.Combat && CLUSettings.Instance.UseCooldowns, "Hymn of Hope"),
+                           Spell.CastSpell("Shadowfiend", u => ShadowfiendTarget, ret => NotMoving && (Me.ManaPercent < CLUSettings.Instance.Priest.ShadowfiendMana || (Buff.UnitHasHasteBuff(Me) && Me.ManaPercent < CLUSettings.Instance.Priest.ShadowfiendManaHasted && Me.GroupInfo.IsInRaid)) && StyxWoW.Me.Combat && CLUSettings.Instance.UseCooldowns, "Shadowfiend"),
+                           Spell.ChannelSelfSpell("Hymn of Hope", a => NotMoving && (Me.ManaPercent < CLUSettings.Instance.Priest.HymnofHopeMana || (Buff.UnitHasHasteBuff(Me) && Me.ManaPercent < CLUSettings.Instance.Priest.HymnofHopeManaHasted && Me.GroupInfo.IsInRaid)) && StyxWoW.Me.Combat && CLUSettings.Instance.UseCooldowns, "Hymn of Hope"),
 
                            // Cooldowns
                            Spell.CastSelfSpell("Archangel", ret => IsAtonementSpec && Buff.PlayerCountBuff("Evangelism") > CLUSettings.Instance.Priest.EvangelismStackCount && CLUSettings.Instance.UseCooldowns && StyxWoW.Me.Combat, "Archangel"),
                     //Spell.CastSpell("Power Infusion", ret => Me, a => !Buff.UnitHasHasteBuff(Me) && CLUSettings.Instance.UseCooldowns && StyxWoW.Me.Combat, "Power Infusion"),
 
                            //// Cooldowns // currently slowing the CC down
-                           //Healer.FindAreaHeal(a => CLUSettings.Instance.UseCooldowns && StyxWoW.Me.Combat, 10, 65, 40f, (Me.IsInRaid ? 6 : 3), "Cooldowns: Avg: 10-65, 40yrds, count: 6 or 3",
+                           //Healer.FindAreaHeal(a => CLUSettings.Instance.UseCooldowns && StyxWoW.Me.Combat, 10, 65, 40f, (Me.GroupInfo.IsInRaid ? 6 : 3), "Cooldowns: Avg: 10-65, 40yrds, count: 6 or 3",
                            //                    Item.UseTrinkets(),
                            //                    Racials.UseRacials(),
                            //                    Spell.CastSelfSpell("Archangel", ret => IsAtonementSpec && Buff.PlayerCountBuff("Evangelism") > 4, "Archangel"),
@@ -175,16 +175,16 @@ namespace CLU.Classes.Priest
 
 
                            // party healing
-                           Healer.FindAreaHeal(a => CLUSettings.Instance.UseCooldowns && StyxWoW.Me.Combat && Spell.SpellCooldown("Divine Hymn").TotalSeconds < 0.5, CLUSettings.Instance.Priest.DivineHymnPartyminAH, CLUSettings.Instance.Priest.DivineHymnPartymaxAH, CLUSettings.Instance.Priest.DivineHymnPartymaxDBP, (Me.IsInRaid ? 5 : CLUSettings.Instance.Priest.DivineHymnPartyminPlayers), "party healing: Avg: 10-70, 30yrds, count: 5 or 4",
+                           Healer.FindAreaHeal(a => CLUSettings.Instance.UseCooldowns && StyxWoW.Me.Combat && Spell.SpellCooldown("Divine Hymn").TotalSeconds < 0.5, CLUSettings.Instance.Priest.DivineHymnPartyminAH, CLUSettings.Instance.Priest.DivineHymnPartymaxAH, CLUSettings.Instance.Priest.DivineHymnPartymaxDBP, (Me.GroupInfo.IsInRaid ? 5 : CLUSettings.Instance.Priest.DivineHymnPartyminPlayers), "party healing: Avg: 10-70, 30yrds, count: 5 or 4",
                                                Spell.ChannelSelfSpell("Divine Hymn", a => CLUSettings.Instance.UseCooldowns && NotMoving, "Divine Hymn")
                                               ),
 
                            // Party Barrier
-                           Healer.FindAreaHeal(a => CLUSettings.Instance.UseCooldowns && StyxWoW.Me.Combat && Spell.SpellCooldown("Power Word: Barrier").TotalSeconds < 0.5, CLUSettings.Instance.Priest.PowerWordBarrierPartyminAH, CLUSettings.Instance.Priest.PowerWordBarrierPartymaxAH, CLUSettings.Instance.Priest.PowerWordBarrierPartymaxDBP, (Me.IsInRaid ? 5 : CLUSettings.Instance.Priest.PowerWordBarrierPartyminPlayers), "party barrier: Avg: 10-70, 30yrds, count: 5 or 4",
+                           Healer.FindAreaHeal(a => CLUSettings.Instance.UseCooldowns && StyxWoW.Me.Combat && Spell.SpellCooldown("Power Word: Barrier").TotalSeconds < 0.5, CLUSettings.Instance.Priest.PowerWordBarrierPartyminAH, CLUSettings.Instance.Priest.PowerWordBarrierPartymaxAH, CLUSettings.Instance.Priest.PowerWordBarrierPartymaxDBP, (Me.GroupInfo.IsInRaid ? 5 : CLUSettings.Instance.Priest.PowerWordBarrierPartyminPlayers), "party barrier: Avg: 10-70, 30yrds, count: 5 or 4",
                                                Spell.CastOnUnitLocation("Power Word: Barrier", u => Me.CurrentTarget, a => NotMoving, "Power Word: Barrier")),
 
                            // // party healing with Holy Nova
-                           // Healer.FindAreaHeal(a => IsAtonementSpec, 10, 80, 11f, (Me.IsInRaid ? 4 : 3), "party healing: Avg: 10-80, 30yrds, count: 4 or 3",
+                           // Healer.FindAreaHeal(a => IsAtonementSpec, 10, 80, 11f, (Me.GroupInfo.IsInRaid ? 4 : 3), "party healing: Avg: 10-80, 30yrds, count: 4 or 3",
                            //    Spell.CastSelfSpell("Holy Nova", a => true, "Holy Nova")
                            // ),
 
