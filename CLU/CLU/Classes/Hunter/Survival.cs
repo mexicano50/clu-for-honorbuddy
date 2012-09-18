@@ -98,7 +98,7 @@ Carrion Bird	(-physical damage)
 Sporebat	    (-cast speed)
 Ravager		    (-Phys Armor)
 Wind Serpent	(-Spell Armor)
-NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagradt changes that.
+NOTE: PvP rotations have been implemented in the most basic form, once MoP is released I will go back & revise the rotations for optimal functionality 'Dagradt'.
 ----------------------------------------------------------------------";
             }
         }
@@ -286,7 +286,7 @@ NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagr
         public override Composite Resting
         {
             get {
-                return Rest.CreateDefaultRestBehaviour();
+                return Base.Rest.CreateDefaultRestBehaviour();
             }
         }
 
