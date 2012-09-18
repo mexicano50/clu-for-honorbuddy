@@ -37,7 +37,7 @@ namespace CLU.GUI
         private static LocalPlayer Me
         {
             get {
-                return ObjectManager.Me;
+                return StyxWoW.Me;
             }
         }
 
@@ -732,7 +732,7 @@ namespace CLU.GUI
         private void button4_Click(object sender, EventArgs e)
         {
             try {
-                var target = ObjectManager.Me.CurrentTarget;
+                var target = StyxWoW.Me.CurrentTarget;
 
                 string output = target == null ? "<No target>" : "Name : " + target.Name;
                 textBox2.Text += output + Environment.NewLine;
@@ -776,7 +776,7 @@ namespace CLU.GUI
 
                 if (target != null) {
                     // facing
-                    var me = ObjectManager.Me.Location;
+                    var me = StyxWoW.Me.Location;
                     var ta = target.Location;
                     output = "FacingTowardsUnitDegrees : " + Math.Round(Unit.FacingTowardsUnitDegrees(me, ta), 2) + "°";
                 }

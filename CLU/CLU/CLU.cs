@@ -320,7 +320,7 @@ namespace CLU
 
         private static LocalPlayer Me
         {
-            get { return ObjectManager.Me; }
+            get { return StyxWoW.Me; }
         }
 
         #endregion
@@ -709,22 +709,22 @@ namespace CLU
         //{
         //    switch (OracleWatchFlags) {
         //    case OracleWatchMode.Healer:
-        //        UnitOracle.WatchUnit(ObjectManager.Me, UnitOracle.Watch.HealthVariance);
+        //        UnitOracle.WatchUnit(StyxWoW.Me, UnitOracle.Watch.HealthVariance);
         //        if (Me.GroupInfo.IsInRaid) {
-        //            ObjectManager.Me.RaidMembers.ForEach(x => UnitOracle.WatchUnit(x, UnitOracle.Watch.HealthVariance));
-        //        } else if (ObjectManager.Me.IsInParty) {
-        //            ObjectManager.Me.PartyMembers.ForEach(x => UnitOracle.WatchUnit(x, UnitOracle.Watch.HealthVariance));
+        //            StyxWoW.Me.RaidMembers.ForEach(x => UnitOracle.WatchUnit(x, UnitOracle.Watch.HealthVariance));
+        //        } else if (StyxWoW.Me.IsInParty) {
+        //            StyxWoW.Me.PartyMembers.ForEach(x => UnitOracle.WatchUnit(x, UnitOracle.Watch.HealthVariance));
         //        }
         //        break;
         //    case OracleWatchMode.DPS:
-        //        UnitOracle.WatchUnit(ObjectManager.Me, UnitOracle.Watch.HealthVariance);
+        //        UnitOracle.WatchUnit(StyxWoW.Me, UnitOracle.Watch.HealthVariance);
         //        break;
         //    case OracleWatchMode.Tank:
-        //        UnitOracle.WatchUnit(ObjectManager.Me, UnitOracle.Watch.HealthVariance);
+        //        UnitOracle.WatchUnit(StyxWoW.Me, UnitOracle.Watch.HealthVariance);
         //        if (Me.GroupInfo.IsInRaid) {
-        //            ObjectManager.Me.RaidMembers.ForEach(x => UnitOracle.WatchUnit(x, UnitOracle.Watch.HealthVariance));
-        //        } else if (ObjectManager.Me.IsInParty) {
-        //            ObjectManager.Me.PartyMembers.ForEach(x => UnitOracle.WatchUnit(x, UnitOracle.Watch.HealthVariance));
+        //            StyxWoW.Me.RaidMembers.ForEach(x => UnitOracle.WatchUnit(x, UnitOracle.Watch.HealthVariance));
+        //        } else if (StyxWoW.Me.IsInParty) {
+        //            StyxWoW.Me.PartyMembers.ForEach(x => UnitOracle.WatchUnit(x, UnitOracle.Watch.HealthVariance));
         //        }
         //        break;
         //    }

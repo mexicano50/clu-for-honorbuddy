@@ -741,7 +741,7 @@ namespace CLU.Base
             try {
                 WoWPoint direction = me.GetDirectionTo(target);
                 direction.Normalize();
-                float myFacing = ObjectManager.Me.Rotation;
+                float myFacing = StyxWoW.Me.Rotation;
 
                 // real and safe tan reverse function
                 double ret = Math.Atan2(direction.Y, direction.X);

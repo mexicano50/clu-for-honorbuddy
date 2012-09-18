@@ -97,7 +97,7 @@ namespace CLU.Classes.Druid
                            // Spell.WaitForCast(true),
 
                            // if someone dies make sure we retarget.
-                           TargetBase.EnsureTarget(ret => ObjectManager.Me.CurrentTarget == null),
+                           TargetBase.EnsureTarget(ret => StyxWoW.Me.CurrentTarget == null),
 
                            // For DS Encounters.
                            EncounterSpecific.ExtraActionButton(),

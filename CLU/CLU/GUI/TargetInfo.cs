@@ -47,7 +47,7 @@ namespace CLU.GUI
         private void update()
         {
 
-            var target = ObjectManager.Me.CurrentTarget;
+            var target = StyxWoW.Me.CurrentTarget;
             var color = StyxWoW.Me.IsBehind(target) ? Color.DarkGreen : Color.Red;
 
 
@@ -63,7 +63,7 @@ namespace CLU.GUI
 
             if (target != null) {
                 // facing
-                var me = ObjectManager.Me.Location;
+                var me = StyxWoW.Me.Location;
                 var ta = target.Location;
                 facing.Text = Math.Round(Unit.FacingTowardsUnitDegrees(me, ta), 2) + "°";
             }

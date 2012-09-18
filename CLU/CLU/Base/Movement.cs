@@ -35,7 +35,7 @@ namespace CLU.Base
         private static LocalPlayer Me
         {
             get {
-                return ObjectManager.Me;
+                return StyxWoW.Me;
             }
         }
 
