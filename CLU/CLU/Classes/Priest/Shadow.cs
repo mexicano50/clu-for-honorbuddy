@@ -13,7 +13,6 @@ namespace CLU.Classes.Priest
 
     class Shadow : RotationBase
     {
-
         private const int ItemSetId = 1067; // Tier set ID Regalia of Dying light (Normal)
 
         public override string Name
@@ -37,10 +36,12 @@ namespace CLU.Classes.Priest
                 return "Mind Blast"; // Mind Flay
             }
         }
+
         public override int KeySpellId
         {
             get { return 8092; }
         }
+
         public override float CombatMinDistance
         {
             get {
@@ -48,7 +49,6 @@ namespace CLU.Classes.Priest
             }
         }
 
-        // adding some help about cooldown management
         public override string Help
         {
             get {
@@ -155,7 +155,54 @@ NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagr
                                )) 
                        );
             }
-        }       
+        }
+
+        public Composite burstRotation
+        {
+            get
+            {
+                return (
+                    new PrioritySelector(
+                ));
+            }
+        }
+
+        public Composite baseRotation
+        {
+            get
+            {
+                return (
+                    new PrioritySelector(
+                        //new Action(a => { CLU.Log("I am the start of public Composite baseRotation"); return RunStatus.Failure; }),
+                        //PvP Utilities
+
+                        //Rotation
+                        //shadowform
+                        //Item.RunMacroText("/cast Shadowform", ret => !Buff.PlayerHasBuff("Shadowform"), "Shadowform"),
+                        //use_item,name=guardian_serpent_gloves
+                        Item.UseEngineerGloves(),
+                        //9	1.00	jade_serpent_potion,if=buff.bloodlust.react|target.time_to_die<=40
+                        //A	5.69	devouring_plague,if=shadow_orb=3&(cooldown.mind_blast.remains<2|target.health.pct<20)
+                        //B	3.01	berserking
+                        Racials.UseRacials(),
+                        //C	46.76	mind_blast,if=num_targets<=6&cooldown_react
+                        //D	21.77	shadow_word_pain,cycle_targets=1,max_cycle_targets=8,if=(!ticking|remains<tick_time)&miss_react
+                        //E	13.53	shadow_word_death,if=num_targets<=5
+                        //F	24.23	vampiric_touch,cycle_targets=1,max_cycle_targets=8,if=(!ticking|remains<cast_time+tick_time)&miss_react
+                        //G	12.83	devouring_plague,if=shadow_orb=3
+                        //H	11.10	halo_damage
+                        //I	38.65	mind_spike,if=num_targets<=6&buff.surge_of_darkness.react
+                        //J	2.95	shadowfiend,if=cooldown_react
+                        //K	0.00	mind_sear,chain=1,interrupt=1,if=num_targets>=3
+                        //L	73.11	mind_flay,chain=1,interrupt=1
+                        //M	0.00	shadow_word_death,moving=1
+                        //N	0.00	mind_blast,moving=1,if=buff.divine_insight_shadow.react&cooldown_react
+                        //shadow_word_pain,moving=1
+                        Spell.CastSpell("Shadow Word: Pain", ret => Me.IsMoving, "Shadow Word: Pain")
+                        //P	0.00	dispersion
+                ));
+            }
+        }
 
         public override Composite Medic
         {
@@ -171,14 +218,27 @@ NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagr
 
         public override Composite PreCombat
         {
-            get {
-                return new PrioritySelector(
-                           new Decorator(
-                               ret => !Me.Mounted && !Me.IsDead && !Me.Combat && !Me.IsFlying && !Me.IsOnTransport && !Me.HasAura("Food") && !Me.HasAura("Drink"),
-                               new PrioritySelector(
-                                   // Item.RunMacroText("/cast Shadowform", ret => !Buff.PlayerHasBuff("Shadowform"), "Shadowform"),
-                                   Buff.CastRaidBuff("Power Word: Fortitude",   ret => CLUSettings.Instance.Priest.UsePowerWordFortitude, "Power Word: Fortitude"),
-                                   Buff.CastBuff("Inner Fire",                  ret => CLUSettings.Instance.Priest.UseInnerFire, "Inner Fire"))));
+            get
+            {
+                return (
+                    new PrioritySelector(
+                        new Decorator(ret => !Me.Mounted && !Me.IsDead && !Me.Combat && !Me.IsFlying && !Me.IsOnTransport && !Me.HasAura("Food") && !Me.HasAura("Drink"),
+                            new PrioritySelector(
+                                //flask,type=warm_sun
+                                //food,type=mogu_fish_stew
+                                //power_word_fortitude,if=!aura.stamina.up
+                                Buff.CastRaidBuff("Power Word: Fortitude", ret => CLUSettings.Instance.Priest.UsePowerWordFortitude, "Power Word: Fortitude"),
+                                //inner_fire
+                                Buff.CastBuff("Inner Fire", ret => CLUSettings.Instance.Priest.UseInnerFire, "Inner Fire"),
+                                //shadowform
+                                //Item.RunMacroText("/cast Shadowform", ret => !Buff.PlayerHasBuff("Shadowform"), "Shadowform"),
+                                //jade_serpent_potion
+                                new Action(delegate
+                                {
+                                    Macro.isMultiCastMacroInUse();
+                                    return RunStatus.Failure;
+                                })
+                ))));
             }
         }
 
@@ -191,8 +251,25 @@ NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagr
 
         public override Composite PVPRotation
         {
-            get {
-                return this.SingleRotation;
+            get
+            {
+                return (
+                    new PrioritySelector(
+                    //new Action(a => { CLU.Log("I am the start of public override Composite PVPRotation"); return RunStatus.Failure; }),
+                        CrowdControl.freeMe(),
+                        new Decorator(ret => Macro.Manual || BotChecker.BotBaseInUse("BGBuddy"),
+                            new Decorator(ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget),
+                                new PrioritySelector(
+                                    Item.UseTrinkets(),
+                                    Buff.CastBuff("Lifeblood", ret => true, "Lifeblood"),
+                                    new Action(delegate
+                                    {
+                                        Macro.isMultiCastMacroInUse();
+                                        return RunStatus.Failure;
+                                    }),
+                                    new Decorator(ret => Macro.Burst, burstRotation),
+                                    new Decorator(ret => !Macro.Burst || BotChecker.BotBaseInUse("BGBuddy"), baseRotation)))
+                )));
             }
         }
 
