@@ -130,12 +130,12 @@ namespace CLU.Classes.Shaman
                 // air totems
                 Spell.CastSpell("Grounding Totem",
                     ret => ((bool)ret)
-                        && Unit.EnemyUnits.Any(u => u.Distance < 40 && u.IsTargetingMeOrPet && u.IsCasting)
+                        && Unit.EnemyUnits.Any(u => u.DistanceSqr < 40 *40 && u.IsTargetingMeOrPet && u.IsCasting)
                         && !Exist(WoWTotemType.Air), "Grounding Totem"),
 
                 Spell.CastSpell("Capacitor Totem",
                     ret => ((bool)ret)
-                        && Unit.EnemyUnits.Any(u => u.Distance < GetTotemRange(WoWTotem.Capacitor))
+                        && Unit.EnemyUnits.Any(u => u.DistanceSqr < GetTotemRange(WoWTotem.Capacitor) * GetTotemRange(WoWTotem.Capacitor))
                         && !Exist(WoWTotemType.Air),"Capacitor Totem"),
 
                 Spell.CastSpell("Stormlash Totem",

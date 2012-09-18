@@ -35,7 +35,7 @@ namespace CLU.Base
         {
             get {
                 return ObjectManager.GetObjectsOfType<WoWUnit>(true, false).Any(
-                           u => u.Distance < 5 && u.IsDead &&
+                           u => u.DistanceSqr < 5 * 5 && u.IsDead &&
                            (u.CreatureType == WoWCreatureType.Humanoid || u.CreatureType == WoWCreatureType.Undead));
             }
         }

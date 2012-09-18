@@ -72,7 +72,7 @@ namespace CLU.Classes
         protected static WoWUnit ShadowfiendTarget
         {
             get {
-                return Battlegrounds.IsInsideBattleground ? Unit.RangedPvPUnits.FirstOrDefault(u => u.Distance < 35 && !Unit.UnitIsControlled(u, true)) : Unit.RangedPvEUnits.FirstOrDefault(u => !Unit.UnitIsControlled(u, true));
+                return Battlegrounds.IsInsideBattleground ? Unit.RangedPvPUnits.FirstOrDefault(u => u.DistanceSqr < 35 * 35 && !Unit.UnitIsControlled(u, true)) : Unit.RangedPvEUnits.FirstOrDefault(u => !Unit.UnitIsControlled(u, true));
             }
         }
 

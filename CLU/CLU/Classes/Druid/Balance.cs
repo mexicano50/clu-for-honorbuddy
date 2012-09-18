@@ -61,7 +61,7 @@ namespace CLU.Classes.Druid
         private static int MushroomCount
         {
             get {
-                return ObjectManager.GetObjectsOfType<WoWUnit>().Where(o => o.Entry == 47649 && o.Distance <= 40).Count(o => o.CreatedByUnitGuid == Me.Guid); 
+                return ObjectManager.GetObjectsOfType<WoWUnit>().Where(o => o.Entry == 47649 && o.DistanceSqr <= 40 * 40).Count(o => o.CreatedByUnitGuid == Me.Guid); 
             }
             // Thanks to Singular for the logic and code.
         }

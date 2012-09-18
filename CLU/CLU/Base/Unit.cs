@@ -229,8 +229,8 @@ namespace CLU.Base
                                          || unit.MaxHealth == 1)
                                      && !unit.IsNonCombatPet
                                      && !unit.IsCritter
-                                     && unit.Distance2D
-                                     <= 12);
+                                     && unit.DistanceSqr
+                                     <= 12 * 12).OrderBy(u => u.DistanceSqr);
 
                     return ret;
                 } catch (NullReferenceException) {
@@ -257,8 +257,8 @@ namespace CLU.Base
                                          || BossList.BossIds.Contains(unit.Entry))
                                      && !unit.IsNonCombatPet
                                      && !unit.IsCritter
-                                     && unit.Distance2D
-                                     <= 40).OrderBy(u => u.DistanceSqr);
+                                     && unit.DistanceSqr
+                                     <= 40 * 40).OrderBy(u => u.DistanceSqr);
 
                     return ret.ToList();
                 }
@@ -302,7 +302,7 @@ namespace CLU.Base
                                   && p != target
                                   && p.IsAlive
                                   && p.HealthPercent < 95
-                                  && target.Location.Distance(p.Location) <= 12);
+                                  && target.Location.DistanceSqr(p.Location) <= 12 * 12);
 
                     return ret != null;
                 } catch (NullReferenceException) {
@@ -347,7 +347,7 @@ namespace CLU.Base
                                   u.IsAlive &&
                                   !u.IsMe &&
                                   u.IsPlayer &&
-                                  u.Distance < 30 &&
+                                  u.DistanceSqr < 30 * 30 &&
                                   !u.IsFriendly &&
                                   !u.IsPet &&
                                   u.InLineOfSpellSight &&
@@ -432,7 +432,7 @@ namespace CLU.Base
                                   u.IsAlive &&
                                   !u.IsMe &&
                                   u.IsPlayer &&
-                                  u.DistanceSqr < 30 &&
+                                  u.DistanceSqr < 30 * 30 &&
                                   !u.IsFriendly &&
                                   !u.IsPet &&
                                   u.InLineOfSpellSight &&
@@ -1043,7 +1043,7 @@ namespace CLU.Base
         /// <returns>The player by class prio.</returns>
         private static WoWUnit GetPlayerByClassPrio(float range, bool includeDead, params WoWClass[] classes)
         {
-            return (from woWClass in classes select StyxWoW.Me.GroupInfo.PartyMembers.FirstOrDefault(p => p.ToPlayer() != null && p.ToPlayer().Distance < range && p.ToPlayer().Class == woWClass) into unit where unit != null where !includeDead && unit.Dead || unit.Ghost select unit.ToPlayer()).FirstOrDefault();
+            return (from woWClass in classes select StyxWoW.Me.GroupInfo.PartyMembers.FirstOrDefault(p => p.ToPlayer() != null && p.ToPlayer().DistanceSqr < range * range && p.ToPlayer().Class == woWClass) into unit where unit != null where !includeDead && unit.Dead || unit.Ghost select unit.ToPlayer()).FirstOrDefault();
         }
 
 
@@ -1192,11 +1192,11 @@ namespace CLU.Base
             if (playersOnly) {
                 hostile = hostile.Where(x =>
                                         x.IsPlayer && IsAttackable(x) && IsCrowdControlled(x)
-                                        && x.Location.Distance2D(fromLocation) < maxDistance2).ToList();
+                                        && x.Location.Distance2DSqr(fromLocation) < maxDistance2).ToList();
             } else {
                 hostile = hostile.Where(x =>
                                         !x.IsPlayer && IsAttackable(x) && IsCrowdControlled(x)
-                                        && x.Location.Distance2D(fromLocation) < maxDistance2).ToList();
+                                        && x.Location.Distance2DSqr(fromLocation) < maxDistance2).ToList();
             }
 
             if (CLUSettings.Instance.EnableDebugLogging) {
@@ -1222,11 +1222,11 @@ namespace CLU.Base
             if (playersOnly) {
                 hostile = hostile.Where(x =>
                                         x.IsPlayer && IsAttackable(x) && !IsCrowdControlled(x)
-                                        && x.Location.Distance2D(fromLocation) < maxDistance2).ToList();
+                                        && x.Location.Distance2DSqr(fromLocation) < maxDistance2).ToList();
             } else {
                 hostile = hostile.Where(x =>
                                         !x.IsPlayer && IsAttackable(x) && !IsCrowdControlled(x)
-                                        && x.Location.Distance2D(fromLocation) < maxDistance2
+                                        && x.Location.Distance2DSqr(fromLocation) < maxDistance2
                                         && (x.IsTargetingMeOrPet|| x.IsTargetingMyPartyMember)).ToList();
             }
 

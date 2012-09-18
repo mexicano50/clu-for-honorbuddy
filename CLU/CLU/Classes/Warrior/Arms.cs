@@ -158,7 +158,7 @@ namespace CLU.Classes.Warrior
                         Buff.CastBuff("Battle Stance",              ret => !Macro.rotationSwap && Me.Shapeshift != ShapeshiftForm.BattleStance, "Battle Stance"),
                         Buff.CastBuff("Defensive Stance",           ret => Macro.rotationSwap && Me.Shapeshift != ShapeshiftForm.DefensiveStance, "Defensive Stance"),
                         Spell.CastSpell("Charge",                   ret => Me.CurrentTarget != null && Me.CurrentTarget.DistanceSqr >= 8 * 8 && Me.CurrentTarget.DistanceSqr <= 25 * 25, "Charge"),
-                        Spell.CastOnUnitLocation("Heroic Leap",     ret => Me.CurrentTarget, ret => Me.CurrentTarget != null && Me.CurrentTarget.Distance >= 8 * 8 && Me.CurrentTarget.Distance <= 40 * 40 &&  SpellManager.Spells["Charge"].CooldownTimeLeft.Seconds > 1 && SpellManager.Spells["Charge"].CooldownTimeLeft.Seconds < 18, "Heroic Leap"),
+                        Spell.CastOnUnitLocation("Heroic Leap",     ret => Me.CurrentTarget, ret => Me.CurrentTarget != null && Me.CurrentTarget.DistanceSqr >= 8 * 8 && Me.CurrentTarget.DistanceSqr <= 40 * 40 &&  SpellManager.Spells["Charge"].CooldownTimeLeft.Seconds > 1 && SpellManager.Spells["Charge"].CooldownTimeLeft.Seconds < 18, "Heroic Leap"),
                         Spell.CastSpell("Hamstring",                ret => !Buff.TargetHasDebuff("Hamstring"), "Hamstring"),
 
                         //Rotation

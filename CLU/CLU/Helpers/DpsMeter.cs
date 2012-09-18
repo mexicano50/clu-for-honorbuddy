@@ -52,7 +52,7 @@ namespace CLU.Helpers
         {
             List<WoWUnit> availableUnits = (from u in ObjectManager.GetObjectsOfType<WoWUnit>(true, false)
                                             where !u.IsDead && u.Attackable && u.IsMe && !u.IsFriendly && u.Combat
-                                            orderby u.Distance ascending
+                                            orderby u.DistanceSqr ascending
                                             select u).ToList();
 
             foreach (WoWUnit unit in availableUnits)

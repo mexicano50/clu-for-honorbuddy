@@ -102,25 +102,25 @@ namespace CLU.Helpers
                 //// PvP Based targeting...
                 //case TargetFilter.EnemyHealers:
                 //    {
-                //        var enemyHealers = hostile.Where(x => x.IsPlayer && x.Distance < 30 && x.InLineOfSpellSight && x.IsCasting && Unit.HealerSpells.Contains(x.CastingSpell.Name));
+                //        var enemyHealers = hostile.Where(x => x.IsPlayer && x.DistanceSqr < 30 * 30 && x.InLineOfSpellSight && x.IsCasting && Unit.HealerSpells.Contains(x.CastingSpell.Name));
                 //        return mobs.Where(x => enemyHealers.Any(y => y.Guid == x.Guid));
                 //    }
 
                 //case TargetFilter.FlagCarrier:
                 //    {
-                //        var flagCarriers = hostile.Where(x => x.IsPlayer && x.Distance < 30 && x.InLineOfSpellSight && (Me.IsHorde ? x.HasAura("Alliance Flag") : x.HasAura("Horde Flag")));
+                //        var flagCarriers = hostile.Where(x => x.IsPlayer && x.DistanceSqr < 30 * 30 && x.InLineOfSpellSight && (Me.IsHorde ? x.HasAura("Alliance Flag") : x.HasAura("Horde Flag")));
                 //        return mobs.Where(x => flagCarriers.Any(y => y.Guid == x.Guid));
                 //    }
 
                 //case TargetFilter.Threats:
                 //    {
-                //        var threats = hostile.Where(x => x.IsPlayer && x.Distance < 15 && x.InLineOfSpellSight && x.IsTargetingMeOrPet);
+                //        var threats = hostile.Where(x => x.IsPlayer && x.DistanceSqr < 15 * 15 && x.InLineOfSpellSight && x.IsTargetingMeOrPet);
                 //        return mobs.Where(x => threats.Any(y => y.Guid == x.Guid));
                 //    }
 
                 //case TargetFilter.LowHealth:
                 //    {
-                //        var lowhealthers = hostile.Where(x => x.IsPlayer && x.Distance < 15 && x.InLineOfSpellSight && x.HealthPercent < 30);
+                //        var lowhealthers = hostile.Where(x => x.IsPlayer && x.DistanceSqr < 15 * 15 && x.InLineOfSpellSight && x.HealthPercent < 30);
                 //        return mobs.Where(x => lowhealthers.Any(y => y.Guid == x.Guid));
                 //    }
 
