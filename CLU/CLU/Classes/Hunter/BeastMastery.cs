@@ -209,9 +209,7 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
                         //bestial_wrath,if=focus>60&!buff.beast_within.up
                         Buff.CastBuff("Bestial Wrath",              ret => Me.CurrentTarget != null && Me.Pet.Location.Distance(Me.CurrentTarget.Location) <= Spell.MeleeRange && Me.GotAlivePet && Me.CurrentFocus > 60 && !Buff.PlayerHasActiveBuff("Beast Within"), "Bestial Wrath"),
                         //multi_shot,if=target.adds>5
-
                         //cobra_shot,if=target.adds>5
-
                         //rapid_fire,if=!buff.rapid_fire.up
                         Buff.CastBuff("Rapid Fire",                 ret => !Buff.PlayerHasActiveBuff("Rapid Fire"), "Rapid Fire"),
                         //stampede
