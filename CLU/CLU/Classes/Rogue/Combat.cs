@@ -147,7 +147,7 @@ namespace CLU.Classes.Rogue
                            Spell.CastSpell("Rupture",               ret => Me.CurrentTarget != null && Me.ComboPoints == 5 && !Buff.TargetHasDebuff("Rupture"), "Rupture"), //removed bleed check no longer ingame --  wulf
                            Spell.CastSpell("Eviscerate",            ret => (Me.ComboPoints == 5 && Buff.PlayerHasBuff("Deep Insight")) || Buff.PlayerCountBuff("Anticipation") > 4, "Eviscerate"),
                            Spell.CastSpell("Revealing Strike",      ret => !Buff.PlayerHasActiveBuff("Deep Insight") || (Buff.PlayerHasActiveBuff("Deep Insight") && Me.ComboPoints < 5 && Buff.PlayerBuffTimeLeft("Deep Insight") < 2), "Revealing Strike"),
-                            Spell.CastSpell("Sinister Strike", ret => Buff.PlayerHasActiveBuff("Shallow Insight") || Buff.PlayerHasActiveBuff("Moderate Insight") || !Buff.PlayerHasActiveBuff("Deep Insight") || (Buff.PlayerHasActiveBuff("Deep Insight") && Me.ComboPoints < 5), "Sinister Strike")
+                           Spell.CastSpell("Sinister Strike",       ret => Buff.TargetHasDebuff("Revealing Strike") || (Buff.PlayerHasActiveBuff("Deep Insight") && Me.ComboPoints < 5), "Sinister Strike")
                        );
             }
         }
@@ -159,7 +159,7 @@ namespace CLU.Classes.Rogue
                 return new Decorator(
                            ret => Me.HealthPercent < 100 && CLUSettings.Instance.EnableSelfHealing,
                            new PrioritySelector(
-                               Spell.CastSelfSpell("Recuperate",        ret => Me.HealthPercent < 55 && !Buff.PlayerHasBuff("Recuperate") && CLUSettings.Instance.EnableMovement, "Recuperate"),
+                               Spell.CastSelfSpell("Recuperate",        ret => Me.HealthPercent < 55 && !Buff.PlayerHasBuff("Recuperate") && CLUSettings.Instance.EnableSelfHealing, "Recuperate"),
                                Item.UseBagItem("Healthstone",           ret => Me.HealthPercent < 40, "Healthstone"),
                                Spell.CastSelfSpell("Smoke Bomb",        ret => Me.CurrentTarget != null && Me.HealthPercent < 30 && Me.CurrentTarget.IsTargetingMeOrPet, "Smoke Bomb"),
                                Spell.CastSelfSpell("Combat Readiness",  ret => Me.CurrentTarget != null && Me.HealthPercent < 40 && Me.CurrentTarget.IsTargetingMeOrPet, "Combat Readiness"),
