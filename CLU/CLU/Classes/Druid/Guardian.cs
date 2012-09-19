@@ -174,25 +174,25 @@ NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagr
                                            Item.UseEngineerGloves(),
                                            Buff.CastBuff("Lifeblood", ret => true, "Lifeblood"))),
                                            // I am broken please fix me.
-                                           //Spell.CastSpell("Mangle", ret => true, "Mangle (Bear)"),
-                                           Spell.CastSpell("Mangle", ret => !WoWSpell.FromId(33878).Cooldown, "Mangle (Bear)"),
-                                           Spell.CastAreaSpell("Swipe", 8, false, 3, 0.0, 0.0, ret => true, "Swipe"),
-                                           Spell.CastSpell("Thrash (Bear)", ret => Buff.TargetDebuffTimeLeft("Weakened Blows").TotalSeconds < 2 || Buff.TargetDebuffTimeLeft("Thrash").TotalSeconds < 4 || Unit.EnemyUnits.Count() > 2, "Thrash (Bear)"),
-                                           Spell.CastSpell("Faerie Fire", ret => Buff.TargetDebuffTimeLeft("Weakened Armor").TotalSeconds < 2 || Buff.TargetCountDebuff("Weakened Armor") < 3, "Faerie Fire"),
+                                           //Spell.CastSpell("Mangle (Bear)", ret => true, "Mangle (Bear)"),
+                                           ////Spell.CastSpell("Mangle", ret => !WoWSpell.FromId(33878).Cooldown, "Mangle (Bear)"),
+                                           //Spell.CastAreaSpell("Swipe", 8, false, 3, 0.0, 0.0, ret => true, "Swipe"),
+                                           //Spell.CastSpell("Thrash (Bear)", ret => Buff.TargetDebuffTimeLeft("Weakened Blows").TotalSeconds < 2 || Buff.TargetDebuffTimeLeft("Thrash").TotalSeconds < 4 || Unit.EnemyUnits.Count() > 2, "Thrash (Bear)"),
+                                           //Spell.CastSpell("Faerie Fire", ret => Buff.TargetDebuffTimeLeft("Weakened Armor").TotalSeconds < 2 || Buff.TargetCountDebuff("Weakened Armor") < 3, "Faerie Fire"),
                                            // end i am broken
                            // ======================== start Hacks =============================================================
-                           //Buff.CastDebuff("Mangle", ret => !WoWSpell.FromId(33878).Cooldown, "Mangle (Bear)"),
-                           //Spell.CastAreaSpell("Swipe", 8, false, 3, 0.0, 0.0, ret => true, "Swipe"),
-                           //new Decorator(ret => !WoWSpell.FromId(77758).Cooldown && Buff.TargetDebuffTimeLeft("Weakened Blows").TotalSeconds < 2 || Buff.TargetDebuffTimeLeft("Thrash").TotalSeconds < 4 || Unit.EnemyUnits.Count() > 2,
-                           //    new Sequence(
-                           //         new Action(a => CLU.Log(" [Casting] Thrash ")),
-                           //         new Action(ret => Spell.CastSpellByName("Thrash") 
-                           //        ))),
-                           //new Decorator(ret => Buff.TargetDebuffTimeLeft("Weakened Armor").TotalSeconds < 2 || Buff.TargetCountDebuff("Weakened Armor") < 3,
-                           //    new Sequence(
-                           //         new Action(a => CLU.Log(" [Casting] Faerie Fire ")),
-                           //         new Action(ret => Spell.CastSpellByName("Faerie Fire") 
-                           //        ))),
+                           Buff.CastDebuff("Mangle", ret => !WoWSpell.FromId(33878).Cooldown, "Mangle (Bear)"),
+                           Spell.CastAreaSpell("Swipe", 8, false, 3, 0.0, 0.0, ret => true, "Swipe"),
+                           new Decorator(ret => !WoWSpell.FromId(77758).Cooldown && Buff.TargetDebuffTimeLeft("Weakened Blows").TotalSeconds < 2 || Buff.TargetDebuffTimeLeft("Thrash").TotalSeconds < 4 || Unit.EnemyUnits.Count() > 2,
+                               new Sequence(
+                                    new Action(a => CLU.Log(" [Casting] Thrash ")),
+                                    new Action(ret => Spell.CastSpellByName("Thrash")
+                                   ))),
+                           new Decorator(ret => Buff.TargetDebuffTimeLeft("Weakened Armor").TotalSeconds < 2 || Buff.TargetCountDebuff("Weakened Armor") < 3,
+                               new Sequence(
+                                    new Action(a => CLU.Log(" [Casting] Faerie Fire ")),
+                                    new Action(ret => Spell.CastSpellByName("Faerie Fire")
+                                   ))),
                            // ========================== end hacks ===========================================================
                            Buff.CastDebuff("Lacerate", ret => true, "Lacerate"),
                            Spell.CastSpell("Maul", ret => Me.RagePercent > 70 || Buff.PlayerHasBuff("Clearcasting"), "Maul"),
