@@ -167,6 +167,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="clu_UI.png" />
     <Content Include="GUI\Resources\CLU.ico" />
     <Content Include="GUI\Resources\CLU.png" />
     <Content Include="Readme.txt" />
