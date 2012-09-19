@@ -121,33 +121,30 @@ namespace CLU.Classes.Druid
                 return new PrioritySelector(
                     // Pause Rotation
                     new Decorator(ret => CLUSettings.Instance.PauseRotation, new ActionAlwaysSucceed()),
-
                     // For DS Encounters.
                     EncounterSpecific.ExtraActionButton(),
-
                     // HandleMovement? If so, Choose our form!
                     new Decorator(
                         ret => CLUSettings.Instance.EnableMovement,
                         new PrioritySelector(
-                            Spell.CastSelfSpell("Moonkin Form", ret => !Buff.PlayerHasBuff("Moonkin Form"), "Moonkin Form")
-                        )),
-
-                    new Decorator(
-                        ret => Buff.PlayerHasBuff("Moonkin Form") && !Buff.PlayerHasActiveBuff("Shadowmeld"),
-                        new PrioritySelector(
-                            new Decorator(
-                                ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget),
-                                new PrioritySelector(
-                                    Item.UseTrinkets(),
-                                    Racials.UseRacials(),
-                                    Buff.CastBuff("Lifeblood", ret => true, "Lifeblood"), // Thanks Kink
-                                    Item.UseBagItem("Volcanic Potion", ret => Buff.UnitHasHasteBuff(Me), "Volcanic Potion Heroism/Bloodlust"),
-                                    Item.UseEngineerGloves())),
+                            Spell.CastSelfSpell(
+                                "Moonkin Form", ret => !Buff.PlayerHasBuff("Moonkin Form"), "Moonkin Form"))),
+                    //new Decorator(
+                    //    ret => Buff.PlayerHasBuff("Moonkin Form") && !Buff.PlayerHasActiveBuff("Shadowmeld"),
+                    //    new PrioritySelector(
+                    //        new Decorator(
+                    //            ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget),
+                    //            new PrioritySelector(
+                    //                Item.UseTrinkets(),
+                    //                Racials.UseRacials(),
+                    //                Buff.CastBuff("Lifeblood", ret => true, "Lifeblood"), // Thanks Kink
+                    //                Item.UseBagItem("Volcanic Potion", ret => Buff.UnitHasHasteBuff(Me), "Volcanic Potion Heroism/Bloodlust"),
+                    //                Item.UseEngineerGloves())),
                     // Spell.CastSpell("Faerie Fire", ret => Me.CurrentTarget != null && !Me.CurrentTarget.IsImmune(WoWSpellSchool.Nature) && Unit.IsTargetWorthy(Me.CurrentTarget) && (Buff.TargetCountDebuff("Faerie Fire") < 3 && !Buff.UnitHasArmorReductionDebuff(Me.CurrentTarget)), "Faerie Fire"),
                     // Spell.CastSpell("Faerie Fire", ret => Me.CurrentTarget != null && !Me.CurrentTarget.IsImmune(WoWSpellSchool.Nature) && (!Buff.UnitHasArmorReductionDebuff(Me.CurrentTarget) || Buff.TargetCountDebuff("Faerie Fire") < 3), "Faerie Fire"),
                     // 8    wild_mushroom_detonate,if=buff.wild_mushroom.stack=3
-                            Spell.CastSpell("Wild Mushroom: Detonate", ret => MushroomCount == 3, "Detonate Shrooms!"),
-                            Spell.CastSpell("Wild Mushroom: Detonate", ret => MushroomCount > 0 && Buff.PlayerHasBuff("Eclipse (Solar)"), "Detonate Shrooms!"),
+                    //Spell.CastSpell("Wild Mushroom: Detonate", ret => MushroomCount == 3, "Detonate Shrooms!"),
+                    //Spell.CastSpell("Wild Mushroom: Detonate", ret => MushroomCount > 0 && Buff.PlayerHasBuff("Eclipse (Solar)"), "Detonate Shrooms!"),
                     // Spell.CastSpell("Typhoon",                      ret => Me.IsMoving, "Typhoon (Moving)"),
                     // Big Stuff
                     // actions+=/incarnation,if=talent.incarnation.enabled
@@ -170,17 +167,35 @@ namespace CLU.Classes.Druid
                     // Make sure we cast it unless we're about to Eclipse
                     //Spell.CastSpell("Starsurge",                       ret => Buff.PlayerHasBuff("Celestial Alignment"), "Starsurge"),
                     //Buff.CastDebuff("Starsurge",                       ret => Buff.PlayerHasBuff("Eclipse (Solar)") && Me.CurrentEclipse >= 5 || Buff.PlayerHasBuff("Eclipse (Lunar)") && Me.CurrentEclipse <= -5, "Starsurge"),
-                            Spell.CastSelfSpell("Innervate", ret => Me.ManaPercent < 50, "Innvervate"),
-                            Spell.CastOnUnitLocation("Force of Nature", u => Me.CurrentTarget, ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget) && !BossList.IgnoreAoE.Contains(Unit.CurrentTargetEntry), "Force of Nature"),
-                            Spell.CastOnUnitLocation("Wild Mushroom", u => Me.CurrentTarget, ret => Me.CurrentTarget != null && Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 6) >= 3 && MushroomCount < 3, "Wild Mushroom"),
-                    //Spell.CastSpell("Sunfire",                         ret => Me.CurrentEclipse == 100 && Buff.PlayerHasBuff("Eclipse (Solar)") && Buff.TargetDebuffTimeLeft("Sunfire").TotalSeconds <= 12, "Sunfire @ Solar"),
-                    //Spell.CastSpell("Moonfire",                        ret => Me.CurrentEclipse == -100 && Buff.PlayerHasBuff("Eclipse (Lunar)") && Buff.TargetDebuffTimeLeft("Moonfire").TotalSeconds <= 12, "Moonfire @ Lunar"),
-                            Spell.CastSpell("Wrath", ret => Me.CurrentEclipse <= 100 && !Buff.PlayerHasBuff("Eclipse (Lunar)") && Me.CurrentEclipse >= -80, "Wrath"),
-                            Spell.CastSpell("Starfire", ret => Me.CurrentEclipse >= -100 && !Buff.PlayerHasBuff("Eclipse (Solar)") && Me.CurrentEclipse <= 79, "Starfire"),
-                            //Spell.CastSpell("Wrath", ret => BoomkinDpsSpell == "Wrath", "Wrath"),
-                            //Spell.CastSpell("Starfire", ret => BoomkinDpsSpell == "Starfire", "Starfire"),
-                    //Spell.CastSpell("Starfire",                        ret => true, "Starfire"),
-                            Spell.CastOnUnitLocation("Wild Mushroom", u => Me.CurrentTarget, ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget) && Me.IsMoving && !Me.CurrentTarget.IsMoving && MushroomCount < 3, "Wild Mushroom"))));
+                    //Spell.CastSelfSpell("Innervate", ret => Me.ManaPercent < 50, "Innvervate"),
+                    //Spell.CastOnUnitLocation("Force of Nature", u => Me.CurrentTarget, ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget) && !BossList.IgnoreAoE.Contains(Unit.CurrentTargetEntry), "Force of Nature"),
+                    //Spell.CastOnUnitLocation("Wild Mushroom", u => Me.CurrentTarget, ret => Me.CurrentTarget != null && Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 6) >= 3 && MushroomCount < 3, "Wild Mushroom"),
+                    Spell.CastSpell(
+                        "Sunfire",
+                        ret =>
+                        Me.CurrentEclipse == 100 && Buff.PlayerHasBuff("Eclipse (Solar)")
+                        && Buff.TargetDebuffTimeLeft("Sunfire").TotalSeconds <= 12,
+                        "Sunfire @ Solar"),
+                    Spell.CastSpell(
+                        "Moonfire",
+                        ret =>
+                        Me.CurrentEclipse == -100 && Buff.PlayerHasBuff("Eclipse (Lunar)")
+                        && Buff.TargetDebuffTimeLeft("Moonfire").TotalSeconds <= 12,
+                        "Moonfire @ Lunar"),
+                    Spell.CastSpell(
+                        "Wrath",
+                        ret =>
+                        Me.CurrentEclipse <= 100 && !Buff.PlayerHasBuff("Eclipse (Lunar)") && Me.CurrentEclipse >= -80,
+                        "Wrath"),
+                    Spell.CastSpell(
+                        "Starfire",
+                        ret =>
+                        Me.CurrentEclipse >= -100 && !Buff.PlayerHasBuff("Eclipse (Solar)") && Me.CurrentEclipse <= 79,
+                        "Starfire"));
+                //Spell.CastSpell("Wrath", ret => BoomkinDpsSpell == "Wrath", "Wrath"),
+                //Spell.CastSpell("Starfire", ret => BoomkinDpsSpell == "Starfire", "Starfire"),
+                //Spell.CastSpell("Starfire",                        ret => true, "Starfire"),
+                //Spell.CastOnUnitLocation("Wild Mushroom", u => Me.CurrentTarget, ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget) && Me.IsMoving && !Me.CurrentTarget.IsMoving && MushroomCount < 3, "Wild Mushroom"))));
                 // Not working for some reason
                 // Item.RunMacroText("/cast Starsurge",               ret => Me.IsMoving && Buff.PlayerHasActiveBuff("Shooting Stars"), "Starsurge")
                 //Spell.CastSpell("Moonfire"/,                        ret => Me.IsMoving, "Moonfire")
