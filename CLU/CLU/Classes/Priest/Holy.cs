@@ -28,12 +28,12 @@ namespace CLU.Classes.Priest
         public override string KeySpell
         {
             get {
-                return "Holy Word: Chastise";
+                return "Chakra: Chastise";
             }
         }
         public override int KeySpellId
         {
-            get { return 88625; }
+            get { return 81209; }
         }
         public override float CombatMaxDistance
         {
@@ -87,7 +87,7 @@ namespace CLU.Classes.Priest
                            new Decorator(ret => CLUSettings.Instance.PauseRotation, new ActionAlwaysSucceed()),
 
                            // if someone dies make sure we retarget.
-                           TargetBase.EnsureTarget(ret => StyxWoW.Me.CurrentTarget == null),
+                           //TargetBase.EnsureTarget(ret => StyxWoW.Me.CurrentTarget == null),
 
                            // For DS Encounters.
                            EncounterSpecific.ExtraActionButton(),
@@ -98,7 +98,7 @@ namespace CLU.Classes.Priest
 
 
                            // Threat
-                           Buff.CastBuff("Fade", ret => (CLUSettings.Instance.UseCooldowns || CLUSettings.Instance.Priest.UseFade) && Me.CurrentTarget != null && Me.CurrentTarget.ThreatInfo.RawPercent > 90, "Fade (Threat)"),
+                           //Buff.CastBuff("Fade", ret => (CLUSettings.Instance.UseCooldowns || CLUSettings.Instance.Priest.UseFade) && Me.CurrentTarget != null && Me.CurrentTarget.ThreatInfo.RawPercent > 90, "Fade (Threat)"),
 
                            // Spell.WaitForCast(true),
 
@@ -114,17 +114,15 @@ namespace CLU.Classes.Priest
 
                            // ensure Chakra state
                            new Decorator(
-                               ret => CLUSettings.Instance.Priest.ChakraStanceSelection == ChakraStance.Serenity && !Buff.PlayerHasBuff("Chakra: Serenity") && Spell.SpellCooldown("Chakra").TotalSeconds < 0.1 && !IsSpiritofRedemption && Spell.SpellCooldown("Flash Heal").TotalSeconds < 0.1,
+                               ret => CLUSettings.Instance.Priest.ChakraStanceSelection == ChakraStance.Serenity && !Buff.PlayerHasBuff("Chakra: Serenity") && !IsSpiritofRedemption,
                                new Sequence(
-                                   Spell.CastSelfSpell("Chakra", a => true, "Chakra (Ensure Serenity)"),
-                                   Spell.CastSpell("Flash Heal", ret => Me, a => true, "flash heal on me, activating Chakra: Serenity") // Singlet target healing
+                                   Spell.CastSpell("Chakra: Serenity", ret => Me, a => true, "Chakra (Ensure Serenity)")  
                                )),
 
                            new Decorator(
-                               ret => CLUSettings.Instance.Priest.ChakraStanceSelection == ChakraStance.Sanctuary && !Buff.PlayerHasBuff("Chakra: Sanctuary") && Spell.SpellCooldown("Chakra").TotalSeconds < 0.1 && !IsSpiritofRedemption && Spell.SpellCooldown("Prayer of Healing").TotalSeconds < 0.1,
+                               ret => CLUSettings.Instance.Priest.ChakraStanceSelection == ChakraStance.Sanctuary && !Buff.PlayerHasBuff("Chakra: Sanctuary") && !IsSpiritofRedemption,
                                new Sequence(
-                                   Spell.CastSelfSpell("Chakra", a => true, "Chakra for Sanctuary AoE target healing"),
-                                   Spell.CastSpell("Prayer of Healing", ret => Me, a => true, "Prayer of Healing on me, activating Chakra: Sanctuary") // AoE target healing
+                                   Spell.CastSpell("Chakra: Sanctuary", ret => Me, a => true, "Chakra for Sanctuary AoE target healing")
                                )),
 
 
@@ -139,34 +137,36 @@ namespace CLU.Classes.Priest
 
                            // emergency heals on most injured tank
                            Healer.FindTank(a => true, x => x.ToUnit().InLineOfSight && !x.ToUnit().IsDead && x.HealthPercent < 50, (a, b) => (int)(a.CurrentHealth - b.CurrentHealth), "emergency heals on most injured tank",
-                                           Spell.CastSpell("Flash Heal", a => Buff.PlayerHasActiveBuff("Surge of Light"), "Flash Heal (Surge of Light)"),
+                                           Spell.CastHeal("Flash Heal", a => Buff.PlayerHasActiveBuff("Surge of Light"), "Flash Heal (Surge of Light)"),
                                            Item.RunMacroText("/cast Holy Word: Serenity", a => Buff.PlayerHasBuff("Chakra: Serenity") && !WoWSpell.FromId(88684).Cooldown, "Holy Word: Serenity (Chakra: Serenity)"),
-                                           Spell.CastSpell("Power Word: Shield", a => CanShield, "Shield tank (emergency)"),
-                                           Spell.CastSpell("Greater Heal", a => HasSerendipity, "Greater heal"),
-                                           Spell.CastSpell("Guardian Spirit", a => CLUSettings.Instance.UseCooldowns, "Guardian Spirit (emergency)"),
-                                           Spell.CastSpell("Renew", a => !Buff.TargetHasBuff("Renew"), "Renew (emergency)"),
-                                           Spell.CastSpell("Flash Heal", a => true, "Flash heal (emergency)")
+                                           //Spell.CastHeal("Holy Word: Serenity", a => Buff.PlayerHasBuff("Chakra: Serenity"), "Holy Word: Serenity (emergency)"),
+                                           Spell.CastHeal("Power Word: Shield", a => CanShield, "Shield tank (emergency)"),
+                                           Spell.CastHeal("Greater Heal", a => HasSerendipity, "Greater heal"),
+                                           Spell.CastHeal("Guardian Spirit", a => CLUSettings.Instance.UseCooldowns, "Guardian Spirit (emergency)"),
+                                           Spell.CastHeal("Renew", a => !Buff.TargetHasBuff("Renew", HealTarget), "Renew (emergency)"),
+                                           Spell.CastHeal("Flash Heal", a => true, "Flash heal (emergency)")
                                           ),
 
                             // Urgent Dispel Magic
                            Healer.FindRaidMember(a => CLUSettings.Instance.EnableDispel, x => x.ToUnit().InLineOfSight && !x.ToUnit().IsDead && x.ToUnit().HasAuraToDispel(true), (a, b) => (int)(a.CurrentHealth - b.CurrentHealth), "Urgent Dispel Magic",
-                                                 Spell.CastSpell("Dispel Magic", a => Me.CurrentTarget != null && Buff.GetDispelType(Me.CurrentTarget).Contains(WoWDispelType.Magic), "Dispel Magic (Urgent)"),
-                                                 Spell.CastSpell("Cure Disease", a => Me.CurrentTarget != null && Buff.GetDispelType(Me.CurrentTarget).Contains(WoWDispelType.Curse), "Cure Disease (Urgent)")
+                                                 Spell.CastHeal("Dispel Magic", a => HealTarget != null && Buff.GetDispelType(HealTarget).Contains(WoWDispelType.Magic), "Dispel Magic (Urgent)"),
+                                                 Spell.CastHeal("Cure Disease", a => HealTarget != null && Buff.GetDispelType(HealTarget).Contains(WoWDispelType.Curse), "Cure Disease (Urgent)")
                                                 ),
 
                            // I'm fine and tanks are not dying => ensure nobody is REALLY low life
                            Healer.FindRaidMember(a => !Buff.PlayerHasBuff("Chakra: Sanctuary"), x => x.ToUnit().InLineOfSight && !x.ToUnit().IsDead && x.HealthPercent < 45, (a, b) => (int)(a.CurrentHealth - b.CurrentHealth), "I'm fine and tanks are not dying => ensure nobody is REALLY low life",
-                                                 Spell.CastSpell("Flash Heal", a => Buff.PlayerHasActiveBuff("Surge of Light"), "Flash Heal (Surge of Light)"),
+                                                 Spell.CastHeal("Flash Heal", a => Buff.PlayerHasActiveBuff("Surge of Light"), "Flash Heal (Surge of Light)"),
                                                  Item.RunMacroText("/cast Holy Word: Serenity", a => Buff.PlayerHasBuff("Chakra: Serenity") && !WoWSpell.FromId(88684).Cooldown, "Holy Word: Serenity (Chakra: Serenity)"),
-                                                 Spell.CastSpell("Greater Heal", a => HasSerendipity, "Greater heal"),
-                                                 Spell.CastSpell("Renew", a => !Buff.TargetHasBuff("Renew"), "Renew (emergency)"),
-                                                 Spell.CastSpell("Flash Heal", a => true, "Flash heal (emergency)")
+                                                 //Spell.CastHeal("Holy Word: Serenity", a => Buff.PlayerHasBuff("Chakra: Serenity"), "Holy Word: Serenity (emergency)"),
+                                                 Spell.CastHeal("Greater Heal", a => HasSerendipity, "Greater heal"),
+                                                 Spell.CastHeal("Renew", a => !Buff.TargetHasBuff("Renew"), "Renew (emergency)"),
+                                                 Spell.CastHeal("Flash Heal", a => true, "Flash heal (emergency)")
                                                 ),
 
 
                            // Prayer of Mending on tank
                            Healer.FindTank(a => !Buff.AnyHasMyAura("Prayer of Mending"), x => x.ToUnit().InLineOfSight && !x.ToUnit().IsDead && !x.ToUnit().HasAura("Prayer of Mending"), (a, b) => (int)(a.MaxHealth - b.MaxHealth), "Prayer of Mending on tank",
-                                           Spell.CastSpell("Prayer of Mending", a => true, "PoM on tank")
+                                           Spell.CastHeal("Prayer of Mending", a => true, "PoM on tank")
                                           ),
 
                            // party healing
@@ -176,33 +176,34 @@ namespace CLU.Classes.Priest
 
                            // Holy Word: Sanctuary
                            Healer.FindAreaHeal(a => NotMoving && !Spell.PlayerIsChanneling && CLUSettings.Instance.UseCooldowns && StyxWoW.Me.Combat && Buff.PlayerHasBuff("Chakra: Sanctuary") && !WoWSpell.FromId(88685).Cooldown, 10, 95, 12f, (Me.GroupInfo.IsInRaid ? 4 : 3), "Holy Word: Sanctuary: Avg: 10-70, 30yrds, count: 3",
-                                               Spell.CastSanctuaryAtLocation(u => Me.CurrentTarget, a => Me.ManaPercent > 20, "Holy Word: Sanctuary")),
+                                               Spell.CastSanctuaryAtLocation(u => HealTarget, a => Me.ManaPercent > 20, "Holy Word: Sanctuary")),
 
                            // party healing // FindParty
                            Healer.FindParty(a => true, 10, 93, 30f, 3, "FindParty healing: Avg: 10-93, 30yrds, count: 3",
-                                            Spell.CastSpell("Circle of Healing", a => true, "Circle of Healing"),
-                                            Spell.CastSpell("Prayer of Healing", a => true, "Prayer of healing")
+                                            Spell.CastHeal("Circle of Healing", a => true, "Circle of Healing"),
+                                            Spell.CastHeal("Prayer of Healing", a => true, "Prayer of healing")
                                            ),
 
 
                            // Lightwell
                            Healer.FindAreaHeal(a => CLUSettings.Instance.Priest.PlaceLightwell && StyxWoW.Me.Combat && Spell.SpellCooldown("Lightwell").TotalSeconds < 0.5, 10, 80, 20f, 2, "Lightwell: Avg: 10-80, 30yrds, count: 2",
-                                               Spell.CastOnUnitLocation("Lightwell", u => Me.CurrentTarget, a => !IsSpiritofRedemption, "Lightwell")),
+                                               Spell.CastOnUnitLocation("Lightwell", u => HealTarget, a => !IsSpiritofRedemption, "Lightwell")),
 
                            // single target healing
                            Healer.FindRaidMember(a => true, x => x.ToUnit().InLineOfSight && !x.ToUnit().IsDead && x.HealthPercent < 92, (a, b) => (int)(a.CurrentHealth - b.CurrentHealth), "single target healing",
-                                                 Spell.CastSpell("Flash Heal", a => Buff.PlayerHasActiveBuff("Surge of Light"), "Flash Heal (Surge of Light)"),
+                                                 Spell.CastHeal("Flash Heal", a => Buff.PlayerHasActiveBuff("Surge of Light"), "Flash Heal (Surge of Light)"),
                                                  Item.RunMacroText("/cast Holy Word: Serenity", a => Buff.PlayerHasBuff("Chakra: Serenity") && !WoWSpell.FromId(88684).Cooldown, "Holy Word: Serenity (Chakra: Serenity)"),
-                                                 Spell.CastSpell("Greater Heal", a => Me.CurrentTarget != null && HasSerendipity && CurrentTargetHealthPercent < 70, "Greater heal"),
-                                                 Spell.CastSpell("Renew", a => !Buff.TargetHasBuff("Renew"), "Renew (single target healing)"),
-                                                 Spell.CastSpell("Flash Heal", a => Me.CurrentTarget != null && !HasSerendipity && CurrentTargetHealthPercent < (Me.GroupInfo.IsInRaid ? 50 : 75), "Flash heal (Single Target Healing)"),
-                                                 Spell.CastSpell("Heal", a => true, "heal")
+                                                 //Spell.CastHeal("Holy Word: Serenity", a => Buff.PlayerHasBuff("Chakra: Serenity"), "Holy Word: Serenity"),
+                                                 Spell.CastHeal("Greater Heal", a => HealTarget != null && HasSerendipity && HealTarget.HealthPercent < 70, "Greater heal"),
+                                                 Spell.CastHeal("Renew", a => !Buff.TargetHasBuff("Renew", HealTarget), "Renew (single target healing)"),
+                                                 Spell.CastHeal("Flash Heal", a => HealTarget != null && !HasSerendipity && HealTarget.HealthPercent < (Me.GroupInfo.IsInRaid ? 50 : 75), "Flash heal (Single Target Healing)"),
+                                                 Spell.CastHeal("Heal", a => true, "heal")
                                                 ),
 
                            // Dispel Magic
                            Healer.FindRaidMember(a => CLUSettings.Instance.EnableDispel, x => x.ToUnit().InLineOfSight && !x.ToUnit().IsDead && x.ToUnit().HasAuraToDispel(false), (a, b) => (int)(a.CurrentHealth - b.CurrentHealth), "Dispel Magic",
-                                                 Spell.CastSelfSpell("Dispel Magic", a => Me.CurrentTarget != null && Buff.GetDispelType(Me.CurrentTarget).Contains(WoWDispelType.Magic), "Dispel Magic"),
-                                                 Spell.CastSelfSpell("Cure Disease", a => Me.CurrentTarget != null && Buff.GetDispelType(Me.CurrentTarget).Contains(WoWDispelType.Curse), "Cure Disease")
+                                                 Spell.CastSelfSpell("Dispel Magic", a => HealTarget != null && Buff.GetDispelType(HealTarget).Contains(WoWDispelType.Magic), "Dispel Magic"),
+                                                 Spell.CastSelfSpell("Cure Disease", a => HealTarget != null && Buff.GetDispelType(HealTarget).Contains(WoWDispelType.Curse), "Cure Disease")
                                                 ),
 
                            // Inner will while moving and low on mana
@@ -214,12 +215,12 @@ namespace CLU.Classes.Priest
 
                            // cast shields while moving
                            Healer.FindRaidMember(a => Me.IsMoving, x => x.ToUnit().InLineOfSight && !x.ToUnit().IsDead && x.HealthPercent < 90 && !x.ToUnit().HasAura("Weakened Soul"), (a, b) => (int)(a.CurrentHealth - b.CurrentHealth), "cast shields while moving",
-                                                 Spell.CastSpell("Power Word: Shield", a => CanShield && !Buff.TargetHasBuff("Power Word: Shield"), "Shield while moving")
+                                                 Spell.CastHeal("Power Word: Shield", a => CanShield && !Buff.TargetHasBuff("Power Word: Shield", HealTarget), "Shield while moving")
                                                 ),
 
                            // cast renew while moving
                            Healer.FindRaidMember(a => Me.IsMoving, x => x.ToUnit().InLineOfSight && !x.ToUnit().IsDead && x.HealthPercent < 95 && !x.ToUnit().ToPlayer().HasAura("Renew"), (a, b) => (int)(a.CurrentHealth - b.CurrentHealth), "cast renew while moving",
-                                                 Spell.CastSpell("Renew", a => true, "Renew while moving")
+                                                 Spell.CastHeal("Renew", a => true, "Renew while moving")
                                                 )
                        );
             }

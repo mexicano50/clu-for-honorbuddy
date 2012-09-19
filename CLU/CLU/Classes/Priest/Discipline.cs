@@ -84,7 +84,7 @@ namespace CLU.Classes.Priest
                            new Decorator(ret => CLUSettings.Instance.PauseRotation, new ActionAlwaysSucceed()),
 
                            // if someone dies make sure we retarget.
-                           TargetBase.EnsureTarget(ret => StyxWoW.Me.CurrentTarget == null),
+                           //TargetBase.EnsureTarget(ret => StyxWoW.Me.CurrentTarget == null),
 
                            // For DS Encounters.
                            EncounterSpecific.ExtraActionButton(),
@@ -97,7 +97,7 @@ namespace CLU.Classes.Priest
                            Spell.CastSpell("Flash Heal", ret => Me, a => Me.HealthPercent < CLUSettings.Instance.Priest.FlashHealEHOM, "flash heal on me, emergency"),
 
                            // Threat
-                           Buff.CastBuff("Fade", ret => (CLUSettings.Instance.UseCooldowns || CLUSettings.Instance.Priest.UseFade) && Me.CurrentTarget != null && Me.CurrentTarget.ThreatInfo.RawPercent > 90, "Fade (Threat)"),
+                          // Buff.CastBuff("Fade", ret => (CLUSettings.Instance.UseCooldowns || CLUSettings.Instance.Priest.UseFade) && Me.CurrentTarget != null && Me.CurrentTarget.ThreatInfo.RawPercent > 90, "Fade (Threat)"),
 
                            // Spell.WaitForCast(true),
 
@@ -128,33 +128,32 @@ namespace CLU.Classes.Priest
                            // emergency heals on most injured tank
                            Healer.FindTank(a => true, x => x.ToUnit().InLineOfSight && !x.ToUnit().IsDead && x.HealthPercent < CLUSettings.Instance.Priest.EmergencyhealsonmostinjuredtankHealthPercent, (a, b) => (int)(a.CurrentHealth - b.CurrentHealth), "emergency heals on most injured tank",
                                            Spell.CastSelfSpell("Archangel", ret => IsAtonementSpec && CLUSettings.Instance.UseCooldowns && Buff.PlayerCountBuff("Evangelism") > 4, "Archangel...Tank Time!"),
-                                           Spell.CastSpell("Flash Heal", a => Buff.PlayerHasActiveBuff("Surge of Light"), "Flash Heal (Surge of Light)"),
-                                           Spell.CastSpell("Power Word: Shield", a => CanShield && GraceStacks < 3, "Shield before penance (emergency)"),
-                                           // Spell.CastSpell("Power Word: Shield", a => Me.CurrentTarget != null && CanShield && HealableUnit.(Me.CurrentTarget) < (long)Spell.CastTime("Greater Heal"), "Shield (emergency) TTL=" + Unit.TimeToDeath(Me.CurrentTarget) + " GH Castime=" + (long)Spell.CastTime("Greater Heal")),
-                                           Spell.CastSpell("Penance", a => GraceStacks < 3 && NotMoving, "Penance (emergency)"),
-                                           Spell.CastSpell("Pain Suppression", a => CLUSettings.Instance.UseCooldowns && StyxWoW.Me.Combat && !IsMe, "Pain Suppression (emergency)"),
-                                           Spell.CastSpell("Power Word: Shield", a => CanShield, "Shield (emergency)"),
-                                           Spell.CastSpell("Flash Heal", a => true, "Flash heal (emergency)")
+                                           Spell.CastHeal("Flash Heal", a => Buff.PlayerHasActiveBuff("Surge of Light"), "Flash Heal (Surge of Light)"),
+                                           Spell.CastHeal("Power Word: Shield", a => CanShield && GraceStacks < 3, "Shield before penance (emergency)"),
+                                           Spell.CastHeal("Penance", a => GraceStacks < 3 && NotMoving, "Penance (emergency)"),
+                                           Spell.CastHeal("Pain Suppression", a => CLUSettings.Instance.UseCooldowns && StyxWoW.Me.Combat && !IsMe, "Pain Suppression (emergency)"),
+                                           Spell.CastHeal("Power Word: Shield", a => CanShield, "Shield (emergency)"),
+                                           Spell.CastHeal("Flash Heal", a => true, "Flash heal (emergency)")
                                           ),
 
                            // Urgent Dispel Magic
                            Healer.FindRaidMember(a => CLUSettings.Instance.EnableDispel, x => x.ToUnit().InLineOfSight && !x.ToUnit().IsDead && x.ToUnit().HasAuraToDispel(true), (a, b) => (int)(a.CurrentHealth - b.CurrentHealth), "Urgent Dispel Magic",
-                                                 Spell.CastSpell("Dispel Magic", a => Me.CurrentTarget != null && Buff.GetDispelType(Me.CurrentTarget).Contains(WoWDispelType.Magic), "Dispel Magic (Urgent)"),
-                                                 Spell.CastSpell("Cure Disease", a => Me.CurrentTarget != null && Buff.GetDispelType(Me.CurrentTarget).Contains(WoWDispelType.Curse), "Cure Disease (Urgent)")
+                                                 Spell.CastHeal("Dispel Magic", a => HealTarget != null && Buff.GetDispelType(HealTarget).Contains(WoWDispelType.Magic), "Dispel Magic (Urgent)"),
+                                                 Spell.CastHeal("Cure Disease", a => HealTarget != null && Buff.GetDispelType(HealTarget).Contains(WoWDispelType.Curse), "Cure Disease (Urgent)")
                                                 ),
 
                            // I'm fine and tanks are not dying => ensure nobody is REALLY low life
                            Healer.FindRaidMember(a => true, x => x.ToUnit().InLineOfSight && !x.ToUnit().IsDead && x.HealthPercent < CLUSettings.Instance.Priest.emergencyhealsonmostinjuredraidpartymemberHealthPercent, (a, b) => (int)(a.CurrentHealth - b.CurrentHealth), "I'm fine and tanks are not dying => ensure nobody is REALLY low life",
                                                  Spell.CastSelfSpell("Archangel", ret => IsAtonementSpec && CLUSettings.Instance.UseCooldowns && Buff.PlayerCountBuff("Evangelism") > 4, "Archangel...Single Target Time!"),
-                                                 Spell.CastSpell("Flash Heal", a => Buff.PlayerHasActiveBuff("Surge of Light"), "Flash Heal (Surge of Light)"),
-                                                 Spell.CastSpell("Power Word: Shield", a => CanShield && GraceStacks < 3, "Shield before penance (emergency)"),
-                                                 Spell.CastSpell("Penance", a => GraceStacks < 3 && NotMoving, "Penance (emergency)"),
-                                                 Spell.CastSpell("Flash Heal", a => true, "Flash heal (emergency)")
+                                                 Spell.CastHeal("Flash Heal", a => Buff.PlayerHasActiveBuff("Surge of Light"), "Flash Heal (Surge of Light)"),
+                                                 Spell.CastHeal("Power Word: Shield", a => CanShield && GraceStacks < 3, "Shield before penance (emergency)"),
+                                                 Spell.CastHeal("Penance", a => GraceStacks < 3 && NotMoving, "Penance (emergency)"),
+                                                 Spell.CastHeal("Flash Heal", a => true, "Flash heal (emergency)")
                                                 ),
 
                            // Prayer of Mending on tank
                            Healer.FindTank(a => !Buff.AnyHasMyAura("Prayer of Mending"), x => x.ToUnit().InLineOfSight && !x.ToUnit().IsDead && !x.ToUnit().HasAura("Prayer of Mending"), (a, b) => (int)(a.MaxHealth - b.MaxHealth), "Prayer of Mending on tank",
-                                           Spell.CastSpell("Prayer of Mending", a => true, "PoM on tank")
+                                           Spell.CastHeal("Prayer of Mending", a => true, "PoM on tank")
                                           ),
 
                            // Smite to build stacks of Evangelism
@@ -167,10 +166,10 @@ namespace CLU.Classes.Priest
                                             new Decorator(
                                                 ret => Spell.SpellCooldown("Inner Focus").TotalSeconds == 0,
                                                 new Sequence(
-                                                    Spell.CastSpell("Inner Focus", a => true, "Inner Focus"),
-                                                    Spell.CastSpell("Prayer of Healing", a => Buff.PlayerHasActiveBuff("Inner Focus"), "Prayer of Healing")
+                                                    Spell.CastHeal("Inner Focus", a => true, "Inner Focus"),
+                                                    Spell.CastHeal("Prayer of Healing", a => Buff.PlayerHasActiveBuff("Inner Focus"), "Prayer of Healing")
                                                 )),
-                                            Spell.CastSelfSpell("Prayer of Healing", a => true, "Prayer of healing")
+                                            Spell.CastHeal("Prayer of Healing", a => true, "Prayer of healing")
                                            ),
 
 
@@ -181,7 +180,7 @@ namespace CLU.Classes.Priest
 
                            // Party Barrier
                            Healer.FindAreaHeal(a => CLUSettings.Instance.UseCooldowns && StyxWoW.Me.Combat && Spell.SpellCooldown("Power Word: Barrier").TotalSeconds < 0.5, CLUSettings.Instance.Priest.PowerWordBarrierPartyminAH, CLUSettings.Instance.Priest.PowerWordBarrierPartymaxAH, CLUSettings.Instance.Priest.PowerWordBarrierPartymaxDBP, (Me.GroupInfo.IsInRaid ? 5 : CLUSettings.Instance.Priest.PowerWordBarrierPartyminPlayers), "party barrier: Avg: 10-70, 30yrds, count: 5 or 4",
-                                               Spell.CastOnUnitLocation("Power Word: Barrier", u => Me.CurrentTarget, a => NotMoving, "Power Word: Barrier")),
+                                               Spell.CastOnUnitLocation("Power Word: Barrier", u => HealTarget, a => NotMoving, "Power Word: Barrier")),
 
                            // // party healing with Holy Nova
                            // Healer.FindAreaHeal(a => IsAtonementSpec, 10, 80, 11f, (Me.GroupInfo.IsInRaid ? 4 : 3), "party healing: Avg: 10-80, 30yrds, count: 4 or 3",
@@ -191,24 +190,24 @@ namespace CLU.Classes.Priest
 
                            // single target healing
                            Healer.FindRaidMember(a => true, x => x.ToUnit().InLineOfSight && !x.ToUnit().IsDead && x.HealthPercent < CLUSettings.Instance.Priest.SingleTargethealingParty, (a, b) => (int)(a.CurrentHealth - b.CurrentHealth), "single target healing",
-                                                 Spell.CastSpell("Flash Heal", a => Buff.PlayerHasActiveBuff("Surge of Light"), "Flash Heal (Surge of Light)"),
-                                                 Spell.CastSpell("Penance", a => (GraceStacks < 3 || Buff.PlayerHasActiveBuff("Borrowed Time")) && NotMoving, "Penance"),
+                                                 Spell.CastHeal("Flash Heal", a => Buff.PlayerHasActiveBuff("Surge of Light"), "Flash Heal (Surge of Light)"),
+                                                 Spell.CastHeal("Penance", a => (GraceStacks < 3 || Buff.PlayerHasActiveBuff("Borrowed Time")) && NotMoving, "Penance"),
                                                  new Decorator(
-                                                     ret => Me.CurrentTarget != null && CurrentTargetHealthPercent < CLUSettings.Instance.Priest.GreaterHealInnerFocusParty && Spell.SpellCooldown("Inner Focus").TotalSeconds < 0.5,
+                                                     ret => HealTarget != null && (HealTarget.HealthPercent < CLUSettings.Instance.Priest.GreaterHealInnerFocusParty && Spell.SpellCooldown("Inner Focus").TotalSeconds < 0.5),
                                                      new Sequence(
                                                              Spell.CastSpell("Inner Focus", a => true, "Inner Focus"),
-                                                             Spell.CastSpell("Greater Heal", a => Buff.PlayerHasActiveBuff("Inner Focus"), "Greater heal")
+                                                             Spell.CastHeal("Greater Heal", a => Buff.PlayerHasActiveBuff("Inner Focus"), "Greater heal")
                                                      )),
-                                                 Spell.CastSpellOnCurrentTargetsTarget("Holy Fire", u => Me.CurrentTarget, ret => Me.CurrentTarget != null && IsAtonementSpec && StyxWoW.Me.Combat, "Holy Fire. Using " + CLU.SafeName(Me.CurrentTarget) + "'s Target", true),
-                                                 Spell.CastSpellOnCurrentTargetsTarget("Smite", u => Me.CurrentTarget, ret => Me.CurrentTarget != null && IsAtonementSpec && StyxWoW.Me.Combat, "Smite. Using " + CLU.SafeName(Me.CurrentTarget) + "'s Target", true),
-                                                 Spell.CastSpell("Greater Heal", a => Me.CurrentTarget != null && CurrentTargetHealthPercent < CLUSettings.Instance.Priest.GreaterHealParty, "Greater heal"),
-                                                 Spell.CastSpell("Heal", a => true, "heal")
+                                                 Spell.CastSpellOnCurrentTargetsTarget("Holy Fire", u => HealTarget, ret => HealTarget != null && IsAtonementSpec && StyxWoW.Me.Combat, "Holy Fire. Using " + CLU.SafeName(HealTarget) + "'s Target", true),
+                                                 Spell.CastSpellOnCurrentTargetsTarget("Smite", u => HealTarget, ret => HealTarget != null && IsAtonementSpec && StyxWoW.Me.Combat, "Smite. Using " + CLU.SafeName(HealTarget) + "'s Target", true),
+                                                 Spell.CastHeal("Greater Heal", a => HealTarget != null && HealTarget.HealthPercent < CLUSettings.Instance.Priest.GreaterHealParty, "Greater heal"),
+                                                 Spell.CastHeal("Heal", a => true, "heal")
                                                 ),
 
                            // Dispel Magic
                            Healer.FindRaidMember(a => CLUSettings.Instance.EnableDispel, x => x.ToUnit().InLineOfSight && !x.ToUnit().IsDead && x.ToUnit().HasAuraToDispel(false), (a, b) => (int)(a.CurrentHealth - b.CurrentHealth), "Dispel Magic",
-                                                 Spell.CastSelfSpell("Dispel Magic", a => Me.CurrentTarget != null && Buff.GetDispelType(Me.CurrentTarget).Contains(WoWDispelType.Magic), "Dispel Magic"),
-                                                 Spell.CastSelfSpell("Cure Disease", a => Me.CurrentTarget != null && Buff.GetDispelType(Me.CurrentTarget).Contains(WoWDispelType.Curse), "Cure Disease")
+                                                 Spell.CastSelfSpell("Dispel Magic", a => HealTarget != null && Buff.GetDispelType(HealTarget).Contains(WoWDispelType.Magic), "Dispel Magic"),
+                                                 Spell.CastSelfSpell("Cure Disease", a => HealTarget != null && Buff.GetDispelType(HealTarget).Contains(WoWDispelType.Curse), "Cure Disease")
                                                 ),
 
                            // Inner will while moving and low on mana
@@ -220,12 +219,12 @@ namespace CLU.Classes.Priest
 
                            // cast shields while moving
                            Healer.FindRaidMember(a => Me.IsMoving, x => x.ToUnit().InLineOfSight && !x.ToUnit().IsDead && x.HealthPercent < CLUSettings.Instance.Priest.PowerWordShieldMovingParty && !x.ToUnit().HasAura("Weakened Soul"), (a, b) => (int)(a.CurrentHealth - b.CurrentHealth), "cast shields while moving",
-                                                 Spell.CastSpell("Power Word: Shield", a => CanShield && !Buff.TargetHasBuff("Power Word: Shield"), "Shield while moving")
+                                                 Spell.CastHeal("Power Word: Shield", a => CanShield && !Buff.TargetHasBuff("Power Word: Shield"), "Shield while moving")
                                                 ),
 
                            // cast renew while moving
                            Healer.FindRaidMember(a => Me.IsMoving, x => x.ToUnit().InLineOfSight && !x.ToUnit().IsDead && x.HealthPercent < CLUSettings.Instance.Priest.RenewMovingParty && !x.ToUnit().HasAura("Renew"), (a, b) => (int)(a.CurrentHealth - b.CurrentHealth), "cast renew while moving",
-                                                 Spell.CastSpell("Renew", a => true, "Renew while moving")
+                                                 Spell.CastHeal("Renew", a => true, "Renew while moving")
                                                 )
                        );
             }

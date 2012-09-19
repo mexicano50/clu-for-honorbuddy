@@ -28,7 +28,8 @@ namespace CLU.Helpers
     {
         private static LocalPlayer Me
         {
-            get {
+            get
+            {
                 return StyxWoW.Me;
             }
         }
@@ -36,7 +37,8 @@ namespace CLU.Helpers
         // Unfriendly's...
         public static IEnumerable<WoWUnit> Hostile
         {
-            get {
+            get
+            {
                 return ObjectManager.GetObjectsOfType<WoWUnit>(true, false).Where(x => Unit.IsAttackable(x) && !Unit.UnitIsControlled(x, true));
             }
         }
@@ -47,7 +49,8 @@ namespace CLU.Helpers
 
         public static TargetBase Instance
         {
-            get {
+            get
+            {
                 return instance;
             }
         }
@@ -78,54 +81,60 @@ namespace CLU.Helpers
         {
             var mobs = new List<WoWPlayer>();
 
-            if (HealableUnit.ListofHealableUnits != null) {
+            if (HealableUnit.ListofHealableUnits != null)
+            {
                 List<HealableUnit> grp = HealableUnit.ListofHealableUnits.ToList();
 
-                switch (filter) {
-                case TargetFilter.None: {
-                			return grp.Where(x => x != null && !x.Blacklisted).Select(n => n);
-                }
+                switch (filter)
+                {
+                    case TargetFilter.None:
+                        {
+                            return grp.Where(x => x != null && !x.Blacklisted).Select(n => n);
+                        }
 
-                case TargetFilter.Tanks: {
-                    		return grp.Where(x => x != null && (x.Tank && !x.Blacklisted)).Select(t => t);
-                }
+                    case TargetFilter.Tanks:
+                        {
+                            return grp.Where(x => x != null && (x.Tank && !x.Blacklisted)).Select(t => t);
+                        }
 
-                case TargetFilter.Healers: {
+                    case TargetFilter.Healers:
+                        {
 
-                			return grp.Where(x => x != null && (x.Healer && !x.Blacklisted)).Select(h => h);
-                }
+                            return grp.Where(x => x != null && (x.Healer && !x.Blacklisted)).Select(h => h);
+                        }
 
-                case TargetFilter.Damage: {
-                			return grp.Where(x => x != null && (x.Damage && !x.Blacklisted)).Select(d => d);
-                }
+                    case TargetFilter.Damage:
+                        {
+                            return grp.Where(x => x != null && (x.Damage && !x.Blacklisted)).Select(d => d);
+                        }
 
-                //// PvP Based targeting...
-                //case TargetFilter.EnemyHealers:
-                //    {
-                //        var enemyHealers = hostile.Where(x => x.IsPlayer && x.DistanceSqr < 30 * 30 && x.InLineOfSpellSight && x.IsCasting && Unit.HealerSpells.Contains(x.CastingSpell.Name));
-                //        return mobs.Where(x => enemyHealers.Any(y => y.Guid == x.Guid));
-                //    }
+                    //// PvP Based targeting...
+                    //case TargetFilter.EnemyHealers:
+                    //    {
+                    //        var enemyHealers = hostile.Where(x => x.IsPlayer && x.DistanceSqr < 30 * 30 && x.InLineOfSpellSight && x.IsCasting && Unit.HealerSpells.Contains(x.CastingSpell.Name));
+                    //        return mobs.Where(x => enemyHealers.Any(y => y.Guid == x.Guid));
+                    //    }
 
-                //case TargetFilter.FlagCarrier:
-                //    {
-                //        var flagCarriers = hostile.Where(x => x.IsPlayer && x.DistanceSqr < 30 * 30 && x.InLineOfSpellSight && (Me.IsHorde ? x.HasAura("Alliance Flag") : x.HasAura("Horde Flag")));
-                //        return mobs.Where(x => flagCarriers.Any(y => y.Guid == x.Guid));
-                //    }
+                    //case TargetFilter.FlagCarrier:
+                    //    {
+                    //        var flagCarriers = hostile.Where(x => x.IsPlayer && x.DistanceSqr < 30 * 30 && x.InLineOfSpellSight && (Me.IsHorde ? x.HasAura("Alliance Flag") : x.HasAura("Horde Flag")));
+                    //        return mobs.Where(x => flagCarriers.Any(y => y.Guid == x.Guid));
+                    //    }
 
-                //case TargetFilter.Threats:
-                //    {
-                //        var threats = hostile.Where(x => x.IsPlayer && x.DistanceSqr < 15 * 15 && x.InLineOfSpellSight && x.IsTargetingMeOrPet);
-                //        return mobs.Where(x => threats.Any(y => y.Guid == x.Guid));
-                //    }
+                    //case TargetFilter.Threats:
+                    //    {
+                    //        var threats = hostile.Where(x => x.IsPlayer && x.DistanceSqr < 15 * 15 && x.InLineOfSpellSight && x.IsTargetingMeOrPet);
+                    //        return mobs.Where(x => threats.Any(y => y.Guid == x.Guid));
+                    //    }
 
-                //case TargetFilter.LowHealth:
-                //    {
-                //        var lowhealthers = hostile.Where(x => x.IsPlayer && x.DistanceSqr < 15 * 15 && x.InLineOfSpellSight && x.HealthPercent < 30);
-                //        return mobs.Where(x => lowhealthers.Any(y => y.Guid == x.Guid));
-                //    }
+                    //case TargetFilter.LowHealth:
+                    //    {
+                    //        var lowhealthers = hostile.Where(x => x.IsPlayer && x.DistanceSqr < 15 * 15 && x.InLineOfSpellSight && x.HealthPercent < 30);
+                    //        return mobs.Where(x => lowhealthers.Any(y => y.Guid == x.Guid));
+                    //    }
 
-                default:
-                    return null;
+                    default:
+                        return null;
                 }
             }
             return null;
@@ -136,46 +145,52 @@ namespace CLU.Helpers
             return new Decorator(
                        cond,
                        new Sequence(
-                           // get a target
+                // get a target
                            new Action(
-                           	delegate {
-                           		var targetPerformanceTimer = new Stopwatch(); // lets see if we can get some performance on this one.
-                           		targetPerformanceTimer.Start(); // lets see if we can get some performance on this one.
-								
-                           		// Nothing to filter against
-                           		if (!UnitsFilter(filter).Any()) {
-                           			return RunStatus.Failure;
-                           		}
-								
+                            delegate
+                            {
+                                var targetPerformanceTimer = new Stopwatch(); // lets see if we can get some performance on this one.
+                                targetPerformanceTimer.Start(); // lets see if we can get some performance on this one.
 
-                           		// Filter the Healable Units
+                                // Nothing to filter against
+                                if (!UnitsFilter(filter).Any())
+                                {
+                                    HealableUnit.HealTarget = null;
+                                    return RunStatus.Failure;
+                                }
+
+
+                                // Filter the Healable Units
                                 var raid = UnitsFilter(filter).Where(x => x != null && (ObjectManager.ObjectList.Any(y => y.Guid == x.ToUnit().Guid) && refineFilter(x)) && x.ToUnit().Distance2DSqr < 40 * 40 && !x.ToUnit().ToPlayer().IsGhost && !x.ToUnit().HasAura("Deep Corruption")).ToList();
 
-                           		// Nothing to heal.
-                           		if (!IsPlayingWoW() || !raid.Any()) {
+                                // Nothing to heal.
+                                if (!IsPlayingWoW() || !raid.Any())
+                                {
+                                    HealableUnit.HealTarget = null;
+                                    return RunStatus.Failure;
+                                }
 
-                           			return RunStatus.Failure;
-                           		}
+                                raid.Sort(compare);
+                                var target = raid.FirstOrDefault();
+                                if (target != null)
+                                {
+                                    Log(
+                                        label,
+                                        CLU.SafeName(target.ToUnit()),
+                                        target.MaxHealth,
+                                        target.CurrentHealth,
+                                        target.MaxHealth - target.CurrentHealth,
+                                        targetPerformanceTimer.ElapsedMilliseconds); // lets see if we can get some performance on this one.
 
-                           		raid.Sort(compare);
-                           		var target = raid.FirstOrDefault();
-                           		if (target != null) {
-                           			Log(
-                           				label,
-                           				CLU.SafeName(target.ToUnit()),
-                           				target.MaxHealth,
-                           				target.CurrentHealth,
-                           				target.MaxHealth - target.CurrentHealth,
-                           				targetPerformanceTimer.ElapsedMilliseconds); // lets see if we can get some performance on this one.
-
-                           			target.ToUnit().Target();
-                           			return RunStatus.Success;
-                           		}
-
-                           		return RunStatus.Failure;
-                           	}),
+                                    //target.ToUnit().Target();
+                                    HealableUnit.HealTarget = target;
+                                    return RunStatus.Success;
+                                }
+                                HealableUnit.HealTarget = null;
+                                return RunStatus.Failure;
+                            }),
                            new Action(a => StyxWoW.SleepForLagDuration()),
-                           // if success, keep going. Else quit sub routine
+                // if success, keep going. Else quit sub routine
                            new PrioritySelector(children)));
         }
 
@@ -219,7 +234,6 @@ namespace CLU.Helpers
             return FindTarget(cond, TargetFilter.LowHealth, filter, compare, "[CLU TARGETING] " + CLU.Version + ": " + "Targeting LOW HEALTHER {0}:  Max {1}, Current {2}, Defecit {3}, TimeTaken: {4} ms, REASON: " + reason, children);
         }
 
-
         /// <summary>
         /// Finds a Party that needs healing
         /// </summary>
@@ -247,7 +261,7 @@ namespace CLU.Helpers
                                FindPartySubroutine(7, minAverageHealth, maxAverageHealth, maxDistanceBetweenPlayers, minUnits, "[CLU TARGETING] " + CLU.Version + ": " + "Target PARTY 8 MEMBER: {0} REASON: " + reason)
                            ),
                            new Action(a => StyxWoW.SleepForLagDuration()),
-                           // if success, keep going. Else quit sub routine
+                // if success, keep going. Else quit sub routine
                            new PrioritySelector(children)
                        )
                    );
@@ -273,7 +287,7 @@ namespace CLU.Helpers
                                FindAreaHealSubroutine(minAverageHealth, maxAverageHealth, maxDistanceBetweenPlayers, minUnits, "[CLU TARGETING] " + CLU.Version + ": " + "Target AREA MEMBER: {0} REASON: " + reason)
                            ),
                            new Action(a => StyxWoW.SleepForLagDuration()),
-                           // if success, keep going. Else quit sub routine
+                // if success, keep going. Else quit sub routine
                            new PrioritySelector(children)
                        )
                    );
@@ -291,8 +305,9 @@ namespace CLU.Helpers
         /// <returns>A party member</returns>
         private Composite FindPartySubroutine(int partyIndex, int minAverageHealth, int maxAverageHealth, float maxDistanceBetweenPlayers, int minUnits, string label)
         {
-            
-            return new Action(a => {
+
+            return new Action(a =>
+            {
                 var targetPartyPerformanceTimer = new Stopwatch(); // lets see if we can get some performance on this one.
                 targetPartyPerformanceTimer.Start(); // lets see if we can get some performance on this one.
 
@@ -302,6 +317,7 @@ namespace CLU.Helpers
                 // gtfo if there is no heal list.
                 if (!grp.Any())
                 {
+                    HealableUnit.HealTarget = null;
                     return RunStatus.Failure;
                 }
                 // setup a quick filter and exctract our players.
@@ -313,6 +329,7 @@ namespace CLU.Helpers
                 if (!players.Any())
                 {
                     {
+                        HealableUnit.HealTarget = null;
                         return RunStatus.Failure;
                     }
                 }
@@ -323,10 +340,12 @@ namespace CLU.Helpers
                 foreach (var player in players)
                 {
                     var hits = players.Where(p => p.Location.Distance2DSqr(player.Location) < maxDistanceBetweenPlayers * maxDistanceBetweenPlayers);
-                    if (hits.Any()) {
+                    if (hits.Any())
+                    {
                         var avgHealth = hits.Average(p => p.CurrentHealth * 100 / p.MaxHealth);
                         var count = hits.Count();
-                        if (avgHealth >= minAverageHealth && avgHealth < maxAverageHealth && count > score) {
+                        if (avgHealth >= minAverageHealth && avgHealth < maxAverageHealth && count > score)
+                        {
                             best = player;
                             score = count;
                         }
@@ -338,10 +357,12 @@ namespace CLU.Helpers
                 if (best != null)
                 {
                     Logparty(label + " Time Taken: " + targetPartyPerformanceTimer.ElapsedMilliseconds + " ms", CLU.SafeName(best.ToUnit()));
-                    best.ToUnit().Target();
+                    //best.ToUnit().Target();
+                    HealableUnit.HealTarget = best;
                     return RunStatus.Success;
                 }
 
+                HealableUnit.HealTarget = null;
                 return RunStatus.Failure;
             });
         }
@@ -357,29 +378,32 @@ namespace CLU.Helpers
         /// <returns>A Riad/Party member</returns>
         private Composite FindAreaHealSubroutine(int minAverageHealth, int maxAverageHealth, float maxDistanceBetweenPlayers, int minUnits, string label)
         {
-            return new Action(a => {
+            return new Action(a =>
+            {
 
                 var targetAreaPerformanceTimer = new Stopwatch(); // lets see if we can get some performance on this one.
                 targetAreaPerformanceTimer.Start(); // lets see if we can get some performance on this one
-                
+
                 // copy
                 List<HealableUnit> grp = HealableUnit.ListofHealableUnits.ToList();
 
                 // gtfo if there is no heal list.
                 if (!grp.Any())
                 {
+                    HealableUnit.HealTarget = null;
                     return RunStatus.Failure;
                 }
 
                 // setup a quick filter and exctract our players.
-                RefineFilter refineFilter = x => x.ToUnit().Location.DistanceSqr(Me.Location) < 40 * 40  && ObjectManager.ObjectList.Any(y => y.Guid == x.ToUnit().Guid) && x.ToUnit().IsAlive && !x.ToUnit().ToPlayer().IsGhost && x.ToUnit().IsPlayer && x.ToUnit().ToPlayer() != null && !x.ToUnit().IsFlying && !x.ToUnit().OnTaxi;
-                
+                RefineFilter refineFilter = x => x.ToUnit().Location.DistanceSqr(Me.Location) < 40 * 40 && ObjectManager.ObjectList.Any(y => y.Guid == x.ToUnit().Guid) && x.ToUnit().IsAlive && !x.ToUnit().ToPlayer().IsGhost && x.ToUnit().IsPlayer && x.ToUnit().ToPlayer() != null && !x.ToUnit().IsFlying && !x.ToUnit().OnTaxi;
+
                 var players = grp.Where(x => refineFilter(x) && !x.Blacklisted && !x.ToUnit().HasAura("Deep Corruption"));
 
                 // Nothing to heal.
                 if (!players.Any())
                 {
                     {
+                        HealableUnit.HealTarget = null;
                         return RunStatus.Failure;
                     }
                 }
@@ -390,10 +414,12 @@ namespace CLU.Helpers
                 {
                     var hits = players.Where(p => p.Location.Distance2DSqr(player.Location) < maxDistanceBetweenPlayers * maxDistanceBetweenPlayers);
 
-                    if (hits.Any()) {
+                    if (hits.Any())
+                    {
                         var avgHealth = hits.Average(p => p.CurrentHealth * 100 / p.MaxHealth);
                         var count = hits.Count();
-                        if (avgHealth >= minAverageHealth && avgHealth < maxAverageHealth && count > score) {
+                        if (avgHealth >= minAverageHealth && avgHealth < maxAverageHealth && count > score)
+                        {
                             best = player;
                             score = count;
                         }
@@ -403,14 +429,14 @@ namespace CLU.Helpers
                 if (best != null)
                 {
                     Logparty(label + " Time Taken: " + targetAreaPerformanceTimer.ElapsedMilliseconds + " ms", CLU.SafeName(best.ToUnit()));
-                    best.ToUnit().Target();
+                    //best.ToUnit().Target();
+                    HealableUnit.HealTarget = best;
                     return RunStatus.Success;
                 }
+                HealableUnit.HealTarget = null;
                 return RunStatus.Failure;
             });
         }
-
-
 
         /// <summary>Targeting myself when no target</summary>
         /// <param name="cond">The conditions that must be true</param>

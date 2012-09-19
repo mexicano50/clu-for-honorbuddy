@@ -27,6 +27,7 @@ namespace CLU.Base
     using Styx.TreeSharp;
     using System.Diagnostics;
 
+    using global::CLU.Helpers;
     using global::CLU.Lists;
     using global::CLU.Settings;
     using Action = Styx.TreeSharp.Action;
@@ -276,7 +277,7 @@ namespace CLU.Base
 
             return true;
         }
-        
+
         #region CastSpell - by ID
 
         /// <summary>Casts self spells by ID</summary>
@@ -502,6 +503,10 @@ namespace CLU.Base
             new ActionAlwaysSucceed()));
         }
 
+        public static Composite CastHeal(string name, CanRunDecoratorDelegate cond, string label)
+        {
+            return CastHeal(name, ret => HealableUnit.HealTarget.ToUnit(), cond, label);
+        }
         /// <summary>Casts a spell on the MostFocused Target (used for smite healing with disc priest mainly)</summary>
         /// <param name="name">the name of the spell to cast</param>
         /// <param name="onUnit">The on Unit.</param>
@@ -642,7 +647,7 @@ namespace CLU.Base
                            new Action(a => CLU.Log(" [Casting Conic] {0} ", label)),
                            new Action(a => SpellManager.Cast(name))));
         }
-        
+
         #endregion
 
         #region CastInterupt - by Name
@@ -672,7 +677,7 @@ namespace CLU.Base
                     return true;
                 },
             new Sequence(
-                new Action(a => CLU.Log(" [Interupt] {0} on {1}", label, CLU.SafeName(onUnit(a)))), 
+                new Action(a => CLU.Log(" [Interupt] {0} on {1}", label, CLU.SafeName(onUnit(a)))),
                 new Action(a => SpellManager.Cast(name, onUnit(a)))));
         }
 
@@ -701,7 +706,7 @@ namespace CLU.Base
                     return true;
                 },
             new Sequence(
-                new Action(a => CLU.Log(" [Interupt] {0} on {1}", label, CLU.SafeName(Me.CurrentTarget))), 
+                new Action(a => CLU.Log(" [Interupt] {0} on {1}", label, CLU.SafeName(Me.CurrentTarget))),
                 new Action(a => SpellManager.Cast(name))));
         }
 
@@ -1081,7 +1086,7 @@ namespace CLU.Base
 
         #endregion
 
-      
+
         /// <summary>Stop casting, plain and simple.</summary>
         /// <param name="cond">The conditions that must be true</param>
         /// <param name="label">A descriptive label for the clients GUI logging output</param>

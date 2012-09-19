@@ -25,6 +25,9 @@ namespace CLU.Base
     using CombatLog;
     using Managers;
     using Settings;
+
+    using global::CLU.Helpers;
+
     using Action = Styx.TreeSharp.Action;
 
     internal static class Buff
@@ -33,7 +36,8 @@ namespace CLU.Base
 
         private static LocalPlayer Me
         {
-            get {
+            get
+            {
                 return StyxWoW.Me;
             }
         }
@@ -297,11 +301,13 @@ namespace CLU.Base
                 if (Me.Auras.TryGetValue(au.Key, out aura))
                 {
                     CLU.TroubleshootLog("Name: " + aura.Name + " ID: " + aura.SpellId);
-                } else {
-                    CLU.TroubleshootLog( au.Key);
+                }
+                else
+                {
+                    CLU.TroubleshootLog(au.Key);
                 }
             }
-            CLU.TroubleshootLog( "=======================================================");
+            CLU.TroubleshootLog("=======================================================");
         }
 
         /// <summary>Used to  provide the time at which to attempt to refresh our debuff</summary>
@@ -310,7 +316,7 @@ namespace CLU.Base
         public static double DotDelta(string name)
         {
             // TODO: Decide if we need to individually supply seconds left to refresh the spell (for instance we could supply 2.5 seconds to refresh Vampiric Touch).
-            return (Spell.CastTime(name) == 0 ? 1 :  Spell.CastTime(name) + Spell.GCD) + CombatLogEvents.ClientLag;
+            return (Spell.CastTime(name) == 0 ? 1 : Spell.CastTime(name) + Spell.GCD) + CombatLogEvents.ClientLag;
         }
 
         /// <summary>Check the aura thats created by yourself by the name on specified unit</summary>
@@ -376,35 +382,36 @@ namespace CLU.Base
         /// <param name="unit">The unit to check auras for. </param>
         /// <param name="isUrgent">The is Urgent.</param>
         /// <returns>true if the target has an aura to dispel</returns>
-        public static bool HasAuraToDispel  (this WoWUnit unit, bool isUrgent)
+        public static bool HasAuraToDispel(this WoWUnit unit, bool isUrgent)
         {
-            switch (Me.Class) {
-            case WoWClass.Rogue:
-                return false;
-            case WoWClass.DeathKnight:
-                return false;
-            case WoWClass.Hunter:
-                return false;
-            case WoWClass.Mage:
-                return HasAuraToDispel(unit, false, false, false, true, isUrgent);
-            case WoWClass.Warlock:
-                var felhunterWarlock = PetManager.CanCastPetSpell("Devour Magic");     			// Warlock has his felhunter out?
-                var impWarlock = PetManager.CanCastPetSpell("Singe Magic");            			// Warlock has his imp out?
-                return HasAuraToDispel(unit, false, felhunterWarlock || impWarlock, false, false, isUrgent);
-            case WoWClass.Shaman:
-                var restoShaman = TalentManager.HasTalent(12);                               // Are we a Restoration Shaman with Improved Cleanse Spirit?
-                return HasAuraToDispel(unit, false, restoShaman, false, true, isUrgent);
-            case WoWClass.Druid:
-                var restoDruid = TalentManager.HasTalent(17);                                // Do we have Nature's Cure talented?
-                return HasAuraToDispel(unit, false, restoDruid, true, true, isUrgent);
-            case WoWClass.Paladin:
-                var holyPaladin = TalentManager.HasTalent(14);                               // Are we a Holy Paladin with Sacred Cleansing?
-                return HasAuraToDispel(unit, true, holyPaladin, true, false, isUrgent);
-            case WoWClass.Priest:
-                // var holyPriest = TalentManager.HasTalent(14);                             // Are we a Holy Priest with Body and Soul?
-                return HasAuraToDispel(unit, true, true, false, false, isUrgent);
-            default:
-                return false;
+            switch (Me.Class)
+            {
+                case WoWClass.Rogue:
+                    return false;
+                case WoWClass.DeathKnight:
+                    return false;
+                case WoWClass.Hunter:
+                    return false;
+                case WoWClass.Mage:
+                    return HasAuraToDispel(unit, false, false, false, true, isUrgent);
+                case WoWClass.Warlock:
+                    var felhunterWarlock = PetManager.CanCastPetSpell("Devour Magic");     			// Warlock has his felhunter out?
+                    var impWarlock = PetManager.CanCastPetSpell("Singe Magic");            			// Warlock has his imp out?
+                    return HasAuraToDispel(unit, false, felhunterWarlock || impWarlock, false, false, isUrgent);
+                case WoWClass.Shaman:
+                    var restoShaman = TalentManager.HasTalent(12);                               // Are we a Restoration Shaman with Improved Cleanse Spirit?
+                    return HasAuraToDispel(unit, false, restoShaman, false, true, isUrgent);
+                case WoWClass.Druid:
+                    var restoDruid = TalentManager.HasTalent(17);                                // Do we have Nature's Cure talented?
+                    return HasAuraToDispel(unit, false, restoDruid, true, true, isUrgent);
+                case WoWClass.Paladin:
+                    var holyPaladin = TalentManager.HasTalent(14);                               // Are we a Holy Paladin with Sacred Cleansing?
+                    return HasAuraToDispel(unit, true, holyPaladin, true, false, isUrgent);
+                case WoWClass.Priest:
+                    // var holyPriest = TalentManager.HasTalent(14);                             // Are we a Holy Priest with Body and Soul?
+                    return HasAuraToDispel(unit, true, true, false, false, isUrgent);
+                default:
+                    return false;
             }
         }
 
@@ -418,20 +425,23 @@ namespace CLU.Base
         /// <returns>true if the target has an aura to dispel</returns>
         private static bool HasAuraToDispel(this WoWUnit unit, bool disease, bool magic, bool poison, bool curse, bool urgent)
         {
-            foreach (WoWAura aura in unit.Debuffs.Values) {
-                if (!ignoreDispel.Contains(aura.Name) && (urgent && urgentDispel.Contains(aura.Name))) {
+            foreach (WoWAura aura in unit.Debuffs.Values)
+            {
+                if (!ignoreDispel.Contains(aura.Name) && (urgent && urgentDispel.Contains(aura.Name)))
+                {
                     WoWDispelType type = aura.Spell.DispelType;
-                    switch (type) {
-                    case WoWDispelType.Curse:
-                        return curse;
-                    case WoWDispelType.Disease:
-                        return disease;
-                    case WoWDispelType.Magic:
-                        return magic;
-                    case WoWDispelType.Poison:
-                        return poison;
-                    default:
-                        return false;
+                    switch (type)
+                    {
+                        case WoWDispelType.Curse:
+                            return curse;
+                        case WoWDispelType.Disease:
+                            return disease;
+                        case WoWDispelType.Magic:
+                            return magic;
+                        case WoWDispelType.Poison:
+                            return poison;
+                        default:
+                            return false;
                     }
                 }
             }
@@ -468,7 +478,8 @@ namespace CLU.Base
         /// <returns>The get aura time left.</returns>
         public static TimeSpan GetAuraTimeLeft(WoWUnit unit, string auraName, bool fromMyAura)
         {
-            if (unit != null) {
+            if (unit != null)
+            {
                 WoWAura aura;
                 if (unit.Auras.TryGetValue(auraName, out aura))
                 {
@@ -476,7 +487,7 @@ namespace CLU.Base
                     var returnvalue = (!fromMyAura || aura.CreatorGuid == Me.Guid);
                     return returnvalue ? aura.TimeLeft : TimeSpan.Zero;
                 }
-                return  TimeSpan.Zero;
+                return TimeSpan.Zero;
             }
 
             CLU.DiagnosticLog(" [GetAuraTimeLeft] Unit is null ");
@@ -515,26 +526,32 @@ namespace CLU.Base
         public static Composite CastDebuff(string name, CanRunDecoratorDelegate cond, string label)
         {
             return new Decorator(
-        		delegate(object a) {
-        			if (!cond(a)) {
-        				return false;
-        			}
+                delegate(object a)
+                {
+                    if (!cond(a))
+                    {
+                        return false;
+                    }
 
-        			if (TargetDebuffTimeLeft(name).TotalSeconds > DotDelta(name)) {
-        				return false;
-        			}
+                    if (TargetDebuffTimeLeft(name).TotalSeconds > DotDelta(name))
+                    {
+                        return false;
+                    }
 
-        			var lockstatus = true;
-        			try {
-        				lockstatus = DateTime.Now.Subtract(CombatLogEvents.Locks[name]).TotalSeconds > 0;
-        			} catch { }
+                    var lockstatus = true;
+                    try
+                    {
+                        lockstatus = DateTime.Now.Subtract(CombatLogEvents.Locks[name]).TotalSeconds > 0;
+                    }
+                    catch { }
 
-        			if (!Spell.CanCast(name, Me.CurrentTarget)) {
-        				return false;
-        			}
+                    if (!Spell.CanCast(name, Me.CurrentTarget))
+                    {
+                        return false;
+                    }
 
-        			return lockstatus;
-            },
+                    return lockstatus;
+                },
             new Sequence(
                 new Action(a => CLU.Log(" [Casting Debuff] {0} : (RefreshTime={1}) had {2} second(s) left", label, DotDelta(name), TargetDebuffTimeLeft(name).TotalSeconds)),
                 new Action(a => SpellManager.Cast(name)),
@@ -548,29 +565,69 @@ namespace CLU.Base
         /// <param name="cond">The conditions that must be true</param>
         /// <param name="label">A descriptive label for the clients GUI logging output</param>
         /// <returns>true or false</returns>
+        public static Composite CastHealBuff(string name, CanRunDecoratorDelegate cond, string label)
+        {
+            return new Decorator(
+                delegate(object a)
+                {
+                    if (!cond(a))
+                    {
+                        return false;
+                    }
+
+                    if (TargetBuffTimeLeft(name, HealableUnit.HealTarget.ToUnit()).TotalSeconds > DotDelta(name))
+                    {
+                        return false;
+                    }
+
+                    var lockstatus = true;
+                    try
+                    {
+                        lockstatus = DateTime.Now.Subtract(CombatLogEvents.Locks[name]).TotalSeconds > 0;
+                    }
+                    catch { }
+
+                    if (!Spell.CanCast(name, HealableUnit.HealTarget.ToUnit()))
+                    {
+                        return false;
+                    }
+
+                    return lockstatus;
+                },
+            new Sequence(
+                new Action(a => CLU.Log(" [Casting TargetBuff] {0} : (RefreshTime={1}) had {2} second(s) left", label, DotDelta(name), TargetDebuffTimeLeft(name, HealableUnit.HealTarget.ToUnit()).TotalSeconds)),
+                new Action(a => SpellManager.Cast(name, HealableUnit.HealTarget.ToUnit())),
+                new Action(a => CombatLogEvents.Locks[name] = DateTime.Now.AddSeconds(Spell.CastTime(name) * 1.5 + CombatLogEvents.ClientLag))));
+        }
         public static Composite CastTargetBuff(string name, CanRunDecoratorDelegate cond, string label)
         {
             return new Decorator(
-        		delegate(object a) {
-        			if (!cond(a)) {
-        				return false;
-        			}
+                delegate(object a)
+                {
+                    if (!cond(a))
+                    {
+                        return false;
+                    }
 
-        			if (TargetBuffTimeLeft(name).TotalSeconds > DotDelta(name)) {
-        				return false;
-        			}
+                    if (TargetBuffTimeLeft(name).TotalSeconds > DotDelta(name))
+                    {
+                        return false;
+                    }
 
-        			var lockstatus = true;
-        			try {
-        				lockstatus = DateTime.Now.Subtract(CombatLogEvents.Locks[name]).TotalSeconds > 0;
-        			} catch { }
+                    var lockstatus = true;
+                    try
+                    {
+                        lockstatus = DateTime.Now.Subtract(CombatLogEvents.Locks[name]).TotalSeconds > 0;
+                    }
+                    catch { }
 
-        			if (!Spell.CanCast(name, Me.CurrentTarget)) {
-        				return false;
-        			}
+                    if (!Spell.CanCast(name, Me.CurrentTarget))
+                    {
+                        return false;
+                    }
 
-        			return lockstatus;
-            },
+                    return lockstatus;
+                },
             new Sequence(
                 new Action(a => CLU.Log(" [Casting TargetBuff] {0} : (RefreshTime={1}) had {2} second(s) left", label, DotDelta(name), TargetDebuffTimeLeft(name).TotalSeconds)),
                 new Action(a => SpellManager.Cast(name)),
@@ -588,24 +645,29 @@ namespace CLU.Base
         public static Composite CastOffensiveBuff(string spell, string buff, double maxTimeLeft, string label)
         {
             return new Decorator(
-        		delegate {
+                delegate
+                {
 
-        			var lockstatus = true;
-        			try {
-        				lockstatus = DateTime.Now.Subtract(CombatLogEvents.Locks[spell]).TotalSeconds > 0;
-        			} catch { }
+                    var lockstatus = true;
+                    try
+                    {
+                        lockstatus = DateTime.Now.Subtract(CombatLogEvents.Locks[spell]).TotalSeconds > 0;
+                    }
+                    catch { }
 
 
-        			if (PlayerBuffTimeLeft(buff) > maxTimeLeft) {
-        				return false;
-        			}
+                    if (PlayerBuffTimeLeft(buff) > maxTimeLeft)
+                    {
+                        return false;
+                    }
 
-        			if (!Spell.CanCast(spell, Me.CurrentTarget)) {
-        				return false;
-        			}
+                    if (!Spell.CanCast(spell, Me.CurrentTarget))
+                    {
+                        return false;
+                    }
 
-        			return lockstatus;
-            },
+                    return lockstatus;
+                },
             new Sequence(
                 new Action(
                     a => CLU.Log(
@@ -627,103 +689,106 @@ namespace CLU.Base
         public static Composite CastRaidBuff(string name, CanRunDecoratorDelegate cond, string label)
         {
             return new Decorator(
-        		delegate(object a) {
+                delegate(object a)
+                {
 
-        			if (!CLUSettings.Instance.EnableRaidPartyBuffing)
-        				return false;
+                    if (!CLUSettings.Instance.EnableRaidPartyBuffing)
+                        return false;
 
-        			if (!cond(a))
-        				return false;
+                    if (!cond(a))
+                        return false;
 
                     if (!Spell.CanCast(name, Me))
                     {
                         return false;
                     }
 
-        			// If we are solo then return true if the name of the requested buff matchs the users UI setting and the player does not have the buff..
-        			if (!Unit.IsInGroup && !Me.IsDead && !Me.IsGhost && Me.IsAlive) {
+                    // If we are solo then return true if the name of the requested buff matchs the users UI setting and the player does not have the buff..
+                    if (!Unit.IsInGroup && !Me.IsDead && !Me.IsGhost && Me.IsAlive)
+                    {
                         if (name.Contains(CLUSettings.Instance.Warrior.ShoutSelection.ToString()) && !PlayerHasBuff(name)) return true;
                         if (name.Contains(CLUSettings.Instance.Monk.LegacySelection.ToString()) && !PlayerHasBuff(name)) return true;
                         if (name.Contains(CLUSettings.Instance.Paladin.BlessingSelection.ToString()) && !PlayerHasBuff(name)) return true;
                         //if (name.Contains(CLUSettings.Instance.Warrior.ShoutSelection.ToString()) && PlayerHasBuff(name)) return false;
                         //if (name.Contains(CLUSettings.Instance.Monk.LegacySelection.ToString()) && PlayerHasBuff(name)) return false;
                         //if (name.Contains(CLUSettings.Instance.Paladin.BlessingSelection.ToString()) && PlayerHasBuff(name)) return false;
-        			}
+                    }
 
-        			// Continue on if we are in a raid group and check all raid members for the buffs we can provide and cast them if ok.
-        			var players = new List<WoWPlayer> { Me };
-        			if (Me.GroupInfo.IsInRaid)
-        			{
+                    // Continue on if we are in a raid group and check all raid members for the buffs we can provide and cast them if ok.
+                    var players = new List<WoWPlayer> { Me };
+                    if (Me.GroupInfo.IsInRaid)
+                    {
                         players.Remove(Me);
                         players.AddRange(Me.RaidMembers);
-        			}
+                    }
                     else if (Me.IsInParty)
                     {
                         players.AddRange(Me.PartyMembers);
                     }
 
-        			var ProvidablePlayerBuffs = new HashSet<int>();
-        			switch (StyxWoW.Me.Class) {
-        				case WoWClass.Warrior:
+                    var ProvidablePlayerBuffs = new HashSet<int>();
+                    switch (StyxWoW.Me.Class)
+                    {
+                        case WoWClass.Warrior:
                             ProvidablePlayerBuffs.UnionWith(Stamina);
                             ProvidablePlayerBuffs.UnionWith(AttackPower);
-        					
-        					break;
-        				case WoWClass.Paladin:
+
+                            break;
+                        case WoWClass.Paladin:
                             ProvidablePlayerBuffs.UnionWith(Stats);
                             ProvidablePlayerBuffs.UnionWith(Mastery);
-        					
-        					break;
-        				case WoWClass.Hunter:
+
+                            break;
+                        case WoWClass.Hunter:
                             ProvidablePlayerBuffs.UnionWith(AttackPower);
                             ProvidablePlayerBuffs.UnionWith(CriticalStrike);
-        					
-        					break;
-        				case WoWClass.Rogue:
+
+                            break;
+                        case WoWClass.Rogue:
                             ProvidablePlayerBuffs.UnionWith(AttackSpeed);
-        					
-        					break;
-        				case WoWClass.Priest:
+
+                            break;
+                        case WoWClass.Priest:
                             ProvidablePlayerBuffs.UnionWith(Stamina);
                             ProvidablePlayerBuffs.UnionWith(SpellHaste);
-        					
-        					break;
-        				case WoWClass.DeathKnight:
+
+                            break;
+                        case WoWClass.DeathKnight:
                             ProvidablePlayerBuffs.UnionWith(AttackPower);
                             ProvidablePlayerBuffs.UnionWith(AttackSpeed);
-        					
-        					break;
-        				case WoWClass.Shaman:
+
+                            break;
+                        case WoWClass.Shaman:
                             ProvidablePlayerBuffs.UnionWith(AttackSpeed);
                             ProvidablePlayerBuffs.UnionWith(SpellPower);
                             ProvidablePlayerBuffs.UnionWith(SpellHaste);
                             ProvidablePlayerBuffs.UnionWith(Mastery);
-        					
-        					break;
-        				case WoWClass.Mage:
+
+                            break;
+                        case WoWClass.Mage:
                             ProvidablePlayerBuffs.UnionWith(SpellPower);
                             ProvidablePlayerBuffs.UnionWith(CriticalStrike);
-        					
-        					break;
-        				case WoWClass.Warlock:
+
+                            break;
+                        case WoWClass.Warlock:
                             ProvidablePlayerBuffs.UnionWith(Stamina);
                             ProvidablePlayerBuffs.UnionWith(SpellPower);
-        					
-        					break;
-        				case WoWClass.Druid:
+
+                            break;
+                        case WoWClass.Druid:
                             ProvidablePlayerBuffs.UnionWith(Stats);
                             ProvidablePlayerBuffs.UnionWith(CriticalStrike);
                             ProvidablePlayerBuffs.UnionWith(SpellHaste);
-        			        break;
+                            break;
 
-        			    case WoWClass.Monk:
+                        case WoWClass.Monk:
                             ProvidablePlayerBuffs.UnionWith(Stats);
-                            ProvidablePlayerBuffs.UnionWith(Mastery);          
-        					break;
-        			}
+                            ProvidablePlayerBuffs.UnionWith(Mastery);
+                            break;
+                    }
 
-        			return  players.Any(x => x.Distance2DSqr < 40 * 40 && !x.HasAnyAura(ProvidablePlayerBuffs) && !x.IsDead && !x.IsGhost && x.IsAlive);
-            },
+                    return players.Any(x => x.Distance2DSqr < 40 * 40 && !x.HasAnyAura(ProvidablePlayerBuffs) && !x.IsDead && !x.IsGhost && x.IsAlive);
+                },
             new Sequence(
                 new Action(a => CLU.Log(" [Raid Buff] {0} ", label)),
                 new Action(a => SpellManager.Cast(name))));
@@ -739,18 +804,19 @@ namespace CLU.Base
         public static Composite CastBuff(string name, CanRunDecoratorDelegate cond, string label)
         {
             return new Decorator(
-        		delegate(object a) {
-        			if (PlayerHasBuff(name))
-        				return false;
+                delegate(object a)
+                {
+                    if (PlayerHasBuff(name))
+                        return false;
 
-        			if (!cond(a))
-        				return false;
+                    if (!cond(a))
+                        return false;
 
-        			if (!SpellManager.CanBuff(name, Me))
-        				return false;
+                    if (!SpellManager.CanBuff(name, Me))
+                        return false;
 
-        			return true;
-            },
+                    return true;
+                },
             new Sequence(
                 new Action(a => CLU.Log(" [Buff] {0} ", label)),
                 new Action(a => SpellManager.Cast(name))));
@@ -765,18 +831,19 @@ namespace CLU.Base
         public static Composite CastBuffonUnit(string name, CLU.UnitSelection onUnit, CanRunDecoratorDelegate cond, string label)
         {
             return new Decorator(
-        		delegate(object a) {
-        			if (TargetHasBuff(name))
-        				return false;
+                delegate(object a)
+                {
+                    if (TargetHasBuff(name))
+                        return false;
 
-        			if (!cond(a))
-        				return false;
+                    if (!cond(a))
+                        return false;
 
-        			if (!SpellManager.CanBuff(name, Me))
-        				return false;
+                    if (!SpellManager.CanBuff(name, Me))
+                        return false;
 
-        			return onUnit(a) != null;
-            },
+                    return onUnit(a) != null;
+                },
             new Sequence(
                 new Action(a => CLU.Log(" [Casting] {0} on {1}", label, CLU.SafeName(onUnit(a)))),
                 new Action(a => SpellManager.Cast(name, onUnit(a)))));
@@ -798,12 +865,16 @@ namespace CLU.Base
         /// <returns>The player buff time left.</returns>
         public static double PlayerBuffTimeLeft(string name)
         {
-            using (StyxWoW.Memory.AcquireFrame()) {
-                try {
+            using (StyxWoW.Memory.AcquireFrame())
+            {
+                try
+                {
                     var lua = String.Format("local x=select(7, UnitBuff('player', \"{0}\", nil, 'PLAYER')); if x==nil then return 0 else return x-GetTime() end", Spell.RealLuaEscape(name));
                     var t = Double.Parse(Lua.GetReturnValues(lua)[0]);
                     return t;
-                } catch {
+                }
+                catch
+                {
                     CLU.DiagnosticLog("Lua failed in PlayerBuffTimeLeft");
                     return 999999;
                 }
@@ -882,6 +953,10 @@ namespace CLU.Base
         {
             return GetAuraTimeLeft(Me.CurrentTarget, name, true);
         }
+        public static TimeSpan TargetDebuffTimeLeft(string name, WoWUnit tar)
+        {
+            return GetAuraTimeLeft(tar, name, true);
+        }
 
         /// <summary>Returns the buff time left on the target</summary>
         /// <param name="name">the name of the buff to check for</param>
@@ -889,6 +964,10 @@ namespace CLU.Base
         private static TimeSpan TargetBuffTimeLeft(string name)
         {
             return GetAuraTimeLeft(Me.CurrentTarget, name, true);
+        }
+        private static TimeSpan TargetBuffTimeLeft(string name, WoWUnit tar)
+        {
+            return GetAuraTimeLeft(tar, name, true);
         }
 
         /// <summary>Returns the debuff count on the target</summary>
@@ -908,6 +987,10 @@ namespace CLU.Base
         {
             return GetAuraStack(Me.CurrentTarget, name, false);
         }
+        public static uint TargetCountBuff(string name, WoWUnit tar)
+        {
+            return GetAuraStack(tar, name, false);
+        }
 
         /// <summary>Returns true if the target has this debuff</summary>
         /// <param name="name">the name of the debuff to check for</param>
@@ -923,6 +1006,10 @@ namespace CLU.Base
         public static bool TargetHasBuff(string name)
         {
             return HasAura(Me.CurrentTarget, name, Me);
+        }
+        public static bool TargetHasBuff(string name, WoWUnit tar)
+        {
+            return HasAura(tar, name, Me);
         }
 
         /// <summary>Returns true if the target has this debuff</summary>

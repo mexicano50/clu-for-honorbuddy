@@ -25,30 +25,39 @@ namespace CLU.Classes
     {
         protected static readonly TargetBase Healer = TargetBase.Instance;
 
+
+        protected static WoWUnit HealTarget 
+        { 
+            get
+            {
+                return HealableUnit.HealTarget.ToUnit();
+            }
+        }
+
         protected static double CurrentTargetHealthPercent
         {
             get {
-                return Me.CurrentTarget != null ? Me.CurrentTarget.HealthPercent : 9999;
+                return HealTarget != null ? HealTarget.HealthPercent : 9999;
             }
         }
         protected static bool IsTank
         {
             get {
-                return Me.CurrentTarget != null && Unit.Tanks.Any(u => u.Guid == Me.CurrentTarget.Guid);
+                return HealTarget != null && Unit.Tanks.Any(u => u.Guid == HealTarget.Guid);
             }
         }
 
         protected static bool IsHealer
         {
             get {
-                return Me.CurrentTarget != null && Unit.Healers.Any(u => u.Guid == Me.CurrentTarget.Guid);
+                return HealTarget != null && Unit.Healers.Any(u => u.Guid == HealTarget.Guid);
             }
         }
 
         protected static bool IsMe
         {
             get {
-                return Me.CurrentTarget != null && Me.CurrentTarget.IsMe;
+                return HealTarget != null && HealTarget.IsMe;
             }
         }
 
@@ -57,7 +66,7 @@ namespace CLU.Classes
         protected static bool CanNourish
         {
             get {
-                return Buff.TargetHasBuff("Wild Growth") || Buff.TargetHasBuff("Rejuvenation") || !Buff.PlayerHasBuff("Harmony") || Buff.TargetHasBuff("Regrowth") || Buff.TargetHasBuff("Lifebloom");
+                return HealTarget.HasAura("Wild Growth") || HealTarget.HasAura("Rejuvenation") || !HealTarget.HasAura("Harmony") || HealTarget.HasAura("Regrowth") || HealTarget.HasAura("Lifebloom");
             }
         }
 
@@ -65,7 +74,7 @@ namespace CLU.Classes
         protected static bool CanShield
         {
             get {
-                return !Buff.TargetHasDebuff("Weakened Soul") && StyxWoW.Me.Combat;
+                return HealTarget.HasAura("Weakened Soul") && StyxWoW.Me.Combat;//!Buff.TargetHasDebuff("Weakened Soul") && StyxWoW.Me.Combat;
             }
         }
 
@@ -86,8 +95,9 @@ namespace CLU.Classes
         // Discipline Priest ------------------------------------------------------------------------------------------------------------
         protected static uint GraceStacks
         {
-            get {
-                return Buff.TargetCountBuff("Grace");
+            get
+            {
+                return HealTarget != null ? Buff.GetAuraStack(HealTarget, "Grace", true) : 0;
             }
         }
 
@@ -117,7 +127,7 @@ namespace CLU.Classes
         protected static bool CanEarthshield
         {
             get {
-                return Me.CurrentTarget != null && HealableUnit.ListofHealableUnits.All(t => !t.ToUnit().GetAllAuras().Any(b => b.Name == "Earth Shield" && b.CreatorGuid == Me.Guid) && t.EarthShield);
+                return HealTarget != null && HealableUnit.ListofHealableUnits.All(t => !t.ToUnit().GetAllAuras().Any(b => b.Name == "Earth Shield" && b.CreatorGuid == Me.Guid) && t.EarthShield);
             }
         }
 
@@ -133,7 +143,7 @@ namespace CLU.Classes
         protected static bool PaladinCooldownsOk
         {
             get {
-                return Me.CurrentTarget != null && Spell.SpellCooldown("Divine Favor").TotalSeconds < 0.5 || Spell.SpellCooldown("Guardian of Ancient Kings").TotalSeconds < 0.5 || Spell.SpellCooldown("Avenging Wrath").TotalSeconds < 0.5;
+                return HealTarget != null && Spell.SpellCooldown("Divine Favor").TotalSeconds < 0.5 || Spell.SpellCooldown("Guardian of Ancient Kings").TotalSeconds < 0.5 || Spell.SpellCooldown("Avenging Wrath").TotalSeconds < 0.5;
             }
         }
     }

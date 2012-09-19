@@ -100,7 +100,7 @@ namespace CLU.Classes.Paladin
                     // Spell.WaitForCast(false),
 
                     // if someone dies make sure we retarget.
-                    TargetBase.EnsureTarget(ret => StyxWoW.Me.CurrentTarget == null),
+                    //TargetBase.EnsureTarget(ret => StyxWoW.Me.CurrentTarget == null),
 
                     // For DS Encounters.
                     EncounterSpecific.ExtraActionButton(),
@@ -121,38 +121,38 @@ namespace CLU.Classes.Paladin
 
                     // emergency Cooldowns
                     Healer.FindRaidMember(a => CLUSettings.Instance.UseCooldowns && StyxWoW.Me.Combat && Spell.SpellCooldown("Hand of Sacrifice").TotalSeconds < 0.5, x => x.ToUnit().InLineOfSight && !x.ToUnit().IsDead && x.HealthPercent < 45, (a, b) => (int)(a.CurrentHealth - b.CurrentHealth), "emergency Cooldowns",
-                                          Spell.CastSpell("Hand of Sacrifice", ret => (IsTank || IsHealer) && !IsMe, "Hand of Sacrifice")
+                                          Spell.CastHeal("Hand of Sacrifice", ret => (IsTank || IsHealer) && !IsMe, "Hand of Sacrifice")
                                          ),
 
                     // emergency Cooldowns that cause Forbearance
                     Healer.FindRaidMember(a => CLUSettings.Instance.UseCooldowns && StyxWoW.Me.Combat && (Spell.SpellCooldown("Lay on Hands").TotalSeconds < 0.5 || Spell.SpellCooldown("Hand of Protection").TotalSeconds < 0.5), x => x.ToUnit().InLineOfSight && !x.ToUnit().IsDead && x.HealthPercent < 35 && !x.ToUnit().HasAura("Forbearance"), (a, b) => (int)(a.CurrentHealth - b.CurrentHealth), "emergency Cooldowns that cause Forbearance",
-                                          Spell.CastSpell("Lay on Hands", ret => IsTank || IsHealer || IsMe, "Lay on Hands"),
-                                          Spell.CastSpell("Hand of Protection", ret => !IsTank, "Hand of Protection")
+                                          Spell.CastHeal("Lay on Hands", ret => IsTank || IsHealer || IsMe, "Lay on Hands"),
+                                          Spell.CastHeal("Hand of Protection", ret => !IsTank, "Hand of Protection")
                                          ),
 
                     // emergency heals on most injured tank
                     Healer.FindTank(a => true, x => x.ToUnit().InLineOfSight && !x.ToUnit().IsDead && x.HealthPercent < 50, (a, b) => (int)(a.CurrentHealth - b.CurrentHealth), "emergency heals on most injured tank",
-                                    Spell.CastSpell("Holy Shock", a => HolyPower < 3 || Buff.PlayerHasActiveBuff("Daybreak"), "Holy Shock before WoG (emergency)"),
-                                    Spell.CastSpell("Word of Glory", a => !SpellManager.HasSpell("Eternal Flame") && HolyPower >= 3, "Word of Glory (emergency)"),
-                                    Buff.CastTargetBuff("Eternal Flame", a => HolyPower >= 3, "Eternal Flame"),
-                                    Spell.CastSpell("Holy Shock", a => true, "Holy Shock"),
-                                    Spell.CastSpell("Divine Light", a => Buff.PlayerHasActiveBuff("Infusion of Light"), "Divine Light"),
-                                    Spell.CastSpell("Flash of Light", a => true, "Flash of Light (emergency)")
+                                    Spell.CastHeal("Holy Shock", a => HolyPower < 3 || Buff.PlayerHasActiveBuff("Daybreak"), "Holy Shock before WoG (emergency)"),
+                                    Spell.CastHeal("Word of Glory", a => !SpellManager.HasSpell("Eternal Flame") && HolyPower >= 3, "Word of Glory (emergency)"),
+                                    Buff.CastHealBuff("Eternal Flame", a => HolyPower >= 3, "Eternal Flame"),
+                                    Spell.CastHeal("Holy Shock", a => true, "Holy Shock"),
+                                    Spell.CastHeal("Divine Light", a => Buff.PlayerHasActiveBuff("Infusion of Light"), "Divine Light"),
+                                    Spell.CastHeal("Flash of Light", a => true, "Flash of Light (emergency)")
                                    ),
 
                     // Urgent Cleanse
                     Healer.FindRaidMember(a => CLUSettings.Instance.EnableDispel, x => x.ToUnit().InLineOfSight && !x.ToUnit().IsDead && x.ToUnit().HasAuraToDispel(true), (a, b) => (int)(a.CurrentHealth - b.CurrentHealth), "Cleanse (Urgent)",
-                                          Spell.CastSpell("Cleanse", a => true, "Cleanse (Urgent)")
+                                          Spell.CastHeal("Cleanse", a => true, "Cleanse (Urgent)")
                                          ),
 
                     // I'm fine and tanks are not dying => ensure nobody is REALLY low life
                     Healer.FindRaidMember(a => true, x => x.ToUnit().InLineOfSight && !x.ToUnit().IsDead && x.HealthPercent < 45, (a, b) => (int)(a.CurrentHealth - b.CurrentHealth), "I'm fine and tanks are not dying => ensure nobody is REALLY low life",
-                                          Spell.CastSpell("Holy Shock", a => HolyPower < 3 || Buff.PlayerHasActiveBuff("Daybreak"), "Holy Shock before WoG (emergency)"),
-                                          Spell.CastSpell("Word of Glory", a => !SpellManager.HasSpell("Eternal Flame") && HolyPower >= 3, "Word of Glory (emergency)"),
-                                          Buff.CastTargetBuff("Eternal Flame", a => HolyPower >= 3, "Eternal Flame"),
-                                          Spell.CastSpell("Holy Shock", a => true, "Holy Shock"),
-                                          Spell.CastSpell("Divine Light", a => Buff.PlayerHasActiveBuff("Infusion of Light"), "Divine Light"),
-                                          Spell.CastSpell("Flash of Light", a => true, "Flash of Light (emergency)")
+                                          Spell.CastHeal("Holy Shock", a => HolyPower < 3 || Buff.PlayerHasActiveBuff("Daybreak"), "Holy Shock before WoG (emergency)"),
+                                          Spell.CastHeal("Word of Glory", a => !SpellManager.HasSpell("Eternal Flame") && HolyPower >= 3, "Word of Glory (emergency)"),
+                                          Buff.CastHealBuff("Eternal Flame", a => HolyPower >= 3, "Eternal Flame"),
+                                          Spell.CastHeal("Holy Shock", a => true, "Holy Shock"),
+                                          Spell.CastHeal("Divine Light", a => Buff.PlayerHasActiveBuff("Infusion of Light"), "Divine Light"),
+                                          Spell.CastHeal("Flash of Light", a => true, "Flash of Light (emergency)")
                                          ),
 
                     ////// Cooldowns
@@ -168,13 +168,13 @@ namespace CLU.Classes.Paladin
 
                     // Beacon of Light on tank
                     Healer.FindTank(a => true, x => !x.ToUnit().IsDead && x.ToUnit().InLineOfSight && !x.ToUnit().HasMyAura("Beacon of Light") && x.Beacon, (a, b) => (int)(a.MaxHealth - b.MaxHealth), "Beacon on tank",
-                                    Buff.CastTargetBuff("Beacon of Light", a => true, "Beacon of Light")
+                                    Buff.CastHealBuff("Beacon of Light", a => true, "Beacon of Light")
                                    ),
 
                     //Sacred Shield on tank
                     //Not keeping Eternal Flame on tank b/c you need Holy Power to do it.
                     Healer.FindTank(a => true, x => !x.ToUnit().IsDead && x.ToUnit().InLineOfSight && x.ToUnit().Combat, (a, b) => (int)(a.MaxHealth - b.MaxHealth), "Sacred Shield tank",
-                                     Buff.CastTargetBuff("Sacred Shield", a => true, "Sacred Shield")
+                                     Buff.CastHealBuff("Sacred Shield", a => true, "Sacred Shield")
                                    ),
 
                     // party healing
@@ -183,32 +183,32 @@ namespace CLU.Classes.Paladin
                                               ),
                     // Holy Radiance
                     Healer.FindAreaHeal(a => true, 20, 80, 12f, (Me.GroupInfo.IsInRaid ? 4 : 3), "Holy Radiance party healing: Avg: 20-75 or 85, 11yrds, count: 4 or 3",
-                                        Spell.CastSpell("Holy Radiance", a => Me.ManaPercent > 15, "Holy Radiance")),
+                                        Spell.CastHeal("Holy Radiance", a => Me.ManaPercent > 15, "Holy Radiance")),
 
                     // single target healing not the tank
                     Healer.FindRaidMember(a => true, x => x.ToUnit().InLineOfSight && !x.ToUnit().IsDead && x.HealthPercent < 94 && !x.ToUnit().HasMyAura("Beacon of Light"), (a, b) => (int)(a.CurrentHealth - b.CurrentHealth), "Single target healing",
-                                          Spell.CastSpell("Holy Shock", a => HolyPower < 3 || Buff.PlayerHasActiveBuff("Daybreak"), "Holy Shock before WoG "),
-                                          Spell.CastSpell("Holy Shock", a => true, "Holy Shock"),
-                                          Spell.CastSpell("Word of Glory", a => !SpellManager.HasSpell("Eternal Flame") && HolyPower >= 3, "Word of Glory"),
-                                          Buff.CastTargetBuff("Eternal Flame", a => HolyPower >= 3, "Eternal Flame"),
-                                          Spell.CastSpell("Divine Light", a => Me.CurrentTarget != null && Buff.PlayerHasActiveBuff("Infusion of Light") && CurrentTargetHealthPercent < 80, "Divine Light"),
-                                          Spell.CastSpell("Divine Light", a => Me.CurrentTarget != null && CurrentTargetHealthPercent < 80, "Divine Light"),
-                                          Spell.CastSpell("Holy Light", a => true, "Holy Light")
+                                          Spell.CastHeal("Holy Shock", a => HolyPower < 3 || Buff.PlayerHasActiveBuff("Daybreak"), "Holy Shock before WoG "),
+                                          Spell.CastHeal("Holy Shock", a => true, "Holy Shock"),
+                                          Spell.CastHeal("Word of Glory", a => !SpellManager.HasSpell("Eternal Flame") && HolyPower >= 3, "Word of Glory"),
+                                          Buff.CastHealBuff("Eternal Flame", a => HolyPower >= 3, "Eternal Flame"),
+                                          Spell.CastHeal("Divine Light", a => HealTarget != null && Buff.PlayerHasActiveBuff("Infusion of Light") && HealTarget.HealthPercent < 80, "Divine Light"),
+                                          Spell.CastHeal("Divine Light", a => HealTarget != null && HealTarget.HealthPercent < 80, "Divine Light"),
+                                          Spell.CastHeal("Holy Light", a => true, "Holy Light")
                                          ),
 
                     // single target healing with the tank
                     Healer.FindTank(a => true, x => x.ToUnit().InLineOfSight && !x.ToUnit().IsDead && x.HealthPercent < 94, (a, b) => (int)(a.CurrentHealth - b.CurrentHealth), "Single target Tank healing",
-                                    Spell.CastSpell("Holy Shock", a => HolyPower < 3 || Buff.PlayerHasActiveBuff("Daybreak"), "Holy Shock before WoG "),
-                                    Spell.CastSpell("Word of Glory", a => !SpellManager.HasSpell("Eternal Flame") && HolyPower >= 3, "Word of Glory"),
-                                    Spell.CastSpell("Holy Shock", a => true, "Holy Shock"),
-                                    Spell.CastSpell("Divine Light", a => Me.CurrentTarget != null && Buff.PlayerHasActiveBuff("Infusion of Light") && CurrentTargetHealthPercent < 80, "Divine Light"),
-                                    Spell.CastSpell("Divine Light", a => Me.CurrentTarget != null && CurrentTargetHealthPercent < 80, "Divine Light"),
-                                    Spell.CastSpell("Holy Light", a => true, "Holy Light")
+                                    Spell.CastHeal("Holy Shock", a => HolyPower < 3 || Buff.PlayerHasActiveBuff("Daybreak"), "Holy Shock before WoG "),
+                                    Spell.CastHeal("Word of Glory", a => !SpellManager.HasSpell("Eternal Flame") && HolyPower >= 3, "Word of Glory"),
+                                    Spell.CastHeal("Holy Shock", a => true, "Holy Shock"),
+                                    Spell.CastHeal("Divine Light", a => HealTarget != null && Buff.PlayerHasActiveBuff("Infusion of Light") && HealTarget.HealthPercent < 80, "Divine Light"),
+                                    Spell.CastHeal("Divine Light", a => HealTarget != null && HealTarget.HealthPercent < 80, "Divine Light"),
+                                    Spell.CastHeal("Holy Light", a => true, "Holy Light")
                                    ),
 
                     // Cleanse
                     Healer.FindRaidMember(a => CLUSettings.Instance.EnableDispel, x => x.ToUnit().InLineOfSight && !x.ToUnit().IsDead && x.ToUnit().HasAuraToDispel(false), (a, b) => (int)(a.CurrentHealth - b.CurrentHealth), "Cleanse",
-                                          Spell.CastSpell("Cleanse", a => true, "Cleanse ")
+                                          Spell.CastHeal("Cleanse", a => true, "Cleanse ")
                                          ),
 
                     //// Nub DPS
@@ -218,11 +218,11 @@ namespace CLU.Classes.Paladin
 
                     // cast Holy Shock while moving
                     Healer.FindRaidMember(a => Me.IsMoving && SpellManager.CanCast("Holy Shock"), x => x.ToUnit().InLineOfSight && !x.ToUnit().IsDead && x.HealthPercent < 90, (a, b) => (int)(a.CurrentHealth - b.CurrentHealth), "cast Holy Shock while moving",
-                                          Spell.CastSpell("Holy Shock", a => true, "Holy Shock while moving")
+                                          Spell.CastHeal("Holy Shock", a => true, "Holy Shock while moving")
                                          ),
 
                     // If no one to heal make sure we use the free Holy Shock with Daybreak for Holy power generation.
-                    Spell.CastSpell("Holy Shock", ret => Me, a => Buff.PlayerHasActiveBuff("Daybreak") && Buff.PlayerActiveBuffTimeLeft("Daybreak").TotalSeconds < 2 && HolyPower < 3, "Holy Shock (Holy power generation)")
+                    Spell.CastHeal("Holy Shock", ret => Me, a => Buff.PlayerHasActiveBuff("Daybreak") && Buff.PlayerActiveBuffTimeLeft("Daybreak").TotalSeconds < 2 && HolyPower < 3, "Holy Shock (Holy power generation)")
 
                 );
             }
@@ -250,7 +250,7 @@ namespace CLU.Classes.Paladin
                     new PrioritySelector(
                     // Beacon of Light on tank
                         Healer.FindTank(a => true, x => !x.ToUnit().IsDead && x.ToUnit().InLineOfSight && !x.ToUnit().HasMyAura("Beacon of Light") && x.Beacon, (a, b) => (int)(a.MaxHealth - b.MaxHealth), "Beacon of Light on tank",
-                                        Buff.CastTargetBuff("Beacon of Light", a => true, "Beacon of Light")
+                                        Buff.CastHealBuff("Beacon of Light", a => true, "Beacon of Light")
                                        ),
                         Buff.CastBuff("Seal of Insight", ret => true, "Seal of Insight"),
                         Buff.CastRaidBuff("Blessing of Kings", ret => true, "[Blessing] of Kings"),

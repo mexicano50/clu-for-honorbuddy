@@ -74,7 +74,7 @@ namespace CLU
     {
         #region Constants and Fields
 
-        public static readonly Version Version = new Version(3, 3, 1);
+        public static readonly Version Version = new Version(3, 3, 2);
         private readonly Timer _clupulsetimer = new Timer(10000); // A timer for keybinds
         private RotationBase _rotationBase;
         private List<RotationBase> _rotations; // list of Rotations
@@ -184,7 +184,7 @@ namespace CLU
 
                 return new Sequence
                     (new DecoratorContinue(x => CLUSettings.Instance.EnableMovement, Movement.MovingFacingBehavior()),
-                     new DecoratorContinue(x => Me.CurrentTarget != null, currentrotation));
+                     new DecoratorContinue(x => Me.CurrentTarget != null || IsHealerRotationActive, currentrotation));
             }
         }
 
@@ -398,6 +398,8 @@ namespace CLU
             TroubleshootLog("Character Faction: {0}", Me.IsAlliance ? "Alliance" : "Horde");
             TroubleshootLog("Character Race: {0}", Me.Race);
             TroubleshootLog("Character Mapname: {0}", Me.MapName);
+            TroubleshootLog("GroupType: {0}", GroupType.ToString());
+            TroubleshootLog("LocationContext: {0}", LocationContext.ToString());
             // Talents
             TroubleshootLog("Retrieving Talent Spec");
             try

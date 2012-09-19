@@ -27,6 +27,8 @@ namespace CLU.Helpers
     public class HealableUnit
     {
     	private bool beaconUnit;
+
+        
         private bool lifeBloomUnit;
         private bool earthShieldUnit;
         private bool mainTank;
@@ -37,7 +39,27 @@ namespace CLU.Helpers
         internal static bool IsInGroup { get { return Me.GroupInfo.IsInRaid || Me.IsInParty; } }
         internal static readonly IEnumerable<WoWPlayer> Groupofplayers = Me.GroupInfo.IsInRaid ? Me.RaidMembers : Me.PartyMembers;
         internal static IEnumerable<WoWPartyMember> GroupMembers { get { return !Me.GroupInfo.IsInRaid ? Me.GroupInfo.PartyMembers : Me.GroupInfo.RaidMembers; } }
-        
+
+
+        // This will be the primary heal target set from TargetBase.
+        private static HealableUnit healtarget;
+        public static HealableUnit HealTarget
+        {
+            get
+            {
+                if (healtarget == null)
+                {
+                    return new HealableUnit(Me);
+                }
+                return healtarget;
+            }
+
+            set
+            {
+                healtarget = value;
+            }
+        }
+
         // Empty Constructor
         private HealableUnit()
         {
@@ -59,7 +81,6 @@ namespace CLU.Helpers
                 return instance ?? (instance = new HealableUnit());
             }
         }
-        
 
         //a crude attempt at handling adding and removing from listofHealableUnits.
         private static bool Adding
