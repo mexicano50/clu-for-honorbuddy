@@ -230,7 +230,7 @@ namespace CLU.Classes.Rogue
                     //Switched to || instead of &&, we want to use trinkets on Cd and not every 2min
                      new PrioritySelector
                          (Item.UseTrinkets(), Racials.UseRacials(), Buff.CastBuff("Lifeblood", ret => true, "Lifeblood"),
-                    // Thanks Kink
+                          // Thanks Kink
                           Item.UseEngineerGloves()));
             }
         }
@@ -247,13 +247,19 @@ namespace CLU.Classes.Rogue
                                ret =>
                                Me.ComboPoints >= ReqCmbPts && Me.CurrentEnergy > 70 &&
                                Buff.TargetDebuffTimeLeft("Rupture").TotalSeconds > 2, "Pooling Envenom"),
-                    // Envenom if we have enough combo points, Rupture is safe and we're about to cap.
+                          // Envenom if we have enough combo points, Rupture is safe and we're about to cap.
                           Spell.CastSpell
                               ("Envenom",
                                ret =>
                                Me.ComboPoints >= 2 && Buff.PlayerActiveBuffTimeLeft("Slice and Dice").TotalSeconds < 2,
                                "SnD Refresh Envenom"),
-                    // Envenom if SnD is about to fall off. This should never happen.
+                          // Envenom if SnD is about to fall off. This should never happen.
+                          Spell.CastSpell
+                              ("Envenom",
+                               ret =>
+                               Me.ComboPoints == 5 && Me.CurrentTarget.HealthPercent < 35 && Buff.TargetDebuffTimeLeft("Rupture").TotalSeconds > 2,
+                               "Execute Envenom"),
+                        // Envenom if SnD is about to fall off. This should never happen.
                           Spell.CastSpell
                               ("Envenom",
                                ret =>
@@ -329,9 +335,9 @@ namespace CLU.Classes.Rogue
                     // Do not rupture if SnD is about to come down.
                      new PrioritySelector
                          (Spell.CastSpell("Rupture", ret => !Buff.TargetHasDebuff("Rupture"), "Rupture @ Down"),
-                    // Rupture if it's down.
+                          // Rupture if it's down.
                           Spell.CastSpell("Rupture", ret => Me.ComboPoints >= ReqCmbPts, "Rupture @ Low")));
-                // Rupture if it's about to fall off and we have 4 or 5 combo points.
+                          // Rupture if it's about to fall off and we have 4 or 5 combo points.
             }
         }
 
@@ -357,7 +363,7 @@ namespace CLU.Classes.Rogue
                 return new Decorator
                     (x =>
                      BuffsSafeForVanish && Unit.IsTargetWorthy(Me.CurrentTarget) && Me.ComboPoints < 4 &&
-                     VanishWithShadowFocus && Me.CurrentTarget.IsWithinMeleeRange,
+                     VanishWithShadowFocus && Me.CurrentTarget.IsWithinMeleeRange && !Buff.PlayerHasActiveBuff("Blindside"),
                      Spell.CastSelfSpell("Vanish", x => true, "Vanish"));
             }
         }
@@ -390,10 +396,10 @@ namespace CLU.Classes.Rogue
                 return;
             }
 
-            if (StyxWoW.Me.IsBehind(Me.CurrentTarget) && Spell.CanCast("Ambush", Me.CurrentTarget))
+            if (Me.CurrentTarget.HealthPercent >= 35)
             {
-                CLU.Log(" [Casting] Ambush on {0}", CLU.SafeName(Me.CurrentTarget));
-                SpellManager.Cast("Ambush");
+                CLU.Log(" [Casting] Mutilate on {0} @ StealthedCombat", CLU.SafeName(Me.CurrentTarget));
+                SpellManager.Cast("Mutilate");
             }
             else if (SpellManager.HasSpell("Shadowstep") && !StyxWoW.Me.IsBehind(Me.CurrentTarget) &&
                       Spell.CanCast("Shadowstep", Me.CurrentTarget))
@@ -401,17 +407,10 @@ namespace CLU.Classes.Rogue
                 CLU.Log(" [Casting] Shadowstep on {0}", CLU.SafeName(Me.CurrentTarget));
                 SpellManager.Cast("Shadowstep");
             }
-            else if (!StyxWoW.Me.IsBehind(Me.CurrentTarget) && Me.CurrentEnergy > 90 &&
-                      Me.CurrentTarget.HealthPercent < 35 && Spell.CanCast("Dispatch", Me.CurrentTarget))
+            else if (Me.CurrentTarget.HealthPercent < 35 && Spell.CanCast("Dispatch", Me.CurrentTarget))
             {
                 CLU.Log(" [Casting] Dispatch on {0} @ StealthedCombat", CLU.SafeName(Me.CurrentTarget));
                 SpellManager.Cast("Dispatch");
-            }
-            else if (!StyxWoW.Me.IsBehind(Me.CurrentTarget) && Me.CurrentEnergy > 90 &&
-                      Spell.CanCast("Mutilate", Me.CurrentTarget))
-            {
-                CLU.Log(" [Casting] Mutilate on {0} @ StealthedCombat", CLU.SafeName(Me.CurrentTarget));
-                SpellManager.Cast("Mutilate");
             }
         }
 
