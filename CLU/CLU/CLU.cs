@@ -127,13 +127,13 @@ namespace CLU
         {
             get
             {
-                if ( this._rotationBase == null )
+                if (this._rotationBase == null)
                 {
                     TroubleshootLog("ActiveRotation is null..retrieving.");
                     this.QueryClassTree();
-                    if ( this._rotationBase == null )
+                    if (this._rotationBase == null)
                     {
-                        if ( TalentManager.CurrentSpec == WoWSpec.None)
+                        if (TalentManager.CurrentSpec == WoWSpec.None)
                         {
                             Log(" Greetings, level {0} user. Unfortunelty CLU does not support such Low Level players at this time", Me.Level);
                             StopBot("Unable to find Active Rotation");
@@ -207,16 +207,16 @@ namespace CLU
         public override double? PullDistance { get { return this.ActiveRotation.CombatMaxDistance; } }
 
         public override Composite CombatBehavior { get { return this._combatBehavior; } }
-        
+
         public override Composite CombatBuffBehavior { get { return this._combatBuffBehavior; } }
 
         public override Composite PreCombatBuffBehavior { get { return this._preCombatBuffBehavior; } }
-        
+
         public override Composite PullBehavior { get { return this._pullBehavior; } }
 
         public override Composite RestBehavior { get { return this._restBehavior; } }
-            
-       
+
+
         public bool CreateBehaviors()
         {
             TroubleshootLog("CreateBehaviors called.");
@@ -270,7 +270,7 @@ namespace CLU
 
                 Map map = StyxWoW.Me.CurrentMap;
 
-                if ( map.IsBattleground || map.IsArena )
+                if (map.IsBattleground || map.IsArena)
                 {
                     return GroupLogic.Battleground;
                 }
@@ -286,16 +286,16 @@ namespace CLU
         {
             get
             {
-                if ( Me.IsOnTransport )
+                if (Me.IsOnTransport)
                 {
                     return false;
                 }
-                if ( CLUSettings.Instance.NeverDismount && IsMounted )
+                if (CLUSettings.Instance.NeverDismount && IsMounted)
                 {
                     return false;
                 }
                 // if (Buff.PlayerBuffTimeLeft("Cannibalize") > 1) return false;
-                if ( Buff.PlayerHasBuff("Health Funnel") )
+                if (Buff.PlayerHasBuff("Health Funnel"))
                 {
                     return false;
                 }
@@ -331,7 +331,7 @@ namespace CLU
         /// <param name="args">the arguments that accompany the message</param>
         public static void DiagnosticLog(string msg, params object[] args)
         {
-            if ( msg != null && CLUSettings.Instance.EnableDebugLogging )
+            if (msg != null && CLUSettings.Instance.EnableDebugLogging)
             {
                 Logging.Write(LogLevel.Diagnostic, Colors.White, "[CLU] " + Version + ": " + msg, args);
             }
@@ -349,7 +349,7 @@ namespace CLU
         /// <param name="args">the arguments that accompany the message</param>
         public static void MovementLog(string msg, params object[] args)
         {
-            if ( msg != null && CLUSettings.Instance.MovementLogging )
+            if (msg != null && CLUSettings.Instance.MovementLogging)
             {
                 Logging.Write(LogLevel.Quiet, Colors.DimGray, "[CLU] " + Version + ": " + msg, args);
             }
@@ -362,9 +362,9 @@ namespace CLU
         /// <returns>a safe name for the log</returns>
         public static string SafeName(WoWUnit unit)
         {
-            if ( unit != null )
+            if (unit != null)
             {
-                return ( unit.Name == Me.Name ) ? "Myself" : unit.Name;
+                return (unit.Name == Me.Name) ? "Myself" : unit.Name;
             }
 
             return "No Target";
@@ -375,7 +375,7 @@ namespace CLU
         /// <param name="args">the arguments that accompany the message</param>
         public static void TroubleshootLog(string msg, params object[] args)
         {
-            if ( msg != null )
+            if (msg != null)
             {
                 Logging.Write(LogLevel.Quiet, Colors.DimGray, "[CLU] " + Version + ": " + msg, args);
             }
@@ -437,7 +437,7 @@ namespace CLU
             TroubleshootLog(" Behaviors created!");
             // Racials
             TroubleshootLog("Retrieving Racial Abilities");
-            foreach ( WoWSpell racial in Racials.CurrentRacials )
+            foreach (WoWSpell racial in Racials.CurrentRacials)
             {
                 TroubleshootLog(" Character Racial Abilitie: {0} ", racial.Name);
             }
@@ -502,19 +502,19 @@ namespace CLU
         public override void OnButtonPress()
         {
             if (_a == null) _a = new ConfigurationForm();
-            if(_a!=null || _a.IsDisposed) _a.ShowDialog();
+            if (_a != null || _a.IsDisposed) _a.ShowDialog();
         }
 
         public override void Pulse()
         {
             PulseHander handler = this.PulseEvent;
 
-            if ( handler != null )
+            if (handler != null)
             {
                 handler();
             }
 
-            if ( !Me.IsValid || !StyxWoW.IsInGame )
+            if (!Me.IsValid || !StyxWoW.IsInGame)
             {
                 return;
             }
@@ -528,7 +528,7 @@ namespace CLU
                     break;
             }
 
-            if ( IsHealerRotationActive )
+            if (IsHealerRotationActive)
             {
                 HealableUnit.Pulse(); //
             }
@@ -545,26 +545,26 @@ namespace CLU
         {
             try
             {
-                Type type = typeof (RotationBase);
+                Type type = typeof(RotationBase);
                 //no need to get ALL Assemblies, need only the executed ones
                 IEnumerable<Type> types = Assembly.GetExecutingAssembly().GetTypes().Where(p => p.IsSubclassOf(type));
                 //_rotations.AddRange(new TypeLoader<RotationBase>(null));
 
                 this._rotations = new List<RotationBase>();
-                foreach ( Type x in types )
+                foreach (Type x in types)
                 {
-                    ConstructorInfo constructorInfo = x.GetConstructor(new Type[] {});
-                    if ( constructorInfo != null )
+                    ConstructorInfo constructorInfo = x.GetConstructor(new Type[] { });
+                    if (constructorInfo != null)
                     {
-                        var rb = constructorInfo.Invoke(new object[] {}) as RotationBase;
-                        if ( rb != null && SpellManager.HasSpell(rb.KeySpellId) )
+                        var rb = constructorInfo.Invoke(new object[] { }) as RotationBase;
+                        if (rb != null && SpellManager.HasSpell(rb.KeySpellId))
                         {
                             TroubleshootLog(" Using " + rb.Name + " rotation. Character has " + rb.KeySpell);
                             this._rotations.Add(rb);
                         }
                         else
                         {
-                            if ( rb != null )
+                            if (rb != null)
                             {
                                 //TroubleshootLog(" Skipping " + rb.Name + " rotation. Character is missing " + rb.KeySpell);
                             }
@@ -573,20 +573,20 @@ namespace CLU
                 }
                 // If there is more than one rotation then display the selector for the user, otherwise just load the one and only.
 
-                if ( this._rotations.Count > 1 )
+                if (this._rotations.Count > 1)
                 {
                     string value = "null";
                     if (
                         GUIHelpers.RotationSelector
                             ("[CLU] " + Version + " Rotation Selector", this._rotations,
-                             "Please select your prefered rotation:", ref value) == DialogResult.OK )
+                             "Please select your prefered rotation:", ref value) == DialogResult.OK)
                     {
                         this.SetActiveRotation(this._rotations.First(x => value != null && x.Name == value));
                     }
                 }
                 else
                 {
-                    if ( this._rotations.Count == 0 )
+                    if (this._rotations.Count == 0)
                     {
                         Log("Couldn't finde a rotation for you, Contact us!");
                         StopBot("Unable to find Active Rotation");
@@ -594,7 +594,7 @@ namespace CLU
                     else
                     {
                         RotationBase r = this._rotations.FirstOrDefault();
-                        if ( r != null )
+                        if (r != null)
                         {
                             Log("Found rotation: " + r.Name);
                             this.SetActiveRotation(r);
@@ -605,13 +605,13 @@ namespace CLU
             catch (ReflectionTypeLoadException ex)
             {
                 var sb = new StringBuilder();
-                foreach ( Exception exSub in ex.LoaderExceptions )
+                foreach (Exception exSub in ex.LoaderExceptions)
                 {
                     sb.AppendLine(exSub.Message);
-                    if ( exSub is FileNotFoundException )
+                    if (exSub is FileNotFoundException)
                     {
                         var exFileNotFound = exSub as FileNotFoundException;
-                        if ( !string.IsNullOrEmpty(exFileNotFound.FusionLog) )
+                        if (!string.IsNullOrEmpty(exFileNotFound.FusionLog))
                         {
                             sb.AppendLine("CLU Log:");
                             sb.AppendLine(exFileNotFound.FusionLog);
@@ -632,11 +632,11 @@ namespace CLU
 
         private static void ClupulsetimerElapsed(object sender, ElapsedEventArgs e)
         {
-            if ( !Me.IsValid || !StyxWoW.IsInGame )
+            if (!Me.IsValid || !StyxWoW.IsInGame)
             {
                 return;
             }
-            if ( CLUSettings.Instance.EnableKeybinds )
+            if (CLUSettings.Instance.EnableKeybinds)
             {
                 Keybinds.Pulse();
             }
@@ -673,14 +673,14 @@ namespace CLU
             this.PulseEvent += rb.OnPulse;
 
             // Check for Instancebuddy and warn user that healing is not supported.
-            if ( BotChecker.BotBaseInUse("Instancebuddy") &&
-                 this.ActiveRotation.GetType().BaseType == typeof (HealerRotationBase) )
+            if (BotChecker.BotBaseInUse("Instancebuddy") &&
+                 this.ActiveRotation.GetType().BaseType == typeof(HealerRotationBase))
             {
                 Log(" [BotChecker] Instancebuddy Detected. *UNABLE TO HEAL WITH CLU*");
                 StopBot("You cannot use CLU with InstanceBuddy as Healer");
             }
 
-            if ( this.ActiveRotation.GetType().BaseType == typeof (HealerRotationBase) )
+            if (this.ActiveRotation.GetType().BaseType == typeof(HealerRotationBase))
             {
                 TroubleshootLog
                     (" [HealingChecker] HealerRotationBase Detected. *Activating Automatic HealableUnit refresh*");

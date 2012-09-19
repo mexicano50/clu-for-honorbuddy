@@ -16,7 +16,8 @@ namespace CLU.Classes.Priest
     {
         public override string Name
         {
-            get {
+            get
+            {
                 return "Discipline Priest";
             }
         }
@@ -31,7 +32,8 @@ namespace CLU.Classes.Priest
 
         public override string KeySpell
         {
-            get {
+            get
+            {
                 return "Penance";
             }
         }
@@ -41,14 +43,16 @@ namespace CLU.Classes.Priest
         }
         public override float CombatMaxDistance
         {
-            get {
+            get
+            {
                 return 34f;
             }
         }
 
         public override float CombatMinDistance
         {
-            get {
+            get
+            {
                 return 28f;
             }
         }
@@ -57,7 +61,8 @@ namespace CLU.Classes.Priest
         // adding some help about cooldown management
         public override string Help
         {
-            get {
+            get
+            {
                 return "\n" +
                        "----------------------------------------------------------------------\n" +
                        "This Rotation will:\n" +
@@ -78,13 +83,14 @@ namespace CLU.Classes.Priest
 
         public override Composite SingleRotation
         {
-            get {
+            get
+            {
                 return new PrioritySelector(
-                           // Pause Rotation
+                    // Pause Rotation
                            new Decorator(ret => CLUSettings.Instance.PauseRotation, new ActionAlwaysSucceed()),
 
                            // if someone dies make sure we retarget.
-                           //TargetBase.EnsureTarget(ret => StyxWoW.Me.CurrentTarget == null),
+                    //TargetBase.EnsureTarget(ret => StyxWoW.Me.CurrentTarget == null),
 
                            // For DS Encounters.
                            EncounterSpecific.ExtraActionButton(),
@@ -97,7 +103,7 @@ namespace CLU.Classes.Priest
                            Spell.CastSpell("Flash Heal", ret => Me, a => Me.HealthPercent < CLUSettings.Instance.Priest.FlashHealEHOM, "flash heal on me, emergency"),
 
                            // Threat
-                          // Buff.CastBuff("Fade", ret => (CLUSettings.Instance.UseCooldowns || CLUSettings.Instance.Priest.UseFade) && Me.CurrentTarget != null && Me.CurrentTarget.ThreatInfo.RawPercent > 90, "Fade (Threat)"),
+                    // Buff.CastBuff("Fade", ret => (CLUSettings.Instance.UseCooldowns || CLUSettings.Instance.Priest.UseFade) && Me.CurrentTarget != null && Me.CurrentTarget.ThreatInfo.RawPercent > 90, "Fade (Threat)"),
 
                            // Spell.WaitForCast(true),
 
@@ -116,14 +122,14 @@ namespace CLU.Classes.Priest
                     //Spell.CastSpell("Power Infusion", ret => Me, a => !Buff.UnitHasHasteBuff(Me) && CLUSettings.Instance.UseCooldowns && StyxWoW.Me.Combat, "Power Infusion"),
 
                            //// Cooldowns // currently slowing the CC down
-                           //Healer.FindAreaHeal(a => CLUSettings.Instance.UseCooldowns && StyxWoW.Me.Combat, 10, 65, 40f, (Me.GroupInfo.IsInRaid ? 6 : 3), "Cooldowns: Avg: 10-65, 40yrds, count: 6 or 3",
-                           //                    Item.UseTrinkets(),
-                           //                    Racials.UseRacials(),
-                           //                    Spell.CastSelfSpell("Archangel", ret => IsAtonementSpec && Buff.PlayerCountBuff("Evangelism") > 4, "Archangel"),
+                    //Healer.FindAreaHeal(a => CLUSettings.Instance.UseCooldowns && StyxWoW.Me.Combat, 10, 65, 40f, (Me.GroupInfo.IsInRaid ? 6 : 3), "Cooldowns: Avg: 10-65, 40yrds, count: 6 or 3",
+                    //                    Item.UseTrinkets(),
+                    //                    Racials.UseRacials(),
+                    //                    Spell.CastSelfSpell("Archangel", ret => IsAtonementSpec && Buff.PlayerCountBuff("Evangelism") > 4, "Archangel"),
                     //                    Spell.CastSpell("Power Infusion", ret => Me, a => !Buff.UnitHasHasteBuff(Me), "Power Infusion"),
-                           //                    Buff.CastBuff("Lifeblood", ret => true, "Lifeblood"),
-                           //                    Item.UseEngineerGloves()
-                           //),
+                    //                    Buff.CastBuff("Lifeblood", ret => true, "Lifeblood"),
+                    //                    Item.UseEngineerGloves()
+                    //),
 
                            // emergency heals on most injured tank
                            Healer.FindTank(a => true, x => x.ToUnit().InLineOfSight && !x.ToUnit().IsDead && x.HealthPercent < CLUSettings.Instance.Priest.EmergencyhealsonmostinjuredtankHealthPercent, (a, b) => (int)(a.CurrentHealth - b.CurrentHealth), "emergency heals on most injured tank",
@@ -183,9 +189,9 @@ namespace CLU.Classes.Priest
                                                Spell.CastOnUnitLocation("Power Word: Barrier", u => HealTarget, a => NotMoving, "Power Word: Barrier")),
 
                            // // party healing with Holy Nova
-                           // Healer.FindAreaHeal(a => IsAtonementSpec, 10, 80, 11f, (Me.GroupInfo.IsInRaid ? 4 : 3), "party healing: Avg: 10-80, 30yrds, count: 4 or 3",
-                           //    Spell.CastSelfSpell("Holy Nova", a => true, "Holy Nova")
-                           // ),
+                    // Healer.FindAreaHeal(a => IsAtonementSpec, 10, 80, 11f, (Me.GroupInfo.IsInRaid ? 4 : 3), "party healing: Avg: 10-80, 30yrds, count: 4 or 3",
+                    //    Spell.CastSelfSpell("Holy Nova", a => true, "Holy Nova")
+                    // ),
 
 
                            // single target healing
@@ -232,7 +238,8 @@ namespace CLU.Classes.Priest
 
         public override Composite Medic
         {
-            get {
+            get
+            {
                 return new Decorator(
                     ret => Me.HealthPercent < 100 && CLUSettings.Instance.EnableSelfHealing,
                     new PrioritySelector(
@@ -242,14 +249,15 @@ namespace CLU.Classes.Priest
 
         public override Composite PreCombat
         {
-            get {
+            get
+            {
                 return new PrioritySelector(
                     new Decorator(
                         ret => !Me.Mounted && !Me.IsDead && !Me.Combat && !Me.IsFlying && !Me.IsOnTransport && !Me.HasAura("Food") && !Me.HasAura("Drink"),
                         new PrioritySelector(
                             Buff.CastRaidBuff("Power Word: Fortitude", ret => CLUSettings.Instance.Priest.UsePowerWordFortitude, "Power Word: Fortitude"),
-                            Buff.CastRaidBuff("Shadow Protection", 		ret => CLUSettings.Instance.Priest.UseShadowProtection, "Shadow Protection"),
-                            Buff.CastBuff("Inner Fire", 				ret => NotMoving && CLUSettings.Instance.Priest.UseInnerFire, "Inner Fire"))));
+                            Buff.CastRaidBuff("Shadow Protection", ret => CLUSettings.Instance.Priest.UseShadowProtection, "Shadow Protection"),
+                            Buff.CastBuff("Inner Fire", ret => NotMoving && CLUSettings.Instance.Priest.UseInnerFire, "Inner Fire"))));
             }
         }
 

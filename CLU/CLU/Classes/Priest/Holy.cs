@@ -14,7 +14,8 @@ namespace CLU.Classes.Priest
     {
         public override string Name
         {
-            get {
+            get
+            {
                 return "Holy Priest";
             }
         }
@@ -27,7 +28,8 @@ namespace CLU.Classes.Priest
         }
         public override string KeySpell
         {
-            get {
+            get
+            {
                 return "Chakra: Chastise";
             }
         }
@@ -37,14 +39,16 @@ namespace CLU.Classes.Priest
         }
         public override float CombatMaxDistance
         {
-            get {
+            get
+            {
                 return 34f;
             }
         }
 
         public override float CombatMinDistance
         {
-            get {
+            get
+            {
                 return 28f;
             }
         }
@@ -53,7 +57,8 @@ namespace CLU.Classes.Priest
         // adding some help about cooldown management
         public override string Help
         {
-            get {
+            get
+            {
                 return "\n" +
                        "----------------------------------------------------------------------\n" +
                        "This Rotation will:\n" +
@@ -81,13 +86,14 @@ namespace CLU.Classes.Priest
 
         public override Composite SingleRotation
         {
-            get {
+            get
+            {
                 return new PrioritySelector(
-                           // Pause Rotation
+                    // Pause Rotation
                            new Decorator(ret => CLUSettings.Instance.PauseRotation, new ActionAlwaysSucceed()),
 
                            // if someone dies make sure we retarget.
-                           //TargetBase.EnsureTarget(ret => StyxWoW.Me.CurrentTarget == null),
+                    //TargetBase.EnsureTarget(ret => StyxWoW.Me.CurrentTarget == null),
 
                            // For DS Encounters.
                            EncounterSpecific.ExtraActionButton(),
@@ -98,7 +104,7 @@ namespace CLU.Classes.Priest
 
 
                            // Threat
-                           //Buff.CastBuff("Fade", ret => (CLUSettings.Instance.UseCooldowns || CLUSettings.Instance.Priest.UseFade) && Me.CurrentTarget != null && Me.CurrentTarget.ThreatInfo.RawPercent > 90, "Fade (Threat)"),
+                    //Buff.CastBuff("Fade", ret => (CLUSettings.Instance.UseCooldowns || CLUSettings.Instance.Priest.UseFade) && Me.CurrentTarget != null && Me.CurrentTarget.ThreatInfo.RawPercent > 90, "Fade (Threat)"),
 
                            // Spell.WaitForCast(true),
 
@@ -116,7 +122,7 @@ namespace CLU.Classes.Priest
                            new Decorator(
                                ret => CLUSettings.Instance.Priest.ChakraStanceSelection == ChakraStance.Serenity && !Buff.PlayerHasBuff("Chakra: Serenity") && !IsSpiritofRedemption,
                                new Sequence(
-                                   Spell.CastSpell("Chakra: Serenity", ret => Me, a => true, "Chakra (Ensure Serenity)")  
+                                   Spell.CastSpell("Chakra: Serenity", ret => Me, a => true, "Chakra (Ensure Serenity)")
                                )),
 
                            new Decorator(
@@ -127,19 +133,19 @@ namespace CLU.Classes.Priest
 
 
                            //// Cooldowns
-                           //Healer.FindAreaHeal(a => CLUSettings.Instance.UseCooldowns && StyxWoW.Me.Combat && !IsSpiritofRedemption, 10, 65, 40f, (Me.GroupInfo.IsInRaid ? 6 : 3), "Cooldowns: Avg: 10-65, 40yrds, count: 6 or 3",
-                           //                    Item.UseTrinkets(),
-                           //                    Racials.UseRacials(),
-                           //                    Spell.CastSelfSpell("Power Infusion", a => !Buff.UnitHasHasteBuff(Me), "Power Infusion"),
-                           //                    Buff.CastBuff("Lifeblood", ret => true, "Lifeblood"),
-                           //                    Item.UseEngineerGloves()
-                           //),
+                    //Healer.FindAreaHeal(a => CLUSettings.Instance.UseCooldowns && StyxWoW.Me.Combat && !IsSpiritofRedemption, 10, 65, 40f, (Me.GroupInfo.IsInRaid ? 6 : 3), "Cooldowns: Avg: 10-65, 40yrds, count: 6 or 3",
+                    //                    Item.UseTrinkets(),
+                    //                    Racials.UseRacials(),
+                    //                    Spell.CastSelfSpell("Power Infusion", a => !Buff.UnitHasHasteBuff(Me), "Power Infusion"),
+                    //                    Buff.CastBuff("Lifeblood", ret => true, "Lifeblood"),
+                    //                    Item.UseEngineerGloves()
+                    //),
 
                            // emergency heals on most injured tank
                            Healer.FindTank(a => true, x => x.ToUnit().InLineOfSight && !x.ToUnit().IsDead && x.HealthPercent < 50, (a, b) => (int)(a.CurrentHealth - b.CurrentHealth), "emergency heals on most injured tank",
                                            Spell.CastHeal("Flash Heal", a => Buff.PlayerHasActiveBuff("Surge of Light"), "Flash Heal (Surge of Light)"),
                                            Item.RunMacroText("/cast Holy Word: Serenity", a => Buff.PlayerHasBuff("Chakra: Serenity") && !WoWSpell.FromId(88684).Cooldown, "Holy Word: Serenity (Chakra: Serenity)"),
-                                           //Spell.CastHeal("Holy Word: Serenity", a => Buff.PlayerHasBuff("Chakra: Serenity"), "Holy Word: Serenity (emergency)"),
+                    //Spell.CastHeal("Holy Word: Serenity", a => Buff.PlayerHasBuff("Chakra: Serenity"), "Holy Word: Serenity (emergency)"),
                                            Spell.CastHeal("Power Word: Shield", a => CanShield, "Shield tank (emergency)"),
                                            Spell.CastHeal("Greater Heal", a => HasSerendipity, "Greater heal"),
                                            Spell.CastHeal("Guardian Spirit", a => CLUSettings.Instance.UseCooldowns, "Guardian Spirit (emergency)"),
@@ -157,7 +163,7 @@ namespace CLU.Classes.Priest
                            Healer.FindRaidMember(a => !Buff.PlayerHasBuff("Chakra: Sanctuary"), x => x.ToUnit().InLineOfSight && !x.ToUnit().IsDead && x.HealthPercent < 45, (a, b) => (int)(a.CurrentHealth - b.CurrentHealth), "I'm fine and tanks are not dying => ensure nobody is REALLY low life",
                                                  Spell.CastHeal("Flash Heal", a => Buff.PlayerHasActiveBuff("Surge of Light"), "Flash Heal (Surge of Light)"),
                                                  Item.RunMacroText("/cast Holy Word: Serenity", a => Buff.PlayerHasBuff("Chakra: Serenity") && !WoWSpell.FromId(88684).Cooldown, "Holy Word: Serenity (Chakra: Serenity)"),
-                                                 //Spell.CastHeal("Holy Word: Serenity", a => Buff.PlayerHasBuff("Chakra: Serenity"), "Holy Word: Serenity (emergency)"),
+                    //Spell.CastHeal("Holy Word: Serenity", a => Buff.PlayerHasBuff("Chakra: Serenity"), "Holy Word: Serenity (emergency)"),
                                                  Spell.CastHeal("Greater Heal", a => HasSerendipity, "Greater heal"),
                                                  Spell.CastHeal("Renew", a => !Buff.TargetHasBuff("Renew"), "Renew (emergency)"),
                                                  Spell.CastHeal("Flash Heal", a => true, "Flash heal (emergency)")
@@ -193,7 +199,7 @@ namespace CLU.Classes.Priest
                            Healer.FindRaidMember(a => true, x => x.ToUnit().InLineOfSight && !x.ToUnit().IsDead && x.HealthPercent < 92, (a, b) => (int)(a.CurrentHealth - b.CurrentHealth), "single target healing",
                                                  Spell.CastHeal("Flash Heal", a => Buff.PlayerHasActiveBuff("Surge of Light"), "Flash Heal (Surge of Light)"),
                                                  Item.RunMacroText("/cast Holy Word: Serenity", a => Buff.PlayerHasBuff("Chakra: Serenity") && !WoWSpell.FromId(88684).Cooldown, "Holy Word: Serenity (Chakra: Serenity)"),
-                                                 //Spell.CastHeal("Holy Word: Serenity", a => Buff.PlayerHasBuff("Chakra: Serenity"), "Holy Word: Serenity"),
+                    //Spell.CastHeal("Holy Word: Serenity", a => Buff.PlayerHasBuff("Chakra: Serenity"), "Holy Word: Serenity"),
                                                  Spell.CastHeal("Greater Heal", a => HealTarget != null && HasSerendipity && HealTarget.HealthPercent < 70, "Greater heal"),
                                                  Spell.CastHeal("Renew", a => !Buff.TargetHasBuff("Renew", HealTarget), "Renew (single target healing)"),
                                                  Spell.CastHeal("Flash Heal", a => HealTarget != null && !HasSerendipity && HealTarget.HealthPercent < (Me.GroupInfo.IsInRaid ? 50 : 75), "Flash heal (Single Target Healing)"),
@@ -228,7 +234,8 @@ namespace CLU.Classes.Priest
 
         public override Composite Medic
         {
-            get {
+            get
+            {
                 return new Decorator(
                     ret => Me.HealthPercent < 100 && CLUSettings.Instance.EnableSelfHealing,
                     new PrioritySelector(
@@ -238,7 +245,8 @@ namespace CLU.Classes.Priest
 
         public override Composite PreCombat
         {
-            get {
+            get
+            {
                 return
                 new PrioritySelector(
                     new Decorator(
@@ -246,9 +254,9 @@ namespace CLU.Classes.Priest
                         !Me.Mounted && !Me.IsDead && !Me.Combat && !Me.IsFlying && !Me.IsOnTransport
                         && !Me.HasAura("Food") && !Me.HasAura("Drink"),
                         new PrioritySelector(
-                            Buff.CastRaidBuff("Power Word: Fortitude", 	ret => CLUSettings.Instance.Priest.UsePowerWordFortitude, "Power Word: Fortitude"),
-                            Buff.CastRaidBuff("Shadow Protection", 		ret => CLUSettings.Instance.Priest.UseShadowProtection, "Shadow Protection"),
-                            Buff.CastBuff("Inner Fire", 				ret => NotMoving && CLUSettings.Instance.Priest.UseInnerFire, "Inner Fire"))));
+                            Buff.CastRaidBuff("Power Word: Fortitude", ret => CLUSettings.Instance.Priest.UsePowerWordFortitude, "Power Word: Fortitude"),
+                            Buff.CastRaidBuff("Shadow Protection", ret => CLUSettings.Instance.Priest.UseShadowProtection, "Shadow Protection"),
+                            Buff.CastBuff("Inner Fire", ret => NotMoving && CLUSettings.Instance.Priest.UseInnerFire, "Inner Fire"))));
             }
         }
 

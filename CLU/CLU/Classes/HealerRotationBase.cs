@@ -26,8 +26,8 @@ namespace CLU.Classes
         protected static readonly TargetBase Healer = TargetBase.Instance;
 
 
-        protected static WoWUnit HealTarget 
-        { 
+        protected static WoWUnit HealTarget
+        {
             get
             {
                 return HealableUnit.HealTarget.ToUnit();
@@ -36,27 +36,31 @@ namespace CLU.Classes
 
         protected static double CurrentTargetHealthPercent
         {
-            get {
+            get
+            {
                 return HealTarget != null ? HealTarget.HealthPercent : 9999;
             }
         }
         protected static bool IsTank
         {
-            get {
+            get
+            {
                 return HealTarget != null && Unit.Tanks.Any(u => u.Guid == HealTarget.Guid);
             }
         }
 
         protected static bool IsHealer
         {
-            get {
+            get
+            {
                 return HealTarget != null && Unit.Healers.Any(u => u.Guid == HealTarget.Guid);
             }
         }
 
         protected static bool IsMe
         {
-            get {
+            get
+            {
                 return HealTarget != null && HealTarget.IsMe;
             }
         }
@@ -65,7 +69,8 @@ namespace CLU.Classes
 
         protected static bool CanNourish
         {
-            get {
+            get
+            {
                 return HealTarget.HasAura("Wild Growth") || HealTarget.HasAura("Rejuvenation") || !HealTarget.HasAura("Harmony") || HealTarget.HasAura("Regrowth") || HealTarget.HasAura("Lifebloom");
             }
         }
@@ -73,21 +78,24 @@ namespace CLU.Classes
         // Discipline/Holy Priest Shared ------------------------------------------------------------------------------------------------
         protected static bool CanShield
         {
-            get {
+            get
+            {
                 return HealTarget.HasAura("Weakened Soul") && StyxWoW.Me.Combat;//!Buff.TargetHasDebuff("Weakened Soul") && StyxWoW.Me.Combat;
             }
         }
 
         protected static WoWUnit ShadowfiendTarget
         {
-            get {
+            get
+            {
                 return Battlegrounds.IsInsideBattleground ? Unit.RangedPvPUnits.FirstOrDefault(u => u.DistanceSqr < 35 * 35 && !Unit.UnitIsControlled(u, true)) : Unit.RangedPvEUnits.FirstOrDefault(u => !Unit.UnitIsControlled(u, true));
             }
         }
 
         protected static bool NotMoving
         {
-            get {
+            get
+            {
                 return !Me.IsMoving;
             }
         }
@@ -103,7 +111,8 @@ namespace CLU.Classes
 
         protected static bool IsAtonementSpec
         {
-            get {
+            get
+            {
                 return TalentManager.HasTalent(5) && TalentManager.HasGlyph("Divine Accuracy") && TalentManager.HasGlyph("Smite");
             }
         }
@@ -111,14 +120,16 @@ namespace CLU.Classes
         // Holy Priest -------------------------------------------------------------------------------------------------------------------
         protected static bool HasSerendipity
         {
-            get {
+            get
+            {
                 return Buff.PlayerCountBuff("Serendipity") == 2;    // activated with Binding Heal or Flash Heal Greater Heal or Prayer of Healing
             }
         }
 
         protected static bool IsSpiritofRedemption
         {
-            get {
+            get
+            {
                 return !Buff.PlayerHasBuff("Spirit of Redemption");
             }
         }
@@ -126,7 +137,8 @@ namespace CLU.Classes
         // Restoration Shaman ------------------------------------------------------------------------------------------------------------
         protected static bool CanEarthshield
         {
-            get {
+            get
+            {
                 return HealTarget != null && HealableUnit.ListofHealableUnits.All(t => !t.ToUnit().GetAllAuras().Any(b => b.Name == "Earth Shield" && b.CreatorGuid == Me.Guid) && t.EarthShield);
             }
         }
@@ -135,14 +147,16 @@ namespace CLU.Classes
 
         protected static uint HolyPower
         {
-            get {
+            get
+            {
                 return Me.CurrentHolyPower;
             }
         }
 
         protected static bool PaladinCooldownsOk
         {
-            get {
+            get
+            {
                 return HealTarget != null && Spell.SpellCooldown("Divine Favor").TotalSeconds < 0.5 || Spell.SpellCooldown("Guardian of Ancient Kings").TotalSeconds < 0.5 || Spell.SpellCooldown("Avenging Wrath").TotalSeconds < 0.5;
             }
         }
