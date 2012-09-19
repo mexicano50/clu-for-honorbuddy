@@ -18,6 +18,7 @@ using CommonBehaviors.Actions;
 using Styx.WoWInternals;
 using Styx.WoWInternals.WoWObjects;
 using Styx.TreeSharp;
+using Styx;
 using CLU.Base;
 using Rest = CLU.Base.Rest;
 
@@ -28,7 +29,8 @@ namespace CLU.Classes.Druid
     {
         public override string Name
         {
-            get {
+            get
+            {
                 return "Balance Druid";
             }
         }
@@ -43,7 +45,8 @@ namespace CLU.Classes.Druid
 
         public override string KeySpell
         {
-            get {
+            get
+            {
                 return "Starfire";
             }
         }
@@ -53,15 +56,37 @@ namespace CLU.Classes.Druid
         }
         public override float CombatMinDistance
         {
-            get {
+            get
+            {
                 return 30f;
+            }
+        }
+
+        private static string _oldDps = "Wrath";
+
+        private static string BoomkinDpsSpell
+        {
+            get
+            {
+                if (StyxWoW.Me.HasAura("Eclipse (Solar)"))
+                {
+                    _oldDps = "Wrath";
+                }
+                // This doesn't seem to register for whatever reason.
+                else if (StyxWoW.Me.HasAura("Eclipse (Lunar)")) //Eclipse (Lunar) => 48518
+                {
+                    _oldDps = "Starfire";
+                }
+
+                return _oldDps;
             }
         }
 
         private static int MushroomCount
         {
-            get {
-                return ObjectManager.GetObjectsOfType<WoWUnit>().Where(o => o.Entry == 47649 && o.DistanceSqr <= 40 * 40).Count(o => o.CreatedByUnitGuid == Me.Guid); 
+            get
+            {
+                return ObjectManager.GetObjectsOfType<WoWUnit>().Where(o => o.Entry == 47649 && o.Distance <= 40).Count(o => o.CreatedByUnitGuid == Me.Guid);
             }
             // Thanks to Singular for the logic and code.
         }
@@ -69,7 +94,8 @@ namespace CLU.Classes.Druid
         // adding some help about cooldown management
         public override string Help
         {
-            get {
+            get
+            {
                 return "\n" +
                 "----------------------------------------------------------------------\n" +
                 "This Rotation will:\n" +
@@ -90,7 +116,8 @@ namespace CLU.Classes.Druid
 
         public override Composite SingleRotation
         {
-            get {
+            get
+            {
                 return new PrioritySelector(
                     // Pause Rotation
                     new Decorator(ret => CLUSettings.Instance.PauseRotation, new ActionAlwaysSucceed()),
@@ -116,40 +143,54 @@ namespace CLU.Classes.Druid
                                     Buff.CastBuff("Lifeblood", ret => true, "Lifeblood"), // Thanks Kink
                                     Item.UseBagItem("Volcanic Potion", ret => Buff.UnitHasHasteBuff(Me), "Volcanic Potion Heroism/Bloodlust"),
                                     Item.UseEngineerGloves())),
-                            // Spell.CastSpell("Faerie Fire", ret => Me.CurrentTarget != null && !Me.CurrentTarget.IsImmune(WoWSpellSchool.Nature) && Unit.IsTargetWorthy(Me.CurrentTarget) && (Buff.TargetCountDebuff("Faerie Fire") < 3 && !Buff.UnitHasArmorReductionDebuff(Me.CurrentTarget)), "Faerie Fire"),
-                            // Spell.CastSpell("Faerie Fire", ret => Me.CurrentTarget != null && !Me.CurrentTarget.IsImmune(WoWSpellSchool.Nature) && (!Buff.UnitHasArmorReductionDebuff(Me.CurrentTarget) || Buff.TargetCountDebuff("Faerie Fire") < 3), "Faerie Fire"),
-                            // 8    wild_mushroom_detonate,if=buff.wild_mushroom.stack=3
-                            Spell.CastSpell("Wild Mushroom: Detonate",         ret => MushroomCount == 3, "Detonate Shrooms!"),
-                            Buff.CastDebuff("Insect Swarm",                    ret => Me.CurrentTarget != null && Unit.TimeToDeath(Me.CurrentTarget) > 30, "Insect Swarm"),
-                            // B    wild_mushroom_detonate,moving=0,if=buff.wild_mushroom.stack>0&buff.solar_eclipse.up
-                            Spell.CastSpell("Wild Mushroom: Detonate",         ret => MushroomCount > 0 && Buff.PlayerHasBuff("Eclipse (Solar)"), "Detonate Shrooms!"),
-                            // Spell.CastSpell("Typhoon",                      ret => Me.IsMoving, "Typhoon (Moving)"),
-                            // Starfall when we Lunar Eclipse
-                            Spell.CastSelfSpell("Starfall",                    ret => Me.CurrentTarget != null && (Unit.IsTargetWorthy(Me.CurrentTarget) || Unit.CountEnnemiesInRange(Me.Location, 40) >= 3) && Me.CurrentEclipse < -80 && Buff.PlayerHasBuff("Eclipse (Lunar)"), "Starfall"),
-                            // Moonfire / Sunfire
-                            Spell.CastSpell("Moonfire",                        ret => Me.CurrentTarget != null && Unit.TimeToDeath(Me.CurrentTarget) > 12 && (!Buff.PlayerHasBuff("Eclipse (Solar)") && Buff.TargetDebuffTimeLeft("Moonfire").TotalSeconds < 1 && !Buff.TargetHasDebuff("Sunfire")) || (Buff.PlayerHasBuff("Eclipse (Solar)") && Buff.TargetDebuffTimeLeft("Sunfire").TotalSeconds < 1 && !Buff.TargetHasDebuff("Moonfire")), "Moonfire/Sunfire"),
-                            // Make sure we cast it unless we're about to Eclipse
-                            Spell.CastSpell("Starsurge",                       ret => (Me.CurrentEclipse >= -85 && Me.CurrentEclipse <= 85) || (Buff.PlayerHasBuff("Eclipse (Solar)") || Buff.PlayerHasBuff("Eclipse (Lunar)")), "Starsurge"),
-                            Spell.CastSelfSpell("Innervate",                   ret => Me.ManaPercent < 50, "Innvervate"),
+                    // Spell.CastSpell("Faerie Fire", ret => Me.CurrentTarget != null && !Me.CurrentTarget.IsImmune(WoWSpellSchool.Nature) && Unit.IsTargetWorthy(Me.CurrentTarget) && (Buff.TargetCountDebuff("Faerie Fire") < 3 && !Buff.UnitHasArmorReductionDebuff(Me.CurrentTarget)), "Faerie Fire"),
+                    // Spell.CastSpell("Faerie Fire", ret => Me.CurrentTarget != null && !Me.CurrentTarget.IsImmune(WoWSpellSchool.Nature) && (!Buff.UnitHasArmorReductionDebuff(Me.CurrentTarget) || Buff.TargetCountDebuff("Faerie Fire") < 3), "Faerie Fire"),
+                    // 8    wild_mushroom_detonate,if=buff.wild_mushroom.stack=3
+                            Spell.CastSpell("Wild Mushroom: Detonate", ret => MushroomCount == 3, "Detonate Shrooms!"),
+                            Spell.CastSpell("Wild Mushroom: Detonate", ret => MushroomCount > 0 && Buff.PlayerHasBuff("Eclipse (Solar)"), "Detonate Shrooms!"),
+                    // Spell.CastSpell("Typhoon",                      ret => Me.IsMoving, "Typhoon (Moving)"),
+                    // Big Stuff
+                    // actions+=/incarnation,if=talent.incarnation.enabled
+                    //Item.RunMacroText("/cast Incarnation",             ret => Buff.PlayerHasBuff("Eclipse (Lunar)") && !Spell.SpellOnCooldown("Incarnation: Chosen of Elune") || Buff.PlayerHasBuff("Eclipse (Solar)") && !Spell.SpellOnCooldown("Incarnation: Chosen of Elune"), "Incarnation"),
+                    //Spell.CastSelfSpell("Incarnation: Chosen of Elune",                 ret => true, "Incarnation: Chosen of Elune"),
+                    //Spell.CastSelfSpell("Celestial Alignment",         ret => Me.CurrentEclipse >= -20 && Me.CurrentEclipse <= 20, "Celestial Alignment"),
+                    //Spell.CastSelfSpell("Starfall",                    ret => Me.CurrentTarget != null && (Unit.IsTargetWorthy(Me.CurrentTarget) && !Buff.PlayerHasActiveBuff("Starfall")), "Starfall"),
+                    // Moonfire / Sunfire
+                    //Spell.CastSpell("Sunfire",                         ret => Me.CurrentTarget != null && Unit.TimeToDeath(Me.CurrentTarget) > 12 && Buff.TargetDebuffTimeLeft("Sunfire").TotalSeconds < 6 && Me.CurrentEclipse == 5 && Buff.PlayerHasBuff("Eclipse (Solar)") && Spell.SpellOnCooldown("Celestial Alignment"), "Sunfire @ 5 Solar"),
+                    //Spell.CastSpell("Sunfire",                         ret => Me.CurrentTarget != null && Unit.TimeToDeath(Me.CurrentTarget) > 12 && Buff.TargetDebuffTimeLeft("Sunfire").TotalSeconds < 6 && Me.CurrentEclipse == 10 && Buff.PlayerHasBuff("Eclipse (Solar)") && Spell.SpellOnCooldown("Celestial Alignment"), "Sunfire @ 10 Solar"),	
+                    //Spell.CastSpell("Sunfire",                         ret => Me.CurrentTarget != null && Unit.TimeToDeath(Me.CurrentTarget) > 12 && Buff.TargetDebuffTimeLeft("Sunfire").TotalSeconds < 6 && Me.CurrentEclipse == 15 && Buff.PlayerHasBuff("Eclipse (Solar)") && Spell.SpellOnCooldown("Celestial Alignment"), "Sunfire @ 15 Solar"),							
+                    //Buff.CastDebuff("Sunfire",                         ret => Me.CurrentTarget != null && Unit.TimeToDeath(Me.CurrentTarget) > 12 && Buff.TargetDebuffTimeLeft("Sunfire").TotalSeconds <= 12 && Me.CurrentEclipse == 100 && Buff.PlayerHasBuff("Eclipse (Solar)"), "Sunfire Start Solar"),
+                    //Buff.CastDebuff("Sunfire",                         ret => Me.CurrentTarget != null && Unit.TimeToDeath(Me.CurrentTarget) > 12 && Buff.TargetDebuffTimeLeft("Sunfire").TotalSeconds < 2 && Me.CurrentEclipse < 80 && !Buff.PlayerHasBuff("Eclipse (Solar)"), "Sunfire @ Last"),
+                    //Buff.CastDebuff("Sunfire",                         ret => Me.CurrentTarget != null && Unit.TimeToDeath(Me.CurrentTarget) > 12 && !Buff.TargetHasDebuff("Sunfire") && Me.CurrentEclipse < 80 && !Buff.PlayerHasBuff("Eclipse (Solar)"), "Sunfire @ Last"),
+                    //Buff.CastDebuff("Moonfire",                         ret => Me.CurrentTarget != null && Unit.TimeToDeath(Me.CurrentTarget) > 12 && Buff.TargetDebuffTimeLeft("Moonfire").TotalSeconds < 6 && Me.CurrentEclipse == -20 && Buff.PlayerHasBuff("Eclipse (Lunar)") && Spell.SpellOnCooldown("Celestial Alignment"), "Moonfire @ 20 Lunar"),						
+                    //Buff.CastDebuff("Moonfire",                        ret => Me.CurrentTarget != null && Unit.TimeToDeath(Me.CurrentTarget) > 12 && Buff.TargetDebuffTimeLeft("Moonfire").TotalSeconds <= 12 && Me.CurrentEclipse == -100 && Buff.PlayerHasBuff("Eclipse (Lunar)"), "Moonfire Start Lunar"),
+                    //Buff.CastDebuff("Moonfire",                        ret => Me.CurrentTarget != null && Unit.TimeToDeath(Me.CurrentTarget) > 12 && Buff.TargetDebuffTimeLeft("Moonfire").TotalSeconds < 2 && Me.CurrentEclipse > -65 && !Buff.PlayerHasBuff("Eclipse (Lunar)"), "Moonfire @ Last"),
+                    //Buff.CastDebuff("Moonfire",                        ret => Me.CurrentTarget != null && Unit.TimeToDeath(Me.CurrentTarget) > 12 && Buff.PlayerBuffTimeLeft("Celestial Alignment") >= 14 , "Moonfire"),
+                    //Buff.CastDebuff("Moonfire",                        ret => Me.CurrentTarget != null && Unit.TimeToDeath(Me.CurrentTarget) > 12 && Buff.PlayerBuffTimeLeft("Celestial Alignment") <= 3 && Buff.PlayerBuffTimeLeft("Celestial Alignment") >= 1 && Buff.TargetDebuffTimeLeft("Moonfire").TotalSeconds < 12, "Moonfire"),
+                    // Make sure we cast it unless we're about to Eclipse
+                    //Spell.CastSpell("Starsurge",                       ret => Buff.PlayerHasBuff("Celestial Alignment"), "Starsurge"),
+                    //Buff.CastDebuff("Starsurge",                       ret => Buff.PlayerHasBuff("Eclipse (Solar)") && Me.CurrentEclipse >= 5 || Buff.PlayerHasBuff("Eclipse (Lunar)") && Me.CurrentEclipse <= -5, "Starsurge"),
+                            Spell.CastSelfSpell("Innervate", ret => Me.ManaPercent < 50, "Innvervate"),
                             Spell.CastOnUnitLocation("Force of Nature", u => Me.CurrentTarget, ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget) && !BossList.IgnoreAoE.Contains(Unit.CurrentTargetEntry), "Force of Nature"),
                             Spell.CastOnUnitLocation("Wild Mushroom", u => Me.CurrentTarget, ret => Me.CurrentTarget != null && Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 6) >= 3 && MushroomCount < 3, "Wild Mushroom"),
-                            // Spell.CastSpell("Wrath",                       ret => Me.CurrentEclipse >= 80 && Me.CastingSpell.Name == "Starfire", "Wrath"),
-                            // Spell.CastSpell("Starfire",                    ret => Me.CurrentEclipse <= -87 && Me.CastingSpell.Name == "Wrath", "Starfire"),
-                            Spell.CastSpell("Starfire",                        ret => Buff.PlayerHasBuff("Eclipse (Lunar)") || Me.CurrentEclipse == -100, "Starfire"),
-                            Spell.CastSpell("Wrath",                           ret => Buff.PlayerHasBuff("Eclipse (Solar)") || Me.CurrentEclipse == 100, "Wrath"),
-                            Spell.CastSpell("Starfire",                        ret => Me.CurrentEclipse > 0, "Starfire"),
-                            Spell.CastSpell("Wrath",                           ret => Me.CurrentEclipse < 0, "Wrath"),
-                            Spell.CastSpell("Starfire",                        ret => true, "Starfire"),
-                            Spell.CastOnUnitLocation("Wild Mushroom", u => Me.CurrentTarget, ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget) && Me.IsMoving && !Me.CurrentTarget.IsMoving && MushroomCount < 3, "Wild Mushroom"),
-                            // Not working for some reason
-                            Item.RunMacroText("/cast Starsurge",               ret => Me.IsMoving && Buff.PlayerHasActiveBuff("Shooting Stars"), "Starsurge"),
-                            Spell.CastSpell("Moonfire",                        ret => Me.IsMoving, "Moonfire"))));
+                    //Spell.CastSpell("Sunfire",                         ret => Me.CurrentEclipse == 100 && Buff.PlayerHasBuff("Eclipse (Solar)") && Buff.TargetDebuffTimeLeft("Sunfire").TotalSeconds <= 12, "Sunfire @ Solar"),
+                    //Spell.CastSpell("Moonfire",                        ret => Me.CurrentEclipse == -100 && Buff.PlayerHasBuff("Eclipse (Lunar)") && Buff.TargetDebuffTimeLeft("Moonfire").TotalSeconds <= 12, "Moonfire @ Lunar"),
+                            Spell.CastSpell("Wrath", ret => Me.CurrentEclipse <= 100 && !Buff.PlayerHasBuff("Eclipse (Lunar)") && Me.CurrentEclipse >= -80, "Wrath"),
+                            Spell.CastSpell("Starfire", ret => Me.CurrentEclipse >= -100 && !Buff.PlayerHasBuff("Eclipse (Solar)") && Me.CurrentEclipse <= 79, "Starfire"),
+                            //Spell.CastSpell("Wrath", ret => BoomkinDpsSpell == "Wrath", "Wrath"),
+                            //Spell.CastSpell("Starfire", ret => BoomkinDpsSpell == "Starfire", "Starfire"),
+                    //Spell.CastSpell("Starfire",                        ret => true, "Starfire"),
+                            Spell.CastOnUnitLocation("Wild Mushroom", u => Me.CurrentTarget, ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget) && Me.IsMoving && !Me.CurrentTarget.IsMoving && MushroomCount < 3, "Wild Mushroom"))));
+                // Not working for some reason
+                // Item.RunMacroText("/cast Starsurge",               ret => Me.IsMoving && Buff.PlayerHasActiveBuff("Shooting Stars"), "Starsurge")
+                //Spell.CastSpell("Moonfire"/,                        ret => Me.IsMoving, "Moonfire")
             }
         }
 
         public override Composite Medic
         {
-            get {
+            get
+            {
                 return new Decorator(
                            ret => Me.HealthPercent < 100 && CLUSettings.Instance.EnableSelfHealing,
                            new PrioritySelector(
@@ -159,7 +200,8 @@ namespace CLU.Classes.Druid
 
         public override Composite PreCombat
         {
-            get {
+            get
+            {
                 return new Decorator(
                            ret => !Me.Mounted && !Me.IsDead && !Me.Combat && !Me.IsFlying && !Me.IsOnTransport && !Me.HasAura("Food") && !Me.HasAura("Drink"),
                            new PrioritySelector(
@@ -169,21 +211,24 @@ namespace CLU.Classes.Druid
 
         public override Composite Resting
         {
-            get {
+            get
+            {
                 return Rest.CreateDefaultRestBehaviour();
             }
         }
 
         public override Composite PVPRotation
         {
-            get {
+            get
+            {
                 return this.SingleRotation;
             }
         }
 
         public override Composite PVERotation
         {
-            get {
+            get
+            {
                 return this.SingleRotation;
             }
         }

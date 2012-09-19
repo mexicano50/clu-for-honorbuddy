@@ -17,6 +17,7 @@ namespace CLU.GUI
 {
     using System.Globalization;
 
+    using Styx;
     using Styx.CommonBot;
     using Styx.WoWInternals;
 
@@ -42,6 +43,7 @@ namespace CLU.GUI
         {
             var spellId = spellid_input.Value;
             var spellname = spellname_txt.Text;
+            CurrentEclipse_lbl.Text = StyxWoW.Me.CurrentEclipse.ToString(CultureInfo.InvariantCulture);
 
             WoWSpell spell;
             SpellManager.Spells.TryGetValue(spellname, out spell);

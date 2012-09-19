@@ -67,6 +67,8 @@ namespace CLU.GUI
             this.label5 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.Timer1 = new System.Windows.Forms.Timer(this.components);
+            this.label11 = new System.Windows.Forms.Label();
+            this.CurrentEclipse_lbl = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.spellid_input)).BeginInit();
             this.groupBox2.SuspendLayout();
@@ -135,6 +137,8 @@ namespace CLU.GUI
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.CurrentEclipse_lbl);
+            this.panel1.Controls.Add(this.label11);
             this.panel1.Controls.Add(this.smCooldownTimeLeft_lbl);
             this.panel1.Controls.Add(this.label12);
             this.panel1.Controls.Add(this.smCooldownid_lbl);
@@ -327,6 +331,24 @@ namespace CLU.GUI
             this.Timer1.Interval = 500;
             this.Timer1.Tick += new System.EventHandler(this.Timer1Tick);
             // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(22, 92);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(96, 13);
+            this.label11.TabIndex = 21;
+            this.label11.Text = " Me.CurrentEclipse";
+            // 
+            // CurrentEclipse_lbl
+            // 
+            this.CurrentEclipse_lbl.AutoSize = true;
+            this.CurrentEclipse_lbl.Location = new System.Drawing.Point(199, 92);
+            this.CurrentEclipse_lbl.Name = "CurrentEclipse_lbl";
+            this.CurrentEclipse_lbl.Size = new System.Drawing.Size(22, 13);
+            this.CurrentEclipse_lbl.TabIndex = 22;
+            this.CurrentEclipse_lbl.Text = "xxx";
+            // 
             // Spellchecker
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -377,6 +399,8 @@ namespace CLU.GUI
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.Label smCooldownTimeLeft_lbl;
         private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.Label CurrentEclipse_lbl;
+        private System.Windows.Forms.Label label11;
 
     }
 }
