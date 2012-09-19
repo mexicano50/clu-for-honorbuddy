@@ -255,7 +255,7 @@ namespace CLU
                     return GroupType.Raid;
                 }
 
-                return Me.IsInParty ? GroupType.Party : GroupType.Solo;
+                return Me.GroupInfo.IsInParty ? GroupType.Party : GroupType.Solo;
             }
         }
 
@@ -713,7 +713,7 @@ namespace CLU
         //        UnitOracle.WatchUnit(StyxWoW.Me, UnitOracle.Watch.HealthVariance);
         //        if (Me.GroupInfo.IsInRaid) {
         //            StyxWoW.Me.RaidMembers.ForEach(x => UnitOracle.WatchUnit(x, UnitOracle.Watch.HealthVariance));
-        //        } else if (StyxWoW.Me.IsInParty) {
+        //        } else if (StyxWoW.Me.GroupInfo.IsInParty) {
         //            StyxWoW.Me.PartyMembers.ForEach(x => UnitOracle.WatchUnit(x, UnitOracle.Watch.HealthVariance));
         //        }
         //        break;
@@ -724,7 +724,7 @@ namespace CLU
         //        UnitOracle.WatchUnit(StyxWoW.Me, UnitOracle.Watch.HealthVariance);
         //        if (Me.GroupInfo.IsInRaid) {
         //            StyxWoW.Me.RaidMembers.ForEach(x => UnitOracle.WatchUnit(x, UnitOracle.Watch.HealthVariance));
-        //        } else if (StyxWoW.Me.IsInParty) {
+        //        } else if (StyxWoW.Me.GroupInfo.IsInParty) {
         //            StyxWoW.Me.PartyMembers.ForEach(x => UnitOracle.WatchUnit(x, UnitOracle.Watch.HealthVariance));
         //        }
         //        break;

@@ -35,8 +35,8 @@ namespace CLU.Helpers
         private bool offTank;
 
         public static LocalPlayer Me { get { return StyxWoW.Me; } }
-        internal static bool IsInDungeonParty { get { return Me.IsInParty && !Me.GroupInfo.IsInRaid; } }
-        internal static bool IsInGroup { get { return Me.GroupInfo.IsInRaid || Me.IsInParty; } }
+        internal static bool IsInDungeonParty { get { return Me.GroupInfo.IsInParty && !Me.GroupInfo.IsInRaid; } }
+        internal static bool IsInGroup { get { return Me.GroupInfo.IsInRaid || Me.GroupInfo.IsInParty; } }
         internal static readonly IEnumerable<WoWPlayer> Groupofplayers = Me.GroupInfo.IsInRaid ? Me.RaidMembers : Me.PartyMembers;
         internal static IEnumerable<WoWPartyMember> GroupMembers { get { return !Me.GroupInfo.IsInRaid ? Me.GroupInfo.PartyMembers : Me.GroupInfo.RaidMembers; } }
 
@@ -632,7 +632,7 @@ namespace CLU.Helpers
             {
                 try
                 {
-                    if (!StyxWoW.Me.IsInParty)
+                    if (!StyxWoW.Me.GroupInfo.IsInParty)
                         return null;
 
                     if (Tanks.Count() != 0 && Tanks.All(t => !t.MainTank))
@@ -664,7 +664,7 @@ namespace CLU.Helpers
                 var result = new List<HealableUnit>();
                 try
                 {                  
-                    if (!StyxWoW.Me.IsInParty)
+                    if (!StyxWoW.Me.GroupInfo.IsInParty)
                         return result;
 
                     var members = listofHealableUnits.Where(p => p.Tank);

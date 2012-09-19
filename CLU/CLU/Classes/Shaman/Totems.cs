@@ -81,7 +81,7 @@ namespace CLU.Classes.Shaman
                     );
 
             if (Me.Specialization == WoWSpec.ShamanRestoration)
-                fireTotemBehavior = new Decorator(ret => StyxWoW.Me.Combat && StyxWoW.Me.GotTarget && !Me.IsInParty, fireTotemBehavior);
+                fireTotemBehavior = new Decorator(ret => StyxWoW.Me.Combat && StyxWoW.Me.GotTarget && !Me.GroupInfo.IsInParty, fireTotemBehavior);
 
             // now 
             return new PrioritySelector(

@@ -721,7 +721,7 @@ namespace CLU.Base
                         players.Remove(Me);
                         players.AddRange(Me.RaidMembers);
                     }
-                    else if (Me.IsInParty)
+                    else if (Me.GroupInfo.IsInParty)
                     {
                         players.AddRange(Me.PartyMembers);
                     }

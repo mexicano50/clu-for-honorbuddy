@@ -23,6 +23,7 @@ using Rest = CLU.Base.Rest;
 
 namespace CLU.Classes.Shaman
 {
+    using Styx.WoWInternals;
 
     class Enhancement : RotationBase
     {

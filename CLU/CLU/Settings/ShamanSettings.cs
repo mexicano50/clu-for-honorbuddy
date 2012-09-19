@@ -15,10 +15,11 @@
 using System.ComponentModel;
 using Styx.Helpers;
 using DefaultValue = Styx.Helpers.DefaultValueAttribute;
-using Styx.WoWInternals.WoWObjects;
 
 namespace CLU.Settings
 {
+    using Styx.WoWInternals;
+
     internal class ShamanSettings : Styx.Helpers.Settings
     {
         public ShamanSettings()

@@ -40,8 +40,8 @@ namespace CLU.Base
         }
 
         public static LocalPlayer Me { get { return StyxWoW.Me; } }
-        internal static bool IsInDungeonParty { get { return Me.IsInParty && !Me.GroupInfo.IsInRaid; } }
-        internal static bool IsInGroup { get { return Me.GroupInfo.IsInRaid || Me.IsInParty; } }
+        internal static bool IsInDungeonParty { get { return Me.GroupInfo.IsInParty && !Me.GroupInfo.IsInRaid; } }
+        internal static bool IsInGroup { get { return Me.GroupInfo.IsInRaid || Me.GroupInfo.IsInParty; } }
         internal static readonly IEnumerable<WoWPlayer> Groupofplayers = Me.GroupInfo.IsInRaid ? Me.RaidMembers : Me.PartyMembers;
         internal static IEnumerable<WoWPartyMember> GroupMembers { get { return !Me.GroupInfo.IsInRaid ? Me.GroupInfo.PartyMembers : Me.GroupInfo.RaidMembers; } }
 
@@ -526,7 +526,7 @@ namespace CLU.Base
             {
                 var result = new List<WoWPlayer>();
 
-                if (!StyxWoW.Me.IsInParty)
+                if (!StyxWoW.Me.GroupInfo.IsInParty)
                     return result;
 
                 if ((StyxWoW.Me.Role & WoWPartyMember.GroupRole.Tank) != 0)
@@ -615,7 +615,7 @@ namespace CLU.Base
             {
                 var result = new List<WoWPlayer>();
 
-                if (!StyxWoW.Me.IsInParty)
+                if (!StyxWoW.Me.GroupInfo.IsInParty)
                     return result;
 
                 if ((StyxWoW.Me.Role & WoWPartyMember.GroupRole.Healer) != 0)
@@ -996,7 +996,7 @@ namespace CLU.Base
                 if (!IsInGroup) return null; // --wulf TODO; this may fix TotT as Me.GroupInfo.IsInRaid was returning true all the time.
                 if (!CLUSettings.Instance.Rogue.UseTricksOfTheTrade && !CLUSettings.Instance.Rogue.UseTricksOfTheTradeForce) return null;
                 if (!CLUSettings.Instance.Rogue.UseTricksOfTheTrade && BotChecker.BotBaseInUse("Questing") && BotChecker.BotBaseInUse("PartyBot")) return null;
-                if (StyxWoW.Me.IsInParty)
+                if (StyxWoW.Me.GroupInfo.IsInParty)
                 {
 
                     // If the player has a focus target set, use it instead.
@@ -1040,7 +1040,7 @@ namespace CLU.Base
                     //    return bestPlayer;
                     //}
                 }
-                CLU.TroubleshootLog("returned null; IsInParty {0}; ForceTotT {1}", StyxWoW.Me.IsInParty, CLUSettings.Instance.Rogue.UseTricksOfTheTradeForce);
+                CLU.TroubleshootLog("returned null; IsInParty {0}; ForceTotT {1}", StyxWoW.Me.GroupInfo.IsInParty, CLUSettings.Instance.Rogue.UseTricksOfTheTradeForce);
                 return null;
             }
         }
@@ -1082,7 +1082,7 @@ namespace CLU.Base
                         return RaFHelper.Leader;
                     }
 
-                    if (StyxWoW.Me.IsInParty)
+                    if (StyxWoW.Me.GroupInfo.IsInParty)
                     {
                         var bestTank = Tanks.OrderBy(t => t.DistanceSqr).FirstOrDefault(t => t.IsAlive);
 
@@ -1430,7 +1430,7 @@ namespace CLU.Base
             {
 
                 CLU.TroubleshootLog("Dumping List of Known group Information");
-                CLU.TroubleshootLog("Me.GroupInfo.IsInRaid: {0} Me.IsInParty: {1}", Me.GroupInfo.IsInRaid, Me.IsInParty && !Me.GroupInfo.IsInRaid);
+                CLU.TroubleshootLog("Me.GroupInfo.IsInRaid: {0} Me.GroupInfo.IsInParty: {1}", Me.GroupInfo.IsInRaid, Me.GroupInfo.IsInParty && !Me.GroupInfo.IsInRaid);
                 CLU.TroubleshootLog("End group Information");
             }
             catch { }
