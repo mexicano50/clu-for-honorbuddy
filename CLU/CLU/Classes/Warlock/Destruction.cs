@@ -123,7 +123,7 @@ namespace CLU.Classes.Warlock
                     Buff.CastDebuff("Curse of the Elements",       ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget) && Me.CurrentTarget.HealthPercent > 70 && !Buff.UnitHasMagicVulnerabilityDeBuffs(Me.CurrentTarget), "Curse of the Elements"),
                     Buff.CastDebuff("Immolate", ret => true, "Immolate"),
                     //Spell.CastSpell("Havoc", u => Unit.BestBaneOfHavocTarget, ret => true, "Havoc on "), // + Unit.BestBaneOfHavocTarget.Name
-                    Spell.CastSpell("Conflagrate", ret => Me.CurrentTarget != null && Buff.HasMyAura(Me.CurrentTarget, "Immolate"), "Conflagrate"),
+                    Spell.CastSpell("Conflagrate", ret => Me.CurrentTarget != null && Me.CurrentTarget.HasMyAura("Immolate"), "Conflagrate"),
                     Spell.CastSpell("Chaos Bolt", ret => Buff.GetAuraStack(Me, "Backdraft", true) < 3 && Me.GetCurrentPower(Styx.WoWPowerType.BurningEmbers)>0 && Me.CurrentTarget.HealthPercent >= 20, "Chaos Bolt"),
                     Spell.CastSpell("Shadowburn", ret => Buff.GetAuraStack(Me, "Backdraft", true) < 3 && Me.GetCurrentPower(Styx.WoWPowerType.BurningEmbers) > 0 && Me.CurrentTarget.HealthPercent < 20, "Chaos Bolt"),
                     Spell.CastSpell("Incinerate", ret => true, "Incinerate"),
@@ -149,7 +149,7 @@ namespace CLU.Classes.Warlock
                            new Decorator(
                                ret => !Me.Mounted && !Me.IsDead && !Me.Combat && !Me.IsFlying && !Me.IsOnTransport && !Me.HasAura("Food") && !Me.HasAura("Drink"),
                                new PrioritySelector(
-                                   PetManager.CastPetSummonSpell("Summon Imp", ret => !Me.IsMoving && !Me.GotAlivePet, "Summoning Pet Imp"),
+                                   PetManager.CastPetSummonSpell(691, ret => !Me.IsMoving && !Me.GotAlivePet, "Summon Pet"),
                                    Buff.CastBuff("Soul Link", ret => Pet != null && Pet.IsAlive, "Soul Link")
                                   )));
             }
