@@ -181,7 +181,7 @@ NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagr
                                            //Spell.CastSpell("Faerie Fire", ret => Buff.TargetDebuffTimeLeft("Weakened Armor").TotalSeconds < 2 || Buff.TargetCountDebuff("Weakened Armor") < 3, "Faerie Fire"),
                                            // end i am broken
                            // ======================== start Hacks =============================================================
-                           Buff.CastDebuff("Mangle", ret => !WoWSpell.FromId(33878).Cooldown, "Mangle (Bear)"),
+                           Spell.CastSpell(33917, ret => !WoWSpell.FromId(33878).Cooldown, "Mangle (Bear)"),
                            Spell.CastAreaSpell("Swipe", 8, false, 3, 0.0, 0.0, ret => true, "Swipe"),
                            new Decorator(ret => !WoWSpell.FromId(77758).Cooldown && Buff.TargetDebuffTimeLeft("Weakened Blows").TotalSeconds < 2 || Buff.TargetDebuffTimeLeft("Thrash").TotalSeconds < 4 || Unit.EnemyUnits.Count() > 2,
                                new Sequence(
