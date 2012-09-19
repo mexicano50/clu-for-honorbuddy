@@ -16,16 +16,21 @@ using CommonBehaviors.Actions;
 using Styx.TreeSharp;
 using System.Linq;
 using CLU.Base;
-using Rest = CLU.Base.Rest;
+
+
 
 namespace CLU.Classes.Druid
 {
-    using Styx;
+    using Styx.CommonBot;
     using Styx.WoWInternals;
+
+    using Rest = global::CLU.Base.Rest;
 
     class Guardian : RotationBase
     {
         private const int ItemSetId = 1058; // Tier set ID
+
+        
 
         public override string Name
         {
@@ -174,20 +179,24 @@ NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagr
                                            Item.UseEngineerGloves(),
                                            Buff.CastBuff("Lifeblood", ret => true, "Lifeblood"))),
                                            // I am broken please fix me.
+
+                                           //new Decorator(ret => SpellManager.CanCast("Mangle (Bear)"), new Action(ret => SpellManager.Cast("Mangle"))), //Works
                                            //Spell.CastSpell("Mangle (Bear)", ret => true, "Mangle (Bear)"),
-                                           ////Spell.CastSpell("Mangle", ret => !WoWSpell.FromId(33878).Cooldown, "Mangle (Bear)"),
+                                           //Spell.CastSpell("Mangle", ret => !WoWSpell.FromId(33878).Cooldown, "Mangle (Bear)"),
                                            //Spell.CastAreaSpell("Swipe", 8, false, 3, 0.0, 0.0, ret => true, "Swipe"),
                                            //Spell.CastSpell("Thrash (Bear)", ret => Buff.TargetDebuffTimeLeft("Weakened Blows").TotalSeconds < 2 || Buff.TargetDebuffTimeLeft("Thrash").TotalSeconds < 4 || Unit.EnemyUnits.Count() > 2, "Thrash (Bear)"),
-                                           //Spell.CastSpell("Faerie Fire", ret => Buff.TargetDebuffTimeLeft("Weakened Armor").TotalSeconds < 2 || Buff.TargetCountDebuff("Weakened Armor") < 3, "Faerie Fire"),
+                                           //new Decorator(ret => SpellManager.CanCast("Faerie Swarm"), new Action(ret => SpellManager.Cast("Faerie Fire"))),
+                                           //Spell.CastSpell("Faerie Fire", ret => Buff.TargetDebuffTimeLeft("Weakened Armor").TotalSeconds < 2 || Buff.TargetCountDebuff("Weakened Armor") < 3, "Faerie Fire"),  
                                            // end i am broken
                            // ======================== start Hacks =============================================================
                            Spell.CastSpell(33917, ret => !WoWSpell.FromId(33878).Cooldown, "Mangle (Bear)"),
                            Spell.CastAreaSpell("Swipe", 8, false, 3, 0.0, 0.0, ret => true, "Swipe"),
-                           new Decorator(ret => !WoWSpell.FromId(77758).Cooldown && Buff.TargetDebuffTimeLeft("Weakened Blows").TotalSeconds < 2 || Buff.TargetDebuffTimeLeft("Thrash").TotalSeconds < 4 || Unit.EnemyUnits.Count() > 2,
-                               new Sequence(
-                                    new Action(a => CLU.Log(" [Casting] Thrash ")),
-                                    new Action(ret => Spell.CastSpellByName("Thrash")
-                                   ))),
+                           //new Decorator(ret => !WoWSpell.FromId(77758).Cooldown && Buff.TargetDebuffTimeLeft("Weakened Blows").TotalSeconds < 2 || Buff.TargetDebuffTimeLeft("Thrash").TotalSeconds < 4 || Unit.EnemyUnits.Count() > 2,
+                           //    new Sequence(
+                           //         new Action(a => CLU.Log(" [Casting] Thrash ")),
+                           //         new Action(ret => Spell.CastSpellByName("Thrash")
+                           //        ))),
+                           Spell.CastSpell("Thrash (Bear)", ret => Buff.TargetDebuffTimeLeft("Weakened Blows").TotalSeconds < 2 || Buff.TargetDebuffTimeLeft("Thrash").TotalSeconds < 4 || Unit.EnemyUnits.Count() > 2, "Thrash (Bear)"),
                            new Decorator(ret => Buff.TargetDebuffTimeLeft("Weakened Armor").TotalSeconds < 2 || Buff.TargetCountDebuff("Weakened Armor") < 3,
                                new Sequence(
                                     new Action(a => CLU.Log(" [Casting] Faerie Fire ")),
@@ -250,6 +259,7 @@ NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagr
                     //Item.RunMacroText("/cast Ravage",           ret =>  Unit.TimeToDeath(Me.CurrentTarget) < 8.5, "Ravage"),
                                    Spell.CastSpell("Ravage", ret => Unit.TimeToDeath(Me.CurrentTarget) < 8.5 && Common.CanRavage, "Ravage"),
                                    Spell.CastSpell("Shred", ret => (Common.IsBehind || BossList.CanShred.Contains(Unit.CurrentTargetEntry)), "Shred"),
+                                   //new Decorator(ret => SpellManager.CanCast("Mangle (Cat)") && !Common.IsBehind, new Action(ret => SpellManager.Cast("Mangle")))
                                     new Decorator(ret => !WoWSpell.FromId(33878).Cooldown && (!Common.IsBehind),
                                         new Sequence(
                                             new Action(a => CLU.Log(" [Casting] Mangle [NotBehind]")),
