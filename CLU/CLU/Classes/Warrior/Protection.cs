@@ -169,7 +169,7 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
                         Spell.CastSpell("Shield Block",             ret => true, "Shield Block"),
                         Spell.CastSpell("Thunder Clap",             ret => true, "Thunder Clap"),
                         Buff.CastBuff("Battle Shout",               ret => Me.CurrentRage < 80, "Battle Shout"),
-                        Spell.CastSpell("Sunder Armor", ret => true, "Devastate")
+                        Spell.CastSpell("Sunder Armor",             ret => true, "Devastate")
                 ));
             }
         }
