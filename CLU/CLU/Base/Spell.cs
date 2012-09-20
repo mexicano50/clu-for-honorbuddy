@@ -41,6 +41,12 @@ namespace CLU.Base
         /// </summary>
         public static readonly HashSet<string> KnownChanneledSpells = new HashSet<string>();
 
+        // Specify the override ID of an original spell to make the spell manager CanCast(originalId) - recommended by Apoc.
+        public static HashSet<int> CanCastUseOriginals = new HashSet<int>
+        {
+            102355, // Faerie Swarm
+        };
+
 
         /// <summary>
         /// Me! or is it you?

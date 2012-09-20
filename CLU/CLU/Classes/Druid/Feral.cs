@@ -165,35 +165,20 @@ NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagr
             get
             {
                 return new PrioritySelector(
-                           // Cooldowns
+                    // Cooldowns
                            new Decorator(
                                ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget),
                                   new PrioritySelector(
                                            Item.UseTrinkets(),
                                            Racials.UseRacials(),
                                            Spell.CastSelfSpell("Enrage", ret => !Spell.CanCast("Berserk", Me) && Me.CurrentRage < 80, "Enrage"),
-                                           //Spell.CastSelfSpell("Berserk", ret => Buff.PlayerHasBuff("Pulverize") && Buff.TargetCountDebuff("Lacerate") >= 1, "Berserk"),
+                                           Spell.CastSelfSpell("Berserk", ret => true, "Berserk"),
                                            Item.UseEngineerGloves(),
                                            Buff.CastBuff("Lifeblood", ret => true, "Lifeblood"))),
-
-                           Buff.CastDebuff("Mangle", ret => !WoWSpell.FromId(33878).Cooldown, "Mangle (Bear)"),
+                           Spell.CastSpell("Mangle", ret => true, "Mangle"),
+                           Spell.CastSpell("Thrash", ret => Buff.TargetDebuffTimeLeft("Weakened Blows").TotalSeconds < 2 || Buff.TargetDebuffTimeLeft("Thrash").TotalSeconds < 4 || Unit.EnemyUnits.Count() > 2, "Thrash (Bear)"),
                            Spell.CastAreaSpell("Swipe", 8, false, 3, 0.0, 0.0, ret => true, "Swipe"),
-                           new Decorator(ret => !WoWSpell.FromId(77758).Cooldown && Buff.TargetDebuffTimeLeft("Weakened Blows").TotalSeconds < 2 || Buff.TargetDebuffTimeLeft("Thrash").TotalSeconds < 4 || Unit.EnemyUnits.Count() > 2,
-                               new Sequence(
-                                    new Action(a => CLU.Log(" [Casting] Thrash ")),
-                                    new Action(ret => Spell.CastSpellByName("Thrash")  //todo: change this to WoWSpell.FromId(33878).Cast()
-                                   ))),
-
-                           new Decorator(ret => Buff.TargetDebuffTimeLeft("Weakened Armor").TotalSeconds < 2 || Buff.TargetCountDebuff("Weakened Armor") < 3,
-                               new Sequence(
-                                    new Action(a => CLU.Log(" [Casting] Faerie Fire ")),
-                                    new Action(ret => Spell.CastSpellByName("Faerie Fire")  //todo: change this to WoWSpell.FromId(33878).Cast()
-                                   ))),
-                           //Spell.CastSpellByID(33917, ret => !WoWSpell.FromId(33878).Cooldown, "Mangle"),
-                           //Spell.CastSpellByID(77758, ret => !WoWSpell.FromId(77758).Cooldown && Buff.TargetDebuffTimeLeft("Weakened Blows").TotalSeconds < 2 || Buff.TargetDebuffTimeLeft("Thrash").TotalSeconds < 4 || Unit.EnemyUnits.Count() > 2, "Thrash"),
-
-                           //Spell.CastSpell("Faerie Swarm", ret => Buff.TargetDebuffTimeLeft("Weakened Armor").TotalSeconds < 2 || Buff.TargetCountDebuff("Weakened Armor") < 3, "Faerie Swarm"),
-                           //Spell.CastSpell("Faerie Fire", ret => Buff.TargetDebuffTimeLeft("Weakened Armor").TotalSeconds < 2 || Buff.TargetCountDebuff("Weakened Armor") < 3, "Faerie Fire"),
+                           Spell.CastSpell("Faerie Fire", ret => Buff.TargetDebuffTimeLeft("Weakened Armor").TotalSeconds < 2 || Buff.TargetCountDebuff("Weakened Armor") < 3, "Faerie Fire"),
                            Buff.CastDebuff("Lacerate", ret => true, "Lacerate"),
                            Spell.CastSpell("Maul", ret => Me.RagePercent > 70 || Buff.PlayerHasBuff("Clearcasting"), "Maul"),
                            Spell.CastSpell("Lacerate", ret => true, "Lacerate"));
@@ -251,12 +236,7 @@ NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagr
                                    //Item.RunMacroText("/cast Ravage",           ret =>  Unit.TimeToDeath(Me.CurrentTarget) < 8.5, "Ravage"),
                                    Spell.CastSpell("Ravage",                    ret => Unit.TimeToDeath(Me.CurrentTarget) < 8.5 && Common.CanRavage, "Ravage"),
                                    Spell.CastSpell("Shred",                     ret => (Common.IsBehind || BossList.CanShred.Contains(Unit.CurrentTargetEntry)), "Shred"),
-                                    new Decorator(ret => !WoWSpell.FromId(33878).Cooldown && (!Common.IsBehind),
-                                        new Sequence(
-                                            new Action(a => CLU.Log(" [Casting] Mangle [NotBehind]")),
-                                            new Action(ret => Spell.CastSpellByName("Mangle") // Spell.CastSpell("Mangle",                    ret => !WoWSpell.FromId(33878).Cooldown && (!Common.IsBehind || !BossList.CanShred.Contains(Unit.CurrentTargetEntry)), "Mangle [NotBehind]")
-                                   )))
-                                   
+                                   Spell.CastSpell("Mangle", ret => true, "Mangle (Cat!)")
                                    );
 
             }
