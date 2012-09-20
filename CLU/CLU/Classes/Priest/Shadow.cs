@@ -174,7 +174,7 @@ NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagr
             {
                 return (
                     new PrioritySelector(
-                        //new Action(a => { CLU.Log("I am the start of public Composite baseRotation"); return RunStatus.Failure; }),
+                        new Action(a => { CLU.Log("I am the start of public Composite baseRotation"); return RunStatus.Failure; }),
                         //PvP Utilities
 
                         //Rotation
@@ -205,7 +205,7 @@ NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagr
                         //mind_sear,chain=1,interrupt=1,if=num_targets>=3
                         Spell.CastSpell("Mind Sear", ret => Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 40) >= 3, "Mind Sear"),
                         //mind_flay,chain=1,interrupt=1
-                        Spell.CastSpell("Mind Flay", ret => true, "Mind Flay"),
+                        Spell.ChannelSpell("Mind Flay", ret => true, "Mind Flay"),
                         //shadow_word_death,moving=1
                         Spell.CastSpell("Shadow Word: Death", ret => Me.IsMoving, "Shadow Word: Death"),
                         //mind_blast,moving=1,if=buff.divine_insight_shadow.react&cooldown_react
@@ -269,7 +269,7 @@ NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagr
             {
                 return (
                     new PrioritySelector(
-                    //new Action(a => { CLU.Log("I am the start of public override Composite PVPRotation"); return RunStatus.Failure; }),
+                    new Action(a => { CLU.Log("I am the start of public override Composite PVPRotation"); return RunStatus.Failure; }),
                         CrowdControl.freeMe(),
                         new Decorator(ret => Macro.Manual || BotChecker.BotBaseInUse("BGBuddy"),
                             new Decorator(ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget),
