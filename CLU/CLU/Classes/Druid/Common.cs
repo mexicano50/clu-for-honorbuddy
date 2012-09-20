@@ -31,6 +31,13 @@ namespace CLU.Classes.Druid
         public static bool PrevNaturesSwiftness;
 
         /// <summary>
+        /// A check how high the multiplier were when Rip/ Rake were Apllied / refreshed 
+        /// </summary>
+        public static double RakeMultiplier;
+        public static double RipMultiplier;
+        public static double ExtendedRip;
+
+        /// <summary>
         /// UnitMana - Used in Druid Energy calculation // using (StyxWoW.Memory.AcquireFrame()) {}
         /// </summary>
         /// <returns></returns>
@@ -86,6 +93,27 @@ namespace CLU.Classes.Druid
                      CLU.DiagnosticLog(" Calculation Failed in TimetoEnergyCap");
                      return 999999;
                  }
+             }
+         }
+
+        /// <summary>
+        ///  we got certain buffs (savage roar  | tf | incarnation) or dots tick higher
+        /// </summary>
+        private static double tick_multiplier
+         {
+             get
+             {
+                 double tick_multiplier = 1;
+                 //Tigers Fury
+                 if (StyxWoW.Me.HasAura(5217))
+                     tick_multiplier = tick_multiplier * 1.15;
+                 //Savage Roar
+                 if (StyxWoW.Me.HasAura(127538))
+                     tick_multiplier = tick_multiplier * 1.3;
+                 //Doc
+                 if (StyxWoW.Me.HasAura(108373))
+                     tick_multiplier = tick_multiplier * 1.25;
+                 return tick_multiplier;
              }
          }
 
