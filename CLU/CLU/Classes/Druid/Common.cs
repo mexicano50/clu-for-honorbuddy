@@ -99,7 +99,7 @@ namespace CLU.Classes.Druid
         /// <summary>
         ///  we got certain buffs (savage roar  | tf | incarnation) or dots tick higher
         /// </summary>
-        private static double tick_multiplier
+        public static double tick_multiplier
          {
              get
              {

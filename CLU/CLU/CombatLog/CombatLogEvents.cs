@@ -221,6 +221,37 @@ namespace CLU.CombatLog
                 }
                 break;
             case "SPELL_AURA_REFRESH":
+            if (e.SourceGuid == StyxWoW.Me.Guid)
+                {
+                    if (e.SpellId == 1822)
+                    {
+                        Classes.Druid.Common.RakeMultiplier = 1;
+                        //TF
+                        if (StyxWoW.Me.HasAura(5217))
+                            Classes.Druid.Common.RakeMultiplier = Classes.Druid.Common.RakeMultiplier * 1.15;
+                        //Savage Roar
+                        if (StyxWoW.Me.HasAura(127538))
+                            Classes.Druid.Common.RakeMultiplier = Classes.Druid.Common.RakeMultiplier * 1.3;
+                        //Doc
+                        if (StyxWoW.Me.HasAura(108373))
+                            Classes.Druid.Common.RakeMultiplier = Classes.Druid.Common.RakeMultiplier * 1.25;
+                    }
+                    if (e.SpellId == 1079)
+                    {
+                        Classes.Druid.Common.ExtendedRip = 0;
+                        Classes.Druid.Common.RipMultiplier = 1;
+                        //TF
+                        if (StyxWoW.Me.HasAura(5217))
+                            Classes.Druid.Common.RipMultiplier = Classes.Druid.Common.RipMultiplier * 1.15;
+                        //Savage Roar
+                        if (StyxWoW.Me.HasAura(127538))
+                            Classes.Druid.Common.RipMultiplier = Classes.Druid.Common.RipMultiplier * 1.3;
+                        //Doc
+                        if (StyxWoW.Me.HasAura(108373))
+                            Classes.Druid.Common.RipMultiplier = Classes.Druid.Common.RipMultiplier * 1.25;
+                    }
+                }
+                break;
             case "SPELL_AURA_APPLIED":
                 if (e.SourceGuid == StyxWoW.Me.Guid)
                 {

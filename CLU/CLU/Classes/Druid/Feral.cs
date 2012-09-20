@@ -10,13 +10,18 @@
  */
 #endregion
 
+using System;
 using CLU.Helpers;
 using CLU.Lists;
+using CLU.Managers;
 using CLU.Settings;
 using CommonBehaviors.Actions;
+using Styx.Common;
+using Styx.CommonBot;
 using Styx.TreeSharp;
 using System.Linq;
 using CLU.Base;
+using Action = Styx.TreeSharp.Action;
 using Rest = CLU.Base.Rest;
 
 
@@ -190,53 +195,118 @@ NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagr
             get
             {
                 return new PrioritySelector(
-                                   // Cooldowns
-                                   new Decorator(
-                                       ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget),
+                                    //LETS START WITH EPIC DRUID ROTATION!
+
+
+                                    Spell.CastSpell("Faerie Fire", ret => Buff.TargetCountDebuff("Weakened Armor") < 3, "Faerie Fire"),
+                                    Spell.CastSpell("Savage Roar", ret => !Buff.PlayerHasBuff("Savage Roar"), "Savage Roar"),
+                                    //Only use this shit if we have got DoC
+                                    new Decorator(
+                                        ret => SpellManager.HasSpell("Dream of Cenarius") ,
+                                        new PrioritySelector(
+                                    Spell.CastSpell("Healing Touch", ret => Buff.PlayerHasBuff("Predatory Swiftness") && Me.ComboPoints > 4 && Buff.PlayerCountBuff("Dream of Cenarius") < 2, "Healing Touch"),
+                                    Spell.CastSpell("Healing Touch", ret => Buff.PlayerHasBuff("Predatory Swiftness") && Buff.PlayerBuffTimeLeft("Predatory Swiftness") <= 1 && !Buff.PlayerHasBuff("Dream of Cenarius"), "Healing Touch"),
+                                    Spell.CastSpell("Healing Touch", ret => Common.PrevNaturesSwiftness, "Healing Touch")
+                                    )),
+                                    //We only use Trinkets && Hands here
+                                    new Decorator(
+                                       ret => Buff.PlayerHasBuff("Tiger's Fury") && Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget),
                                        new PrioritySelector(
                                            Item.UseTrinkets(),
-                                           Racials.UseRacials(),
                                            Item.UseEngineerGloves()
-                                           //Buff.CastBuff("Lifeblood", ret => true, "Lifeblood")
-                                           )),  // Thanks Kink
-                                   // Interupts
-                                   Spell.CastInterupt("Skull Bash",             ret => true, "Skull Bash"),
-                                   Spell.CastSelfSpell("Tiger's Fury",          ret => Me.CurrentEnergy <= (Item.Has2PcTeirBonus(ItemSetId) ? 45 : 35) && !Buff.PlayerHasBuff("Clearcasting"), "Tigers Fury"),
-                                   //Spell.CastSelfSpell("Berserk",               ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget) && (Buff.PlayerHasBuff("Tiger's Fury") || Buff.TargetDebuffTimeLeft("Tiger's Fury").TotalSeconds > 6), "Berserk"),
-                                   // actions+=/natures_vigil,if=buff.berserk.up&talent.natures_vigil.enabled
-                                   // actions+=/incarnation,if=buff.berserk.up&talent.incarnation.enabled
-                                   Spell.CastSelfSpell("Berserking",            ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget) && Buff.PlayerHasBuff("Tiger's Fury"), "Berserking"),
-                                   Spell.CastAreaSpell("Swipe", 8, false, 3, 0.0, 0.0, ret => true, "Swipe"),
-                                   Spell.CastSpell("Savage Roar",               ret => (Buff.PlayerBuffTimeLeft("Savage Roar") <= 1 || (Buff.PlayerBuffTimeLeft("Savage Roar") <= 3)  && Me.ComboPoints > 0 && (!Buff.PlayerHasBuff("Dream of Cenarius") || Me.ComboPoints < 5)) && Buff.TargetDebuffTimeLeft("Rip").TotalSeconds > 4, "Savage Roar"),
-                                   Spell.CastSpell("Faerie Fire",               ret => Buff.TargetCountDebuff("Weakened Armor") < 3, "Faerie Fire"),
-                                   Spell.CastSpell("Faerie Swarm",              ret => true, "Faerie Swarm"),
-                                   Spell.CastSpell("Ferocious Bite",            ret => Me.CurrentTarget != null && Me.ComboPoints > 4 && Buff.TargetHasDebuff("Rip") && ((Me.CurrentTarget.HealthPercent <= (Item.Has2PcTeirBonus(ItemSetId) ? 60 : 25)) || Me.CurrentTarget.MaxHealth == 1), "Ferocious Bite"),
-                                   Spell.CastSpell("Ferocious Bite",            ret => Me.CurrentTarget != null && Me.ComboPoints >= 1 && Buff.TargetHasDebuff("Rip") && Buff.TargetDebuffTimeLeft("Rip").TotalSeconds <= 2.1 && ((Me.CurrentTarget.HealthPercent <= (Item.Has2PcTeirBonus(ItemSetId) ? 60 : 25)) || Me.CurrentTarget.MaxHealth == 1), "Ferocious Bite Rip"),
-                                   //Spell.CastSpellByID(6785, ret => true, "Ravage"),
-                                   //Item.RunMacroText("/cast Ravage",            ret => Buff.TargetDebuffTimeLeft("Rip").TotalSeconds <= 4, "Ravage"),
-                                   Spell.CastSpell("Ravage",                    ret => Buff.TargetHasDebuff("Rip") && Buff.TargetDebuffTimeLeft("Rip").TotalSeconds <= 4  && Common.CanRavage, "Ravage (Extend Rip)"),
-                                   Spell.CastSpell("Shred",                     ret => Buff.TargetHasDebuff("Rip") && Buff.TargetDebuffTimeLeft("Rip").TotalSeconds <= 4 && (Common.IsBehind || BossList.CanShred.Contains(Unit.CurrentTargetEntry)), "Shred (Extend Rip)"),
-                                   Spell.CastSpell("Rip",                       ret => Me.ComboPoints > 4 && Buff.TargetDebuffTimeLeft("Rip").TotalSeconds < 2 && (Buff.PlayerHasBuff("Berserk") || (Buff.TargetDebuffTimeLeft("Rip").TotalSeconds <= Spell.SpellCooldown("Tiger's Fury").TotalSeconds)), "Rip"),
-                                   Spell.CastSpell("Ferocious Bite",            ret => Me.ComboPoints > 4 && Buff.TargetDebuffTimeLeft("Rip").TotalSeconds > 5 && Buff.PlayerBuffTimeLeft("Savage Roar") >= 1 && Buff.PlayerHasBuff("Berserk"), "Ferocious Bite"),
-                                   //Item.RunMacroText("/cast Savage Roar", ret => Me.ComboPoints >= 5 && Buff.TargetDebuffTimeLeft("Rip").TotalSeconds < 12 && Buff.PlayerBuffTimeLeft("Savage Roar") <= (Buff.TargetDebuffTimeLeft("Rip").TotalSeconds + 4), "Savage Roar"),
-                                   Spell.CastSpell("Savage Roar",               ret => Me.ComboPoints > 4 && Buff.TargetDebuffTimeLeft("Rip").TotalSeconds < 12 && Buff.PlayerBuffTimeLeft("Savage Roar") <= (Buff.TargetDebuffTimeLeft("Rip").TotalSeconds + 4), "Savage Roar"),
-                                   Spell.CastSpell("Rake",                      ret => Buff.PlayerHasBuff("Tiger's Fury") && Buff.TargetDebuffTimeLeft("Rake").TotalSeconds < 8.9, "Rake (TF.up & Rake < 9)"),
-                                   Spell.CastSpell("Rake",                      ret => Buff.TargetDebuffTimeLeft("Rake").TotalSeconds < 2.9 && (Buff.PlayerHasBuff("Berserk") || ((Spell.SpellCooldown("Tiger's Fury").TotalSeconds + 0.8) > Buff.TargetDebuffTimeLeft("rake").TotalSeconds)), "Rake"),
-                                   //Item.RunMacroText("/cast Ravage",            ret => Buff.PlayerHasBuff("Clearcasting"), "Ravage (Clearcasting)"),
-                                   Spell.CastSpell("Ravage",                    ret => Buff.PlayerHasBuff("Clearcasting") && Common.CanRavage, "Ravage (Clearcasting)"),
-                                   Spell.CastSpell("Shred",                     ret => Buff.PlayerHasBuff("Clearcasting") && (Common.IsBehind || BossList.CanShred.Contains(Unit.CurrentTargetEntry)), "Shred (Clearcasting)"),
-                                   Spell.CastSpell("Ferocious Bite",            ret => Me.CurrentTarget != null && (Me.ComboPoints > 4 && Unit.TimeToDeath(Me.CurrentTarget) < 4) || Unit.TimeToDeath(Me.CurrentTarget) < 1, "Ferocious Bite (TTD)"),
-                                   Spell.CastSpell("Ferocious Bite",            ret => Me.ComboPoints > 4 && Buff.TargetDebuffTimeLeft("Rip").TotalSeconds >= 8 && Buff.PlayerHasBuff("Savage Roar"), "Ferocious Bite"),
-                                   //Item.RunMacroText("/cast Ravage",           ret =>  Buff.PlayerHasBuff("Tiger's Fury") && Buff.PlayerHasBuff("Berserk"), "Ravage"),
-                                   Spell.CastSpell("Ravage",                    ret => Buff.PlayerHasBuff("Tiger's Fury") && Buff.PlayerHasBuff("Berserk") && Common.CanRavage, "Ravage"),
-                                   //Item.RunMacroText("/cast Ravage",           ret =>  (Me.ComboPoints <= 5 && Buff.TargetDebuffTimeLeft("Rip").TotalSeconds <= 3) || (Me.ComboPoints == 0 && Buff.TargetDebuffTimeLeft("Savage Roar").TotalSeconds <= 2), "Ravage"),
-                                   Spell.CastSpell("Ravage",                    ret => (Me.ComboPoints <= 5 && Buff.TargetDebuffTimeLeft("Rip").TotalSeconds <= 3) || (Me.ComboPoints == 0 && Buff.TargetDebuffTimeLeft("Savage Roar").TotalSeconds <= 2) && Common.CanRavage, "Ravage"),
-                                   //Item.RunMacroText("/cast Ravage",           ret =>  Spell.SpellCooldown("Tiger's Fury").TotalSeconds <= 3, "Ravage"),
-                                   Spell.CastSpell("Ravage",                    ret => Spell.SpellCooldown("Tiger's Fury").TotalSeconds <= 3 && Common.CanRavage, "Ravage"),
-                                   //Item.RunMacroText("/cast Ravage",           ret =>  Unit.TimeToDeath(Me.CurrentTarget) < 8.5, "Ravage"),
-                                   Spell.CastSpell("Ravage",                    ret => Unit.TimeToDeath(Me.CurrentTarget) < 8.5 && Common.CanRavage, "Ravage"),
-                                   Spell.CastSpell("Shred",                     ret => (Common.IsBehind || BossList.CanShred.Contains(Unit.CurrentTargetEntry)), "Shred"),
-                                   Spell.CastSpell("Mangle", ret => true, "Mangle (Cat!)")
+                                           )),  // Thanks Kink#
+
+                                    Spell.CastSpell("Tiger's Fury", ret => SpellManager.Spells["Tiger's Fury"].CooldownTimeLeft.TotalSeconds < 1 && Common.PlayerEnergy <= 35 && !Buff.PlayerHasActiveBuff("Omen of Clarity"), "Tiger's Fury"),
+                                    Spell.CastSpell("Berserk", ret => SpellManager.Spells["Berserk"].CooldownTimeLeft.TotalSeconds < 1 && (Buff.PlayerHasBuff("Tiger's Fury") || (Unit.TimeToDeath(Me.CurrentTarget) < 15 && SpellManager.Spells["Tiger's Fury"].CooldownTimeLeft.TotalSeconds > 6)), "Berserk"),
+                                    Spell.CastSpell("Nature's Vigil", ret => SpellManager.HasSpell("Nature's Vigil") && SpellManager.Spells["Nature's Vigil"].CooldownTimeLeft.TotalSeconds < 1 && Buff.PlayerHasBuff("Berserk") , "Nature's Vigil"),
+                                    Spell.CastSpell("Incarnation", ret =>SpellManager.HasSpell("Incarnation") && SpellManager.Spells["Incarnation"].CooldownTimeLeft.TotalSeconds < 1 && Buff.PlayerHasBuff("Berserk") , "Incarnation"),
+                                    //Use Racials!
+                                    new Decorator(
+                                       ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget),
+                                           Racials.UseRacials()
+                                           ),
+                                    Spell.CastSpell("Ferocious Bite", ret => StyxWoW.Me.ComboPoints >= 1 && Buff.TargetHasDebuff("Rip") && Buff.TargetDebuffTimeLeft("Rip").TotalSeconds <= 2 && StyxWoW.Me.CurrentTarget.HealthPercent <= 25, "Ferocious Bite"),
+                                    Spell.CastSpell(106832, ret => Buff.PlayerHasActiveBuff("Omen of Clarity") && Buff.TargetDebuffTimeLeft("Thrash").TotalSeconds < 3 && !Buff.PlayerHasBuff("Dream of Cenarius"), "Thrash"),
+                                    Spell.CastSpell("Savage Roar", ret => Buff.PlayerBuffTimeLeft("Savage Roar") <= 1 || (Buff.PlayerBuffTimeLeft("Savage Roar") <= 3 && StyxWoW.Me.ComboPoints > 0) && StyxWoW.Me.CurrentTarget.HealthPercent < 25, "Savage Roar"),
+                                    //Only use this shit if we have got DoC
+                                    new Decorator(
+                                        ret => SpellManager.HasSpell("Dream of Cenarius"),
+                                    Spell.CastSpell("Nature's Swiftness", ret => !Buff.PlayerHasBuff("Dream of Cenarius") && !Buff.PlayerHasBuff("Predatory Swiftness") && StyxWoW.Me.ComboPoints >= 5 && StyxWoW.Me.CurrentTarget.HealthPercent <= 25, "Nature's Swiftness")
+                                    ),
+
+                                    new Decorator(
+                                       ret => (SpellManager.HasSpell("Dream of Cenarius") && StyxWoW.Me.ComboPoints >= 5 && StyxWoW.Me.CurrentTarget.HealthPercent <= 25 &&
+                                    Buff.PlayerHasBuff("Dream of Cenarius")) || (!SpellManager.HasSpell("Dream of Cenarius") && Buff.PlayerHasBuff("Berserk") && StyxWoW.Me.CurrentTarget.HealthPercent <= 25) || Unit.TimeToDeath(Me.CurrentTarget) <= 40,
+                                    Item.UseItem(76089)
+                                    ),
+                                    Spell.CastSpell("Rip", ret => StyxWoW.Me.ComboPoints >= 5 && Buff.PlayerHasBuff("Virmen's Bite") && Buff.PlayerHasBuff("Dream of Cenarius") && Common.RipMultiplier < Common.tick_multiplier && StyxWoW.Me.CurrentTarget.HealthPercent <= 25 && Unit.TimeToDeath(Me.CurrentTarget) > 30, "Rip"),
+                                    Spell.CastSpell("Ferocious Bite", ret => StyxWoW.Me.ComboPoints >= 5 && Buff.TargetHasDebuff("Rip") && StyxWoW.Me.CurrentTarget.HealthPercent <= 25, "Ferocious Bite"),
+                                    Spell.CastSpell("Rip", ret => StyxWoW.Me.ComboPoints >= 5 && Unit.TimeToDeath(Me.CurrentTarget) >= 6 && Buff.TargetDebuffTimeLeft("Rip").TotalSeconds < 2.0 && Buff.PlayerHasBuff("Dream of Cenarius"), "Rip"),
+                                    Spell.CastSpell("Rip", ret => StyxWoW.Me.ComboPoints >= 5 && Unit.TimeToDeath(Me.CurrentTarget) >= 6 && Buff.TargetDebuffTimeLeft("Rip").TotalSeconds < 6.0 && Buff.PlayerHasBuff("Dream of Cenarius") && Common.RipMultiplier <= Common.tick_multiplier & StyxWoW.Me.CurrentTarget.HealthPercent > 25, "Rip"),
+                                    Spell.CastSpell("Savage Roar", ret => Buff.PlayerBuffTimeLeft("Savage Roar") <= 1 || (Buff.PlayerBuffTimeLeft("Savage Roar") <= 3 && StyxWoW.Me.ComboPoints > 0), "Savage Roar"),
+                                    //Only use this shit if we have got DoC
+                                    new Decorator(
+                                        ret => SpellManager.HasSpell("Dream of Cenarius"),
+                                    Spell.CastSpell("Nature's Swiftness", ret => !Buff.PlayerHasBuff("Dream of Cenarius") && !Buff.PlayerHasBuff("Predatory Swiftness") && StyxWoW.Me.ComboPoints >= 5 &&Buff.TargetDebuffTimeLeft("Rip").TotalSeconds < 3 && (Buff.PlayerHasBuff("Berserk") || Buff.TargetDebuffTimeLeft("Rip").TotalSeconds <= SpellManager.Spells["Tiger's Fury"].CooldownTimeLeft.TotalSeconds) &&StyxWoW.Me.CurrentTarget.HealthPercent > 25, "Nature's Swiftness")
+                                    ),
+                                    Spell.CastSpell("Rip", ret => StyxWoW.Me.ComboPoints >= 5 && Unit.TimeToDeath(Me.CurrentTarget) >= 6 && Buff.TargetDebuffTimeLeft("Rip").TotalSeconds < 2.0 && (Buff.PlayerHasBuff("Berserk") || Buff.TargetDebuffTimeLeft("Rip").TotalSeconds <= SpellManager.Spells["Tiger's Fury"].CooldownTimeLeft.TotalSeconds), "Rip"),
+                                    Spell.CastSpell(106832, ret => Buff.PlayerHasActiveBuff("Omen of Clarity") && Buff.TargetDebuffTimeLeft("Thrash").TotalSeconds < 3, "Thrash"),
+                                    Spell.CastSpell("Ravage", ret => Common.CanRavage && Common.ExtendedRip < 3 && Buff.TargetHasDebuff("Rip") && Buff.TargetDebuffTimeLeft("Rip").TotalSeconds <= 4, "Ravage"),
+                                    new Decorator(
+                                        ret => StyxWoW.Me.CurrentTarget.MeIsBehind || BossList.CanShred.Contains(Unit.CurrentTargetEntry) ||(TalentManager.HasGlyph("Shred") && (StyxWoW.Me.HasAura(5217) || StyxWoW.Me.HasAura(106951))),
+                                            Spell.CastSpell("Shred", ret => !Common.CanRavage && Common.ExtendedRip < 3 && Buff.TargetHasDebuff("Rip") && Buff.TargetDebuffTimeLeft("Rip").TotalSeconds <= 4, "Shred")
+                                        ),
+                                    Spell.CastSpell("Ferocious Bite", ret => (Unit.TimeToDeath(Me.CurrentTarget) <= 4 && StyxWoW.Me.ComboPoints >= 5) || Unit.TimeToDeath(Me.CurrentTarget) <= 1, "Ferocious Bite"),
+                                    Spell.CastSpell("Savage Roar", ret => Buff.PlayerBuffTimeLeft("Savage Roar") <= 6 && StyxWoW.Me.ComboPoints >= 5 &&(((Buff.TargetDebuffTimeLeft("Rip").TotalSeconds + (8 - (Common.ExtendedRip * 2))) > 6 &&(SpellManager.HasSpell("Soul of the Forest") || Buff.PlayerHasBuff("Berserk"))) ||(Buff.TargetDebuffTimeLeft("Rip").TotalSeconds + (8 - (Common.ExtendedRip * 2))) > 10) && Buff.TargetHasDebuff("Rip"), "Savage Roar"),
+                                    Spell.CastSpell("Ferocious Bite", ret => StyxWoW.Me.ComboPoints >= 5 && (Buff.TargetDebuffTimeLeft("Rip").TotalSeconds + (8 - (Common.ExtendedRip * 2))) > 6 && Buff.TargetHasDebuff("Rip") && (SpellManager.HasSpell("Soul of the Forest") || Buff.PlayerHasBuff("Berserk")), "Ferocious Bite"),
+                                    Spell.CastSpell("Ferocious Bite", ret => StyxWoW.Me.ComboPoints >= 5 && (Buff.TargetDebuffTimeLeft("Rip").TotalSeconds + (8 - (Common.ExtendedRip * 2))) > 10 && Buff.TargetHasDebuff("Rip"), "Ferocious Bite"),
+                                    Spell.CastSpell("Rake", ret => Unit.TimeToDeath(Me.CurrentTarget) >= 8.5 && Buff.PlayerHasBuff("Dream of Cenarius") && (Common.RipMultiplier < Common.tick_multiplier), "Rake"),
+                                    Spell.CastSpell("Rake", ret => Unit.TimeToDeath(Me.CurrentTarget) >= 8.5 && Buff.TargetDebuffTimeLeft("Rake").TotalSeconds < 3.0 && (Buff.PlayerHasBuff("Berserk") || (SpellManager.Spells["Tiger's Fury"].CooldownTimeLeft.TotalSeconds + 0.8) >= Buff.TargetDebuffTimeLeft("Rake").TotalSeconds), "Rake"),
+                                    Spell.CastSpell("Ravage", ret => Common.CanRavage && Buff.PlayerHasActiveBuff("Omen of Clarity"), "Ravage"),
+                                    new Decorator(
+                                        ret => StyxWoW.Me.CurrentTarget.MeIsBehind || BossList.CanShred.Contains(Unit.CurrentTargetEntry) || (TalentManager.HasGlyph("Shred") && (StyxWoW.Me.HasAura(5217) || StyxWoW.Me.HasAura(106951))),
+                                            Spell.CastSpell("Shred", ret => !Common.CanRavage && Buff.PlayerHasActiveBuff("Omen of Clarity"), "Shred")
+                                        ),
+                                    new Decorator(
+                                        ret => Common.CanRavage ,
+                                        new PrioritySelector(
+                                            Spell.CastSpell("Ravage", ret => Buff.PlayerBuffTimeLeft("Predatory Swiftness") > 1 && !(Common.PlayerEnergy + (Common.EnergyRegen * (Buff.PlayerBuffTimeLeft("Predatory Swiftness") - 1)) < (4 - StyxWoW.Me.ComboPoints) * 20), "Ravage"),
+                                            Spell.CastSpell("Ravage", ret => ((StyxWoW.Me.ComboPoints < 5 && Buff.TargetDebuffTimeLeft("Rip").TotalSeconds < 3.0) || (StyxWoW.Me.ComboPoints == 0 && Buff.PlayerBuffTimeLeft("Savage Roar") < 2)), "Ravage"),
+                                            Spell.CastSpell("Ravage", ret => Unit.TimeToDeath(Me.CurrentTarget) <= 8.5, "Ravage")
+                                            )
+                                        ),
+
+                                    new Decorator(
+                                        ret => StyxWoW.Me.CurrentTarget.MeIsBehind || BossList.CanShred.Contains(Unit.CurrentTargetEntry) || (TalentManager.HasGlyph("Shred") && (StyxWoW.Me.HasAura(5217) || StyxWoW.Me.HasAura(106951))),
+                                        new PrioritySelector(
+                                            Spell.CastSpell("Shred", ret => !Common.CanRavage && Buff.PlayerBuffTimeLeft("Predatory Swiftness") > 1 && !(Common.PlayerEnergy + (Common.EnergyRegen * (Buff.PlayerBuffTimeLeft("Predatory Swiftness") - 1)) < (4 - StyxWoW.Me.ComboPoints) * 20), "Shred"),
+                                            Spell.CastSpell("Shred", ret => !Common.CanRavage && ((StyxWoW.Me.ComboPoints < 5 && Buff.TargetDebuffTimeLeft("Rip").TotalSeconds < 3.0) || (StyxWoW.Me.ComboPoints == 0 && Buff.PlayerBuffTimeLeft("Savage Roar") < 2)), "Shred"),
+                                            Spell.CastSpell("Shred", ret => !Common.CanRavage && Unit.TimeToDeath(Me.CurrentTarget) <= 8.5, "Shred")
+                                            )
+                                        ),
+                                    Spell.CastSpell(106832, ret => StyxWoW.Me.ComboPoints >= 5 && Buff.TargetDebuffTimeLeft("Thrash").TotalSeconds < 6 && (Buff.PlayerHasBuff("Tiger's Fury") || Buff.PlayerHasBuff("Berserk")), "Thrash"),
+                                    Spell.CastSpell(106832, ret => StyxWoW.Me.ComboPoints >= 5 && Buff.TargetDebuffTimeLeft("Thrash").TotalSeconds < 6 && SpellManager.Spells["Tiger's Fury"].CooldownTimeLeft.TotalSeconds < 3.0, "Thrash"),
+                                    Spell.CastSpell(106832, ret => StyxWoW.Me.ComboPoints >= 5 && Buff.TargetDebuffTimeLeft("Thrash").TotalSeconds < 6 && Common.TimetoEnergyCap <= 1.0, "Thrash"),
+                                    
+                                    new Decorator(
+                                        ret => !(StyxWoW.Me.ComboPoints >= 5 && Buff.TargetDebuffTimeLeft("Thrash").TotalSeconds <6) && Common.CanRavage,
+                                        new PrioritySelector(
+                                            Spell.CastSpell("Ravage", ret => Buff.PlayerHasBuff("Tiger's Fury") || Buff.PlayerHasBuff("Berserk"), "Ravage"),
+                                            Spell.CastSpell("Ravage", ret => SpellManager.Spells["Tiger's Fury"].CooldownTimeLeft.TotalSeconds < 3.0, "Ravage"),
+                                            Spell.CastSpell("Ravage", ret => Common.TimetoEnergyCap <= 1.0, "Ravage")
+                                            )
+                                        ),
+
+                                    new Decorator(
+                                        ret => StyxWoW.Me.CurrentTarget.MeIsBehind || BossList.CanShred.Contains(Unit.CurrentTargetEntry) || (TalentManager.HasGlyph("Shred") && (StyxWoW.Me.HasAura(5217) || StyxWoW.Me.HasAura(106951))),
+                                        new PrioritySelector(
+                                            Spell.CastSpell("Shred", ret => !(StyxWoW.Me.ComboPoints >= 5 && Buff.TargetDebuffTimeLeft("Thrash").TotalSeconds < 6) && !Common.CanRavage && Buff.PlayerHasBuff("Tiger's Fury") || Buff.PlayerHasBuff("Berserk"), "Shred"),
+                                            Spell.CastSpell("Shred", ret => !(StyxWoW.Me.ComboPoints >= 5 && Buff.TargetDebuffTimeLeft("Thrash").TotalSeconds < 6) && !Common.CanRavage && SpellManager.Spells["Tiger's Fury"].CooldownTimeLeft.TotalSeconds < 3.0, "Shred"),
+                                            Spell.CastSpell("Shred", ret => !(StyxWoW.Me.ComboPoints >= 5 && Buff.TargetDebuffTimeLeft("Thrash").TotalSeconds < 6) && !Common.CanRavage && Common.TimetoEnergyCap <= 1.0, "Shred")
+                                            )
+                                        ),
+
+                                    Spell.CastOnUnitLocation("Force of Nature",u => Me.CurrentTarget, ret => Me.CurrentTarget != null && SpellManager.HasSpell("Force of Nature"), "Force of Nature")
                                    );
 
             }
