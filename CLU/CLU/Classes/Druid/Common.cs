@@ -18,11 +18,76 @@ using CLU.Base;
 
 namespace CLU.Classes.Druid
 {
+    using Styx.WoWInternals;
+
     /// <summary>
     /// Common Druid Functions.
     /// </summary>
     public static class Common
     {
+        /// <summary>
+        /// Used to store confirmation of previous natures swiftness cast.
+        /// </summary>
+        public static bool PrevNaturesSwiftness;
+
+        /// <summary>
+        /// UnitMana - Used in Druid Energy calculation // using (StyxWoW.Memory.AcquireFrame()) {}
+        /// </summary>
+        /// <returns></returns>
+        public static double PlayerEnergy
+         {
+            get
+             {
+                 try
+                 {
+                        return Lua.GetReturnVal<int>("return UnitMana(\"player\");", 0);
+                 }
+                 catch
+                 {
+                     CLU.DiagnosticLog(" Lua Failed in PlayerEnergy");
+                     return 0;
+                 }
+             }
+         }
+
+        /// <summary>
+        /// GetPowerRegen - Used in Druid Energy calculation // using (StyxWoW.Memory.AcquireFrame()) {}
+        /// </summary>
+        /// <returns></returns>
+        public static double EnergyRegen
+         {
+            get
+             {
+                 try
+                 {
+                        return Lua.GetReturnVal<float>("return GetPowerRegen()", 1);
+                 }
+                 catch
+                 {
+                     CLU.DiagnosticLog(" Lua Failed in EnergyRegen");
+                     return 0;
+                 }
+             }
+         }
+
+        /// <summary>
+        /// Calculate time to energy cap.
+        /// </summary>
+         public static double TimetoEnergyCap
+         {
+             get
+             {
+                 try
+                 {
+                        return (100 - PlayerEnergy)*(1.0/EnergyRegen);
+                 }
+                 catch
+                 {
+                     CLU.DiagnosticLog(" Calculation Failed in TimetoEnergyCap");
+                     return 999999;
+                 }
+             }
+         }
 
         /// <summary>
         /// erm..me
