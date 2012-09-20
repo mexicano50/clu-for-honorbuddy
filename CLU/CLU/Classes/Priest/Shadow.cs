@@ -10,6 +10,7 @@ using Rest = CLU.Base.Rest;
 namespace CLU.Classes.Priest
 {
     using global::CLU.Managers;
+    using Styx.CommonBot;
 
     class Shadow : RotationBase
     {
@@ -181,25 +182,38 @@ NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagr
                         //Item.RunMacroText("/cast Shadowform", ret => !Buff.PlayerHasBuff("Shadowform"), "Shadowform"),
                         //use_item,name=guardian_serpent_gloves
                         Item.UseEngineerGloves(),
-                        //9	1.00	jade_serpent_potion,if=buff.bloodlust.react|target.time_to_die<=40
-                        //A	5.69	devouring_plague,if=shadow_orb=3&(cooldown.mind_blast.remains<2|target.health.pct<20)
-                        //B	3.01	berserking
+                        //jade_serpent_potion,if=buff.bloodlust.react|target.time_to_die<=40
+                        //devouring_plague,if=shadow_orb=3&(cooldown.mind_blast.remains<2|target.health.pct<20)
+                        Spell.CastSpell("Devouring Plague", ret => Buff.PlayerCountBuff("Shadow Orb") == 3 && (SpellManager.Spells["Mind Blast"].CooldownTimeLeft.Seconds < 2 || Me.CurrentTarget.HealthPercent < 20), "Devouring Plague"),
+                        //berserking
                         Racials.UseRacials(),
-                        //C	46.76	mind_blast,if=num_targets<=6&cooldown_react
-                        //D	21.77	shadow_word_pain,cycle_targets=1,max_cycle_targets=8,if=(!ticking|remains<tick_time)&miss_react
-                        //E	13.53	shadow_word_death,if=num_targets<=5
-                        //F	24.23	vampiric_touch,cycle_targets=1,max_cycle_targets=8,if=(!ticking|remains<cast_time+tick_time)&miss_react
-                        //G	12.83	devouring_plague,if=shadow_orb=3
+                        //mind_blast,if=num_targets<=6&cooldown_react
+                        Spell.CastSpell("Mind Blast", ret => Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 40) <= 6, "Mind Blast"),
+                        //shadow_word_pain,cycle_targets=1,max_cycle_targets=8,if=(!ticking|remains<tick_time)&miss_react
+                        Spell.CastSpell("Shadow Word: Pain", ret => !Buff.TargetHasDebuff("Shadow Word: Pain") || Buff.TargetDebuffTimeLeft("Shadow Word: Pain").TotalSeconds < 1, "Shadow Word: Pain"),//~> GUI option for tick and cast time
+                        //shadow_word_death,if=num_targets<=5
+                        Spell.CastSpell("Shadow Word: Death", ret => Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 40) <= 5, "Shadow Word: Death"),
+                        //vampiric_touch,cycle_targets=1,max_cycle_targets=8,if=(!ticking|remains<cast_time+tick_time)&miss_react
+                        Spell.CastSpell("Vampiric Touch", ret => !Buff.TargetHasDebuff("Vampiric Touch") || Buff.TargetDebuffTimeLeft("Vampiric Touch").TotalSeconds < 2 + 1, "Vampiric Touch"),//~> GUI option for tick and cast time
+                        //devouring_plague,if=shadow_orb=3
+                        Spell.CastSpell("Devouring Plague", ret => Buff.PlayerCountBuff("Shadow Orb") == 3, "Devouring Plague"),
                         //H	11.10	halo_damage
-                        //I	38.65	mind_spike,if=num_targets<=6&buff.surge_of_darkness.react
-                        //J	2.95	shadowfiend,if=cooldown_react
-                        //K	0.00	mind_sear,chain=1,interrupt=1,if=num_targets>=3
-                        //L	73.11	mind_flay,chain=1,interrupt=1
-                        //M	0.00	shadow_word_death,moving=1
-                        //N	0.00	mind_blast,moving=1,if=buff.divine_insight_shadow.react&cooldown_react
+                        //mind_spike,if=num_targets<=6&buff.surge_of_darkness.react
+                        Spell.CastSpell("Mind Spike", ret => Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 40) <= 6 && Buff.PlayerHasActiveBuff("Surge of Darkness"), "Mind Spike"),
+                        //shadowfiend,if=cooldown_react
+                        Spell.CastSpell("Shadowfiend", ret => true, "Shadowfiend"),
+                        //mind_sear,chain=1,interrupt=1,if=num_targets>=3
+                        Spell.CastSpell("Mind Sear", ret => Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 40) >= 3, "Mind Sear"),
+                        //mind_flay,chain=1,interrupt=1
+                        Spell.CastSpell("Mind Flay", ret => true, "Mind Flay"),
+                        //shadow_word_death,moving=1
+                        Spell.CastSpell("Shadow Word: Death", ret => Me.IsMoving, "Shadow Word: Death"),
+                        //mind_blast,moving=1,if=buff.divine_insight_shadow.react&cooldown_react
+                        Spell.CastSpell("Mind Blast", ret => Me.IsMoving && Buff.PlayerHasActiveBuff("Divine Insight"), "Mind Blast"),
                         //shadow_word_pain,moving=1
-                        Spell.CastSpell("Shadow Word: Pain", ret => Me.IsMoving, "Shadow Word: Pain")
-                        //P	0.00	dispersion
+                        Spell.CastSpell("Shadow Word: Pain", ret => Me.IsMoving, "Shadow Word: Pain"),
+                        //dispersion
+                        Spell.CastSelfSpell("Dispersion", ret => true, "Dispersion")
                 ));
             }
         }
@@ -245,7 +259,7 @@ NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagr
         public override Composite Resting
         {
             get {
-                return Rest.CreateDefaultRestBehaviour();
+                return Base.Rest.CreateDefaultRestBehaviour();
             }
         }
 
