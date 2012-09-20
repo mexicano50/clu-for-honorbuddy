@@ -189,7 +189,6 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
                         //virmens_bite_potion,if=buff.bloodlust.react|target.time_to_die<=60
                         //aspect_of_the_hawk,moving=0
                         Buff.CastBuff("Aspect of the Hawk",            ret => !Me.IsMoving && !Buff.PlayerHasBuff("Aspect of the Hawk") && SpellManager.HasSpell("Aspect of the Hawk"), "Aspect of the Hawk"),
-                        Buff.CastBuff("Aspect of the Iron Hawk",       ret => !Me.IsMoving && !Buff.PlayerHasBuff("Aspect of the Iron Hawk") && SpellManager.HasSpell("Aspect of the Iron Hawk"), "Aspect of the Iron Hawk"),
                         //aspect_of_the_fox,moving=1
                         Buff.CastBuff("Aspect of the Fox",             ret => Me.IsMoving && !Buff.PlayerHasBuff("Aspect of the Fox"), "Aspect of the Fox"),
                         //explosive_trap,if=target.adds>0

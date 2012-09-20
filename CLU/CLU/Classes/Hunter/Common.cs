@@ -54,14 +54,12 @@ namespace CLU.Classes.Hunter
                             new WaitContinue(2, ret => false, new ActionAlwaysSucceed()), // Hmm..check this...-- wulf
                             Buff.CastBuff("Aspect of the Fox", ret => Me.IsMoving, "[Aspect] of the Fox - Moving"),
                             new PrioritySelector(
-                                Buff.CastBuff("Aspect of the Hawk", ret => !Me.IsMoving, "[Aspect] of the Hawk"),
-                                Buff.CastBuff("Aspect of the Iron Hawk", ret => !Me.IsMoving, "[Aspect] of the Iron Hawk")
+                                Buff.CastBuff("Aspect of the Hawk", ret => !Me.IsMoving, "[Aspect] of the Hawk")
                                 )
                                 )),
                     new Decorator( ret => !Me.IsMoving && CLUSettings.Instance.Hunter.HandleAspectSwitching,
                         new PrioritySelector(
-                                Buff.CastBuff("Aspect of the Hawk", ret => !Me.IsMoving, "[Aspect] of the Hawk"),
-                                Buff.CastBuff("Aspect of the Iron Hawk", ret => !Me.IsMoving, "[Aspect] of the Iron Hawk")
+                                Buff.CastBuff("Aspect of the Hawk", ret => !Me.IsMoving, "[Aspect] of the Hawk")
                                 )));
         }
 

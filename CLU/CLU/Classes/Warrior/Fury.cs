@@ -138,7 +138,7 @@ NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagr
                 return new Decorator(
                     ret => Me.HealthPercent < 100 && CLUSettings.Instance.EnableSelfHealing,
                     new PrioritySelector(
-                        Spell.CastSpell("Victory Rush",                ret => Me.HealthPercent < 80 && Buff.PlayerHasBuff("Victorious"), "Victory Rush"),
+                        Spell.CastSpell("Victory Rush", ret => Me.HealthPercent < 80 && Buff.PlayerHasBuff("Victorious"), "Victory Rush or Impending Victory"),
                         Spell.CastSelfSpell("Enraged Regeneration",    ret => Me.HealthPercent < 45 && !Buff.PlayerHasBuff("Rallying Cry"), "Enraged Regeneration"),
                         Spell.CastSelfSpell("Rallying Cry",            ret => Me.HealthPercent < 45 && !Buff.PlayerHasBuff("Enraged Regeneration"), "Rallying Cry"),
                         Item.UseBagItem("Healthstone",                 ret => Me.HealthPercent < 40 && !Buff.PlayerHasBuff("Rallying Cry") && !Buff.PlayerHasBuff("Enraged Regeneration"), "Healthstone")));

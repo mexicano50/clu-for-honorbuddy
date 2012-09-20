@@ -69,7 +69,7 @@ namespace CLU.Base
         {
             get
             {
-                return SpellManager.GlobalCooldownLeft.TotalSeconds;
+                return 1; //SpellManager.GlobalCooldownLeft.TotalSeconds;
             }
         }
 
@@ -120,6 +120,7 @@ namespace CLU.Base
         public static bool SpellOnCooldown(string name)
         {
             // Fishing for KeyNotFoundException's yay!
+            
             if (!SpellManager.HasSpell(name))
                 return false;
 

@@ -16,7 +16,6 @@ using Styx.TreeSharp;
 using System.Linq;
 using CommonBehaviors.Actions;
 using CLU.Lists;
-using Styx.WoWInternals.WoWObjects;
 using CLU.Settings;
 using CLU.Base;
 using Rest = CLU.Base.Rest;
@@ -89,6 +88,7 @@ namespace CLU.Classes.Shaman
             }
         }
 
+        //[SpellManager] Stormstrike (17364) overrides Primal Strike (73899)
         public override Composite SingleRotation
         {
             get {
@@ -123,10 +123,10 @@ namespace CLU.Classes.Shaman
                                    Spell.CastSpell("Flame Shock",        ret => true, "Flame Shock"),
                                    Spell.CastSpell("Lava Lash",          ret => Buff.TargetHasDebuff("Flame Shock"), "Lava Lash"),
                                    Spell.CastSpell("Fire Nova",          ret => true, "Fire Nova"),
-                                   Spell.CastSpell("Stormstrike",        ret => true, "Stormstrike")
+                                   Spell.CastSpell("Primal Strike",        ret => true, "Stormstrike")
                                )),
                            // Default Rotaion
-                           Spell.CastSpell("Stormstrike",                    ret => true, "Stormstrike"),
+                           Spell.CastSpell("Primal Strike",                    ret => true, "Stormstrike"),
                            Spell.CastSpell("Lava Lash",                      ret => true, "Lava Lash"),
                            Spell.CastSpell("Lightning Bolt",                 ret => Buff.PlayerCountBuff("Maelstrom Weapon") == 5 || (Item.Has4PcTeirBonus(ItemSetId) ? Buff.PlayerCountBuff("Maelstrom Weapon") == 5 : Buff.PlayerCountBuff("Maelstrom Weapon") >= 4 && (Spell.SpellCooldown("Feral Spirit").TotalSeconds > 90 && Spell.SpellOnCooldown("Feral Spirit"))), "Lightning Bolt"),
                            Spell.CastSpell("Unleash Elements",               ret => true, "Unleash Elements"),

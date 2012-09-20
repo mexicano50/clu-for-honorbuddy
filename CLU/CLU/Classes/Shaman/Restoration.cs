@@ -94,6 +94,7 @@ namespace CLU.Classes.Shaman
         }
 
 
+        //[SpellManager] Purify Spirit (77130) overrides Cleanse Spirit (51886)
         public override Composite SingleRotation
         {
             get

@@ -134,9 +134,9 @@ namespace CLU.Classes.Druid
                     Spell.CastSpell("Wild Mushroom: Detonate", ret => MushroomCount > 0 && Buff.PlayerHasBuff("Eclipse (Solar)"), "Detonate Shrooms!"),
                     Spell.CastOnUnitLocation("Force of Nature", u => Me.CurrentTarget, ret => TalentManager.HasTalent(12) && Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget) && !BossList.IgnoreAoE.Contains(Unit.CurrentTargetEntry), "Force of Nature"),
                     Spell.CastOnUnitLocation("Wild Mushroom", u => Me.CurrentTarget, ret => Me.CurrentTarget != null && Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 6) >= 3 && MushroomCount < 3, "Wild Mushroom"),
-                    //Main Rotation
+                    //Main Rotation [SpellManager] Incarnation: Chosen of Elune (102560) overrides Incarnation (106731)
                     Item.RunMacroText("/cast Incarnation", ret => Unit.IsTargetWorthy(Me.CurrentTarget) && !WoWSpell.FromId(102560).Cooldown && TalentManager.HasTalent(11) && (Buff.PlayerHasBuff("Eclipse Visual (Solar)") || Buff.PlayerHasBuff("Eclipse Visual (Lunar)")), "ncarnation: Chosen of Elune"),
-                    //Spell.CastSelfSpell("Incarnation: Chosen of Elune", ret => TalentManager.HasTalent(11) && (Buff.PlayerHasBuff("Eclipse Visual (Solar)") || Buff.PlayerHasBuff("Eclipse Visual (Lunar)")), "Incarnation: Chosen of Elune"),
+                    Spell.CastSelfSpell("Incarnation", ret => TalentManager.HasTalent(11) && (Buff.PlayerHasBuff("Eclipse Visual (Solar)") || Buff.PlayerHasBuff("Eclipse Visual (Lunar)")), "Incarnation: Chosen of Elune"),
                     Spell.CastSelfSpell("Celestial Alignment", ret => Me.CurrentEclipse >= -20 && Me.CurrentEclipse <= 20 && (Buff.PlayerHasBuff("Incarnation: Chosen of Elune") || !TalentManager.HasTalent(11)), "Celestial Alignment"),
                     Spell.CastSpell("Moonfire",         ret => Buff.PlayerHasBuff("Eclipse Visual (Lunar)") && !Buff.TargetHasBuff("Moonfire"), "Moonfire @ Lunar"),
                     Spell.CastSpell("Sunfire",          ret => Buff.PlayerHasBuff("Eclipse Visual (Solar)") && !Buff.TargetHasBuff("Sunfire"), "Sunfire @ Solar"),

@@ -50,8 +50,8 @@ namespace CLU.Classes.Rogue
                        "==> UseTrinkets \n" + "==> UseRacials \n" + "==> UseEngineerGloves \n" +
                        "3. Kick for interrupts.\n" + "4. Tricks of the Trade on the best target (tank, then class)\n" +
                        "5. Maintain Slice and Dice and Rupture.\n" +
-                       "6. Use Dispatch when Blindside is up and under 5 combo points.\n" +
-                       "7. Dispatch when target is under 35% HP.\n" +
+                       "6. Use Sinister Strike when Blindside is up and under 5 combo points.\n" +
+                       "7. Sinister Strike when target is under 35% HP.\n" +
                        "NOTE: PvP uses single target rotation - It's not designed for PvP use. \n" +
                        "Credits for this rotation: Weischbier, Wulf, Singularity team, LaoArchAngel, kbrebel04\n" +
                        "----------------------------------------------------------------------\n";
@@ -177,10 +177,10 @@ namespace CLU.Classes.Rogue
                           SpellManager.HasSpell(14185) && Unit.IsTargetWorthy(Me.CurrentTarget) &&
                           SpellManager.Spells["Vanish"].Cooldown, "Preparation"),
                      Spell.CastSpell
-                         ("Dispatch", ret => Me.ComboPoints < 5 && Buff.PlayerHasBuff("Blindside"),
+                         ("Sinister Strike", ret => Me.ComboPoints < 5 && Buff.PlayerHasBuff("Blindside"),
                           "Dispatch @ Blindside"), Envenom,
                      Spell.CastSpell
-                         ("Dispatch", ret => Me.ComboPoints < ReqCmbPts && Me.CurrentTarget.HealthPercent < 35,
+                         ("Sinister Strike", ret => Me.ComboPoints < ReqCmbPts && Me.CurrentTarget.HealthPercent < 35,
                           "Dispatch"),
                      Spell.CastSpell
                          ("Mutilate", ret => Me.ComboPoints < ReqCmbPts && Me.CurrentTarget.HealthPercent >= 35,
@@ -243,7 +243,7 @@ namespace CLU.Classes.Rogue
                     (cond => Buff.PlayerHasActiveBuff("Slice and Dice"),
                      new PrioritySelector
                          (Spell.CastSpell
-                              ("Envenom",
+                              ("Eviscerate",
                                ret =>
                                Me.ComboPoints >= ReqCmbPts && Me.CurrentEnergy > 70 &&
                                Buff.TargetDebuffTimeLeft("Rupture").TotalSeconds > 2, "Pooling Envenom"),
@@ -255,13 +255,13 @@ namespace CLU.Classes.Rogue
                                "SnD Refresh Envenom"),
                           // Envenom if SnD is about to fall off. This should never happen.
                           Spell.CastSpell
-                              ("Envenom",
+                              ("Eviscerate",
                                ret =>
                                Me.ComboPoints == 5 && Me.CurrentTarget.HealthPercent < 35 && Buff.TargetDebuffTimeLeft("Rupture").TotalSeconds > 2,
                                "Execute Envenom"),
                         // Envenom if SnD is about to fall off. This should never happen.
                           Spell.CastSpell
-                              ("Envenom",
+                              ("Eviscerate",
                                ret =>
                                Me.ComboPoints >= 1 && Buff.PlayerHasBuff("Fury of the Destroyer") && Buff.TargetDebuffTimeLeft("Rupture").TotalSeconds > 2,
                                "FoTF Envenom")
@@ -407,10 +407,10 @@ namespace CLU.Classes.Rogue
                 CLU.Log(" [Casting] Shadowstep on {0}", CLU.SafeName(Me.CurrentTarget));
                 SpellManager.Cast("Shadowstep");
             }
-            else if (Me.CurrentTarget.HealthPercent < 35 && Spell.CanCast("Dispatch", Me.CurrentTarget))
+            else if (Me.CurrentTarget.HealthPercent < 35 && Spell.CanCast("Sinister Strike", Me.CurrentTarget))
             {
                 CLU.Log(" [Casting] Dispatch on {0} @ StealthedCombat", CLU.SafeName(Me.CurrentTarget));
-                SpellManager.Cast("Dispatch");
+                SpellManager.Cast("Sinister Strike");
             }
         }
 

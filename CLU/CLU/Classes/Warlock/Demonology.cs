@@ -90,7 +90,8 @@ namespace CLU.Classes.Warlock
         }
 
 
-
+        // Storm placing this here for your sanity
+        /*[SpellManager] Dark Soul: Knowledge (113861) overrides Dark Soul (77801)*/
         public override Composite SingleRotation
         {
             get {
@@ -131,7 +132,7 @@ namespace CLU.Classes.Warlock
                             //Cooldowns
                             new Decorator(ret=> CLUSettings.Instance.UseCooldowns,
                                 new PrioritySelector(
-                                    Buff.CastBuff("Dark Soul: Knowledge", ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget) && !Me.IsMoving, "Dark Soul: Knowledge"),
+                                    Buff.CastBuff("Dark Soul", ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget) && !Me.IsMoving, "Dark Soul: Knowledge"),
                                     //// TODO: Remove this when Apoc fixs Spellmanager. -- wulf 
                                     Spell.CastSpell(18540, ret => !WoWSpell.FromId(18540).Cooldown && Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget), "Summon Doomguard")
                                     )),

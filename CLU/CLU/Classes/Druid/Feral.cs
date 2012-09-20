@@ -10,25 +10,23 @@
  */
 #endregion
 
-using System;
 using CLU.Helpers;
 using CLU.Lists;
 using CLU.Managers;
 using CLU.Settings;
 using CommonBehaviors.Actions;
-using Styx.Common;
+
 using Styx.CommonBot;
 using Styx.TreeSharp;
 using System.Linq;
 using CLU.Base;
-using Action = Styx.TreeSharp.Action;
+
 using Rest = CLU.Base.Rest;
 
 
 namespace CLU.Classes.Druid
 {
     using Styx;
-    using Styx.WoWInternals;
 
     class Feral : RotationBase
     {
@@ -86,6 +84,7 @@ This Rotation will:
     ==> Enrage, Berserk, Berserking, Lifeblood
 3. Hot swap rotation from bear to cat if you change form
 NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagradt changes that.
+CREDITS TO: HandNavi - because he owns the business.
 ----------------------------------------------------------------------" + twopceinfo + "\n" + fourpceinfo + "\n";
             }
         }
@@ -165,6 +164,7 @@ NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagr
             }
         }
 
+        // NOTE: USE the Overide![SpellManager] Incarnation: Son of Ursoc (102558) overrides Incarnation (106731)
         private static Composite GuardianRotation
         {
             get
@@ -190,6 +190,7 @@ NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagr
             }
         }
 
+        // NOTE: USE the Overide! [SpellManager] Incarnation: King of the Jungle (102543) overrides Incarnation (106731)
         private static Composite FeralRotation
         {
             get
@@ -214,6 +215,7 @@ NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagr
                                        new PrioritySelector(
                                            Item.UseTrinkets(),
                                            Item.UseEngineerGloves()
+
                                            )),  // Thanks Kink#
 
                                     Spell.CastSpell("Tiger's Fury", ret => SpellManager.Spells["Tiger's Fury"].CooldownTimeLeft.TotalSeconds < 1 && Common.PlayerEnergy <= 35 && !Buff.PlayerHasActiveBuff("Omen of Clarity"), "Tiger's Fury"),

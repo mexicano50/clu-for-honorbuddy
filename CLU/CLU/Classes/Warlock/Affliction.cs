@@ -77,6 +77,13 @@ namespace CLU.Classes.Warlock
             }
         }
 
+
+
+        //Storm for your sanity I have put this here
+        /*[SpellManager] Spell Lock (119910) overrides Command Demon (119898)
+            [SpellManager] Dark Soul: Misery (113860) overrides Dark Soul (77801)
+            [SpellManager] Malefic Grasp (103103) overrides Shadow Bolt (686)
+            [SpellManager] Soul Link (108415) overrides Health Funnel (755)*/
         public override Composite SingleRotation
         {
             get {
@@ -111,7 +118,7 @@ namespace CLU.Classes.Warlock
                     //Cooldowns
                     new Decorator(ret=> CLUSettings.Instance.UseCooldowns,
                         new PrioritySelector(
-                            Buff.CastBuff("Dark Soul: Misery", ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget) && !Me.IsMoving, "Dark Soul: Misery"),
+                            Buff.CastBuff(" Dark Soul", ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget) && !Me.IsMoving, "Dark Soul: Misery"),
                             Spell.CastSpell(18540, ret => !WoWSpell.FromId(18540).Cooldown && Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget), "Summon Doomguard"),
                             Spell.CastSelfSpell("Unending Resolve", ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget) && Me.HealthPercent < 40, "Unending Resolve (Save my life)"),
                             Spell.CastSelfSpell("Twilight Warden", ret => Me.CurrentTarget != null && Me.CurrentTarget.IsCasting && Unit.IsTargetWorthy(Me.CurrentTarget) && Me.HealthPercent < 80, "Twilight Warden (Protect me from magical damage)"))),
@@ -134,7 +141,7 @@ namespace CLU.Classes.Warlock
                     Buff.CastDebuff("Haunt", ret => !Spell.PlayerIsChanneling  , "Haunt"),
                     Spell.CastSelfSpell(1454, ret => Me.ManaPercent < 20 && Me.HealthPercent > 40, "Life Tap"),
                     Spell.CastSpell(77799, ret => Me.IsMoving, "Fel flame while moving"),
-                    Spell.ChannelSpell("Malefic Grasp", ret => Me.CurrentTarget != null && (Me.CurrentTarget.HealthPercent >= 20 && Me.GetPowerInfo(Styx.WoWPowerType.SoulShards).CurrentI > 0) && !Me.IsMoving && !Spell.PlayerIsChanneling, "Malefic Grasp"),
+                    Spell.ChannelSpell("Shadow Bolt", ret => Me.CurrentTarget != null && (Me.CurrentTarget.HealthPercent >= 20 && Me.GetPowerInfo(Styx.WoWPowerType.SoulShards).CurrentI > 0) && !Me.IsMoving && !Spell.PlayerIsChanneling, "Malefic Grasp"),
                     Spell.ChannelSpell("Drain Soul", ret => Me.CurrentTarget != null && (Me.CurrentTarget.HealthPercent < 20 || Me.GetPowerInfo(Styx.WoWPowerType.SoulShards).CurrentI == 0) && !Me.IsMoving && !Spell.PlayerIsChanneling, "Drain Soul"));
             }
         }

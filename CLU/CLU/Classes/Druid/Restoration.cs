@@ -178,9 +178,9 @@ namespace CLU.Classes.Druid
                                           ),
 
 
-                           // Tree of Life oh shit
-                           Healer.FindAreaHeal(a => SpellManager.CanCast("Tree of Life") && StyxWoW.Me.Combat, 10, (Me.GroupInfo.IsInRaid ? 75 : 65), 30f, (Me.GroupInfo.IsInRaid ? 5 : 3), "Tree of Life party healing: Avg: 10-70 or 65, 30yrds, count: 5 or 3",
-                                               Spell.CastSelfSpell("Tree of Life", ret => CLUSettings.Instance.UseCooldowns, "Tree of Life") //TODO: Check.
+                           // Tree of Life oh shit [SpellManager] Incarnation: Tree of Life (33891) overrides Incarnation (106731)
+                           Healer.FindAreaHeal(a => SpellManager.CanCast("Incarnation") && StyxWoW.Me.Combat, 10, (Me.GroupInfo.IsInRaid ? 75 : 65), 30f, (Me.GroupInfo.IsInRaid ? 5 : 3), "Tree of Life party healing: Avg: 10-70 or 65, 30yrds, count: 5 or 3",
+                                               Spell.CastSelfSpell("Incarnation", ret => CLUSettings.Instance.UseCooldowns, "Incarnation") //TODO: Check.
                                               ),
 
                            // Tranquility oh shit

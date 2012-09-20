@@ -129,8 +129,8 @@ namespace CLU.Classes.DeathKnight
                                     Spell.CastSpell("Howling Blast", ret => Buff.PlayerHasBuff("Freezing Fog"), "Howling Blast (Rime)"),
                                     Spell.CastSpell("Obliterate", ret => Me.CurrentTarget, ret => Buff.PlayerHasBuff("Killing Machine"), "Obliterate (2 Hand Killing Machine)"),
                                     Spell.CastSpell("Obliterate", ret => Me.CurrentTarget, ret => Me.CurrentRunicPower < 85, "Obliterate (Utilize Runes)"),
-                                    Spell.CastSpell("Frost Strike", ret => Me.CurrentTarget, ret => Me.RunicPowerPercent >= 90, "Frost Strike (Dumping Runic Power)"),
-                                    Spell.CastSpell("Frost Strike", ret => Me.CurrentTarget, ret => true, "Frost Strike (Because we can)"),
+                                    Spell.CastSpell("Blood Strike", ret => Me.CurrentTarget, ret => Me.RunicPowerPercent >= 90, "Frost Strike (Dumping Runic Power) => BS"),
+                                    Spell.CastSpell("Blood Strike", ret => Me.CurrentTarget, ret => true, "Frost Strike (Because we can) => BS"),
                                     Spell.CastSpell("Blood Tap", ret => Me.CurrentTarget, ret =>  Buff.PlayerCountBuff("Blood Charge") >= 5 && (Common.FrostRuneSlotsActive == 0 || Common.UnholyRuneSlotsActive == 0 || Common.BloodRuneSlotsActive == 0), "Blood Tap (Refreshed a depleted Rune)"), //Don't waste it on Unholy Runes
                                     Buff.CastBuff("Horn of Winter", ret => true, "Horn of Winter (Because we can)")
                                    )
@@ -140,14 +140,14 @@ namespace CLU.Classes.DeathKnight
                                new PrioritySelector(
                                     Spell.CastSpell("Soul Reaper", ret => Me.CurrentTarget, ret => Me.CurrentTarget != null && Me.CurrentTarget.HealthPercent < 35, "Soul Reaping"),
                                     Spell.CastSpell("Howling Blast", ret => Buff.PlayerHasBuff("Freezing Fog"), "Howling Blast (Rime)"),
-                                    Spell.CastSpell("Frost Strike", ret => Me.CurrentTarget, ret => Buff.PlayerHasBuff("Killing Machine"), "Frost Strike (Dual Wield Killing Machine)"),
-                                    Spell.CastSpell("Frost Strike", ret => Me.CurrentTarget, ret => Me.RunicPowerPercent > 84, "Frost Strike (Dumping Runic Power)"),
+                                    Spell.CastSpell("Blood Strike", ret => Me.CurrentTarget, ret => Buff.PlayerHasBuff("Killing Machine"), "Frost Strike (Dual Wield Killing Machine)"),
+                                    Spell.CastSpell("Blood Strike", ret => Me.CurrentTarget, ret => Me.RunicPowerPercent > 84, "Frost Strike (Dumping Runic Power)"),
                                     Spell.CastSpell("Blood Tap", ret => Me.CurrentTarget, ret =>  Buff.PlayerCountBuff("Blood Charge") >= 5 && (Common.FrostRuneSlotsActive == 0 || Common.UnholyRuneSlotsActive == 0 || Common.BloodRuneSlotsActive == 0), "Blood Tap (Refreshed a depleted Rune)"), //Don't waste it on Unholy Runes
                                     Spell.CastSpell("Obliterate", ret => (Me.FrostRuneCount == 2 && Me.UnholyRuneCount == 2) || Me.DeathRuneCount == 2, "Obliterate (Utilizing Killing Machine)"),
                                     Spell.CastSpell("Obliterate", ret => Buff.PlayerHasBuff("Killing Machine") && Me.CurrentRunicPower <= 10, "Obliterate (Utilizing Killing Machine)"),
                                     Spell.CastSpell("Howling Blast", ret => true, "Howling Blast (Because we can)"),
                                     Spell.CastSpell("Blood Tap", ret => Me.CurrentTarget, ret =>  Buff.PlayerCountBuff("Blood Charge") >= 5 && (Common.FrostRuneSlotsActive == 0 || Common.UnholyRuneSlotsActive == 0 || Common.BloodRuneSlotsActive == 0), "Blood Tap (Refreshed a depleted Rune)"),  //Don't waste it on Unholy Runes
-                                    Spell.CastSpell("Frost Strike", ret => true, "Frost Strike (Because we can)"),
+                                    Spell.CastSpell("Blood Strike", ret => true, "Frost Strike (Because we can)"),
                                     Spell.CastSpell("Horn of Winter",ret => Me, ret => true, "Horn of Winter for RP")
                                    )
                                )

@@ -81,6 +81,7 @@ NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagr
 
         private static bool CanMindFlay { get { return Buff.TargetHasBuff("Vampiric Touch") && Spell.SpellCooldown("Mind Blast").TotalSeconds > 4 && Buff.PlayerCountBuff("Shadow Orb") < 3; } }
 
+        // OVERIDES!!! [SpellManager] Mind Flay (15407) overrides Smite (585)
         public override Composite SingleRotation
         {
             get {
@@ -124,7 +125,7 @@ NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagr
                                    Buff.CastDebuff("Devouring Plague",      ret => Me.CurrentTarget != null && Unit.TimeToDeath(Me.CurrentTarget) > 20, "Devouring Plague"),
                                    Spell.CastSpell("Shadowfiend",           ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget), "Shadowfiend"),
                                    Spell.CastSpell("Mind Spike",            ret => true, "Mind Spike"),
-                                   Spell.CastSpecialSpell("Mind Flay",      ret => CanMindFlay && Buff.TargetDebuffTimeLeft("Mind Flay").TotalSeconds <= Spell.ClippingDuration(), "Mind Flay")
+                                   Spell.CastSpecialSpell("Smite",      ret => CanMindFlay && Buff.TargetDebuffTimeLeft("Mind Flay").TotalSeconds <= Spell.ClippingDuration(), "Mind Flay")
                                )),
 
 
@@ -152,7 +153,7 @@ NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagr
                                    Spell.CastSpell("Devouring Plague",        ret => Me.IsMoving && Me.ManaPercent > 10, "Devouring Plague"),
                                    Spell.CastSpell("Mind Blast",              ret => Buff.PlayerHasActiveBuff("Divine Insight"), "Mind Blast"),
                                    Spell.CastSelfSpell("Dispersion",          ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget) && (Me.HealthPercent < 10 || Me.ManaPercent < 10), "Dispersion"),
-                                   Spell.CastSpecialSpell("Mind Flay",        ret => CanMindFlay && Buff.TargetDebuffTimeLeft("Mind Flay").TotalSeconds <= Spell.ClippingDuration(), "Mind Flay")
+                                   Spell.CastSpecialSpell("Smite",        ret => CanMindFlay && Buff.TargetDebuffTimeLeft("Mind Flay").TotalSeconds <= Spell.ClippingDuration(), "Mind Flay")
                                )) 
                        );
             }

@@ -144,7 +144,7 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
                                     Spell.CastSpell("Blink Strike",           ret => Me.CurrentTarget != null && Me.Pet.Location.DistanceSqr(Me.CurrentTarget.Location) > 10 * 10 && Me.GotAlivePet, "Blink Strike"), // teleports behind target mad damage.
                                    Spell.CastSpell("Lynx Rush",               ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget) && Me.Pet.Location.DistanceSqr(Me.CurrentTarget.Location) < 10 * 10, "Lynx Rush"),
                                    Spell.CastSpell("Multi-Shot",              ret => Me.CurrentTarget != null && Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 20) >= CLUSettings.Instance.Hunter.SurvMultiShotCount, "Multi-Shot"),
-                                   //Spell.CastSpell("Cobra Shot",              ret => Unit.CountEnnemiesInRange(Me.Location, 30) >= CLUSettings.Instance.Hunter.SurvMultiShotCount, "Cobra Shot"),
+                                   //Spell.CastSpell("Steady Shot",              ret => Unit.CountEnnemiesInRange(Me.Location, 30) >= CLUSettings.Instance.Hunter.SurvMultiShotCount, "Cobra Shot"),
                                    // Main rotation
                                    //Spell.CastSpellByID(53301, ret => !WoWSpell.FromId(53301).Cooldown, "Explosive Shot"),
                                    Spell.CastSpell("Explosive Shot",          ret => Buff.TargetDebuffTimeLeft("Explosive Shot").TotalSeconds <= 1 || Buff.PlayerHasActiveBuff("Lock and Load"), "Explosive Shot"),
@@ -157,7 +157,7 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
                                    Buff.CastBuff("Readiness",                 ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget) && Buff.PlayerHasActiveBuff("Rapid Fire"), "Readiness"),
                                    Spell.CastSpell("Arcane Shot",             ret => Me.FocusPercent >= CLUSettings.Instance.Hunter.SurArcaneShotFocusPercent && !Buff.PlayerHasActiveBuff("Lock and Load"), "Arcane Shot"),
                                    Buff.CastBuff("Fervor",                    ret => Me.CurrentTarget != null && Me.FocusPercent <= CLUSettings.Instance.Hunter.SurFevorFocusPercent && Unit.IsTargetWorthy(Me.CurrentTarget), "Fervor"),
-                                   Spell.CastSpell("Cobra Shot",              ret => true, "Cobra Shot"))));
+                                   Spell.CastSpell("Steady Shot",              ret => true, "Cobra Shot"))));
             }
         }
 
@@ -190,7 +190,6 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
                         Racials.UseRacials(),
                         //aspect_of_the_hawk,moving=0
                         Buff.CastBuff("Aspect of the Hawk", ret => !Me.IsMoving && !Buff.PlayerHasBuff("Aspect of the Hawk") && SpellManager.HasSpell("Aspect of the Hawk"), "Aspect of the Hawk"),
-                        Buff.CastBuff("Aspect of the Iron Hawk", ret => !Me.IsMoving && !Buff.PlayerHasBuff("Aspect of the Iron Hawk") && SpellManager.HasSpell("Aspect of the Iron Hawk"), "Aspect of the Iron Hawk"),
                         //aspect_of_the_fox,moving=1
                         Buff.CastBuff("Aspect of the Fox", ret => Me.IsMoving && !Buff.PlayerHasBuff("Aspect of the Fox"), "Aspect of the Fox"),
                         //explosive_trap,if=target.adds>0
@@ -232,11 +231,11 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
                         //fervor,if=enabled&focus<=50
                         Buff.CastBuff("Fervor", ret => SpellManager.HasSpell("Feror") && Me.CurrentFocus <= 50, "Fervor"),
                         //cobra_shot,if=dot.serpent_sting.remains<6
-                        Spell.CastSpell("Cobra Shot", ret => Buff.TargetDebuffTimeLeft("Serpent Sting").Seconds < 6, "Cobra Shot"),
+                        Spell.CastSpell("Steady Shot", ret => Buff.TargetDebuffTimeLeft("Serpent Sting").Seconds < 6, "Cobra Shot"),
                         //arcane_shot,if=focus>=67
                         Spell.CastSpell("Arcane Shot", ret => Me.CurrentFocus >= 67, "Arcane Shot"),
                         //cobra_shot
-                        Spell.CastSpell("Cobra Shot", ret => true, "Cobra Shot")
+                        Spell.CastSpell("Steady Shot", ret => true, "Cobra Shot")
                 ));
             }
         }

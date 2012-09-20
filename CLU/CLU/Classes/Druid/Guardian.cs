@@ -161,6 +161,7 @@ NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagr
             }
         }
 
+        // NOTE: USE the Overide![SpellManager] Incarnation: Son of Ursoc (102558) overrides Incarnation (106731)
         private static Composite GuardianRotation
         {
             get
@@ -186,6 +187,7 @@ NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagr
             }
         }
 
+        // NOTE: USE the Overide! [SpellManager] Incarnation: King of the Jungle (102543) overrides Incarnation (106731)
         private static Composite FeralRotation
         {
             get

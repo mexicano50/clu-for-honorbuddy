@@ -77,6 +77,12 @@ namespace CLU.Classes.Warlock
             }
         }
 
+
+        //Storm..putting this here for your sanity
+        /*[SpellManager] Dark Soul: Instability (113858) overrides Dark Soul (77801)
+[SpellManager] Immolate (348) overrides Corruption (172)
+[SpellManager] Incinerate (29722) overrides Shadow Bolt (686)
+[SpellManager] Chaotic Energy (111546) overrides Life Tap (1454)*/
         public override Composite SingleRotation
         {
             get {
@@ -116,17 +122,17 @@ namespace CLU.Classes.Warlock
                     //Cooldowns
                     new Decorator(ret => CLUSettings.Instance.UseCooldowns,
                         new PrioritySelector(
-                            Buff.CastBuff("Dark Soul: Instability", ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget) && !Me.IsMoving, "Dark Soul: Misery"),
+                            Buff.CastBuff("Dark Soul", ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget) && !Me.IsMoving, "Dark Soul: Instability"),
                             Spell.CastSpell(18540, ret => !WoWSpell.FromId(18540).Cooldown && Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget), "Summon Doomguard"),
                             Spell.CastSelfSpell("Unending Resolve", ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget) && Me.HealthPercent < 40, "Unending Resolve (Save my life)"),
                             Spell.CastSelfSpell("Twilight Warden", ret => Me.CurrentTarget != null && Me.CurrentTarget.IsCasting && Unit.IsTargetWorthy(Me.CurrentTarget) && Me.HealthPercent < 80, "Twilight Warden (Protect me from magical damage)"))),
                     Buff.CastDebuff("Curse of the Elements",       ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget) && Me.CurrentTarget.HealthPercent > 70 && !Buff.UnitHasMagicVulnerabilityDeBuffs(Me.CurrentTarget), "Curse of the Elements"),
-                    Buff.CastDebuff("Immolate", ret => true, "Immolate"),
+                    Buff.CastDebuff("Corruption", ret => true, "Immolate"),
                     //Spell.CastSpell("Havoc", u => Unit.BestBaneOfHavocTarget, ret => true, "Havoc on "), // + Unit.BestBaneOfHavocTarget.Name
                     Spell.CastSpell("Conflagrate", ret => Me.CurrentTarget != null && Me.CurrentTarget.HasMyAura("Immolate"), "Conflagrate"),
                     Spell.CastSpell("Chaos Bolt", ret => Buff.GetAuraStack(Me, "Backdraft", true) < 3 && Me.GetCurrentPower(Styx.WoWPowerType.BurningEmbers)>0 && Me.CurrentTarget.HealthPercent >= 20, "Chaos Bolt"),
                     Spell.CastSpell("Shadowburn", ret => Buff.GetAuraStack(Me, "Backdraft", true) < 3 && Me.GetCurrentPower(Styx.WoWPowerType.BurningEmbers) > 0 && Me.CurrentTarget.HealthPercent < 20, "Chaos Bolt"),
-                    Spell.CastSpell("Incinerate", ret => true, "Incinerate"),
+                    Spell.CastSpell("Shadow Bolt", ret => true, "Incinerate"),
                     Spell.CastSelfSpell("Life Tap", ret => Me.IsMoving && Me.HealthPercent > Me.ManaPercent && Me.ManaPercent < 80, "Life tap while moving"),
                     Spell.CastSpell("Fel Flame", ret => Me.IsMoving, "Fel flame while moving"),
                     Spell.CastSelfSpell("Life Tap", ret => Me.ManaPercent < 100 && !Spell.PlayerIsChanneling && Me.HealthPercent > 40, "Life tap while mana < 100%"));
@@ -150,7 +156,7 @@ namespace CLU.Classes.Warlock
                                ret => !Me.Mounted && !Me.IsDead && !Me.Combat && !Me.IsFlying && !Me.IsOnTransport && !Me.HasAura("Food") && !Me.HasAura("Drink"),
                                new PrioritySelector(
                                    PetManager.CastPetSummonSpell(691, ret => !Me.IsMoving && !Me.GotAlivePet, "Summon Pet"),
-                                   Buff.CastBuff("Soul Link", ret => Pet != null && Pet.IsAlive, "Soul Link")
+                                   Buff.CastBuff("Health Funnel", ret => Pet != null && Pet.IsAlive, "Soul Link")
                                   )));
             }
         }

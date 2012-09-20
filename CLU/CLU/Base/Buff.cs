@@ -316,6 +316,7 @@ namespace CLU.Base
         public static double DotDelta(string name)
         {
             // TODO: Decide if we need to individually supply seconds left to refresh the spell (for instance we could supply 2.5 seconds to refresh Vampiric Touch).
+            //CLU.TroubleshootLog("DotDelta {0}", Spell.GCD);
             return (Spell.CastTime(name) == 0 ? 1 : Spell.CastTime(name) + Spell.GCD) + CombatLogEvents.ClientLag;
         }
 
@@ -553,7 +554,7 @@ namespace CLU.Base
                     return lockstatus;
                 },
             new Sequence(
-                new Action(a => CLU.Log(" [Casting Debuff] {0} : (RefreshTime={1}) had {2} second(s) left", label, DotDelta(name), TargetDebuffTimeLeft(name).TotalSeconds)),
+                new Action(a => CLU.Log(" [Casting Debuff] {0} : (RefreshTime={1}) had {2} second(s) left : {0} cast time = {3}", label, DotDelta(name), TargetDebuffTimeLeft(name).TotalSeconds, Spell.CastTime(name))),
                 new Action(a => SpellManager.Cast(name)),
                 new Action(a => CombatLogEvents.Locks[name] = DateTime.Now.AddSeconds(Spell.CastTime(name) * 1.5 + CombatLogEvents.ClientLag))));
         }

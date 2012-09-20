@@ -130,7 +130,7 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
                      Buff.CastDebuff("Demoralizing Shout",  ret => Me.CurrentTarget != null && !Buff.UnitHasWeakenedBlows(Me.CurrentTarget) && CLUSettings.Instance.Warrior.UseDemoralizingShout, "Demoralizing Shout"),
                      Spell.CastSpell("Commanding Shout",    ret => Me.RagePercent < 40 && CLUSettings.Instance.Warrior.ShoutSelection == WarriorShout.Commanding, "Commanding Shout for Rage"),
                      Spell.CastSpell("Battle Shout",        ret => Me.RagePercent < 40 && CLUSettings.Instance.Warrior.ShoutSelection == WarriorShout.Battle, "Battle Shout for Rage"),
-                     Spell.CastSpell("Devastate",           ret => true, "Devastate if SS and Rev on CD")
+                     Spell.CastSpell("Sunder Armor", ret => true, "Devastate if SS and Rev on CD")
 
                      );
             }
@@ -169,7 +169,7 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
                         Spell.CastSpell("Shield Block",             ret => true, "Shield Block"),
                         Spell.CastSpell("Thunder Clap",             ret => true, "Thunder Clap"),
                         Buff.CastBuff("Battle Shout",               ret => Me.CurrentRage < 80, "Battle Shout"),
-                        Spell.CastSpell("Devastate",                ret => true, "Devastate")
+                        Spell.CastSpell("Sunder Armor", ret => true, "Devastate")
                 ));
             }
         }
@@ -184,7 +184,7 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
                             Spell.CastSelfSpell("Last Stand",       ret => Me.HealthPercent < CLUSettings.Instance.Warrior.LastStandPercent && !Buff.PlayerHasBuff("Shield Wall") && !Buff.PlayerHasBuff("Rallying Cry") && !Buff.PlayerHasBuff("Enraged Regeneration"), "Last Stand"),
                             Spell.CastSelfSpell("Shield Block",     ret => Me.HealthPercent < CLUSettings.Instance.Warrior.ShieldBlockPercent && Me.RagePercent >= 60 && !Buff.PlayerHasBuff("Shield Block"), "Shield Block"),
                             Spell.CastSelfSpell("Shield Barrier",   ret => Me.HealthPercent < CLUSettings.Instance.Warrior.ShieldBarrierPercent && Me.RagePercent >= 60 && !Buff.PlayerHasBuff("Shield Barrier"), "Shield Block"),
-                            Spell.CastSpell("Impending Victory",    ret => Me.CurrentTarget != null && Me.HealthPercent < CLUSettings.Instance.Warrior.ImpendingVictoryPercent && Me.RagePercent > 10, "Impending Victory"),
+                            Spell.CastSpell("Victory Rush",    ret => Me.CurrentTarget != null && Me.HealthPercent < CLUSettings.Instance.Warrior.ImpendingVictoryPercent && Me.RagePercent > 10, "Victory Rush or Impending Victory"),
                             Spell.CastSelfSpell("Shield Wall",      ret => Me.HealthPercent < CLUSettings.Instance.Warrior.ShieldWallPercent && !Buff.PlayerHasBuff("Last Stand") && !Buff.PlayerHasBuff("Rallying Cry"), "Shield Wall"),
                             Spell.CastSelfSpell("Rallying Cry",     ret => Me.HealthPercent > CLUSettings.Instance.Warrior.RallyingCryPercent && !Buff.PlayerHasBuff("Last Stand") && !Buff.PlayerHasBuff("Shield Wall") && Unit.WarriorRallyingCryPlayers, "Rallying Cry - Somebody needs me!"),
                             Item.UseBagItem("Healthstone",          ret => Me.HealthPercent < CLUSettings.Instance.Warrior.HealthstonePercent, "Healthstone")

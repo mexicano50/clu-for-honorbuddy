@@ -144,7 +144,7 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
                                    Buff.CastBuff("Fervor",                    ret => Me.CurrentTarget != null && Me.FocusPercent <= CLUSettings.Instance.Hunter.BmFevorFocusPercent && Unit.IsTargetWorthy(Me.CurrentTarget), "Fervor"),
                                    Buff.CastBuff("Bestial Wrath", ret => Me.CurrentTarget != null && Me.FocusPercent > CLUSettings.Instance.Hunter.BestialWrathFocusPercent && Me.Pet.Location.DistanceSqr(Me.CurrentTarget.Location) < Spell.MeleeRange * Spell.MeleeRange, "Bestial Wrath"),
                                    Spell.CastSpell("Multi-Shot",              ret => Me.CurrentTarget != null && Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 20) >= CLUSettings.Instance.Hunter.BmMultiShotCount, "Multi-Shot"),
-                                   //Spell.CastSpell("Cobra Shot",              ret => Unit.CountEnnemiesInRange(Me.Location, 30) >= CLUSettings.Instance.Hunter.BmMultiShotCount, "Cobra Shot"),
+                                   //Spell.CastSpell("Steady Shot",              ret => Unit.CountEnnemiesInRange(Me.Location, 30) >= CLUSettings.Instance.Hunter.BmMultiShotCount, "Cobra Shot"),
                                    Spell.HunterTrapBehavior("Explosive Trap", ret => Me.CurrentTarget, ret => Me.CurrentTarget != null && !Lists.BossList.IgnoreAoE.Contains(Unit.CurrentTargetEntry) && Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 10) >= CLUSettings.Instance.Hunter.ExplosiveTrapCount),
                                    Buff.CastBuff("A Murder of Crows",         ret => Unit.IsTargetWorthy(Me.CurrentTarget), "A Murder of Crows"), //reduced to 60sec cooldown if under 20%
                                    Buff.CastBuff("Stampede",                  ret => Unit.IsTargetWorthy(Me.CurrentTarget), "Stampede"),
@@ -162,7 +162,7 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
                                    Buff.CastBuff("Readiness",                 ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget) && Buff.PlayerHasActiveBuff("Rapid Fire"), "Readiness"),
                                    Spell.CastSpell("Arcane Shot",             ret => (Me.FocusPercent >= CLUSettings.Instance.Hunter.BmArcaneShotFocusPercent || Buff.PlayerHasBuff("The Beast Within")), "Arcane Shot"),
                                    Buff.CastBuff("Focus Fire",                ret => Buff.PlayerHasBuff("Frenzy") && !Buff.PlayerHasBuff("The Beast Within"), "Focus Fire"),
-                                   Spell.CastSpell("Cobra Shot",              ret => true, "Cobra Shot"))));
+                                   Spell.CastSpell("Steady Shot",              ret => true, "Cobra Shot"))));
             }
         }
 
@@ -193,7 +193,6 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
                         //virmens_bite_potion,if=buff.bloodlust.react|target.time_to_die<=60
                         //aspect_of_the_hawk,moving=0
                         Buff.CastBuff("Aspect of the Hawk",            ret => !Me.IsMoving && !Buff.PlayerHasBuff("Aspect of the Hawk") && SpellManager.HasSpell("Aspect of the Hawk"), "Aspect of the Hawk"),
-                        Buff.CastBuff("Aspect of the Iron Hawk",       ret => !Me.IsMoving && !Buff.PlayerHasBuff("Aspect of the Iron Hawk") && SpellManager.HasSpell("Aspect of the Iron Hawk"), "Aspect of the Iron Hawk"),
                         //aspect_of_the_fox,moving=1
                         Buff.CastBuff("Aspect of the Fox",             ret => Me.IsMoving && !Buff.PlayerHasBuff("Aspect of the Fox"), "Aspect of the Fox"),
                         //explosive_trap,if=target.adds>0
@@ -239,11 +238,11 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
                         //focus_fire,five_stacks=1,if=!ticking&!buff.beast_within.up
                         Buff.CastBuff("Focus Fire",                    ret => Me.ActiveAuras["Frenzy"].StackCount == 5 && Buff.PlayerHasActiveBuff("Frenzy") && !Buff.PlayerHasActiveBuff("Focus Fire") && !Buff.PlayerHasActiveBuff("Beast Within"), "Focus Fire"),
                         //cobra_shot,if=dot.serpent_sting.remains<6
-                        Spell.CastSpell("Cobra Shot",                  ret => Buff.TargetDebuffTimeLeft("Serpent Sting").Seconds < 6, "Cobra Shot"),
+                        Spell.CastSpell("Steady Shot",                  ret => Buff.TargetDebuffTimeLeft("Serpent Sting").Seconds < 6, "Cobra Shot"),
                         //arcane_shot,if=focus>=61|buff.beast_within.up
                         Spell.CastSpell("Arcane Shot",                 ret => Me.CurrentFocus >= 61 || Buff.PlayerHasActiveBuff("Beast Within"), "Arcane Shot"),
                         //cobra_shot
-                        Spell.CastSpell("Cobra Shot",                  ret => true, "Cobra Shot")
+                        Spell.CastSpell("Steady Shot",                  ret => true, "Cobra Shot")
                 ));
             }
         }
