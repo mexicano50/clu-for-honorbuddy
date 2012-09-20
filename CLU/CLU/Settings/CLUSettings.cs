@@ -130,7 +130,7 @@ namespace CLU.Settings
         [DefaultValue(false)]
         [Category("Do not Touch")]
         [DisplayName("Enable Rotation Override")]
-        [Description("Do not mess with this if you do not know what it is doing! // setting to overide the LocationContext so that you can test and PvP, PvE, Single rotation without bieng in the normal context")]
+        [Description("Do not mess with this if you do not know what it is doing! // setting to overide the LocationContext so that you can test and PvP, PvE, Single rotation without bieng in the normal context *MUST CLICK SWAP ROTATION* button")]
         public bool EnableRotationOveride
         {
             get;
@@ -141,7 +141,7 @@ namespace CLU.Settings
         [DefaultValue(GroupLogic.Solo)]
         [Category("Do not Touch")]
         [DisplayName("Rotation Override")]
-        [Description("Do not mess with this if you do not know what it is doing! // setting to overide the LocationContext so that you can test and PvP, PvE, Single rotation without bieng in the normal context")]
+        [Description("Do not mess with this if you do not know what it is doing! // setting to overide the LocationContext so that you can test and PvP, PvE, Single rotation without bieng in the normal context *MUST CLICK SWAP ROTATION* button")]
         public GroupLogic RotationOveride
         {
             get;
