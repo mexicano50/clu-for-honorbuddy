@@ -220,6 +220,7 @@ namespace CLU.CombatLog
                     SpellImmunityManager.Add(unit.Entry, e.SpellSchool);
                 }
                 break;
+            case "SPELL_AURA_REFRESH":
             case "SPELL_AURA_APPLIED":
                 if (e.SourceGuid == StyxWoW.Me.Guid)
                 {
@@ -249,6 +250,20 @@ namespace CLU.CombatLog
                         //Doc
                         if (StyxWoW.Me.HasAura(108373))
                             Classes.Druid.Common.RipMultiplier = Classes.Druid.Common.RipMultiplier * 1.25;
+                    }
+                }
+                break;
+            case "SPELL_AURA_REMOVED":
+                if (e.SourceGuid == StyxWoW.Me.Guid)
+                {
+                    if (e.SpellId == 1822)
+                    {
+                        Classes.Druid.Common.RakeMultiplier = 0;
+                    }
+                    if (e.SpellId == 1079)
+                    {
+                        Classes.Druid.Common.ExtendedRip = 0;
+                        Classes.Druid.Common.RipMultiplier = 0;
                     }
                 }
                 break;
