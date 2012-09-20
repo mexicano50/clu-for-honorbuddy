@@ -206,7 +206,7 @@ NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagr
                                 //shadowfiend,if=cooldown_react
                                 Spell.CastSpell("Shadowfiend", ret => true, "Shadowfiend"),
                                 //mind_sear,chain=1,interrupt=1,if=num_targets>=3
-                                Spell.CastSpell("Mind Sear", ret => Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 10) >= 3, "Mind Sear"),
+                                Spell.ChannelSpell("Mind Sear", ret => Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 10) >= 3, "Mind Sear"),
                                 //mind_flay,chain=1,interrupt=1
                                 Spell.ChannelSpell("Smite", ret => Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 10) < 3, "Mind Flay"),
                                 //mind_blast,moving=1,if=buff.divine_insight_shadow.react&cooldown_react
