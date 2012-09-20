@@ -173,14 +173,14 @@ namespace CLU.Classes.Druid
                     Spell.CastSpell(
                         "Sunfire",
                         ret =>
-                        Me.CurrentEclipse == 100 && Buff.PlayerHasBuff("Eclipse (Solar)")
-                        && Buff.TargetDebuffTimeLeft("Sunfire").TotalSeconds <= 12,
+                        Me.CurrentEclipse == 100 && Buff.PlayerHasBuff("Eclipse (Solar)") && //Buff.HasAura(Me, "Eclipse (Solar)", Me)
+                        !Buff.TargetHasBuff("Sunfire"),
                         "Sunfire @ Solar"),
                     Spell.CastSpell(
                         "Moonfire",
                         ret =>
                         Me.CurrentEclipse == -100 && Buff.PlayerHasBuff("Eclipse (Lunar)")
-                        && Buff.TargetDebuffTimeLeft("Moonfire").TotalSeconds <= 12,
+                        && !Buff.TargetHasBuff("Moonfire"),
                         "Moonfire @ Lunar"),
                     Spell.CastSpell(
                         "Wrath",

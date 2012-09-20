@@ -158,30 +158,22 @@ namespace CLU
             get
             {
                 Composite currentrotation = null;
-                switch (GroupType)
-                {
-                    case GroupType.Solo: //If you EVER change that Wulf... I'll rape a Koala in front of you!
                         switch (LocationContext)
                         {
-                            case GroupLogic.Solo:
-                                currentrotation = this.ActiveRotation.SingleRotation;
-                                break;
-                        }
-                        break;
-                    case GroupType.Party:
-                    case GroupType.Raid:
-                        switch (LocationContext)
-                        {
+                           
                             case GroupLogic.PVE:
                                 currentrotation = this.ActiveRotation.PVERotation;
+                                TroubleshootLog(" Setting Current rotation to {0}", GroupLogic.PVE.ToString());
                                 break;
                             case GroupLogic.Battleground:
                                 currentrotation = this.ActiveRotation.PVPRotation;
+                                TroubleshootLog(" Setting Current rotation to {0}", GroupLogic.Battleground.ToString());
+                                break;
+                            default:
+                                currentrotation = this.ActiveRotation.SingleRotation;
+                                TroubleshootLog(" Setting Current rotation to {0}", GroupLogic.Solo.ToString());
                                 break;
                         }
-                        break;
-                }
-
                 return new Sequence
                     (new DecoratorContinue(x => CLUSettings.Instance.EnableMovement, Movement.MovingFacingBehavior()),
                      new DecoratorContinue(x => Me.CurrentTarget != null || IsHealerRotationActive, currentrotation));
