@@ -13,7 +13,7 @@
 
 CLU (Codified Likeness Utility) the Rotation CC for Combat/Raid/Lazyraider bots Powered by Felmaster technology
 
-Current Issues Updated: 13/September/2012
+Current Issues Updated: 20/September/2012
 =================================
 None. - well maybe a few :P
 
@@ -78,7 +78,7 @@ Three Rotation Modes - Single, PVE, PVP
 - [T] Unholy
 
 * Druid
-- [U] Balance
+- [T] Balance
 - [PC] Feral
 - [PC] Guardian	
 - [U] Restoration
@@ -115,16 +115,16 @@ Three Rotation Modes - Single, PVE, PVP
 
 * Shaman
 - [U] Elemental	 	
-- [U] Restoration
+- [T] Restoration
 - [U] Enhancement
 
 * Warlock
 - [T] Affliction
 - [U] Demonology
-- [U] Destruction
+- [T] Destruction
 
 * Warrior
-- [U] Arms
+- [T] Arms
 - [T] Protection
 - [T] Fury
 	
@@ -141,6 +141,17 @@ will load it for you to use.
 5) in the same file look for the line that says "public override string Name { get { return "Elemental Shaman"; } }" and rename it to public override string Name { get { return "Elemental Shaman v2"; } }
 6) Make any necessary changes to the rotation you want.
 7) Congratulations you just made a custom rotation file of your own. When you next run CLU it will prompt you to select a rotation.
+
+Rotation Overide
+-------------------
+
+Under General Settings in the GUI you can overide the Rotation in use, meaning if you are standing in a capital city you can overide the SOLO rotation and use the PvP rotation.
+1) General > Do not Touch > Enable Rotation > TRUE
+2) General > Do not Touch > Rotation Overide > Solo,Battleground,PVE
+2) Click > "SwapRotation"
+
+Do not fucking touch if you do not know wtf you are doing...or -50dkp for you!
+ 
 
 Utility
 -------------
