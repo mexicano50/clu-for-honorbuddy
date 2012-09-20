@@ -184,37 +184,60 @@ NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagr
                         //use_item,name=guardian_serpent_gloves
                         Item.UseEngineerGloves(),
                         //jade_serpent_potion,if=buff.bloodlust.react|target.time_to_die<=40
-                        //devouring_plague,if=shadow_orb=3&(cooldown.mind_blast.remains<2|target.health.pct<20)
-                        Spell.CastSpell("Devouring Plague", ret => Buff.PlayerCountBuff("Shadow Orb") == 3 && (SpellManager.Spells["Mind Blast"].CooldownTimeLeft.Seconds < 2 || Me.CurrentTarget.HealthPercent < 20), "Devouring Plague"),
-                        //berserking
-                        Racials.UseRacials(),
-                        //mind_blast,if=num_targets<=6&cooldown_react
-                        Spell.CastSpell("Mind Blast", ret => !Me.IsMoving && Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 10) <= 6, "Mind Blast"),
-                        //shadow_word_pain,cycle_targets=1,max_cycle_targets=8,if=(!ticking|remains<tick_time)&miss_react
-                        Spell.CastSpell("Shadow Word: Pain", ret => !Buff.TargetHasDebuff("Shadow Word: Pain") || Buff.TargetDebuffTimeLeft("Shadow Word: Pain").TotalSeconds < 2.52, "Shadow Word: Pain"),//~> GUI option for tick and cast time
-                        //shadow_word_death,if=num_targets<=5
-                        Spell.CastSpell("Shadow Word: Death", ret => Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 10) <= 5, "Shadow Word: Death"),
-                        //vampiric_touch,cycle_targets=1,max_cycle_targets=8,if=(!ticking|remains<cast_time+tick_time)&miss_react
-                        Spell.CastSpell("Vampiric Touch", ret => !Me.IsMoving && !Buff.TargetHasDebuff("Vampiric Touch") || Buff.TargetDebuffTimeLeft("Vampiric Touch").TotalSeconds < 1.26 + 2.52, "Vampiric Touch"),//~> GUI option for tick and cast time
-                        //devouring_plague,if=shadow_orb=3
-                        Spell.CastSpell("Devouring Plague", ret => Buff.PlayerCountBuff("Shadow Orb") == 3, "Devouring Plague"),
-                        //H	11.10	halo_damage
-                        //mind_spike,if=num_targets<=6&buff.surge_of_darkness.react
-                        Spell.CastSpell("Mind Spike", ret => Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 10) <= 6 && Buff.PlayerHasActiveBuff("Surge of Darkness"), "Mind Spike"),
-                        //shadowfiend,if=cooldown_react
-                        Spell.CastSpell("Shadowfiend", ret => true, "Shadowfiend"),
-                        //mind_sear,chain=1,interrupt=1,if=num_targets>=3
-                        Spell.CastSpell("Mind Sear", ret => !Me.IsMoving && Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 10) >= 3, "Mind Sear"),
-                        //mind_flay,chain=1,interrupt=1
-                        Spell.ChannelSpell("Mind Flay", ret => !Me.IsMoving, "Mind Flay"),
-                        //shadow_word_death,moving=1
-                        Spell.CastSpell("Shadow Word: Death", ret => Me.IsMoving, "Shadow Word: Death"),
-                        //mind_blast,moving=1,if=buff.divine_insight_shadow.react&cooldown_react
-                        Spell.CastSpell("Mind Blast", ret => Me.IsMoving && Buff.PlayerHasActiveBuff("Divine Insight"), "Mind Blast"),
-                        //shadow_word_pain,moving=1
-                        Spell.CastSpell("Shadow Word: Pain", ret => Me.IsMoving, "Shadow Word: Pain"),
-                        //dispersion
-                        Spell.CastSelfSpell("Dispersion", ret => true, "Dispersion")
+                        new Decorator(ret => !Me.IsMoving,
+                            new PrioritySelector(
+                                //devouring_plague,if=shadow_orb=3&(cooldown.mind_blast.remains<2|target.health.pct<20)
+                                Spell.CastSpell("Devouring Plague", ret => Buff.PlayerCountBuff("Shadow Orb") == 3 && (SpellManager.Spells["Mind Blast"].CooldownTimeLeft.Seconds < 2 || Me.CurrentTarget.HealthPercent < 20), "Devouring Plague"),
+                                //berserking
+                                Racials.UseRacials(),
+                                //mind_blast,if=num_targets<=6&cooldown_react
+                                Spell.CastSpell("Mind Blast", ret => Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 10) <= 6, "Mind Blast"),
+                                //shadow_word_pain,cycle_targets=1,max_cycle_targets=8,if=(!ticking|remains<tick_time)&miss_react
+                                Spell.CastSpell("Shadow Word: Pain", ret => !Buff.TargetHasDebuff("Shadow Word: Pain") || Buff.TargetDebuffTimeLeft("Shadow Word: Pain").TotalSeconds < 2.52, "Shadow Word: Pain"),//~> GUI option for tick and cast time
+                                //shadow_word_death,if=num_targets<=5
+                                Spell.CastSpell("Shadow Word: Death", ret => Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 10) <= 5, "Shadow Word: Death"),
+                                //vampiric_touch,cycle_targets=1,max_cycle_targets=8,if=(!ticking|remains<cast_time+tick_time)&miss_react
+                                Spell.CastSpell("Vampiric Touch", ret => !Buff.TargetHasDebuff("Vampiric Touch") || Buff.TargetDebuffTimeLeft("Vampiric Touch").TotalSeconds < 1.26 + 2.52, "Vampiric Touch"),//~> GUI option for tick and cast time
+                                //devouring_plague,if=shadow_orb=3
+                                Spell.CastSpell("Devouring Plague", ret => Buff.PlayerCountBuff("Shadow Orb") == 3, "Devouring Plague"),
+                                //H	11.10	halo_damage
+                                //mind_spike,if=num_targets<=6&buff.surge_of_darkness.react
+                                Spell.CastSpell("Mind Spike", ret => Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 10) <= 6 && Buff.PlayerHasActiveBuff("Surge of Darkness"), "Mind Spike"),
+                                //shadowfiend,if=cooldown_react
+                                Spell.CastSpell("Shadowfiend", ret => true, "Shadowfiend"),
+                                //mind_sear,chain=1,interrupt=1,if=num_targets>=3
+                                Spell.CastSpell("Mind Sear", ret => Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 10) >= 3, "Mind Sear"),
+                                //mind_flay,chain=1,interrupt=1
+                                Spell.ChannelSpell("Mind Flay", ret => true, "Mind Flay"),
+                                //mind_blast,moving=1,if=buff.divine_insight_shadow.react&cooldown_react
+                                Spell.CastSpell("Mind Blast", ret => Buff.PlayerHasActiveBuff("Divine Insight"), "Mind Blast"),
+                                //dispersion
+                                Spell.CastSelfSpell("Dispersion", ret => true, "Dispersion"))),
+                        new Decorator(ret => Me.IsMoving,
+                            new PrioritySelector(
+                                //devouring_plague,if=shadow_orb=3&(cooldown.mind_blast.remains<2|target.health.pct<20)
+                                Spell.CastSpell("Devouring Plague", ret => Buff.PlayerCountBuff("Shadow Orb") == 3 && (SpellManager.Spells["Mind Blast"].CooldownTimeLeft.Seconds < 2 || Me.CurrentTarget.HealthPercent < 20), "Devouring Plague"),
+                                //berserking
+                                Racials.UseRacials(),
+                                //shadow_word_pain,cycle_targets=1,max_cycle_targets=8,if=(!ticking|remains<tick_time)&miss_react
+                                Spell.CastSpell("Shadow Word: Pain", ret => !Buff.TargetHasDebuff("Shadow Word: Pain") || Buff.TargetDebuffTimeLeft("Shadow Word: Pain").TotalSeconds < 2.52, "Shadow Word: Pain"),//~> GUI option for tick and cast time
+                                //shadow_word_death,if=num_targets<=5
+                                Spell.CastSpell("Shadow Word: Death", ret => Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 10) <= 5, "Shadow Word: Death"),
+                                //devouring_plague,if=shadow_orb=3
+                                Spell.CastSpell("Devouring Plague", ret => Buff.PlayerCountBuff("Shadow Orb") == 3, "Devouring Plague"),
+                                //H	11.10	halo_damage
+                                //mind_spike,if=num_targets<=6&buff.surge_of_darkness.react
+                                Spell.CastSpell("Mind Spike", ret => Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 10) <= 6 && Buff.PlayerHasActiveBuff("Surge of Darkness"), "Mind Spike"),
+                                //shadowfiend,if=cooldown_react
+                                Spell.CastSpell("Shadowfiend", ret => true, "Shadowfiend"),
+                                //shadow_word_death,moving=1
+                                Spell.CastSpell("Shadow Word: Death", ret => Me.IsMoving, "Shadow Word: Death"),
+                                //mind_blast,moving=1,if=buff.divine_insight_shadow.react&cooldown_react
+                                Spell.CastSpell("Mind Blast", ret => Buff.PlayerHasActiveBuff("Divine Insight"), "Mind Blast"),
+                                //shadow_word_pain,moving=1
+                                Spell.CastSpell("Shadow Word: Pain", ret => true, "Shadow Word: Pain"),
+                                //dispersion
+                                Spell.CastSelfSpell("Dispersion", ret => true, "Dispersion")))
                 ));
             }
         }
