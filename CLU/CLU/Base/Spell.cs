@@ -128,10 +128,9 @@ namespace CLU.Base
         /// </summary>
         /// <param name="allowLagTollerance">Whether or not to allow lag tollerance for spell queueing</param>
         /// <returns>success, so long as you are currently casting.</returns>
-        public static Composite WaitForCast(bool allowLagTollerance)
+        public static Composite WaitForCast(bool allowLagTollerance = true)
         {
-            return
-            new Action(ret =>
+            return new Action(ret =>
             {
                 if (!StyxWoW.Me.IsCasting)
                     return RunStatus.Failure;
@@ -139,12 +138,14 @@ namespace CLU.Base
                 if (StyxWoW.Me.ChannelObjectGuid > 0)
                     return RunStatus.Failure;
 
-                var latency = StyxWoW.WoWClient.Latency * 2;
-                var castTimeLeft = StyxWoW.Me.CurrentCastTimeLeft;
-                if (allowLagTollerance && castTimeLeft != TimeSpan.Zero && StyxWoW.Me.CurrentCastTimeLeft.TotalMilliseconds < latency)
+                uint latency = StyxWoW.WoWClient.Latency * 2;
+                TimeSpan castTimeLeft = StyxWoW.Me.CurrentCastTimeLeft;
+                if (allowLagTollerance && castTimeLeft != TimeSpan.Zero &&
+                    StyxWoW.Me.CurrentCastTimeLeft.TotalMilliseconds < latency)
                     return RunStatus.Failure;
 
-                return RunStatus.Running;
+                // return RunStatus.Running;
+                return RunStatus.Success;
             });
         }
 

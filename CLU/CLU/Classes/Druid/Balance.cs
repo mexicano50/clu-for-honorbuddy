@@ -121,6 +121,7 @@ namespace CLU.Classes.Druid
                 return new PrioritySelector(
                     // Pause Rotation
                     new Decorator(ret => CLUSettings.Instance.PauseRotation, new ActionAlwaysSucceed()),
+                    Spell.WaitForCast(true),
                     // For DS Encounters.
                     EncounterSpecific.ExtraActionButton(),
                     // HandleMovement? If so, Choose our form!
@@ -173,13 +174,13 @@ namespace CLU.Classes.Druid
                     Spell.CastSpell(
                         "Sunfire",
                         ret =>
-                        Me.CurrentEclipse == 100 && Buff.PlayerHasBuff("Eclipse (Solar)") && //Buff.HasAura(Me, "Eclipse (Solar)", Me)
+                       Buff.PlayerHasBuff("Eclipse Visual (Solar)") && //Buff.HasAura(Me, "Eclipse (Solar)", Me)
                         !Buff.TargetHasBuff("Sunfire"),
                         "Sunfire @ Solar"),
                     Spell.CastSpell(
                         "Moonfire",
                         ret =>
-                        Me.CurrentEclipse == -100 && Buff.PlayerHasBuff("Eclipse (Lunar)")
+                        Buff.PlayerHasBuff("Eclipse Visual (Lunar)")
                         && !Buff.TargetHasBuff("Moonfire"),
                         "Moonfire @ Lunar"),
                     Spell.CastSpell(
