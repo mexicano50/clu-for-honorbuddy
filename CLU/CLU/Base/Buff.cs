@@ -1024,11 +1024,11 @@ namespace CLU.Base
         /// <returns>The target debuff time left.</returns>
         public static TimeSpan TargetDebuffTimeLeft(string name)
         {
-            return GetAuraTimeLeft(Me.CurrentTarget, name, true);
+            return GetAuraTimeLeft(Me.CurrentTarget, name, false);
         }
         public static TimeSpan TargetDebuffTimeLeft(string name, WoWUnit tar)
         {
-            return GetAuraTimeLeft(tar, name, true);
+            return GetAuraTimeLeft(tar, name, false);
         }
 
         /// <summary>Returns the buff time left on the target</summary>
