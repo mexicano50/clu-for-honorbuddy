@@ -198,7 +198,7 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
                         Spell.CastSpell("Powershot",                ret => TalentManager.HasTalent(17), "Powershot"),
                         Spell.CastSpell("Barrage",                  ret => TalentManager.HasTalent(18), "Barage"),
                         Spell.CastSpell("Multi Shot",               ret => Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 8) > 2, "Multi Shot"),
-                        Spell.CastSpell("Steady Shot",              ret => Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 8) > 2, "Cobra Shot"),
+                        Spell.CastSpell("Steady Shot",              ret => Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 0) > 2, "Cobra Shot"),
                         Spell.CastSpell("Serpent Sting",            ret => !Buff.TargetHasDebuff("Serpent Sting") && Unit.TimeToDeath(Me.CurrentTarget) >= 10, "Serpent Sting"),
                         Spell.CastSpell("Explosive Shot",           ret => true, "Explosive Shot"),
                         Spell.CastSpell("Kill Shot",                ret => true, "Kill Shot"),

@@ -200,7 +200,7 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
                         Buff.CastBuff("Fervor",                        ret => TalentManager.HasTalent(10) && !Buff.PlayerHasActiveBuff("Fervor") && Me.CurrentFocus <= 65, "Fervor"),
                         Buff.CastBuff("Bestial Wrath",                 ret => Me.CurrentTarget != null && Me.Pet.Location.DistanceSqr(Me.CurrentTarget.Location) <= Spell.MeleeRange * Spell.MeleeRange && Me.GotAlivePet && Me.CurrentFocus > 60 && !Buff.PlayerHasActiveBuff("Beast Within"), "Bestial Wrath"),
                         Spell.CastSpell("Multi Shot",                  ret => Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 8) > 5, "Multi Shot"),
-                        Spell.CastSpell("Steady Shot",                 ret => Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 8) > 5, "Cobra Shot"),
+                        Spell.CastSpell("Steady Shot",                 ret => Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 0) > 5, "Cobra Shot"),
                         Buff.CastBuff("Rapid Fire",                    ret => !Buff.PlayerHasActiveBuff("Rapid Fire"), "Rapid Fire"),
                         Spell.CastSpell("Stampede",                    ret => true, "Stampede"),
                         Spell.CastSpell("Kill Shot",                   ret => true, "Kill Shot"),

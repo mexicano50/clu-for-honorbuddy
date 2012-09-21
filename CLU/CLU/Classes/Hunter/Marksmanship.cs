@@ -197,7 +197,7 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
                         Spell.CastSpell("Blink Strike",                ret => Me.CurrentTarget != null && Me.Pet.Location.DistanceSqr(Me.CurrentTarget.Location) <= 40 * 40 && Me.GotAlivePet && TalentManager.HasTalent(14), "Blink Strike"),
                         Spell.CastSpell("Lynx Rush",                   ret => Me.CurrentTarget != null && Me.Pet.Location.DistanceSqr(Me.CurrentTarget.Location) <= 10 * 10 && Me.GotAlivePet && TalentManager.HasTalent(15) && !SpellManager.Spells["Lynx Rush"].Cooldown, "Lynx Rush"),
                         Spell.CastSpell("Multi Shot",                  ret => Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 8) > 5, "Multi Shot"),
-                        Spell.CastSpell("Steady Shot",                 ret => Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 8) > 5, "Steady Shot"),
+                        Spell.CastSpell("Steady Shot",                 ret => Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 0) > 5, "Steady Shot"),
                         Spell.CastSpell("Serpent Sting",               ret => Me.CurrentTarget != null && !Buff.TargetHasDebuff("Serpent Sting") && Me.CurrentTarget.HealthPercent <= 90, "Serpent Sting"),
                         Spell.CastSpell("Chimera Shot",                ret => Me.CurrentTarget != null && Me.CurrentTarget.HealthPercent <= 90, "Chimera Shot"),
                         Spell.CastSpell("Dire Beast",                  ret => TalentManager.HasTalent(11), "Dire Beast"),
