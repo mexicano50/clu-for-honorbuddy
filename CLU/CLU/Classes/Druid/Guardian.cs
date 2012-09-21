@@ -24,6 +24,8 @@ namespace CLU.Classes.Druid
     using Styx.CommonBot;
     using Styx.WoWInternals;
 
+    using global::CLU.Helpers;
+
     using Rest = global::CLU.Base.Rest;
 
     class Guardian : RotationBase
@@ -97,10 +99,10 @@ NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagr
                            new Decorator(ret => CLUSettings.Instance.PauseRotation, new ActionAlwaysSucceed()),
 
                            // For DS Encounters.
-                           //EncounterSpecific.ExtraActionButton(),
+                           EncounterSpecific.ExtraActionButton(),
                            
                            // Handle shapeshift form
-                           //Common.HandleShapeshiftForm,
+                           Common.HandleShapeshiftForm,
 
                            // Rotations.
                           new Decorator(ret => Buff.PlayerHasBuff("Bear Form"), GuardianRotation), //Me.Shapeshift == ShapeshiftForm.Bear
