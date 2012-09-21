@@ -142,7 +142,7 @@ namespace CLU.Settings
 
 
         [Setting]
-        [DefaultValue(70)]
+        [DefaultValue(55)]
         [Category("Shadow Spec")]
         [DisplayName("Flash Heal Health Percent")]
         [Description("Health for Flash Heal for shadow spec")]
@@ -171,7 +171,7 @@ namespace CLU.Settings
         }
 
         [Setting]
-        [DefaultValue(60)]
+        [DefaultValue(70)]
         [Category("Shadow Spec")]
         [DisplayName("Renew Health Percent")]
         [Description("Use Renew on set HP.")]
