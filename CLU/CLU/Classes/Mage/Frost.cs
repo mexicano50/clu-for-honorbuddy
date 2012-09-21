@@ -28,7 +28,8 @@ namespace CLU.Classes.Mage
     {
         public override string Name
         {
-            get {
+            get
+            {
                 return "Frost Mage";
             }
         }
@@ -43,7 +44,8 @@ namespace CLU.Classes.Mage
 
         public override string KeySpell
         {
-            get {
+            get
+            {
                 return "Frostbolt";
             }
         }
@@ -53,7 +55,8 @@ namespace CLU.Classes.Mage
         }
         public override float CombatMinDistance
         {
-            get {
+            get
+            {
                 return 30f;
             }
         }
@@ -61,7 +64,8 @@ namespace CLU.Classes.Mage
         // adding some help about cooldown management
         public override string Help
         {
-            get {
+            get
+            {
                 return "\n" +
                        "----------------------------------------------------------------------\n" +
                        "This Rotation will:\n" +
@@ -75,7 +79,7 @@ namespace CLU.Classes.Mage
                        "4. AoE with Arcane Explosion & Frost Nova \n" +
                        "5. Best Suited for end game raiding\n" +
                        "NOTE: PvP uses single target rotation - It's not designed for PvP use. \n" +
-                       "Credits to Obliv\n" +
+                       "Credits to Obliv, Condemned\n" +
                        "----------------------------------------------------------------------\n";
             }
         }
@@ -95,9 +99,10 @@ namespace CLU.Classes.Mage
 
         public override Composite SingleRotation
         {
-            get {
+            get
+            {
                 return new PrioritySelector(
-                           // Pause Rotation
+                    // Pause Rotation
                            new Decorator(ret => CLUSettings.Instance.PauseRotation, new ActionAlwaysSucceed()),
 
                            // For DS Encounters.
@@ -115,20 +120,23 @@ namespace CLU.Classes.Mage
                            // Comment: Dont break Invinsibility!!
                            new Decorator(
                                x => Buff.PlayerHasBuff("Invisibility"), new Action(a => CLU.TroubleshootLog("Invisibility active"))),
-                           // Interupts & Steal Buffs
-                           Spell.CastSpell("Spellsteal",                  ret => Spell.TargetHasStealableBuff() && !Me.IsMoving, "[Steal] Spellsteal"),
-                           // Rotation based on SimCraft - Build 15211
-                           Spell.CastInterupt("Counterspell",             ret => true, "Counterspell"),
+                            // Interupts & Steal Buffs
+                           Spell.CastSpell("Spellsteal", ret => Spell.TargetHasStealableBuff() && !Me.IsMoving, "[Steal] Spellsteal"),
+                            // Rotation based on SimCraft - Build 15211
+                           Spell.CastInterupt("Counterspell", ret => true, "Counterspell"),
                            Item.RunMacroText("/cast Conjure Mana Gem", ret => !Item.HaveManaGem() && Me.Level > 50, "Conjure Mana Gem"),
-                           Spell.ChannelSelfSpell("Evocation",            ret => Me.ManaPercent < 40 && !Me.IsMoving && (Buff.PlayerHasActiveBuff("Icy Veins") || Buff.UnitHasHasteBuff(Me)), "Evocation"),
-                           Item.UseBagItem("Mana Gem",                    ret => Me.CurrentTarget != null && Me.ManaPercent < 90 && Unit.IsTargetWorthy(Me.CurrentTarget), "Mana Gem"),
-                           Spell.CastSelfSpell("Cold Snap",               ret => Spell.SpellCooldown("Deep Freeze").TotalSeconds > 15 && Spell.SpellCooldown("Flame Orb").TotalSeconds > 30 && Spell.SpellCooldown("Icy Veins").TotalSeconds > 30, "Cold Snap"),
-                           Spell.CastSpell("Flame Orb",                   ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget), "Frostfire Orb"),
-                           Spell.CastSelfSpell("Mirror Image",            ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget), "Mirror Image"),
-                           Spell.CastSelfSpell("Icy Veins",               ret => !Buff.PlayerHasActiveBuff("Icy Veins") && !Buff.UnitHasHasteBuff(Me) && (Buff.PlayerCountBuff("Stolen Time") > 7 || Spell.SpellCooldown("Cold Snap").TotalSeconds < 22), "Icy Veins"),
-                           Spell.CastSpell("Deep Freeze",                 ret => Buff.PlayerHasActiveBuff("Fingers of Frost"), "Deep Freeze (Fingers of Frost)"),
-                           Spell.CastSpell("Frostfire Bolt",              ret => Buff.PlayerHasActiveBuff("Brain Freeze"), "Frostfire Bolt (Brain Freeze)"),
-                           // AoE
+                            //Added Frost Bomb or Nether Tempest 9-20-2012
+                           Buff.CastDebuff("Mage Bomb", Magebombtalent, ret => true, "Frost Bomb or Nether Tempest"),
+                           Spell.ChannelSelfSpell("Evocation",  ret => Me.ManaPercent < 40 && !Me.IsMoving && (Buff.PlayerHasActiveBuff("Icy Veins") || Buff.UnitHasHasteBuff(Me)), "Evocation"),
+                           Item.UseBagItem("Mana Gem",          ret => Me.CurrentTarget != null && Me.ManaPercent < 90 && Unit.IsTargetWorthy(Me.CurrentTarget), "Mana Gem"),
+                           Spell.CastSelfSpell("Cold Snap",     ret => Spell.SpellCooldown("Deep Freeze").TotalSeconds > 15 && Spell.SpellCooldown("Flame Orb").TotalSeconds > 30 && Spell.SpellCooldown("Icy Veins").TotalSeconds > 30, "Cold Snap"),
+                            //Changed Fire Orb to Frozen Orb 9-20-2012
+                           Spell.CastSpell("Frozen Orb",        ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget), "Frozen Orb"),
+                           Spell.CastSelfSpell("Mirror Image",  ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget), "Mirror Image"),
+                           Spell.CastSelfSpell("Icy Veins",     ret => !Buff.PlayerHasActiveBuff("Icy Veins") && !Buff.UnitHasHasteBuff(Me) && (Buff.PlayerCountBuff("Stolen Time") > 7 || Spell.SpellCooldown("Cold Snap").TotalSeconds < 22), "Icy Veins"),
+                           Spell.CastSpell("Deep Freeze",       ret => Buff.PlayerHasActiveBuff("Fingers of Frost"), "Deep Freeze (Fingers of Frost)"),
+                           Spell.CastSpell("Frostfire Bolt",    ret => Buff.PlayerHasActiveBuff("Brain Freeze"), "Frostfire Bolt (Brain Freeze)"),
+                            // AoE
                            new Decorator(
                                ret => Me.CurrentTarget != null && !Me.IsMoving && Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 15) > 2,
                                new PrioritySelector(
@@ -136,62 +144,68 @@ namespace CLU.Classes.Mage
                                    Spell.ChannelAreaSpell("Blizzard", 11.0, true, 4, 0.0, 0.0, ret => Me.CurrentTarget != null && !BossList.IgnoreAoE.Contains(Unit.CurrentTargetEntry) && Me.ManaPercent > 30 && Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 15) > 3, "Blizzard")
                                )),
                            PetManager.CastPetSpellAtLocation("Freeze", u => Me.CurrentTarget, ret => true, "Freeze (Pet)"),
-                           Spell.CastSpell("Ice Lance",                   ret => Buff.PlayerCountBuff("Fingers of Frost") > 1, "Ice Lance"),
-                           // PetSpellCooldown NOT returning correctly although it does return the correct value within the method, when you call it here it returns zero for some reason...still investigating
-                           // K    ice_lance,if=buff.fingers_of_frost.react&pet.water_elemental.cooldown.freeze.remains<gcd
-                           Spell.CastSpell("Ice Lance", ret => Buff.PlayerHasActiveBuff("Fingers of Frost") && (PetManager.PetSpellCooldown("Freeze").TotalSeconds < Spell.GCD), "Ice Lance (water_elemental_Freeze=" + PetManager.PetSpellCooldown("Freeze").TotalSeconds + " < " + Spell.GCD + ")"),
-                           Spell.CastSpell("Frostbolt",                   ret => true, "Frostbolt (FreezeCD=" + PetManager.PetSpellCooldown("Freeze").TotalSeconds + ")"),
-                           Spell.CastSpell("Ice Lance",                   ret => Me.IsMoving, "Ice Lance (Moving)"),
-                           Spell.CastSpell("Fire Blast",                  ret => Me.IsMoving, "Fire Blast (Moving)")
+                           Spell.CastSpell("Ice Lance",         ret => Buff.PlayerCountBuff("Fingers of Frost") > 1, "Ice Lance"),
+                            // PetSpellCooldown NOT returning correctly although it does return the correct value within the method, when you call it here it returns zero for some reason...still investigating
+                            // K    ice_lance,if=buff.fingers_of_frost.react&pet.water_elemental.cooldown.freeze.remains<gcd
+                           Spell.CastSpell("Ice Lance",         ret => Buff.PlayerHasActiveBuff("Fingers of Frost") && (PetManager.PetSpellCooldown("Freeze").TotalSeconds < Spell.GCD), "Ice Lance (water_elemental_Freeze=" + PetManager.PetSpellCooldown("Freeze").TotalSeconds + " < " + Spell.GCD + ")"),
+                           Spell.CastSpell("Frostbolt",         ret => true, "Frostbolt (FreezeCD=" + PetManager.PetSpellCooldown("Freeze").TotalSeconds + ")"),
+                           Spell.CastSpell("Ice Lance",         ret => Me.IsMoving, "Ice Lance (Moving)"),
+                           Spell.CastSpell("Fire Blast",        ret => Me.IsMoving, "Fire Blast (Moving)")
                        );
             }
         }
 
         public override Composite Medic
         {
-            get {
+            get
+            {
                 return new Decorator(
                            ret => Me.HealthPercent < 100 && CLUSettings.Instance.EnableSelfHealing,
                            new PrioritySelector(
                                PetManager.CastPetSummonSpell("Summon Water Elemental", ret => !Me.GotAlivePet, "Calling Pet Water Elemental"),
-                               Buff.CastBuff("Molten Armor",                      ret => true, "Molten Armor"),
-                               Item.UseBagItem("Healthstone",                     ret => Me.HealthPercent < 30, "Healthstone"),
-                               Buff.CastBuff("Ice Block",                         ret => Me.HealthPercent < 20 && !Buff.PlayerHasActiveBuff("Hypothermia"), "Ice Block"),
-                               Buff.CastBuff("Mage Ward",                         ret => Me.HealthPercent < 50, "Mage Ward")));
+                               //Changed Molten Armor to Frost Armor 9-20-2012
+                               Buff.CastBuff("Frost Armor",     ret => true, "Frost Armor"),
+                               Item.UseBagItem("Healthstone",   ret => Me.HealthPercent < 30, "Healthstone"),
+                               Buff.CastBuff("Ice Block",       ret => Me.HealthPercent < 20 && !Buff.PlayerHasActiveBuff("Hypothermia"), "Ice Block"),
+                               Buff.CastBuff("Mage Ward",       ret => Me.HealthPercent < 50, "Mage Ward")));
             }
         }
 
         public override Composite PreCombat
         {
-            get {
+            get
+            {
                 return new Decorator(
                            ret => !Me.Mounted && !Me.IsDead && !Me.Combat && !Me.IsFlying && !Me.IsOnTransport && !Me.HasAura("Food") && !Me.HasAura("Drink"),
                            new PrioritySelector(
                                PetManager.CastPetSummonSpell("Summon Water Elemental", ret => !Me.GotAlivePet, "Calling Pet Water Elemental"),
-                               Buff.CastBuff("Molten Armor",               ret => true, "Molten Armor"),
-                                //Buff.CastRaidBuff("Dalaran Brilliance",         ret => true, "Dalaran Brilliance"), //Commentet out as it is of no real importance except for 10yrd extra range.
-                               Buff.CastRaidBuff("Arcane Brilliance",      ret => true, "Arcane Brilliance"),
+                               Buff.CastBuff("Frost Armor", ret => true, "Frost Armor"),
+                               //Buff.CastRaidBuff("Dalaran Brilliance",         ret => true, "Dalaran Brilliance"), //Commentet out as it is of no real importance except for 10yrd extra range.
+                               Buff.CastRaidBuff("Arcane Brilliance", ret => true, "Arcane Brilliance"),
                                Item.RunMacroText("/cast Conjure Mana Gem", ret => !Me.IsMoving && !Item.HaveManaGem() && Me.Level > 50, "Conjure Mana Gem")));
             }
         }
 
         public override Composite Resting
         {
-            get {
+            get
+            {
                 return Rest.CreateDefaultRestBehaviour();
             }
         }
 
         public override Composite PVPRotation
         {
-            get {
+            get
+            {
                 return this.SingleRotation;
             }
         }
 
         public override Composite PVERotation
         {
-            get {
+            get
+            {
                 return this.SingleRotation;
             }
         }

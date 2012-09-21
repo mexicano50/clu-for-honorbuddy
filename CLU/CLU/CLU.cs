@@ -62,6 +62,7 @@ using Timer = System.Timers.Timer;
 * alxaw (HB9806B90) for his initial Arms rotation
 * Dagradt for his PvP rotations.
 * LaoArchAngel for his help with core changes and Rogue changes.
+* Condemned for Mage Frost Update
 * Apoc for just about everything :P */
 
 //[assembly: CLSCompliant(true)]
