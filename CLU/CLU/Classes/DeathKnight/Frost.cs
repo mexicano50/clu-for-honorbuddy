@@ -20,6 +20,7 @@ using Styx.TreeSharp;
 using CLU.Base;
 using Rest = CLU.Base.Rest;
 using Styx.CommonBot;
+using global::CLU.Managers;
 
 namespace CLU.Classes.DeathKnight
 {
@@ -184,14 +185,14 @@ namespace CLU.Classes.DeathKnight
                         //raise_dead
                         Spell.CastSpell("Outbreak",                             ret => Buff.TargetDebuffTimeLeft("Frost Fever").Seconds < 3 || Buff.TargetDebuffTimeLeft("Blood Plague").Seconds < 3, "Outbreak"),
                         Spell.CastSpell("Soul Reaper",                          ret => Me.CurrentTarget.HealthPercent <= 35, "Soul Reaping"),//~> soul_reaper,if=target.health.pct<=35|((target.health.pct-3*(target.health.pct%target.time_to_die))<=35)
-                        Spell.CastSelfSpell("Unholy Blight",                    ret => Me.CurrentTarget != null && Me.CurrentTarget.DistanceSqr <= 10 * 10 && SpellManager.HasSpell("Unholy Blight") && (Buff.TargetDebuffTimeLeft("Frost Fever").Seconds < 3 || Buff.TargetDebuffTimeLeft("Blood Plague").Seconds < 3), "Unholy Blight"),
+                        Spell.CastSelfSpell("Unholy Blight",                    ret => Me.CurrentTarget != null && Me.CurrentTarget.DistanceSqr <= 10 * 10 && TalentManager.HasTalent(3) && (Buff.TargetDebuffTimeLeft("Frost Fever").Seconds < 3 || Buff.TargetDebuffTimeLeft("Blood Plague").Seconds < 3), "Unholy Blight"),
                         Spell.CastSpell("Howling Blast",                        ret => !Buff.TargetHasDebuff("Frost Fever"), "Howling Blast"),
                         Spell.CastSpell("Plague Strike",                        ret => !Buff.TargetHasDebuff("Blood Plague"), "Plague Strike"),
 
                         //2H
                         new Decorator(ret => Common.IsWieldingTwoHandedWeapon(),
                             new PrioritySelector(
-                                Spell.CastSpell("Plague Leech",                 ret => SpellManager.HasSpell("Plague Leech") && ((SpellManager.Spells["Outbreak"].CooldownTimeLeft.Seconds < 1) || (Buff.PlayerHasBuff("Freezing Fog") && Buff.TargetDebuffTimeLeft("Blood Plague").Seconds < 3 && (Me.UnholyRuneCount >= 1 || Me.DeathRuneCount >= 1))), "Plague Leech"),
+                                Spell.CastSpell("Plague Leech",                 ret => TalentManager.HasTalent(2) && ((SpellManager.Spells["Outbreak"].CooldownTimeLeft.Seconds < 1) || (Buff.PlayerHasBuff("Freezing Fog") && Buff.TargetDebuffTimeLeft("Blood Plague").Seconds < 3 && (Me.UnholyRuneCount >= 1 || Me.DeathRuneCount >= 1))), "Plague Leech"),
                                 Spell.CastSpell("Necrotic Strike",              ret => !Macro.rotationSwap, "Necrotic Strike"),
                                 Spell.CastSpell("Howling Blast",                ret => Buff.PlayerHasBuff("Freezing Fog"), "Howling Blast"),
                                 Spell.CastSpell("Obliterate",                   ret => Macro.rotationSwap && Me.CurrentRunicPower <= 76, "Obliterate"),
@@ -200,7 +201,7 @@ namespace CLU.Classes.DeathKnight
                                 Spell.CastSpell("Frost Strike",                 ret => !Buff.PlayerHasBuff("Killing Machine"), "Frost Strike"),
                                 Spell.CastSpell("Obliterate",                   ret => Macro.rotationSwap && Buff.PlayerHasBuff("Killing Machine"), "Obliterate"),
                                 Spell.CastSpell("Obliterate",                   ret => !Macro.rotationSwap && Buff.PlayerHasBuff("Killing Machine") && Me.FrostRuneCount >= 1 && Me.UnholyRuneCount >= 1, "Obliterate"),
-                                Spell.CastSpell("Blood Tap",                    ret => SpellManager.HasSpell("Blood Tap") &&  Buff.PlayerCountBuff("Blood Charge") >= 5 && (Common.FrostRuneSlotsActive == 0 || Common.UnholyRuneSlotsActive == 0 || Common.BloodRuneSlotsActive == 0), "Blood Tap"),
+                                Spell.CastSpell("Blood Tap",                    ret => TalentManager.HasTalent(13) && Buff.PlayerCountBuff("Blood Charge") >= 5 && (Common.FrostRuneSlotsActive == 0 || Common.UnholyRuneSlotsActive == 0 || Common.BloodRuneSlotsActive == 0), "Blood Tap"),
                                 Spell.CastSpell("Frost Strike",                 ret => true, "Frost Strike"),
                                 Buff.CastRaidBuff("Horn of Winter",             ret => true, "Horn of Winter"),
                                 Spell.CastSpell("Empower Rune Weapon",          ret => true, "Empower Rune Weapon"))),
@@ -208,7 +209,7 @@ namespace CLU.Classes.DeathKnight
                         //DW
                         new Decorator(ret => !Common.IsWieldingTwoHandedWeapon(),
                             new PrioritySelector(
-                                Spell.CastSpell("Plague Leech",                 ret => SpellManager.HasSpell("Plague Leech") && !((Buff.PlayerHasBuff("Killing Machine") && Me.CurrentRunicPower < 10) || (Me.UnholyRuneCount == 2 || Me.FrostRuneCount == 2 || Me.DeathRuneCount == 2)), "Plague Leech"),
+                                Spell.CastSpell("Plague Leech",                 ret => TalentManager.HasTalent(2) && !((Buff.PlayerHasBuff("Killing Machine") && Me.CurrentRunicPower < 10) || (Me.UnholyRuneCount == 2 || Me.FrostRuneCount == 2 || Me.DeathRuneCount == 2)), "Plague Leech"),
                                 Spell.CastSpell("Necrotic Strike",              ret => !Macro.rotationSwap, "Necrotic Strike"),
                                 Spell.CastSpell("Howling Blast",                ret => Buff.PlayerHasBuff("Freezing Fog"), "Howling Blast"),
                                 Spell.CastSpell("Frost Strike",                 ret => Me.CurrentRunicPower >= 88, "Frost Strike"),
@@ -222,7 +223,7 @@ namespace CLU.Classes.DeathKnight
                                 Spell.CastSpell("Frost Strike",                 ret => true, "Frost Strike"),
                                 Spell.CastOnUnitLocation("Death and Decay",     ret => Me.CurrentTarget, ret => true, "Death and Decay"),
                                 Spell.CastSpell("Plague Strike",                ret => true, "Plague Strike"),
-                                Spell.CastSpell("Blood Tap",                    ret => SpellManager.HasSpell("Blood Tap") &&  Buff.PlayerCountBuff("Blood Charge") >= 5 && (Common.FrostRuneSlotsActive == 0 || Common.UnholyRuneSlotsActive == 0 || Common.BloodRuneSlotsActive == 0), "Blood Tap"),
+                                Spell.CastSpell("Blood Tap",                    ret => TalentManager.HasTalent(13) && Buff.PlayerCountBuff("Blood Charge") >= 5 && (Common.FrostRuneSlotsActive == 0 || Common.UnholyRuneSlotsActive == 0 || Common.BloodRuneSlotsActive == 0), "Blood Tap"),
                                 Buff.CastRaidBuff("Horn of Winter",             ret => true, "Horn of Winter"),
                                 Spell.CastSpell("Empower Rune Weapon",          ret => true, "Empower Rune Weapon")))
                 ));

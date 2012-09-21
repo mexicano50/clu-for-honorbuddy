@@ -20,6 +20,7 @@ using Styx.TreeSharp;
 using CLU.Base;
 using Rest = CLU.Base.Rest;
 using Styx.CommonBot;
+using global::CLU.Managers;
 
 namespace CLU.Classes.DeathKnight
 {
