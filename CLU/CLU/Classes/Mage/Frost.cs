@@ -159,15 +159,18 @@ namespace CLU.Classes.Mage
         {
             get
             {
-                return new Decorator(
+                return new PrioritySelector(
+                    PetManager.CastPetSummonSpell("Summon Water Elemental", ret => !Me.GotAlivePet, "Calling Pet Water Elemental"),
+                    Buff.CastBuff("Frost Armor", ret => true, "Frost Armor"),
+                    
+                    new Decorator(
                            ret => Me.HealthPercent < 100 && CLUSettings.Instance.EnableSelfHealing,
                            new PrioritySelector(
-                               PetManager.CastPetSummonSpell("Summon Water Elemental", ret => !Me.GotAlivePet, "Calling Pet Water Elemental"),
-                               //Changed Molten Armor to Frost Armor 9-20-2012
-                               Buff.CastBuff("Frost Armor",     ret => true, "Frost Armor"),
-                               Item.UseBagItem("Healthstone",   ret => Me.HealthPercent < 30, "Healthstone"),
-                               Buff.CastBuff("Ice Block",       ret => Me.HealthPercent < 20 && !Buff.PlayerHasActiveBuff("Hypothermia"), "Ice Block"),
-                               Buff.CastBuff("Mage Ward",       ret => Me.HealthPercent < 50, "Mage Ward")));
+                               Item.UseBagItem("Healthstone", ret => Me.HealthPercent < 30, "Healthstone"),
+                               Buff.CastBuff("Ice Block", ret => Me.HealthPercent < 20 && !Buff.PlayerHasActiveBuff("Hypothermia"), "Ice Block"),
+                               Buff.CastBuff("Mage Ward", ret => Me.HealthPercent < 50, "Mage Ward")))
+                    
+                    ); 
             }
         }
 
