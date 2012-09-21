@@ -46,7 +46,7 @@ namespace CLU.Classes.Priest
         public override float CombatMinDistance
         {
             get {
-                return 30f;
+                return 35f;
             }
         }
 
@@ -80,6 +80,7 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
         }
 
         private static bool CanMindFlay { get { return Buff.TargetHasBuff("Vampiric Touch") && Spell.SpellCooldown("Mind Blast").TotalSeconds > 4 && Buff.PlayerCountBuff("Shadow Orb") < 3; } }
+        private static bool CanMindFlaywhileleveling { get { return  Spell.SpellCooldown("Mind Blast").TotalSeconds > 2 && Buff.PlayerCountBuff("Shadow Orb") < 3; } }
 
         // OVERIDES!!! [SpellManager] Mind Flay (15407) overrides Smite (585)
         public override Composite SingleRotation
@@ -100,7 +101,7 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
                                    Buff.CastBuff("Lifeblood", ret => true, "Lifeblood"),
                                    Item.UseEngineerGloves())),
                            // Threat
-                           Buff.CastBuff("Fade", ret => (CLUSettings.Instance.UseCooldowns || CLUSettings.Instance.Priest.UseFade) && Me.CurrentTarget != null && Me.CurrentTarget.ThreatInfo.RawPercent > 90 && !Spell.PlayerIsChanneling, "Fade (Threat)"),
+                          // Buff.CastBuff("Fade", ret => (CLUSettings.Instance.UseCooldowns || CLUSettings.Instance.Priest.UseFade) && Me.CurrentTarget != null && Me.CurrentTarget.ThreatInfo.RawPercent > 90 && !Spell.PlayerIsChanneling, "Fade (Threat)"),
 
                            Item.RunMacroText("/cast Shadowform", ret => !Buff.PlayerHasBuff("Shadowform"), "Shadowform"),
 
@@ -111,10 +112,11 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
                                    Spell.CastSelfSpell("Dispersion",        ret => (Me.HealthPercent < 10 || Me.ManaPercent < 10),"Dispersion"),
                                    Spell.CastSelfSpell("Mindbender",        ret => CLUSettings.Instance.UseCooldowns && Unit.EnemyUnits.Count(u => u.IsTargetingMeOrPet) >= 2, "Mindbender"),
                                    // Multi-Dotting will occour if there are between 1 or more and less than 6 enemys within 15yrds of your current target and you have more than 50% mana and we have Empowered Shadow. //Can be disabled within the GUI
-                                   Unit.FindMultiDotTarget(a => Me.CurrentTarget != null && Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 15) > 1 && Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 15) < 5 && Me.ManaPercent > 50 && Me.CurrentTarget.HealthPercent <= 25, "Shadow Word: Death"),
-                                   Unit.FindMultiDotTarget(a => Me.CurrentTarget != null && Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 15) > 1 && Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 15) < 5 && Me.ManaPercent > 50 && Me.CurrentTarget.HealthPercent > 25 && Buff.PlayerHasActiveBuff("Empowered Shadow") && Unit.TimeToDeath(Me.CurrentTarget) > 10, "Shadow Word: Pain"),
-                                   Unit.FindMultiDotTarget(a => Me.CurrentTarget != null && Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 15) > 4 && Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 15) < 6 && Me.ManaPercent > 50 && Me.CurrentTarget.HealthPercent > 25 && Buff.PlayerHasActiveBuff("Empowered Shadow") && Unit.TimeToDeath(Me.CurrentTarget) > 10, "Vampiric Touch"),
+                                  // Unit.FindMultiDotTarget(a => Me.CurrentTarget != null && Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 15) > 1 && Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 15) < 5 && Me.ManaPercent > 50 && Me.CurrentTarget.HealthPercent <= 25, "Shadow Word: Death"),
+                                   //Unit.FindMultiDotTarget(a => Me.CurrentTarget != null && Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 15) > 1 && Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 15) < 5 && Me.ManaPercent > 50 && Me.CurrentTarget.HealthPercent > 25 && Buff.PlayerHasActiveBuff("Empowered Shadow") && Unit.TimeToDeath(Me.CurrentTarget) > 10, "Shadow Word: Pain"),
+                                   //Unit.FindMultiDotTarget(a => Me.CurrentTarget != null && Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 15) > 4 && Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 15) < 6 && Me.ManaPercent > 50 && Me.CurrentTarget.HealthPercent > 25 && Buff.PlayerHasActiveBuff("Empowered Shadow") && Unit.TimeToDeath(Me.CurrentTarget) > 10, "Vampiric Touch"),
                                    // End Multi-Dotting
+                                   Buff.CastDebuff("Devouring Plague",      ret => Buff.PlayerCountBuff("Shadow Orb") > 2, "Devouring Plague (@ 3 orbs)"),
                                    Spell.CastSpell("Shadow Word: Death",    ret => Me.CurrentTarget != null && Me.CurrentTarget.HealthPercent <= 25, "Shadow Word: Death"),
                                    Spell.CastSpell("Mind Spike",            ret => Buff.PlayerHasBuff("Surge of Darkness"), "Mind Spike"), // Free Mindspike
                                    Spell.CastSpell("Mind Blast",            ret => !Me.IsMoving, "Mind Blast"),
@@ -125,7 +127,7 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
                                    Buff.CastDebuff("Devouring Plague",      ret => Me.CurrentTarget != null && Unit.TimeToDeath(Me.CurrentTarget) > 20, "Devouring Plague"),
                                    Spell.CastSpell("Shadowfiend",           ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget), "Shadowfiend"),
                                    Spell.CastSpell("Mind Spike",            ret => true, "Mind Spike"),
-                                   Spell.CastSpecialSpell("Smite",      ret => CanMindFlay && Buff.TargetDebuffTimeLeft("Mind Flay").TotalSeconds <= Spell.ClippingDuration(), "Mind Flay")
+                                   Spell.CastSpecialSpell("Smite",      ret => CanMindFlaywhileleveling && Buff.TargetDebuffTimeLeft("Mind Flay").TotalSeconds <= Spell.ClippingDuration(), "Mind Flay")
                                )),
 
 
@@ -225,8 +227,9 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
                            ret => Me.HealthPercent < 100 && CLUSettings.Instance.EnableSelfHealing,
                            new PrioritySelector(
                                Spell.CastSelfSpell("Power Word: Shield",  ret => !Buff.PlayerHasBuff("Weakened Soul") && Me.HealthPercent < CLUSettings.Instance.Priest.ShieldHealthPercent, "Power Word: Shield"),
+                               Spell.CastSelfSpell("Renew",               ret => !Buff.PlayerHasBuff("Weakened Soul") && Me.HealthPercent < CLUSettings.Instance.Priest.RenewHealthPercent, "Renew"),
                                Item.UseBagItem("Healthstone",             ret => Me.HealthPercent < CLUSettings.Instance.Priest.UseHealthstone, "Healthstone"),
-                               Spell.CastSpell("Flash Heal",              ret => Me.HealthPercent < CLUSettings.Instance.Priest.ShadowFlashHealHealth, "Emergency flash heal")));
+                               Spell.CastSpell("Flash Heal", ret => Me,     ret => Me.HealthPercent < CLUSettings.Instance.Priest.ShadowFlashHealHealth, "Emergency flash heal")));
             }
         }
 

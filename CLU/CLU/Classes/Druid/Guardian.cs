@@ -142,8 +142,12 @@ NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagr
 
         public override Composite Resting
         {
-            get {
-                return Rest.CreateDefaultRestBehaviour();
+            get
+            {
+                return
+                    new PrioritySelector(
+                        Spell.CastSpell("Rejuvenation", ret => Me, ret => !Buff.PlayerHasBuff("Rejuvenation") && Me.HealthPercent < 65 && CLUSettings.Instance.EnableSelfHealing && CLUSettings.Instance.EnableMovement, "Rejuvenation on me"),
+                        Rest.CreateDefaultRestBehaviour());
             }
         }
 

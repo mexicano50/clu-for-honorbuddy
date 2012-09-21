@@ -142,7 +142,7 @@ namespace CLU.Settings
 
 
         [Setting]
-        [DefaultValue(30)]
+        [DefaultValue(70)]
         [Category("Shadow Spec")]
         [DisplayName("Flash Heal Health Percent")]
         [Description("Health for Flash Heal for shadow spec")]
@@ -160,7 +160,7 @@ namespace CLU.Settings
         //public double MindFlayMana { get; set; }
 
         [Setting]
-        [DefaultValue(60)]
+        [DefaultValue(30)]
         [Category("Shadow Spec")]
         [DisplayName("PW: Shield Health Percent")]
         [Description("Use PW:Shield on set HP.")]
@@ -169,6 +169,19 @@ namespace CLU.Settings
             get;
             set;
         }
+
+        [Setting]
+        [DefaultValue(60)]
+        [Category("Shadow Spec")]
+        [DisplayName("Renew Health Percent")]
+        [Description("Use Renew on set HP.")]
+        public double RenewHealthPercent
+        {
+            get;
+            set;
+        }
+
+        
 
         //[Setting]
         //[DefaultValue(15)]
