@@ -116,7 +116,7 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
                                    //Unit.FindMultiDotTarget(a => Me.CurrentTarget != null && Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 15) > 1 && Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 15) < 5 && Me.ManaPercent > 50 && Me.CurrentTarget.HealthPercent > 25 && Buff.PlayerHasActiveBuff("Empowered Shadow") && Unit.TimeToDeath(Me.CurrentTarget) > 10, "Shadow Word: Pain"),
                                    //Unit.FindMultiDotTarget(a => Me.CurrentTarget != null && Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 15) > 4 && Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 15) < 6 && Me.ManaPercent > 50 && Me.CurrentTarget.HealthPercent > 25 && Buff.PlayerHasActiveBuff("Empowered Shadow") && Unit.TimeToDeath(Me.CurrentTarget) > 10, "Vampiric Touch"),
                                    // End Multi-Dotting
-                                   Buff.CastDebuff("Devouring Plague",      ret => Buff.PlayerCountBuff("Shadow Orb") > 2, "Devouring Plague (@ 3 orbs)"),
+                                   Spell.CastSpell("Devouring Plague", ret => Buff.PlayerCountBuff("Shadow Orb") > 2, "Devouring Plague (@ 3 orbs)"),
                                    Spell.CastSpell("Shadow Word: Death",    ret => Me.CurrentTarget != null && Me.CurrentTarget.HealthPercent <= 25, "Shadow Word: Death"),
                                    Spell.CastSpell("Mind Spike",            ret => Buff.PlayerHasBuff("Surge of Darkness"), "Mind Spike"), // Free Mindspike
                                    Spell.CastSpell("Mind Blast",            ret => !Me.IsMoving, "Mind Blast"),
