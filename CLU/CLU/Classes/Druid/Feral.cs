@@ -278,6 +278,9 @@ CREDITS TO: HandNavi - because he owns the business.
                                             )
                                         ),
 
+                                    // Handnavi - what about taking away the MeIsBehind check and replace all shred calls with:
+                                    // private static readonly List<string> feralComboList = new List<string> { "Shred", "Mangle" };
+                                    // Spell.CastSpell(feralComboList.Find(SpellManager.CanCast), ret => true, "ComboSpell"));  -- wulf
                                     new Decorator(
                                         ret => StyxWoW.Me.CurrentTarget.MeIsBehind || BossList.CanShred.Contains(Unit.CurrentTargetEntry) || (TalentManager.HasGlyph("Shred") && (StyxWoW.Me.HasAura(5217) || StyxWoW.Me.HasAura(106951))),
                                         new PrioritySelector(
