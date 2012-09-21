@@ -184,10 +184,10 @@ namespace CLU.Classes.DeathKnight
                         Item.UseEngineerGloves(),//~> use_item,name=gauntlets_of_the_lost_catacomb,if=time>=4
                         Spell.CastSpell("Outbreak",             ret => Buff.TargetDebuffTimeLeft("Frost Fever").Seconds < 3 || Buff.TargetDebuffTimeLeft("Blood Plague").Seconds < 3, "Outbreak"),
                         Spell.CastSpell("Soul Reaper",          ret => Me.CurrentTarget.HealthPercent <= 35, "Soul Reaping"),//~> soul_reaper,if=target.health.pct<=35|((target.health.pct-3*(target.health.pct%target.time_to_die))<=35)
-                        Buff.CastBuff("Unholy Blight",          ret => Me.CurrentTarget != null && Me.CurrentTarget.DistanceSqr <= 10 * 10 && SpellManager.HasSpell("Unholy Blight") && (Buff.TargetDebuffTimeLeft("Frost Fever").Seconds < 3 || Buff.TargetDebuffTimeLeft("Blood Plague").Seconds < 3), "Unholy Blight"),
+                        Buff.CastBuff("Unholy Blight",          ret => Me.CurrentTarget != null && Me.CurrentTarget.DistanceSqr <= 10 * 10 && TalentManager.HasTalent(3) && (Buff.TargetDebuffTimeLeft("Frost Fever").Seconds < 3 || Buff.TargetDebuffTimeLeft("Blood Plague").Seconds < 3), "Unholy Blight"),
                         Spell.CastSpell("Chains of Ice",        ret => !Buff.TargetHasDebuff("Frost Fever"), "Chains of Ice"),
                         Spell.CastSpell("Plague Strike",        ret => !Buff.TargetHasDebuff("Blood Plague"), "Plague Strike"),
-                        Spell.CastSpell("Plague Leech",         ret => SpellManager.HasSpell("Plague Leech") && SpellManager.Spells["Outbreak"].CooldownTimeLeft.Seconds < 1, "Plague Leech"),
+                        Spell.CastSpell("Plague Leech",         ret => TalentManager.HasTalent(2) && SpellManager.Spells["Outbreak"].CooldownTimeLeft.Seconds < 1, "Plague Leech"),
                         Buff.CastBuff("Summon Gargoyle",        ret => Me.CurrentTarget != null && Me.CurrentTarget.DistanceSqr <= 30 * 30, "Summon Gargoyle"),
                         Spell.CastSpell("Dark Transformation",  ret => true, "Dark Transformation"),
                         //empower_rune_weapon,if=target.time_to_die<=60&buff.mogu_power_potion.up
@@ -196,7 +196,7 @@ namespace CLU.Classes.DeathKnight
                         Spell.CastSpell("Festering Strike",     ret => Me.BloodRuneCount == 2 && Me.FrostRuneCount == 2 && Me.CurrentRunicPower < 90, "Festering Strike"),
                         Spell.CastSpell("Death Coil",           ret => Me.CurrentRunicPower > 90, "Death Coil"),
                         Spell.CastSpell("Death Coil",           ret => Buff.PlayerHasBuff("Sudden Doom"), "Death Coil"),
-                        Spell.CastSpell("Blood Tap",            ret => SpellManager.HasSpell("Blood Tap") && Buff.PlayerCountBuff("Blood Charge") >= 5 && (Common.FrostRuneSlotsActive == 0 || Common.UnholyRuneSlotsActive == 0 || Common.BloodRuneSlotsActive == 0), "Blood Tap"),
+                        Spell.CastSpell("Blood Tap",            ret => TalentManager.HasTalent(13) && Buff.PlayerCountBuff("Blood Charge") >= 5 && (Common.FrostRuneSlotsActive == 0 || Common.UnholyRuneSlotsActive == 0 || Common.BloodRuneSlotsActive == 0), "Blood Tap"),
                         Spell.CastSpell("Necrotic Strike",      ret => !Macro.rotationSwap, "Necrotic Strike"),
                         Spell.CastSpell("Scourge Strike",       ret => true, "Scourge Strike"),
                         Spell.CastSpell("Festering Strike",     ret => true, "Festering Strike"),
