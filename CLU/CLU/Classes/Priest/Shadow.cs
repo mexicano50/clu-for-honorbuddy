@@ -135,7 +135,7 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
                            new Decorator(
                                ret => CLUSettings.Instance.Priest.SpriestRotationSelection == ShadowPriestRotation.Default,
                                new PrioritySelector(
-                                   
+                                   Spell.WaitForCast(),
                                    // Multi-Dotting will occour if there are between 1 or more and less than 6 enemys within 15yrds of your current target and you have more than 50% mana and we have Empowered Shadow. //Can be disabled within the GUI
                                    //Unit.FindMultiDotTarget(a => Me.CurrentTarget != null && Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 15) > 1 && Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 15) < 5 && Me.ManaPercent > 50 && Me.CurrentTarget.HealthPercent <= 25, "Shadow Word: Death"),
                                    //Unit.FindMultiDotTarget(a => Me.CurrentTarget != null && Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 15) > 1 && Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 15) < 5 && Me.ManaPercent > 50 && Me.CurrentTarget.HealthPercent > 25 && Buff.PlayerHasActiveBuff("Empowered Shadow"), "Shadow Word: Pain"),
@@ -147,7 +147,7 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
                                    Spell.CastSpell("Mind Blast",              ret => true, "Mind Blast"),
                                    Buff.CastDebuff("Devouring Plague",        ret => Buff.PlayerCountBuff("Shadow Orb") > 2, "Devouring Plague"),
                                    Spell.CastSpell("Shadow Word: Death",      ret => Me.CurrentTarget != null && (TalentManager.HasGlyph("Shadow Word: Death") ? Me.CurrentTarget.HealthPercent <= 100 : Me.CurrentTarget.HealthPercent <= 25), "Shadow Word: Death"),
-                                   Spell.CastSpell("Mind Spike", ret => Buff.PlayerHasActiveBuff("Surge of Darkness"), "Mind Spike"),
+                                   Spell.CastSpell("Mind Spike",              ret => Buff.PlayerHasActiveBuff("Surge of Darkness"), "Mind Spike"),
                                    Spell.CastSpell("Mindbender",              ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget), "Mindbender"),
                                    Spell.CastSpell("Mind Sear",               ret => Me.CurrentTarget != null && Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 12) >= 3 && !BossList.IgnoreAoE.Contains(Unit.CurrentTargetEntry), "Mind Sear"),
                                    Spell.CastSpell("Shadow Word: Death",      ret => Me.ManaPercent < 10, "Shadow Word: Death - Low Mana"),
@@ -155,7 +155,7 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
                                    Spell.CastSpell("Devouring Plague",        ret => Me.IsMoving && Me.ManaPercent > 10, "Devouring Plague"),
                                    Spell.CastSpell("Mind Blast",              ret => Buff.PlayerHasActiveBuff("Divine Insight"), "Mind Blast"),
                                    Spell.CastSelfSpell("Dispersion",          ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget) && (Me.HealthPercent < 10 || Me.ManaPercent < 10), "Dispersion"),
-                                   Spell.CastSpecialSpell("Smite",        ret => CanMindFlay && Buff.TargetDebuffTimeLeft("Mind Flay").TotalSeconds <= Spell.ClippingDuration(), "Mind Flay")
+                                   Spell.CastSpecialSpell("Smite",            ret => CanMindFlay && Buff.TargetDebuffTimeLeft("Mind Flay").TotalSeconds <= Spell.ClippingDuration(), "Mind Flay")
                                )) 
                        );
             }

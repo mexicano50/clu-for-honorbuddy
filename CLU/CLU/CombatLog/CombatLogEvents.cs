@@ -184,15 +184,26 @@ namespace CLU.CombatLog
             }
 
             // if the spell is locked, let's extend it (spell travel time + client lag) / or reset it...
-            if (!Locks.ContainsKey(spellName))
+            if (Locks.ContainsKey(spellName))
             {
-                return;
-            }
-            if (success) {
-                // yay!
-                Locks[spellName] = DateTime.Now.AddSeconds(ClientLag + 4.0);
-            } else {
-                Locks[spellName] = DateTime.Now;
+                if (success)
+                {
+                    // yay!
+                    Locks[spellName] = DateTime.Now.AddSeconds(ClientLag + 4.0);
+                }
+                else
+                {
+                    if (spellCast)
+                    {
+                        // interrupted while casting
+                        Locks[spellName] = DateTime.Now;
+                    }
+                    else
+                    {
+                        // failed to cast it. moar spam!
+                        Locks[spellName] = DateTime.Now;
+                    }
+                }
             }
         }
 
