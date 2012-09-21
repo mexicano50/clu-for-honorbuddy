@@ -191,7 +191,7 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
 
                         //Rotation
                         //virmens_bite_potion,if=buff.bloodlust.react|target.time_to_die<=60
-                        Buff.CastBuff("Aspect of the Hawk",            ret => !Me.IsMoving && !Buff.PlayerHasBuff("Aspect of the Hawk"), "Aspect of the Hawk"),
+                        Buff.CastBuff("Aspect of the Hawk",            ret => !Me.IsMoving && (!Buff.PlayerHasBuff("Aspect of the Hawk") || !Buff.PlayerHasBuff("Aspect of the Iron Hawk") && TalentManager.HasTalent(8)), "Aspect of the Hawk"),
                         Buff.CastBuff("Aspect of the Fox",             ret => Me.IsMoving && !Buff.PlayerHasBuff("Aspect of the Fox"), "Aspect of the Fox"),
                         Spell.HunterTrapBehavior("Explosive Trap",     ret => Me.CurrentTarget, ret => Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 10) > 0),
                         Buff.CastBuff("Focus Fire",                    ret => Me.ActiveAuras["Frenzy"].StackCount == 5, "Focus Fire"),
