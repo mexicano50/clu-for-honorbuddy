@@ -227,7 +227,7 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
                            ret => Me.HealthPercent < 100 && CLUSettings.Instance.EnableSelfHealing,
                            new PrioritySelector(
                                Spell.CastSpell("Power Word: Shield", ret => Me, ret => !Buff.PlayerHasBuff("Weakened Soul") && Me.HealthPercent < CLUSettings.Instance.Priest.ShieldHealthPercent, "Power Word: Shield"),
-                               Spell.CastSpell("Renew", ret => Me, ret => !Buff.PlayerHasBuff("Weakened Soul") && Me.HealthPercent < CLUSettings.Instance.Priest.RenewHealthPercent, "Renew"),
+                               Spell.CastSpell("Renew", ret => Me, ret => !Buff.PlayerHasBuff("Renew") && Me.HealthPercent < CLUSettings.Instance.Priest.RenewHealthPercent, "Renew"),
                                Item.UseBagItem("Healthstone",             ret => Me.HealthPercent < CLUSettings.Instance.Priest.UseHealthstone, "Healthstone"),
                                Spell.CastSpell("Flash Heal", ret => Me,     ret => Me.HealthPercent < CLUSettings.Instance.Priest.ShadowFlashHealHealth, "Emergency flash heal")));
             }
