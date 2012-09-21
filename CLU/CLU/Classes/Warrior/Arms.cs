@@ -19,6 +19,7 @@ using Styx.CommonBot;
 using Rest = CLU.Base.Rest;
 using Styx;
 using Styx.WoWInternals;
+using global::CLU.Managers;
 
 namespace CLU.Classes.Warrior
 {
@@ -163,9 +164,9 @@ namespace CLU.Classes.Warrior
 
                         //Rotation
                         //mogu_power_potion,if=(target.health.pct<20&buff.recklessness.up)|buff.bloodlust.react|target.time_to_die<=25
-                        Spell.CastSelfSpell("Recklessness",         ret => Me.CurrentTarget != null && Me.CurrentTarget.IsWithinMeleeRange && ((Buff.TargetDebuffTimeLeft("Colossus Smash").Seconds >= 5 || SpellManager.Spells["Colossus Smash"].CooldownTimeLeft.Seconds <= 4) && (!Managers.TalentManager.HasTalent(16) && ((Me.CurrentTarget.HealthPercent < 20 || Unit.TimeToDeath(Me.CurrentTarget) > 315 || Unit.TimeToDeath(Me.CurrentTarget) > 165)) || (Managers.TalentManager.HasTalent(16) && Buff.PlayerHasActiveBuff("Avatar")))) || Unit.TimeToDeath(Me.CurrentTarget) <= 18, "Recklessness"),
-                        Spell.CastSelfSpell("Avatar",               ret => Me.CurrentTarget != null && Me.CurrentTarget.IsWithinMeleeRange && Managers.TalentManager.HasTalent(16) && (((SpellManager.Spells["Recklessness"].CooldownTimeLeft.Seconds >= 180 || Buff.PlayerHasActiveBuff("Recklessness")) || (Me.CurrentTarget.HealthPercent >= 20 && Unit.TimeToDeath(Me.CurrentTarget) > 195) || Me.CurrentTarget.HealthPercent < 20) || Unit.TimeToDeath(Me.CurrentTarget) <= 20), "Avatar"),
-                        Spell.CastSelfSpell("Bloodbath",            ret => Me.CurrentTarget != null && Me.CurrentTarget.IsWithinMeleeRange && Managers.TalentManager.HasTalent(17) && (((SpellManager.Spells["Recklessness"].CooldownTimeLeft.Seconds >= 10 || Buff.PlayerHasActiveBuff("Recklessness")) || (Me.CurrentTarget.HealthPercent >= 20 && (Unit.TimeToDeath(Me.CurrentTarget) <= 165 || Unit.TimeToDeath(Me.CurrentTarget) <= 315) && Unit.TimeToDeath(Me.CurrentTarget) > 75)) || Unit.TimeToDeath(Me.CurrentTarget) <= 19), "Bloodbath"),
+                        Spell.CastSelfSpell("Recklessness",         ret => Me.CurrentTarget != null && Me.CurrentTarget.IsWithinMeleeRange && ((Buff.TargetDebuffTimeLeft("Colossus Smash").Seconds >= 5 || SpellManager.Spells["Colossus Smash"].CooldownTimeLeft.Seconds <= 4) && (!TalentManager.HasTalent(16) && ((Me.CurrentTarget.HealthPercent < 20 || Unit.TimeToDeath(Me.CurrentTarget) > 315 || Unit.TimeToDeath(Me.CurrentTarget) > 165)) || (TalentManager.HasTalent(16) && Buff.PlayerHasActiveBuff("Avatar")))) || Unit.TimeToDeath(Me.CurrentTarget) <= 18, "Recklessness"),
+                        Spell.CastSelfSpell("Avatar",               ret => Me.CurrentTarget != null && Me.CurrentTarget.IsWithinMeleeRange && TalentManager.HasTalent(16) && (((SpellManager.Spells["Recklessness"].CooldownTimeLeft.Seconds >= 180 || Buff.PlayerHasActiveBuff("Recklessness")) || (Me.CurrentTarget.HealthPercent >= 20 && Unit.TimeToDeath(Me.CurrentTarget) > 195) || Me.CurrentTarget.HealthPercent < 20) || Unit.TimeToDeath(Me.CurrentTarget) <= 20), "Avatar"),
+                        Spell.CastSelfSpell("Bloodbath",            ret => Me.CurrentTarget != null && Me.CurrentTarget.IsWithinMeleeRange && TalentManager.HasTalent(17) && (((SpellManager.Spells["Recklessness"].CooldownTimeLeft.Seconds >= 10 || Buff.PlayerHasActiveBuff("Recklessness")) || (Me.CurrentTarget.HealthPercent >= 20 && (Unit.TimeToDeath(Me.CurrentTarget) <= 165 || Unit.TimeToDeath(Me.CurrentTarget) <= 315) && Unit.TimeToDeath(Me.CurrentTarget) > 75)) || Unit.TimeToDeath(Me.CurrentTarget) <= 19), "Bloodbath"),
                         Spell.CastSelfSpell("Berserker Rage",       ret => Me.CurrentTarget != null && Me.CurrentTarget.IsWithinMeleeRange && !Buff.PlayerHasActiveBuff("Enrage"), "Berserker Rage"),
                         Spell.CastOnUnitLocation("Heroic Leap",     ret => Me.CurrentTarget, ret => Buff.TargetHasDebuff("Colossus Smash"), "Heroic Leap"),
                         Spell.CastSelfSpell("Deadly Calm",          ret => Me.CurrentTarget != null && Me.CurrentTarget.IsWithinMeleeRange && Me.CurrentRage >= 40, "Deadly Calm"),
@@ -173,16 +174,16 @@ namespace CLU.Classes.Warrior
                         Spell.CastSpell("Mortal Strike",            ret => true, "Mortal Strike"),
                         Spell.CastSpell("Colossus Smash",           ret => Buff.TargetDebuffTimeLeft("Colossus Smash").TotalSeconds <= 1.5, "Colossus Smash"),
                         Spell.CastSpell("Execute",                  ret => true, "Execute"),
-                        Spell.CastSpell("Storm Bolt",               ret => Managers.TalentManager.HasTalent(18), "Storm Bolt"),
+                        Spell.CastSpell("Storm Bolt",               ret => TalentManager.HasTalent(18), "Storm Bolt"),
                         Spell.CastSpell("Overpower",                ret => true, "Overpower"),
-                        Spell.CastSpell("Shockwave",                ret => Managers.TalentManager.HasTalent(11), "Shockwave"),
-                        Spell.CastSpell("Dragon Roar",              ret => Managers.TalentManager.HasTalent(12), "Dragon Roar"),
+                        Spell.CastSpell("Shockwave",                ret => TalentManager.HasTalent(11), "Shockwave"),
+                        Spell.CastSpell("Dragon Roar",              ret => TalentManager.HasTalent(12), "Dragon Roar"),
                         Spell.CastSpell("Slam",                     ret => Me.CurrentTarget != null && (Me.CurrentRage >= 70 || Buff.TargetHasDebuff("Colossus Smash")) && Me.CurrentTarget.HealthPercent >= 20, "Slam"),
                         Spell.CastSpell("Heroic Throw",             ret => true, "Heroic Throw"),
                         Buff.CastBuff("Battle Shout",               ret => Me.CurrentRage < 70 && !Buff.TargetHasDebuff("Colossus Smash"), "Battle Shout"),
-                        Spell.CastSpell("Bladestorm",               ret => Me.CurrentTarget != null && Managers.TalentManager.HasTalent(10) && SpellManager.Spells["Colossus Smash"].CooldownTimeLeft.Seconds >= 5 && !Buff.TargetHasDebuff("Colossus Smash") && SpellManager.Spells["Bloodthirst"].CooldownTimeLeft.Seconds >= 2 && Me.CurrentTarget.HealthPercent >= 20, "Bladestorm"),//<~ add GUI option for user descretion
+                        Spell.CastSpell("Bladestorm",               ret => Me.CurrentTarget != null && TalentManager.HasTalent(10) && SpellManager.Spells["Colossus Smash"].CooldownTimeLeft.Seconds >= 5 && !Buff.TargetHasDebuff("Colossus Smash") && SpellManager.Spells["Bloodthirst"].CooldownTimeLeft.Seconds >= 2 && Me.CurrentTarget.HealthPercent >= 20, "Bladestorm"),//<~ add GUI option for user descretion
                         Spell.CastSpell("Slam",                     ret => Me.CurrentTarget != null && Me.CurrentTarget.HealthPercent >= 20, "Slam"),
-                        Spell.CastSpell("Impending Victory",        ret => Me.CurrentTarget != null && Managers.TalentManager.HasTalent(6) && Me.CurrentTarget.HealthPercent >= 20, "Impending Victory"),
+                        Spell.CastSpell("Impending Victory",        ret => Me.CurrentTarget != null && TalentManager.HasTalent(6) && Me.CurrentTarget.HealthPercent >= 20, "Impending Victory"),
                         Buff.CastBuff("Battle Shout",               ret => Me.CurrentRage < 70, "Battle Shout")
                 ));
             }
