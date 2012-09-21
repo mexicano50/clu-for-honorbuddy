@@ -85,6 +85,18 @@ namespace CLU.Classes.Mage
             return Spell.StopCast(ret => (Me.HasMyAura("Heating Up") || Me.HasMyAura("Pyroblast!")) && Me.CastingSpell.Id == 133, "Stop casting Fireball, we have a proc!");
         }
 
+        // this is used in conjuction with the CastDebuff overloaded method to cast nethertempest with Mage Bomb spell override..ikr blamae Apoc :P
+        private static string Magebombtalent
+        {
+            get
+            {
+                if (TalentManager.HasTalent(13)) return "Nether Tempest";
+                if (TalentManager.HasTalent(14)) return "Living Bomb";
+                if (TalentManager.HasTalent(15)) return "Frost Bomb";
+                return "Mage Bomb";
+            }
+        }
+
         public override Composite SingleRotation
         {
             get {
@@ -128,7 +140,7 @@ namespace CLU.Classes.Mage
                             // Default Rotaion
                             //Tier5 Talent
                             Spell.CastSpell("Combustion", ret => CLUSettings.Instance.Mage.EnableCombustion && Buff.TargetHasDebuff("Ignite") && Buff.TargetHasDebuff("Pyroblast") && Unit.IsTargetWorthy(Me.CurrentTarget), "Combustion"),
-                            Buff.CastDebuff("Mage Bomb", ret => true, "Frost/Living Bomb or Nether Tempest"),
+                            Buff.CastDebuff("Mage Bomb", Magebombtalent, ret => true, "Frost/Living Bomb or Nether Tempest"),
                             Spell.CastSpell("Pyroblast",ret => Me.HasMyAura("Pyroblast!"),"Pyroblast with Pyroblast! proc"),
                             Spell.CastSpell("Fire Blast", ret => Me.HasMyAura("Heating Up") && !Spell.SpellOnCooldown("Fire Blast"), "Fire Blast with Heating Up proc"),
                             Spell.CastSpell("Scorch", ret => Me.IsMoving && TalentManager.HasTalent(2), "Scorch (Moving)"),

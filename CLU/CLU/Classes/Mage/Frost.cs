@@ -80,6 +80,19 @@ namespace CLU.Classes.Mage
             }
         }
 
+        // this is used in conjuction with the CastDebuff overloaded method to cast nethertempest with Mage Bomb spell override..ikr blamae Apoc :P
+        private static string Magebombtalent
+        {
+            get
+            {
+                if (TalentManager.HasTalent(13)) return "Nether Tempest";
+                if (TalentManager.HasTalent(14)) return "Living Bomb";
+                if (TalentManager.HasTalent(15)) return "Frost Bomb";
+                return "Mage Bomb";
+            }
+        }
+
+
         public override Composite SingleRotation
         {
             get {

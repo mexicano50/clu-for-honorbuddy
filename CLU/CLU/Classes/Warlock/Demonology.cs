@@ -18,7 +18,7 @@ using CLU.Helpers;
 using CLU.Managers;
 using CLU.Settings;
 using Rest = CLU.Base.Rest;
-using Styx.CommonBot;
+
 using Styx;
 namespace CLU.Classes.Warlock
 {
@@ -91,7 +91,9 @@ namespace CLU.Classes.Warlock
 
 
         // Storm placing this here for your sanity
-        /*[SpellManager] Dark Soul: Knowledge (113861) overrides Dark Soul (77801)*/
+        /*SpellManager] Felstorm (119914) overrides Command Demon (119898)
+[SpellManager] Dark Soul: Knowledge (113861) overrides Dark Soul (77801)
+[SpellManager] Soul Link (108415) overrides Health Funnel (755)*/
         public override Composite SingleRotation
         {
             get {
@@ -101,6 +103,8 @@ namespace CLU.Classes.Warlock
 
                            // Performance Timer (True = Enabled) returns Runstatus.Failure
                            // Spell.TreePerformance(true),
+
+                           Spell.WaitForCast(),
 
                            // For DS Encounters.
                            EncounterSpecific.ExtraActionButton(),
@@ -123,33 +127,33 @@ namespace CLU.Classes.Warlock
                            // lets get our pet back
                             PetManager.CastPetSummonSpell(105174, ret => (!Me.IsMoving || Me.ActiveAuras.ContainsKey("Soulburn")) && !Me.GotAlivePet && !Me.ActiveAuras.ContainsKey(WoWSpell.FromId(108503).Name), "Summon Pet"),
                             //Grimoire of Service
-                            Spell.CastSpell(111897, ret => Me.GotAlivePet && !WoWSpell.FromId(111897).Cooldown && TalentManager.HasTalent(14), "Grimoire of Service"),
+                            //Spell.CastSpell(111897, ret => Me.GotAlivePet && !WoWSpell.FromId(111897).Cooldown && TalentManager.HasTalent(14), "Grimoire of Service"),
                             //Sacrifice Pet
-                            Spell.CastSelfSpell(108503, ret => Me.GotAlivePet && TalentManager.HasTalent(15) && !Me.ActiveAuras.ContainsKey(WoWSpell.FromId(108503).Name), "Grimoire of Sacrifice"),
+                            Spell.CastSelfSpell("Grimoire of Sacrifice", ret => Me.GotAlivePet && TalentManager.HasTalent(15) && !Me.ActiveAuras.ContainsKey(WoWSpell.FromId(108503).Name), "Grimoire of Sacrifice"),
 
                            // Threat
                            Buff.CastBuff("Soulshatter", ret => Me.CurrentTarget != null && Me.GotTarget && Me.CurrentTarget.ThreatInfo.RawPercent > 90 && !Spell.PlayerIsChanneling, "[High Threat] Soulshatter - Stupid Tank"),
                             //Cooldowns
                             new Decorator(ret=> CLUSettings.Instance.UseCooldowns,
                                 new PrioritySelector(
-                                    Buff.CastBuff("Dark Soul", ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget) && !Me.IsMoving, "Dark Soul: Knowledge"),
+                                    Buff.CastBuff("Dark Soul", "Dark Soul: Knowledge", ret => !WoWSpell.FromId(113861).Cooldown && Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget) && !Me.IsMoving, "Dark Soul: Knowledge")
                                     //// TODO: Remove this when Apoc fixs Spellmanager. -- wulf 
-                                    Spell.CastSpell(18540, ret => !WoWSpell.FromId(18540).Cooldown && Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget), "Summon Doomguard")
+                                   // Spell.CastSpell(18540, ret => !WoWSpell.FromId(18540).Cooldown && Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget), "Summon Doomguard")
                                     )),
                            //Demonic Fury or Pull
-                           new Decorator(ret => Me.CurrentTarget != null && ((!Me.CurrentTarget.HasMyAura(603) || (Me.CurrentTarget.ActiveAuras.ContainsKey("Corruption") && Spell.CurrentDemonicFury() > 800 && Me.CurrentTarget.ActiveAuras.ContainsKey("Shadowflame")))),
+                           new Decorator(ret => Me.CurrentTarget != null && ((!Me.CurrentTarget.HasMyAura(603) || (Me.CurrentTarget.ActiveAuras.ContainsKey("Corruption") && Spell.CurrentDemonicFury > 800 && Me.CurrentTarget.ActiveAuras.ContainsKey("Shadowflame")))),
                                new PrioritySelector(
                                    Spell.CastSelfSpell("Metamorphosis", ret => Me.Shapeshift!=ShapeshiftForm.Metamorphosis, "Metamorphosis for Doom"),
-                                   Spell.CastSpell(603, ret => !Me.CurrentTarget.HasMyAura(603), "Doom"),
-                                   Spell.CastSpell(103964,ret=>true,"Touch of Chaos")
+                                   Buff.CastDebuff("Corruption", "Doom", ret => true, "Doom"), // changed to the base spell - wulf
+                                   Spell.CastSpell("Shadow Bolt", ret => true, "Metamorphosis: Touch of Chaos") // changed to the base spell - wulf
                                    )),
-                           Spell.CancelMyAura("Metamorphosis", ret => Me.Shapeshift==ShapeshiftForm.Metamorphosis && Me.CurrentTarget != null && Me.CurrentTarget.HasMyAura(603) && Me.GetPowerInfo(Styx.WoWPowerType.DemonicFury).CurrentI < 200, "Metamorphosis"),
+                           Spell.CancelMyAura("Metamorphosis", ret => Me.Shapeshift == ShapeshiftForm.Metamorphosis && Me.CurrentTarget != null && Me.CurrentTarget.HasMyAura(603) && Me.GetPowerInfo(Styx.WoWPowerType.DemonicFury).CurrentI < 200, "Metamorphosis"),
                            Spell.CastSelfSpell("Life Tap",                ret => Me.ManaPercent <= 30 && !Spell.PlayerIsChanneling && Me.HealthPercent > 40 && !Buff.UnitHasHasteBuff(Me) && !Buff.PlayerHasBuff("Metamorphosis") && !Buff.PlayerHasBuff("Demon Soul: Felguard"), "Life tap - mana < 30%"),
                            Spell.CastSelfSpell("Life Tap",                ret => Me.IsMoving && Me.HealthPercent > Me.ManaPercent && Me.ManaPercent < 80, "Life tap while moving"),
-                           new Decorator(ret => Me.CurrentTarget != null && Me.Shapeshift!=ShapeshiftForm.Metamorphosis && Me.CurrentTarget.HasMyAura(603) && Me.GetPowerInfo(Styx.WoWPowerType.DemonicFury).CurrentI < 800,
+                           new Decorator(ret => Me.CurrentTarget != null && Me.Shapeshift != ShapeshiftForm.Metamorphosis && Me.CurrentTarget.HasMyAura(603) && Me.GetPowerInfo(Styx.WoWPowerType.DemonicFury).CurrentI < 800,
                                new PrioritySelector(
                                     Buff.CastDebuff("Corruption", ret => true, "Corruption"),
-                                    Spell.CastSpell(105174, ret => !WoWSpell.FromId(105174).Cooldown &&  !Me.CurrentTarget.ActiveAuras.ContainsKey("Shadowflame"), "Hand of Guld'an"),
+                                    Spell.CastSpell("Hand of Gul'dan", ret => !Me.CurrentTarget.ActiveAuras.ContainsKey("Shadowflame"), "Hand of Gul'dan"),
                                     Spell.CastSpell("Soul Fire",ret => Me.ActiveAuras.ContainsKey("Molten Core"),"Soul Fire"),
                                     Spell.CastSpell("Shadow Bolt",ret => !Me.IsMoving,"Shadow Bolt"),
                                     Spell.CastSpell("Fel Flame",ret => Me.IsMoving,"Fel Flame")

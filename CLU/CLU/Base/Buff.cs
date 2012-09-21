@@ -560,6 +560,49 @@ namespace CLU.Base
         }
 
         /// <summary>
+        /// Overload for Castdebuff to take the actuall debuff name when using HB spell overides like Mage Bomb -> Living Bomb
+        /// </summary>
+        /// <param name="name">the name of the overridden spell</param>
+        /// <param name="buffoveride">the name of the real debuff</param>
+        /// <param name="cond">condition to be true</param>
+        /// <param name="label">a desctiptive label for the client GUI</param>
+        /// <returns></returns>
+        public static Composite CastDebuff(string name, string buffoveride, CanRunDecoratorDelegate cond, string label)
+        {
+            return new Decorator(
+                delegate(object a)
+                {
+                    if (!cond(a))
+                    {
+                        return false;
+                    }
+
+                    if (TargetDebuffTimeLeft(buffoveride).TotalSeconds > DotDelta(name))
+                    {
+                        return false;
+                    }
+
+                    var lockstatus = true;
+                    try
+                    {
+                        lockstatus = DateTime.Now.Subtract(CombatLogEvents.Locks[name]).TotalSeconds > 0;
+                    }
+                    catch { }
+
+                    if (!Spell.CanCast(name, Me.CurrentTarget))
+                    {
+                        return false;
+                    }
+
+                    return lockstatus;
+                },
+            new Sequence(
+                new Action(a => CLU.Log(" [Casting Debuff] {0} : (RefreshTime={1}) {4} had {2} second(s) left : {0} cast time = {3}", label, DotDelta(name), TargetDebuffTimeLeft(name).TotalSeconds, Spell.CastTime(name), buffoveride)),
+                new Action(a => SpellManager.Cast(name)),
+                new Action(a => CombatLogEvents.Locks[name] = DateTime.Now.AddSeconds(Spell.CastTime(name) * 1.5 + CombatLogEvents.ClientLag))));
+        }
+
+        /// <summary>
         /// Casts a specified buff given specific conditions
         /// </summary>
         /// <param name="name">The name of the buff to cast in english</param>
@@ -657,7 +700,7 @@ namespace CLU.Base
                     catch { }
 
 
-                    if (PlayerBuffTimeLeft(buff) > maxTimeLeft)
+                    if (PlayerActiveBuffTimeLeft(buff).Seconds > maxTimeLeft)
                     {
                         return false;
                     }
@@ -675,7 +718,7 @@ namespace CLU.Base
                         label == null ? null : " [Offensive Buff] {0} ({1} time left={2})",
                         label,
                         buff,
-                        PlayerBuffTimeLeft(buff))),
+                        PlayerActiveBuffTimeLeft(buff))),
                 new Action(a => SpellManager.Cast(spell)),
                 new Action(a => CombatLogEvents.Locks[spell] = DateTime.Now.AddSeconds(Spell.CastTime(spell) * 1.5 + CombatLogEvents.ClientLag)))); // cast time * Max Flight time (from 40yards) + Clientlag = (2.54 * 1.5 + 1 = 4.81s lock for soul fire)
         }
@@ -820,6 +863,35 @@ namespace CLU.Base
                 },
             new Sequence(
                 new Action(a => CLU.Log(" [Buff] {0} ", label)),
+                new Action(a => SpellManager.Cast(name))));
+        }
+
+        /// <summary>
+        /// Casts a specified buff given specific conditions - inlcudes HB overide buff name to check
+        /// </summary>
+        /// <param name="name">The name of the buff to cast in english</param>
+        /// <param name="spelloveride">the built in HB overide spell to check for</param>
+        /// <param name="cond">The conditions that must be true</param>
+        /// <param name="label">A descriptive label for the clients GUI logging output</param>
+        /// <returns>true or false</returns>
+        public static Composite CastBuff(string name, string spelloveride, CanRunDecoratorDelegate cond, string label)
+        {
+            return new Decorator(
+                delegate(object a)
+                {
+                    if (PlayerHasBuff(spelloveride))
+                        return false;
+
+                    if (!cond(a))
+                        return false;
+
+                    if (!Spell.CanCast(name, Me))
+                        return false;
+
+                    return true;
+                },
+            new Sequence(
+                new Action(a => CLU.Log(" [Buff] {0} -> Overide Spell Name: [{1}]", label, spelloveride)),
                 new Action(a => SpellManager.Cast(name))));
         }
 

@@ -114,7 +114,7 @@ namespace CLU.Classes.Warrior
                                     // TODO: GCD Check and Tier pce check needs attention. Spell.GCD = 0
                                     Spell.CastSelfSpell("Berserker Rage",   ret => Me.CurrentRage > 30 || !Me.Auras.ContainsKey("Enrage") || Buff.PlayerHasBuff("Recklessness"), "Berserker Rage"), //Thanks to swordfish for !Me.Auras.ContainsKey tip.
                                     Spell.CastSelfSpell("Deadly Calm", ret => (Me.CurrentRage > 40 || Buff.PlayerCountBuff("Taste For Blood") > 3) && CLUSettings.Instance.Warrior.UseDeadlyCalm, "Deadly Calm"),
-                                    Spell.CastSelfSpell("Recklessness", ret => Me.CurrentTarget != null && ((HasColossusSmash || IsColossusSmashOnCooldown) && Unit.IsTargetWorthy(Me.CurrentTarget)) && CLUSettings.Instance.Warrior.UseRecklessness, "Recklessness"),
+                                    Spell.CastSelfSpell("Recklessness", ret => Me.CurrentTarget != null && ((HasColossusSmash || IsColossusSmashOnCooldown) && Unit.IsTargetWorthy(Me.CurrentTarget)) && CLUSettings.Instance.Warrior.UseRecklessness && CLUSettings.Instance.UseCooldowns, "Recklessness"),
                                     Spell.CastAreaSpell("Sweeping Strikes", 5, false, 2, 0.0, 0.0, a => true, "Sweeping Strikes"),
                                     Spell.CastAreaSpell("Thunder Clap", 5, false, 3, 0.0, 0.0, a => true, "Thunder Clap"),
                                     Spell.CastAreaSpell("Cleave", 5, false, 3, 0.0, 0.0, a => Me.CurrentRage > 40, "Cleave"),

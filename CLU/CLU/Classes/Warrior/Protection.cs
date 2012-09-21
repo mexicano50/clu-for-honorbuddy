@@ -104,7 +104,7 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
                                          Item.UseEngineerGloves(),
                                          Buff.CastBuff("Lifeblood", ret => true, "Lifeblood"),
                                          Spell.CastSpell("Shattering Throw", ret => Me.CurrentTarget != null && (Me.CurrentTarget.HealthPercent < 20 || Buff.UnitHasHasteBuff(Me)) && CLUSettings.Instance.Warrior.UseShatteringThrow, "Shattering Throw"),
-                                         Spell.CastSelfSpell("Recklessness", ret => Me.CurrentTarget != null && (Me.CurrentTarget.HealthPercent < 20 || Buff.UnitHasHasteBuff(Me)) && CLUSettings.Instance.Warrior.UseRecklessness, "Recklessness"))),
+                                         Spell.CastSelfSpell("Recklessness", ret => Me.CurrentTarget != null && (Me.CurrentTarget.HealthPercent < 20 || Buff.UnitHasHasteBuff(Me)) && CLUSettings.Instance.Warrior.UseRecklessness && CLUSettings.Instance.UseCooldowns, "Recklessness"))),
                     // Interupts
                      Spell.CastInterupt("Pummel",               ret => CLUSettings.Instance.Warrior.UsePummel, "Pummel"),
                      Spell.CastInterupt("Shockwave",            ret => CLUSettings.Instance.Warrior.UseShockwave, "Shockwave"),

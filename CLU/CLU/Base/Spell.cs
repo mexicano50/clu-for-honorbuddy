@@ -1364,17 +1364,37 @@ namespace CLU.Base
             }
         }
 
+        // fixed this for ya storm..would never work lol, you forgot RunMacroText :P -- wulf
+        public static Composite CancelMyAura(string name, CanRunDecoratorDelegate cond, string label)
+        {
+            name = LocalizeSpellName(name);
+            var macro = string.Format("/cancelaura {0}", name);
+            return new Decorator(
+                delegate(object a)
+                {
+                    //CLU.TroubleshootLog("LocalizeSpellName: {0} .... macro: {1}", name, macro);
+                    if (name.Length == 0)
+                        return false;
+                    if (!cond(a))
+                        return false;
+                    return true;
+                },
+            new Sequence(
+                new Action(a => CLU.Log(" [CancelAura] {0}", name)),
+                new Action(a => Lua.DoString("RunMacroText(\"" + RealLuaEscape(macro) + "\")"))));
+        }
+
 
 
         //========================================= TO REMOVE OR CONSOLADATE ===================================================
 
-        public static int CurrentDemonicFury()
+        public static int CurrentDemonicFury
         {
-            return Lua.GetReturnVal<int>("UnitPower(\"player\", SPELL_POWER_DEMONIC_FURY)", 0);
+            get { return Lua.GetReturnVal<int>("return UnitPower(\"player\", SPELL_POWER_DEMONIC_FURY)", 0); }
         }
-        public static int CurrentBurningEmber()
+        public static int CurrentBurningEmber
         {
-            return Lua.GetReturnVal<int>("UnitPower(\"player\", SPELL_POWER_BURNING_EMBERS, true)", 0);
+            get { return Lua.GetReturnVal<int>("return UnitPower(\"player\", SPELL_POWER_BURNING_EMBERS, true)", 0); }
         }
 
         // TODO: Remove this.
@@ -1384,23 +1404,7 @@ namespace CLU.Base
             Lua.DoString(string.Format("CastSpellByName(\"{0}\")", RealLuaEscape(name)));
         }
 
-
-        public static Composite CancelMyAura(string name, CanRunDecoratorDelegate cond, string label)
-        {
-            name = LocalizeSpellName(name);
-            return new Decorator(
-                delegate(object a)
-                {
-                    if (name.Length == 0)
-                        return false;
-                    if (!cond(a))
-                        return false;
-                    return true;
-                },
-            new Sequence(
-                new Action(a => CLU.Log(" [CancelAura] {0}", name)),
-                new Action(a => Lua.DoString(string.Format("/cancelaura \"{0}\"", RealLuaEscape(name))))));
-        }
+        
 
         // //TODO: REMOVE THIS SHIT..WAS TESTING -- WULF.
         public static TimeSpan CooldownTimeLeft

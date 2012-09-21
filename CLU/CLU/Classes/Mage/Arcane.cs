@@ -22,6 +22,7 @@ using Rest = CLU.Base.Rest;
 
 namespace CLU.Classes.Mage
 {
+    using global::CLU.Managers;
 
     class Arcane : RotationBase
     {
@@ -79,6 +80,17 @@ namespace CLU.Classes.Mage
             }
         }
 
+        // this is used in conjuction with the CastDebuff overloaded method to cast nethertempest with Mage Bomb spell override..ikr blamae Apoc :P
+        private static string Magebombtalent { 
+            get
+            {
+                if (TalentManager.HasTalent(13)) return "Nether Tempest";
+                if (TalentManager.HasTalent(14)) return "Living Bomb";
+                if (TalentManager.HasTalent(15)) return "Frost Bomb";
+                return "Mage Bomb";
+            }
+        }
+
         public override Composite SingleRotation
         {
             get
@@ -126,7 +138,7 @@ namespace CLU.Classes.Mage
                     ),
                     //Damage
                     //Tier5 Talent
-                    Buff.CastDebuff("Mage Bomb", ret => true, "Frost/Living Bomb or Nether Tempest"),
+                    Buff.CastDebuff("Mage Bomb", Magebombtalent, ret => true, "Frost/Living Bomb or Nether Tempest"),
                     Spell.CastSpell("Arcane Missiles", ret => Buff.GetAuraStack(Me, "Arcane Missiles!", true) == 2 || Buff.GetAuraStack(Me, "Arcane Charge", true) >= 5, "Arcane Missles"),
                     Spell.CastSpell("Arcane Barrage", ret => Buff.GetAuraStack(Me, "Arcane Charge", true) > 4, "Arcane Barrage"),
                     Spell.CastSpell("Arcane Blast", ret => Buff.GetAuraStack(Me, "Arcane Charge", true) < 6,"Arcane Blast")
