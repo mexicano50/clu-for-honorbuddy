@@ -329,12 +329,12 @@ namespace CLU
             }
         }
 
-        private static string lastLine { get; set; }
+        //private static string lastLine { get; set; }
         public static void Log(string msg, params object[] args)
         {
-            if (msg == lastLine) return;
+            //if (msg == lastLine) return;
             Logging.Write(LogLevel.Normal, Colors.Yellow, "[CLU] " + Version + ": " + msg, args);
-            lastLine = msg;
+            //lastLine = msg;
         }
 
         /// <summary>writes debug messages to the log file. Only enable movement/Targeting  logs.</summary>
