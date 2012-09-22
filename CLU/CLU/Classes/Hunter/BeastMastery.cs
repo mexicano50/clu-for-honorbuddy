@@ -184,14 +184,15 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
                     new PrioritySelector(
                         //new Action(a => { CLU.Log("I am the start of public Composite baseRotation"); return RunStatus.Failure; }),
                         //PvP Utilities
-                        Spell.CastSpell("Concussive Shot",             ret => Me.CurrentTarget != null && Me.CurrentTarget.DistanceSqr <= 25 * 25, "Concussive Shot"),
+                        Buff.CastBuff("Camouflage",                    ret => true, "Camouflage"),
+                        Spell.CastSpell("Concussive Shot",             ret => Me.CurrentTarget != null && Me.CurrentTarget.DistanceSqr <= 26 * 26, "Concussive Shot"),
                         Spell.CastSpell("Widow Venom",                 ret => !Buff.TargetHasDebuff("Widow Venom"), "Widow Venom"),
                         Spell.CastSpell("Tranquilizing Shot",          ret => Buff.TargetHasBuff("Enrage"), "Tranquilizing Shot"),
-                        Buff.CastBuff("Mend Pet",                      ret => Me.Pet.HealthPercent <= 90 && !Me.Pet.HasAura("Mend Pet"), "Mend Pet"),
+                        Buff.CastBuff("Mend Pet",                      ret => Me.Pet != null && Me.Pet.DistanceSqr <= 45 * 45 && Me.Pet.HealthPercent <= 90 && !Buff.TargetHasBuff("MendPet", Me.Pet), "Mend Pet"),
 
                         //Rotation
                         //virmens_bite_potion,if=buff.bloodlust.react|target.time_to_die<=60
-                        Buff.CastBuff("Aspect of the Hawk",            ret => !Me.IsMoving && !Buff.PlayerHasBuff("Aspect of the Hawk"), "Aspect of the Hawk"),
+                        Buff.CastBuff("Aspect of the Hawk",            ret => !Me.IsMoving && (!Buff.PlayerHasBuff("Aspect of the Hawk") || !Buff.PlayerHasBuff("Aspect of the Iron Hawk")), "Aspect of the Hawk"),
                         Buff.CastBuff("Aspect of the Fox",             ret => Me.IsMoving && !Buff.PlayerHasBuff("Aspect of the Fox"), "Aspect of the Fox"),
                         Spell.HunterTrapBehavior("Explosive Trap",     ret => Me.CurrentTarget, ret => Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 10) > 0),
                         Buff.CastBuff("Focus Fire",                    ret => Buff.PlayerHasActiveBuff("Frenzy"), "Focus Fire"), //Me.ActiveAuras["Frenzy"].StackCount == 5 << you cannot attempt to access a key if it dosnt exist it will spam nullreferences.!!! --wulf
@@ -248,12 +249,11 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
                         new PrioritySelector(
                             //flask,type=spring_blossoms
                             //food,type=sea_mist_rice_noodles
-                            Buff.CastDebuff("Hunter's Mark", ret => Unit.TimeToDeath(Me.CurrentTarget) >= 21 && !TalentManager.HasGlyph("Marked for Death") || (CLU.LocationContext == GroupLogic.Battleground && Me.CurrentTarget != null && Me.CurrentTarget.DistanceSqr > 40 * 40), "Hunter's Mark"),
+                            Buff.CastDebuff("Hunter's Mark", ret => Me.CurrentTarget != null && Unit.TimeToDeath(Me.CurrentTarget) >= 21 && (!TalentManager.HasGlyph("Marked for Death") || CLU.LocationContext == GroupLogic.Battleground && Me.CurrentTarget.DistanceSqr > 40 * 40), "Hunter's Mark"),
                             Common.HunterCallPetBehavior(CLUSettings.Instance.Hunter.ReviveInCombat),
                             //virmens_bite_potion
                             new Action(delegate
                             {
-                                Macro.isTrapMacroInUse();
                                 Macro.isMultiCastMacroInUse();
                                 return RunStatus.Failure;
                             })    
@@ -285,7 +285,6 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
                                     Item.UseEngineerGloves(),
                                     new Action(delegate
                                     {
-                                        Macro.isTrapMacroInUse();
                                         Macro.isMultiCastMacroInUse();
                                         return RunStatus.Failure;
                                     }),
