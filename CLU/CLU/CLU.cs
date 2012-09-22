@@ -176,7 +176,7 @@ namespace CLU
                                 break;
                         }
                 return new Sequence
-                    (new DecoratorContinue(x => CLUSettings.Instance.EnableMovement, Movement.MovingFacingBehavior()),
+                    (new DecoratorContinue(x => CLUSettings.Instance.EnableMovement && (!Me.IsCasting || !Spell.PlayerIsChanneling), Movement.MovingFacingBehavior()),
                      new DecoratorContinue(x => Me.CurrentTarget != null || IsHealerRotationActive, currentrotation));
             }
         }

@@ -55,7 +55,7 @@ namespace CLU.Classes.Hunter
         public override float CombatMinDistance
         {
             get {
-                return 30f;
+                return 40f;
             }
         }
 
