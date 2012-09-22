@@ -194,7 +194,7 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
                         Buff.CastBuff("Aspect of the Hawk",            ret => !Me.IsMoving && (!Buff.PlayerHasBuff("Aspect of the Hawk") || !Buff.PlayerHasBuff("Aspect of the Iron Hawk") && TalentManager.HasTalent(8)), "Aspect of the Hawk"),
                         Buff.CastBuff("Aspect of the Fox",             ret => Me.IsMoving && !Buff.PlayerHasBuff("Aspect of the Fox"), "Aspect of the Fox"),
                         Spell.HunterTrapBehavior("Explosive Trap",     ret => Me.CurrentTarget, ret => Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 10) > 0),
-                        Buff.CastBuff("Focus Fire",                    ret => Me.ActiveAuras["Frenzy"].StackCount == 5, "Focus Fire"),
+                        Buff.CastBuff("Focus Fire",                    ret => Buff.PlayerHasActiveBuff("Frenzy"), "Focus Fire"), //Me.ActiveAuras["Frenzy"].StackCount == 5 << you cannot attempt to access a key if it dosnt exist it will spam nullreferences.!!! --wulf
                         Spell.CastSpell("Serpent Sting",               ret => !Buff.TargetHasDebuff("Serpent Sting"), "Serpent Sting"),
                         Racials.UseRacials(),
                         Buff.CastBuff("Fervor",                        ret => TalentManager.HasTalent(10) && !Buff.PlayerHasActiveBuff("Fervor") && Me.CurrentFocus <= 65, "Fervor"),
@@ -214,7 +214,7 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
                         Spell.CastSpell("Blink Strike",                ret => Me.CurrentTarget != null && Me.Pet.Location.DistanceSqr(Me.CurrentTarget.Location) <= 40 * 40 && Me.GotAlivePet && TalentManager.HasTalent(14), "Blink Strike"),
                         Spell.CastSelfSpell("Readiness",               ret => Buff.PlayerHasActiveBuff("Rapid Fire"), "Readiness"),
                         Spell.CastSpell("Arcane Shot",                 ret => Buff.PlayerHasActiveBuff("Thrill of the Hunt"), "Arcane Shot"),
-                        Buff.CastBuff("Focus Fire",                    ret => Me.ActiveAuras["Frenzy"].StackCount == 5 && !Buff.PlayerHasActiveBuff("Focus Fire") && !Buff.PlayerHasActiveBuff("Beast Within"), "Focus Fire"),
+                        Buff.CastBuff("Focus Fire",                    ret => Buff.PlayerHasActiveBuff("Frenzy") && !Buff.PlayerHasActiveBuff("Focus Fire") && !Buff.PlayerHasActiveBuff("Beast Within"), "Focus Fire"), //Me.ActiveAuras["Frenzy"].StackCount == 5 << you cannot attempt to access a key if it dosnt exist it will spam nullreferences.!!! --wulf
                         Spell.CastSpell("Steady Shot",                 ret => Buff.TargetDebuffTimeLeft("Serpent Sting").Seconds < 6, "Cobra Shot"),
                         Spell.CastSpell("Arcane Shot",                 ret => Me.CurrentFocus >= 61 || Buff.PlayerHasActiveBuff("Beast Within"), "Arcane Shot"),
                         Spell.CastSpell("Steady Shot",                 ret => true, "Cobra Shot")
