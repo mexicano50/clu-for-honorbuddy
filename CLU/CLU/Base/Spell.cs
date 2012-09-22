@@ -80,7 +80,7 @@ namespace CLU.Base
         {
             get
             {
-                return StyxWoW.Me.ChanneledCastingSpellId != 0;
+                return ChanneledTimeLeft > TimeSpan.FromSeconds(0);//StyxWoW.Me.ChanneledCastingSpellId != 0;
             }
         }
 
@@ -737,11 +737,12 @@ namespace CLU.Base
         public static Composite ChannelSpell(string name, CanRunDecoratorDelegate cond, string label)
         {
             KnownChanneledSpells.Add(name);
+            WoWSpell spell;
+            SpellManager.Spells.TryGetValue(name, out spell);
             return
                 new PrioritySelector(
-                    new Decorator(
-                        x => StyxWoW.Me.ChannelObjectGuid > 0, //TODO: HB fix PlayerIsChanneling && Me.ChanneledCastingSpellId == spell.Id
-                        new Action(a => CLU.Log(" [Channeling] {0} ", name))),
+                    new Decorator(x => KnownChanneledSpells.Contains(name) && ChanneledTimeLeft > TimeSpan.FromSeconds(0), //TODO: HB fix PlayerIsChanneling && Me.ChanneledCastingSpellId == spell.Id
+                            new Action(a => CLU.Log(" [Channeling] {0} : {1} seconds remaining", name, ChanneledTimeLeft))),
                     CastSpell(name, cond, label));
         }
 
@@ -757,8 +758,8 @@ namespace CLU.Base
             return
                 new PrioritySelector(
                     new Decorator(
-                        x => StyxWoW.Me.ChannelObjectGuid > 0, //TODO: HB fix PlayerIsChanneling && Me.ChanneledCastingSpellId == spell.Id
-                        new Action(a => CLU.Log(" [Channeling] {0} ", spell.Name))),
+                        x => KnownChanneledSpells.Contains(spell.Name) && ChanneledTimeLeft > TimeSpan.FromSeconds(0), //TODO: HB fix PlayerIsChanneling && Me.ChanneledCastingSpellId == spell.Id
+                        new Action(a => CLU.Log(" [Channeling] {0} : {1} seconds remaining", spell.Name, ChanneledTimeLeft))),
                     CastSpell(spell, cond, label));
         }
 
@@ -773,7 +774,7 @@ namespace CLU.Base
             return
                 new PrioritySelector(
                     new Decorator(
-                        x => PlayerIsChanneling && Me.ChanneledCastingSpellId == SpellManager.Spells[name].Id,
+                        x => PlayerIsChanneling && KnownChanneledSpells.Contains(name),
                         new Action(a => CLU.Log(" [Channeling] {0} ", name))),
                     CastSelfSpell(name, cond, label));
         }
@@ -1404,8 +1405,6 @@ namespace CLU.Base
             Lua.DoString(string.Format("CastSpellByName(\"{0}\")", RealLuaEscape(name)));
         }
 
-        
-
         // //TODO: REMOVE THIS SHIT..WAS TESTING -- WULF.
         public static TimeSpan CooldownTimeLeft
         {
@@ -1416,6 +1415,26 @@ namespace CLU.Base
                 if (luaTime <= 0)
                     return TimeSpan.Zero;
                 return TimeSpan.FromSeconds(luaTime);
+            }
+        }
+
+         public static TimeSpan ChanneledTimeLeft
+        {
+            get
+            {
+                try
+                {
+                    var luaTime = Lua.GetReturnVal<double>(string.Format("local spell, _, _, _, _, endTime=UnitChannelInfo(\"player\"); return endTime/1000 - GetTime()"), 0);
+                    if (luaTime <= 0)
+                        return TimeSpan.Zero;
+                    return TimeSpan.FromSeconds(luaTime);
+                }
+                catch
+                {
+                    CLU.DiagnosticLog("Lua failed in ChanneledTimeLeft");
+                    return TimeSpan.Zero;
+                }
+               
             }
         }
 

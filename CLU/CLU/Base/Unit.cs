@@ -1351,7 +1351,7 @@ namespace CLU.Base
         /// <returns>The count ennemies in range.</returns>
         public static int CountEnnemiesInRange(WoWPoint fromLocation, double maxRange)
         {
-            return CLUSettings.Instance.UseAoEAbilities ? NearbyUnits(fromLocation, maxRange, Battlegrounds.IsInsideBattleground).Count : 0;
+            return CLUSettings.Instance.UseAoEAbilities ? NearbyUnits(fromLocation, maxRange, CLU.LocationContext == GroupLogic.Battleground).Count : 0;
         }
 
         /// <summary>Finds clustered targets</summary>

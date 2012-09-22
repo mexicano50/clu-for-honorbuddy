@@ -259,7 +259,6 @@ namespace CLU
             {
                 // setting to overide the LocationContext so that you can test and PvP, PvE, Single rotation without bieng in the normal context
                 if (CLUSettings.Instance.EnableRotationOveride) return CLUSettings.Instance.RotationOveride; 
-                // TODO: commented for now until i have more time to look at it..its returning System.NullReferenceException: Object reference not set to an instance of an object.
 
                 Map map = StyxWoW.Me.CurrentMap;
 
@@ -330,11 +329,12 @@ namespace CLU
             }
         }
 
+        private static string lastLine { get; set; }
         public static void Log(string msg, params object[] args)
         {
-            //if (msg == lastLine) return;
+            if (msg == lastLine) return;
             Logging.Write(LogLevel.Normal, Colors.Yellow, "[CLU] " + Version + ": " + msg, args);
-            //lastLine = msg;
+            lastLine = msg;
         }
 
         /// <summary>writes debug messages to the log file. Only enable movement/Targeting  logs.</summary>
@@ -343,6 +343,17 @@ namespace CLU
         public static void MovementLog(string msg, params object[] args)
         {
             if (msg != null && CLUSettings.Instance.MovementLogging)
+            {
+                Logging.Write(LogLevel.Quiet, Colors.DimGray, "[CLU] " + Version + ": " + msg, args);
+            }
+        }
+
+        /// <summary>writes debug messages to the log file. This is necassary information for CLU's programmer</summary>
+        /// <param name="msg">the message to write to the log</param>
+        /// <param name="args">the arguments that accompany the message</param>
+        public static void TroubleshootLog(string msg, params object[] args)
+        {
+            if (msg != null)
             {
                 Logging.Write(LogLevel.Quiet, Colors.DimGray, "[CLU] " + Version + ": " + msg, args);
             }
@@ -363,16 +374,7 @@ namespace CLU
             return "No Target";
         }
 
-        /// <summary>writes debug messages to the log file. This is necassary information for CLU's programmer</summary>
-        /// <param name="msg">the message to write to the log</param>
-        /// <param name="args">the arguments that accompany the message</param>
-        public static void TroubleshootLog(string msg, params object[] args)
-        {
-            if (msg != null)
-            {
-                Logging.Write(LogLevel.Quiet, Colors.DimGray, "[CLU] " + Version + ": " + msg, args);
-            }
-        }
+        
 
         public override void Initialize()
         {

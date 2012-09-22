@@ -19,10 +19,10 @@ namespace CLU.CombatLog
     using Styx.CommonBot.POI;
     using Styx.WoWInternals;
     using Styx.WoWInternals.WoWObjects;
-    using global::CLU.Base;
-    using global::CLU.Helpers;
-    using global::CLU.Managers;
-    using global::CLU.Settings;
+    using Base;
+    using Helpers;
+    using Managers;
+    using Settings;
 
     public class CombatLogEvents
     {
