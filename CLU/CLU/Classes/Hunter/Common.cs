@@ -45,13 +45,13 @@ namespace CLU.Classes.Hunter
         /// <summary>
         /// Switch to Apect of the fox while moving then back to aspect of the hawk (or Iron Hawk)
         /// </summary>
-        public static Composite HandleAspectSwitching()
+        public static Composite HandleAspectSwitching(int time)
         {
             return new PrioritySelector(
                     new Decorator( ret => Me.IsMoving && CLUSettings.Instance.Hunter.HandleAspectSwitching,
                         new Sequence(
                             // Waiting for a bit just incase we are only moving outa the fire!
-                            new WaitContinue(2, ret => false, new ActionAlwaysSucceed()), // Hmm..check this...-- wulf
+                            new WaitContinue(time, ret => false, new ActionAlwaysSucceed()), // Hmm..check this...-- wulf
                             Buff.CastBuff("Aspect of the Fox", ret => Me.IsMoving, "[Aspect] of the Fox - Moving"),
                             new PrioritySelector(
                                 Buff.CastBuff("Aspect of the Hawk", ret => !Me.IsMoving && !TalentManager.HasTalent(8), "[Aspect] of the Hawk"),

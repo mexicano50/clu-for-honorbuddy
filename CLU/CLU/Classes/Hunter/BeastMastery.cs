@@ -136,7 +136,7 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
                                    Spell.CastSelfSpell("Feign Death",         ret => Me.CurrentTarget != null && Me.CurrentTarget.ThreatInfo.RawPercent > 90 && CLUSettings.Instance.Hunter.UseFeignDeath, "Feign Death Threat"),
                                    Spell.CastSpell("Concussive Shot",         ret => Me.CurrentTarget != null && Me.CurrentTarget.CurrentTargetGuid == Me.Guid && CLUSettings.Instance.Hunter.UseConcussiveShot, "Concussive Shot"),
                                    Spell.CastSpell("Tranquilizing Shot",      ret => Buff.TargetHasBuff("Enrage") && CLUSettings.Instance.Hunter.UseTranquilizingShot, "Tranquilizing Shot"),
-                                   Common.HandleAspectSwitching(),
+                                   Common.HandleAspectSwitching(2),
                                    // Main rotation
                                    Spell.CastSpell("Kill Shot",               ret => Me.CurrentTarget != null && Me.CurrentTarget.HealthPercent < 20, "Kill Shot"),
                                    Buff.CastBuff("Focus Fire",                ret => Buff.PlayerHasBuff("Frenzy"), "Focus Fire"),
@@ -195,9 +195,10 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
 
                         //Rotation
                         //virmens_bite_potion,if=buff.bloodlust.react|target.time_to_die<=60
-                        new Decorator(ret => BotChecker.BotBaseInUse("BGbuddy"), Common.HandleAspectSwitching()),
-                        new Decorator(ret => !BotChecker.BotBaseInUse("BGbuddy"), Buff.CastBuff("Aspect of the Hawk", ret => !Me.IsMoving && (!Buff.PlayerHasBuff("Aspect of the Hawk") || !Buff.PlayerHasBuff("Aspect of the Iron Hawk")), "Aspect of the Hawk")),
-                        new Decorator(ret => !BotChecker.BotBaseInUse("BGbuddy"), Buff.CastBuff("Aspect of the Fox", ret => Me.IsMoving && !Buff.PlayerHasBuff("Aspect of the Fox"), "Aspect of the Fox")),
+                        
+                        // Dagradt: Test this just give it a time
+                        Common.HandleAspectSwitching(0),
+
                         Spell.HunterTrapBehavior("Explosive Trap",     ret => Me.CurrentTarget, ret => Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 10) > 0),
                         Buff.CastBuff("Focus Fire",                    ret => Buff.PlayerHasActiveBuff("Frenzy"), "Focus Fire"), //Me.ActiveAuras["Frenzy"].StackCount == 5 << you cannot attempt to access a key if it dosnt exist it will spam nullreferences.!!! --wulf
                         Spell.CastSpell("Serpent Sting",               ret => !Buff.TargetHasDebuff("Serpent Sting"), "Serpent Sting"),

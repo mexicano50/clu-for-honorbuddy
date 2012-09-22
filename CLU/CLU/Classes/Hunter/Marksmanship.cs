@@ -136,7 +136,7 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
                                    Spell.CastSelfSpell("Feign Death", ret => Me.CurrentTarget != null && Me.CurrentTarget.ThreatInfo.RawPercent > 90 && CLUSettings.Instance.Hunter.UseFeignDeath, "Feign Death Threat"),
                                    Spell.CastSpell("Concussive Shot", ret => Me.CurrentTarget != null && Me.CurrentTarget.CurrentTargetGuid == Me.Guid && CLUSettings.Instance.Hunter.UseConcussiveShot, "Concussive Shot"),
                                    Spell.CastSpell("Tranquilizing Shot", ret => Buff.TargetHasBuff("Enrage") && CLUSettings.Instance.Hunter.UseTranquilizingShot, "Tranquilizing Shot"),
-                                   Common.HandleAspectSwitching(),
+                                   Common.HandleAspectSwitching(2),
                                    Spell.CastSpell("Kill Shot", ret => Me.CurrentTarget != null && Me.CurrentTarget.HealthPercent < 20, "Kill Shot"),
                                    // AoE
                                    Spell.HunterTrapBehavior("Explosive Trap",   ret => Me.CurrentTarget, ret => Me.CurrentTarget != null && !Lists.BossList.IgnoreAoE.Contains(Unit.CurrentTargetEntry) && Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 10) >= CLUSettings.Instance.Hunter.ExplosiveTrapCount),
