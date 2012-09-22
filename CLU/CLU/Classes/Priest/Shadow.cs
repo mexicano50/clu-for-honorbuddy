@@ -144,7 +144,7 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
                                    Spell.CastSpell("Shadow Word: Death",      ret => Me.CurrentTarget != null && (TalentManager.HasGlyph("Shadow Word: Death") ? Me.CurrentTarget.HealthPercent <= 100 : Me.CurrentTarget.HealthPercent <= 25), "Shadow Word: Death"),
                                    Spell.CastSpell("Mind Spike",              ret => Buff.PlayerHasActiveBuff("Surge of Darkness"), "Mind Spike"),
                                    Spell.CastSpell("Mindbender",              ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget), "Mindbender"),
-                                   Spell.ChannelSpell("Mind Sear",            ret => Me.CurrentTarget != null && Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 12) > 2 && !BossList.IgnoreAoE.Contains(Unit.CurrentTargetEntry), "Mind Sear - EnemyCount:" + Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 12)),
+                                   Spell.ChannelSpell("Mind Sear", ret => Me.CurrentTarget != null && Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 12) > 2 && !BossList.IgnoreAoE.Contains(Unit.CurrentTargetEntry), "Mind Sear - [PvE]"),
                                    Spell.CastSpell("Shadow Word: Death",      ret => Me.ManaPercent < 10, "Shadow Word: Death - Low Mana"),
                                    Spell.CastSpell("Shadow Word: Death",      ret => Me.IsMoving, "Shadow Word: Death - Moving"),
                                    Spell.CastSpell("Devouring Plague",        ret => Me.IsMoving && Me.ManaPercent > 10, "Devouring Plague"),
