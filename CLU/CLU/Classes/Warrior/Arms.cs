@@ -216,8 +216,8 @@ namespace CLU.Classes.Warrior
                             Buff.CastBuff("Berserker Stance",           ret => StyxWoW.Me.Shapeshift != CLUSettings.Instance.Warrior.StanceSelection && CLUSettings.Instance.Warrior.StanceSelection == ShapeshiftForm.BerserkerStance, "Stance is Berserker"),
                             Buff.CastBuff("Battle Stance",              ret => StyxWoW.Me.Shapeshift != CLUSettings.Instance.Warrior.StanceSelection && CLUSettings.Instance.Warrior.StanceSelection == ShapeshiftForm.BattleStance, "Stance is Battle"),
                             //mogu_power_potion
-                            new Decorator(ret => Macro.rotationSwap && CLU.LocationContext == GroupLogic.Battleground, wepSwapDefensive),
-                            new Decorator(ret => !Macro.rotationSwap && CLU.LocationContext == GroupLogic.Battleground, wepSwapOffensive),
+                            new Decorator(ret => Macro.rotationSwap && !BotChecker.BotBaseInUse("BGbuddy"), wepSwapDefensive),
+                            new Decorator(ret => !Macro.rotationSwap && !BotChecker.BotBaseInUse("BGbuddy"), wepSwapOffensive),
                             Buff.CastRaidBuff("Battle Shout",           ret => true, "Battle Shout"),
                             Buff.CastRaidBuff("Commanding Shout",       ret => true, "Commanding Shout"),
                             Spell.CastSpell("Charge",                   ret => Me.CurrentTarget != null && Macro.Manual && (CLU.LocationContext == GroupLogic.Battleground || Unit.IsTrainingDummy(Me.CurrentTarget)) && Me.CurrentTarget.DistanceSqr >= 8 * 8 && Me.CurrentTarget.DistanceSqr <= 25 * 25, "Charge"),
@@ -247,8 +247,8 @@ namespace CLU.Classes.Warrior
                         new Decorator(ret => Macro.Manual || BotChecker.BotBaseInUse("BGBuddy"),
                             new Decorator(ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget),
                                 new PrioritySelector(
-                                    new Decorator(ret => Macro.rotationSwap, wepSwapDefensive),
-                                    new Decorator(ret => !Macro.rotationSwap, wepSwapOffensive),
+                                    new Decorator(ret => Macro.rotationSwap && !BotChecker.BotBaseInUse("BGbuddy"), wepSwapDefensive),
+                                    new Decorator(ret => !Macro.rotationSwap && !BotChecker.BotBaseInUse("BGbuddy"), wepSwapOffensive),
                                     Item.UseTrinkets(),
                                     Racials.UseRacials(),
                                     Buff.CastBuff("Lifeblood", ret => true, "Lifeblood"),
