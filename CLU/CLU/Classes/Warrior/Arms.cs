@@ -270,9 +270,9 @@ namespace CLU.Classes.Warrior
         }
 
         #region Add your weapon names here
-        public string mainHandItemName = CLUSettings.Instance.Warrior.PvPMainHandItemName;
-        public string offHandItemName = CLUSettings.Instance.Warrior.PvPOffHandItemName;
-        public string TwoHandItemName = CLUSettings.Instance.Warrior.PvPTwoHandItemName;
+        //public string mainHandItemName = CLUSettings.Instance.Warrior.PvPMainHandItemName;
+        //public string offHandItemName = CLUSettings.Instance.Warrior.PvPOffHandItemName;
+        //public string TwoHandItemName = CLUSettings.Instance.Warrior.PvPTwoHandItemName;
 
         public Composite wepSwapDefensive
         {
@@ -284,9 +284,10 @@ namespace CLU.Classes.Warrior
                         !string.IsNullOrEmpty(CLUSettings.Instance.Warrior.PvPOffHandItemName),
                         new Action(delegate
                         {
+                            CLU.Log("Switching to defensive mode. Using MainHand: [{0}] Using OffHand: [{1}]", CLUSettings.Instance.Warrior.PvPMainHandItemName, CLUSettings.Instance.Warrior.PvPOffHandItemName);
+                            Lua.DoString("RunMacroText(\"/equipslot 16 " + CLUSettings.Instance.Warrior.PvPMainHandItemName + "\")");
+                            Lua.DoString("RunMacroText(\"/equipslot 17 " + CLUSettings.Instance.Warrior.PvPOffHandItemName + "\")");
                             CLU.Log("Switching to defensive mode");
-                            Lua.DoString("RunMacroText(\"/equipslot 16 " + mainHandItemName + "\")");
-                            Lua.DoString("RunMacroText(\"/equipslot 17 " + offHandItemName + "\")");
                             return RunStatus.Failure;
                         })
                 ));
@@ -301,8 +302,8 @@ namespace CLU.Classes.Warrior
                     new Decorator(ret => Me.Inventory.Equipped.OffHand != null && !string.IsNullOrEmpty(CLUSettings.Instance.Warrior.PvPTwoHandItemName),
                         new Action(delegate
                         {
-                            CLU.Log("Switching to offensive mode");
-                            Lua.DoString("RunMacroText(\"/equipslot 16 " + TwoHandItemName + "\")");
+                            CLU.Log("Switching to offensive mode. Using TwoHand: [{0}] ", CLUSettings.Instance.Warrior.PvPTwoHandItemName);
+                            Lua.DoString("RunMacroText(\"/equipslot 16 " + CLUSettings.Instance.Warrior.PvPTwoHandItemName + "\")");
                             return RunStatus.Failure;
                         })
                 ));
