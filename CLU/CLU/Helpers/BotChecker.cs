@@ -45,7 +45,9 @@ namespace CLU.Helpers
             {
                 CLUSettings.Instance.EnableMovement = false;
                 CLUSettings.Instance.BurstOn = Burst.onBoss;
-                CLU.Log(" [BotChecker] LazyRaider Detected. *MOVEMENT DISABLED*");
+                CLU.Log(" [BotChecker] LazyRaider Detected.");
+                CLU.Log(" [BotChecker] *MOVEMENT DISABLED*");
+                CLU.Log(" [BotChecker] *BURST ON BOSS SET*");
             }
 
             // Check for Raid Bot and Disable movement
@@ -53,7 +55,9 @@ namespace CLU.Helpers
             {
                 CLUSettings.Instance.EnableMovement = false;
                 CLUSettings.Instance.BurstOn = Burst.onBoss;
-                CLU.Log(" [BotChecker] Tyrael Detected. *MOVEMENT DISABLED*");
+                CLU.Log(" [BotChecker] Tyrael Detected.");
+                CLU.Log(" [BotChecker] *MOVEMENT DISABLED*");
+                CLU.Log(" [BotChecker] *BURST ON BOSS SET*");
             }
 
             // Check for Raid Bot and Disable movement
@@ -61,7 +65,9 @@ namespace CLU.Helpers
             {
                 CLUSettings.Instance.EnableMovement = false;
                 CLUSettings.Instance.BurstOn = Burst.onBoss;
-                CLU.Log(" [BotChecker] Raid Bot Detected. *MOVEMENT DISABLED*");
+                CLU.Log(" [BotChecker] Raid Bot Detected.");
+                CLU.Log(" [BotChecker] *MOVEMENT DISABLED*");
+                CLU.Log(" [BotChecker] *BURST ON BOSS SET*");
             }
 
             // Check for Combat Bot and Disable movement
@@ -69,7 +75,9 @@ namespace CLU.Helpers
             {
                 CLUSettings.Instance.EnableMovement = false;
                 CLUSettings.Instance.BurstOn = Burst.onBoss;
-                CLU.Log(" [BotChecker] Combat Bot Detected. *MOVEMENT DISABLED*");
+                CLU.Log(" [BotChecker] Combat Bot Detected.");
+                CLU.Log(" [BotChecker] *MOVEMENT DISABLED*");
+                CLU.Log(" [BotChecker] *BURST ON BOSS SET*");
             }
 
             // Check for BGBuddy and MultiDotting
@@ -80,7 +88,11 @@ namespace CLU.Helpers
                 CLUSettings.Instance.Rogue.UseTricksOfTheTradeForce = false;
                 CLUSettings.Instance.EnableMovement = true;
                 CLUSettings.Instance.BurstOn = Burst.onBoss;
-                CLU.Log(" [BotChecker] BGBuddy Bot Detected. *MULTI-DOTTING DISABLED* && *MOVEMENT ENABLED* && *TotT DISABLED*");
+                CLU.Log(" [BotChecker] BGBuddy Bot Detected.");
+                CLU.Log(" [BotChecker] *MOVEMENT ENABLED*");
+                CLU.Log(" [BotChecker] *MULTI-DOTTING DISABLED*");
+                CLU.Log(" [BotChecker] *TotT DISABLED*");
+                CLU.Log(" [BotChecker] *BURST ON BOSS SET*");
             }
 
             // Check for Questing
@@ -89,7 +101,12 @@ namespace CLU.Helpers
                 CLUSettings.Instance.EnableMultiDotting = false;
                 CLUSettings.Instance.EnableMovement = true;
                 CLUSettings.Instance.BurstOn = Burst.onMob;
-                CLU.Log(" [BotChecker] Questing Bot Detected. *MULTI-DOTTING DISABLED* && *MOVEMENT ENABLED* && *BURST ON MOB SET* && *BURST ON MOB COUNT = "+ CLUSettings.Instance.BurstOnMobCount + "*");
+                CLU.Log(" [BotChecker] Questing Bot Detected.");
+                CLU.Log(" [BotChecker] *MOVEMENT ENABLED*");
+                CLU.Log(" [BotChecker] *MULTI-DOTTING DISABLED*");
+                CLU.Log(" [BotChecker] *TotT DISABLED*");
+                CLU.Log(" [BotChecker] *BURST ON MOB SET*");
+                CLU.Log(" [BotChecker] *BURST ON MOB COUNT = " + CLUSettings.Instance.BurstOnMobCount + "*");
             }
 
             // Check for Grind Bot
@@ -97,7 +114,12 @@ namespace CLU.Helpers
             {
                 CLUSettings.Instance.EnableMultiDotting = false;
                 CLUSettings.Instance.EnableMovement = true;
-                CLU.Log(" [BotChecker] Grind Bot Bot Detected. *MULTI-DOTTING DISABLED* && *MOVEMENT ENABLED*");
+                CLUSettings.Instance.BurstOn = Burst.onMob;
+                CLU.Log(" [BotChecker] Grind Bot Bot Detected.");
+                CLU.Log(" [BotChecker] *MOVEMENT ENABLED*");
+                CLU.Log(" [BotChecker] *MULTI-DOTTING DISABLED*");
+                CLU.Log(" [BotChecker] *BURST ON MOB SET*");
+                CLU.Log(" [BotChecker] *BURST ON MOB COUNT = " + CLUSettings.Instance.BurstOnMobCount + "*");
             }
 
             // Check for Gatherbuddy2
@@ -105,7 +127,12 @@ namespace CLU.Helpers
             {
                 CLUSettings.Instance.EnableMultiDotting = false;
                 CLUSettings.Instance.EnableMovement = true;
-                CLU.Log(" [BotChecker] Gatherbuddy2 Bot Detected. *MULTI-DOTTING DISABLED* && *MOVEMENT ENABLED*");
+                CLUSettings.Instance.BurstOn = Burst.onMob;
+                CLU.Log(" [BotChecker] Gatherbuddy2 Bot Detected.");
+                CLU.Log(" [BotChecker] *MOVEMENT ENABLED*");
+                CLU.Log(" [BotChecker] *MULTI-DOTTING DISABLED*");
+                CLU.Log(" [BotChecker] *BURST ON MOB SET*");
+                CLU.Log(" [BotChecker] *BURST ON MOB COUNT = " + CLUSettings.Instance.BurstOnMobCount + "*");
             }
 
             // Check for ArchaeologyBuddy
@@ -113,7 +140,12 @@ namespace CLU.Helpers
             {
                 CLUSettings.Instance.EnableMultiDotting = false;
                 CLUSettings.Instance.EnableMovement = true;
-                CLU.Log(" [BotChecker] ArchaeologyBuddy Bot Detected. *MULTI-DOTTING DISABLED* && *MOVEMENT ENABLED*");
+                CLUSettings.Instance.BurstOn = Burst.onMob;
+                CLU.Log(" [BotChecker] ArchaeologyBuddy Bot Detected.");
+                CLU.Log(" [BotChecker] *MOVEMENT ENABLED*");
+                CLU.Log(" [BotChecker] *MULTI-DOTTING DISABLED*");
+                CLU.Log(" [BotChecker] *BURST ON MOB SET*");
+                CLU.Log(" [BotChecker] *BURST ON MOB COUNT = " + CLUSettings.Instance.BurstOnMobCount + "*");
             }
            
         }
