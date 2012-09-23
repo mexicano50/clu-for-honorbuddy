@@ -108,7 +108,7 @@ namespace CLU.Classes.Paladin
                     // emergency heals on me
                     Spell.CastSpell("Divine Protection", ret => Me, ret => Me.HealthPercent < 40 && CLUSettings.Instance.UseCooldowns && StyxWoW.Me.Combat, "Divine Protection"),
                     Spell.CastSpell("Divine Shield", rest => Me, ret => Me.HealthPercent < 40 && !Buff.PlayerHasBuff("Forbearance") && CLUSettings.Instance.UseCooldowns && StyxWoW.Me.Combat, "Divine Shield"),
-                    Spell.CastSpell("Flash Heal", ret => Me, ret => Me.HealthPercent < 40, "flash heal on me, emergency"),
+                    Spell.CastSpell("Flash of Light", ret => Me, ret => Me.HealthPercent < 40, "Flash of Light on me, emergency"),
 
                     // don't break PlayerIsChanneling
                     new Decorator(x => Spell.PlayerIsChanneling, new Action()),

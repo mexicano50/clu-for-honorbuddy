@@ -196,7 +196,7 @@ NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagr
             get {
                 return
                     new PrioritySelector(
-                        Spell.CastSpell("Flash Heal", ret => Me, ret => Me.HealthPercent < CLUSettings.Instance.Paladin.FlashHealRestingPercent && CLUSettings.Instance.EnableSelfHealing && CLUSettings.Instance.EnableMovement, "flash heal on me"),
+                        Spell.CastSpell("Flash of Light", ret => Me, ret => Me.HealthPercent < CLUSettings.Instance.Paladin.FlashHealRestingPercent && CLUSettings.Instance.EnableSelfHealing && CLUSettings.Instance.EnableMovement, "Flash of Light on me"),
                         Rest.CreateDefaultRestBehaviour());
             }
         }

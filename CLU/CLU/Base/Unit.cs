@@ -90,7 +90,7 @@ namespace CLU.Base
             "Beacon of Light",          // [53563] = "PALADIN", -- Beacon of Light
             "Aura Mastery",             // [31821] = "PALADIN", -- Aura Mastery
             "Light of Dawn",            // [85222] = "PALADIN", -- Light of Dawn
-            "Flash Heal",               // [2061] = "PALADIN", -- Flash Heal
+            "Flash Heal",               // [2061] = "Priest", -- Flash Heal
             "Flash of Light",           // [19750] = "PALADIN", -- Light of Dawn
             "Holy Light"                // [635] = "PALADIN", -- Holy Light
         };
@@ -701,7 +701,7 @@ namespace CLU.Base
                 return false;
 
             // PvP Player
-            var pvpTarget = target.IsPlayer && Battlegrounds.IsInsideBattleground;
+            var pvpTarget = target.IsPlayer && CLU.LocationContext == GroupLogic.Battleground;
 
             // Miniboss not a big boss =)
             var miniBoss = (target.Level >= Me.Level + 2) && target.Elite;

@@ -76,10 +76,10 @@ namespace CLU.Settings
 
 
         [Setting]
-        [DefaultValue(40)]
+        [DefaultValue(75)]
         [Category("Common")]
-        [DisplayName("Flash Heal Resting Percent")]
-        [Description("Will use Flash Heal for self heal when resting at this healthpercent. (Self Healing, and Enable Movement (General Tab) must be enabled as well.)")]
+        [DisplayName("Flash of Light Resting Percent")]
+        [Description("Will use Flash of Light for self heal when resting at this healthpercent. (Self Healing, and Enable Movement (General Tab) must be enabled as well.)")]
         public int FlashHealRestingPercent
         {
             get;
