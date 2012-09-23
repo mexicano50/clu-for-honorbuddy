@@ -24,6 +24,7 @@ using global::CLU.Managers;
 namespace CLU.Classes.Shaman
 {
     using Styx.WoWInternals;
+    using Styx.CommonBot;
 
     class Enhancement : RotationBase
     {
@@ -170,9 +171,11 @@ namespace CLU.Classes.Shaman
                         Racials.UseRacials(),
                         //elemental_mastery,if=talent.elemental_mastery.enabled
                         Spell.CastSelfSpell("Elemental Mastery", ret => TalentManager.HasTalent(10), "Elemental Mastery"),
-                        //W	2.00	fire_elemental_totem,if=!active&(buff.bloodlust.up|buff.elemental_mastery.up|target.time_to_die<=totem.fire_elemental_totem.duration+10|(talent.elemental_mastery.enabled&(cooldown.elemental_mastery.remains=0|cooldown.elemental_mastery.remains>80)|time>=60))
+                        //fire_elemental_totem,if=!active&(buff.bloodlust.up|buff.elemental_mastery.up|target.time_to_die<=totem.fire_elemental_totem.duration+10|(talent.elemental_mastery.enabled&(cooldown.elemental_mastery.remains=0|cooldown.elemental_mastery.remains>80)|time>=60))
+                        Spell.CastSelfSpell("Fire Elemental Totem", ret => !Totems.Exist(WoWTotem.FireElemental) && (Buff.UnitHasHasteBuff(Me) || Buff.PlayerHasActiveBuff("Elemental Mastery") || Unit.TimeToDeath(Me.CurrentTarget) <= 60 +10 || (TalentManager.HasTalent(10) && (SpellManager.Spells["Elemental Mastery"].CooldownTimeLeft.Seconds == 0 || SpellManager.Spells["Elemental Mastery"].CooldownTimeLeft.Seconds > 80))), "Fire Elemental Totem"),
                         //X	2.94	ascendance,if=cooldown.strike.remains>=3
-                        //Y	6.92	searing_totem,if=!totem.fire.active
+                        //searing_totem,if=!totem.fire.active
+                        Spell.CastSelfSpell("Searing Totem", ret => Me.CurrentTarget != null && Me.CurrentTarget.Distance <= Totems.GetTotemRange(WoWTotem.Searing) && !Totems.Exist(WoWTotemType.Fire), "Searing Totem"),
                         //unleash_elements,if=talent.unleashed_fury.enabled
                         Spell.CastSpell("Unleash Elements", ret => TalentManager.HasTalent(16), "Unleash Elements"),
                         //elemental_blast,if=talent.elemental_blast.enabled
@@ -201,7 +204,8 @@ namespace CLU.Classes.Shaman
                         Spell.CastSpell("Earth Shock", ret => true, "Earth Shock"),
                         //feral_spirit
                         Spell.CastSpell("Feral Spirit", ret => true, "Feral Spirit"),
-                        //n	1.90	earth_elemental_totem,if=!active&cooldown.fire_elemental_totem.remains>=50
+                        //earth_elemental_totem,if=!active&cooldown.fire_elemental_totem.remains>=50
+                        Spell.CastSelfSpell("Earth elemental Totem", ret => SpellManager.Spells["Fire Elemental"].CooldownTimeLeft.Seconds >= 50, "Earth Elemental Totem"),
                         //spiritwalkers_grace,moving=1
                         Spell.CastSelfSpell("Spiritwalkers Grace", ret => Me.IsMoving, "Spiritwalkers Grace"),
                         //lightning_bolt,if=buff.maelstrom_weapon.react>1&!buff.ascendance.up
@@ -245,7 +249,7 @@ namespace CLU.Classes.Shaman
         public override Composite Resting
         {
             get {
-                return Rest.CreateDefaultRestBehaviour();
+                return Base.Rest.CreateDefaultRestBehaviour();
             }
         }
 
