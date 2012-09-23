@@ -391,6 +391,17 @@ namespace CLU.Settings
             set;
         }
 
+        [Setting]
+        [DefaultValue(Keyboardfunctions.Nothing)]
+        [Category("Keybinds")]
+        [DisplayName("Toggle Movement")]
+        [Description("Select the Keybind for [EnableMovement] DO NOT SET THE SAME KEYBIND MORE THAN ONCE!!!")]
+        public Keyboardfunctions KeybindEnableMovement
+        {
+            get;
+            set;
+        }
+
         #endregion
 
         #region Category: Misc

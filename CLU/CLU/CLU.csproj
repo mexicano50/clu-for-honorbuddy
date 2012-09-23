@@ -181,6 +181,8 @@
     <Content Include="Sound\dsextraactionbuttonenabled.wav" />
     <Content Include="Sound\interuptsdisabled.wav" />
     <Content Include="Sound\interuptsenabled.wav" />
+    <Content Include="Sound\movementdisabled.wav" />
+    <Content Include="Sound\movementenabled.wav" />
     <Content Include="Sound\multidottingdisabled.wav" />
     <Content Include="Sound\multidottingenabled.wav" />
     <Content Include="Sound\raidandpartybuffingdisabled.wav" />

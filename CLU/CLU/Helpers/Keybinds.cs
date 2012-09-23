@@ -280,6 +280,46 @@ namespace CLU.Helpers
                     return;
                 }
             }
+
+
+
+
+            // KeybindEnableMovement \\
+            if (IsKeyDown(CLUSettings.Instance.KeybindEnableMovement))
+            {
+                switch (CLUSettings.Instance.EnableMovement)
+                {
+                    case true:
+                        CLUSettings.Instance.EnableMovement = !CLUSettings.Instance.EnableMovement;
+                        CLU.Log(" EnableMovement= {0}", CLUSettings.Instance.EnableMovement);
+                        if (CLUSettings.Instance.EnableKeybindSounds)
+                        {
+                            try
+                            {
+                                SoundManager.LoadSoundFilePath(@"\Routines\CLU\Sound\movementdisabled.wav");
+                                SoundManager.SoundPlay();
+                            }
+                            catch { }
+
+                        }
+                        break;
+                    case false:
+                        CLUSettings.Instance.EnableMovement = !CLUSettings.Instance.EnableMovement;
+                        CLU.Log(" EnableMovement= {0}", CLUSettings.Instance.EnableMovement);
+                        if (CLUSettings.Instance.EnableKeybindSounds)
+                        {
+                            try
+                            {
+                                SoundManager.LoadSoundFilePath(@"\Routines\CLU\Sound\movementenabled.wav");
+                                SoundManager.SoundPlay();
+                            }
+                            catch { }
+                        }
+                        break;
+                    default:
+                        return;
+                }
+            }
         }
 
         /// <summary>
