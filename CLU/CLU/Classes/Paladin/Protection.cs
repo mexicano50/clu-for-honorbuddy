@@ -122,8 +122,8 @@ NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagr
                            Spell.CastSpell("Execution Sentence",          ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget), "Execution Sentence"),
                            Spell.CastOnGround("Consecration", ret => Me.CurrentTarget.Location, a => Me.CurrentTarget != null && !BossList.IgnoreAoE.Contains(Unit.CurrentTargetEntry) && Me.ManaPercent > CLUSettings.Instance.Paladin.ConsecrationManaPercent && TalentManager.HasGlyph("Consecration")),
                            Spell.CastSpell("Consecration",                ret => Me.CurrentTarget != null && !BossList.IgnoreAoE.Contains(Unit.CurrentTargetEntry) && Me.ManaPercent > CLUSettings.Instance.Paladin.ConsecrationManaPercent && !Me.IsMoving && !Me.CurrentTarget.IsMoving && Me.IsWithinMeleeRange && Unit.EnemyUnits.Count() >= CLUSettings.Instance.Paladin.ConsecrationCount && !TalentManager.HasGlyph("Consecration"), "Consecration"),
-                           Spell.CastSpell("Holy Wrath",                  ret => true, "Holy Wrath"),
-                           Buff.CastBuff("Divine Plea",                   ret => Me.ManaPercent < 20 || Me.CurrentHolyPower < 3, "Divine Plea"));
+                           Spell.CastSpell("Holy Wrath",                  ret => true, "Holy Wrath")
+                          );
             }
         }
 

@@ -130,8 +130,8 @@ NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagr
                                    Spell.CastSpell("Crusader Strike",               ret => Me.CurrentHolyPower < 5, "Crusader Strike"),
                                    Spell.CastSpell("Judgment",                      ret => Me.CurrentHolyPower < 5, "Judgment"),
                                    Spell.CastSpell("Templar's Verdict",             ret => (Buff.PlayerHasBuff("Divine Purpose") || Me.CurrentHolyPower >= 3), "Templar's Verdict"),
-                                   Spell.CastSelfSpell("Arcane Torrent",            ret => Me.ManaPercent < 80 && Me.CurrentHolyPower < 3, "Arcane Torrent"),
-                                   Buff.CastBuff("Divine Plea",                     ret => Me.ManaPercent < 75 && Me.CurrentHolyPower < 3, "Divine Plea"))),
+                                   Spell.CastSelfSpell("Arcane Torrent",            ret => Me.ManaPercent < 80 && Me.CurrentHolyPower < 3, "Arcane Torrent")
+                                   )),
                            new Decorator(
                                ret => !Buff.PlayerHasBuff("Holy Avenger"),
                                new PrioritySelector(
@@ -147,8 +147,8 @@ NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagr
                                    Spell.CastSpell("Crusader Strike",               ret => Me.CurrentHolyPower < 5, "Crusader Strike"),
                                    Spell.CastSpell("Judgment",                      ret => !Buff.PlayerHasBuff("Holy Avenger") && Me.CurrentHolyPower < 5, "Judgment"),
                                    Spell.CastSpell("Templar's Verdict",             ret => (Buff.PlayerHasBuff("Divine Purpose") || Me.CurrentHolyPower >= 3), "Templar's Verdict"), 
-                                   Spell.CastSelfSpell("Arcane Torrent",            ret => Me.ManaPercent < 80 && Me.CurrentHolyPower < 3, "Arcane Torrent"),
-                                   Buff.CastBuff("Divine Plea",                     ret => Me.ManaPercent < 75 && Me.CurrentHolyPower < 3, "Divine Plea"))));
+                                   Spell.CastSelfSpell("Arcane Torrent",            ret => Me.ManaPercent < 80 && Me.CurrentHolyPower < 3, "Arcane Torrent")
+                                   )));
             }
         }
 

@@ -149,7 +149,7 @@ CREDITS TO: HandNavi - because he owns the business.
             {
                 return
                     new PrioritySelector(
-                        Spell.CastSpell("Rejuvenation", ret => Me, ret => !Buff.PlayerHasBuff("Rejuvenation") && Me.HealthPercent < 65 && CLUSettings.Instance.EnableSelfHealing && CLUSettings.Instance.EnableMovement, "Rejuvenation on me"),
+                        Spell.CastSpell("Rejuvenation", ret => Me, ret => !Buff.PlayerHasBuff("Rejuvenation") && Me.HealthPercent < 75 && CLUSettings.Instance.EnableSelfHealing && CLUSettings.Instance.EnableMovement, "Rejuvenation on me"),
                         Rest.CreateDefaultRestBehaviour());
             }
         }
@@ -315,7 +315,8 @@ CREDITS TO: HandNavi - because he owns the business.
                                             )
                                         ),
 
-                                    Spell.CastOnUnitLocation("Force of Nature",u => Me.CurrentTarget, ret => Me.CurrentTarget != null && SpellManager.HasSpell("Force of Nature"), "Force of Nature")
+                                    Spell.CastOnUnitLocation("Force of Nature",u => Me.CurrentTarget, ret => Me.CurrentTarget != null && SpellManager.HasSpell("Force of Nature"), "Force of Nature"),
+                                    Spell.CastSpell("Mangle", ret => true, "Mangle (Cat!)")
                                    );
 
             }

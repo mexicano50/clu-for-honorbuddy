@@ -181,7 +181,10 @@ namespace CLU.Classes.Druid
         {
             get
             {
-                return Rest.CreateDefaultRestBehaviour();
+                return
+                    new PrioritySelector(
+                        Spell.CastSpell("Rejuvenation", ret => Me, ret => !Buff.PlayerHasBuff("Rejuvenation") && Me.HealthPercent < 75 && CLUSettings.Instance.EnableSelfHealing && CLUSettings.Instance.EnableMovement, "Rejuvenation on me"),
+                        Rest.CreateDefaultRestBehaviour());
             }
         }
 
