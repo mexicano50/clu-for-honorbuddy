@@ -241,8 +241,8 @@ namespace CLU.Classes.Shaman
                             //food,type=sea_mist_rice_noodles
                             Common.HandleCompulsoryShamanBuffs(),
                             //virmens_bite_potion
-                            new Decorator(ret => Macro.rotationSwap && !BotChecker.BotBaseInUse("BGbuddy"), wepSwapDefensive),
-                            new Decorator(ret => !Macro.rotationSwap && !BotChecker.BotBaseInUse("BGbuddy"), wepSwapOffensive),
+                            new Decorator(ret => Macro.weaponSwap && !BotChecker.BotBaseInUse("BGbuddy"), wepSwapDefensive),
+                            new Decorator(ret => !Macro.weaponSwap && !BotChecker.BotBaseInUse("BGbuddy"), wepSwapOffensive),
                             Common.HandleTotemRecall()
                 )));
             }
@@ -266,8 +266,8 @@ namespace CLU.Classes.Shaman
                         new Decorator(ret => Macro.Manual || BotChecker.BotBaseInUse("BGBuddy"),
                             new Decorator(ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget),
                                 new PrioritySelector(
-                                    new Decorator(ret => Macro.rotationSwap && !BotChecker.BotBaseInUse("BGbuddy"), wepSwapDefensive),
-                                    new Decorator(ret => !Macro.rotationSwap && !BotChecker.BotBaseInUse("BGbuddy"), wepSwapOffensive),
+                                    new Decorator(ret => Macro.weaponSwap && !BotChecker.BotBaseInUse("BGbuddy"), wepSwapDefensive),
+                                    new Decorator(ret => !Macro.weaponSwap && !BotChecker.BotBaseInUse("BGbuddy"), wepSwapOffensive),
                                     Item.UseTrinkets(),
                                     Buff.CastBuff("Lifeblood", ret => true, "Lifeblood"),
                                     new Action(delegate

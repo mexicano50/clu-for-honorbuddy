@@ -68,6 +68,17 @@ namespace CLU.Base
         }
 
         /// <summary>
+        /// Toggle macro for switching between Offensive and Defensive weapon sets
+        /// </summary>
+        public static bool weaponSwap
+        {
+            get
+            {
+                return Convert.ToBoolean(Lua.GetReturnVal<int>("return weaponSwap and 0 or 1", 0));
+            }
+        }
+
+        /// <summary>
         /// Resets individual MultiCastMacro int's from one(1) to zero(0)
         /// </summary>
         /// <param name="Which">Spell name</param>
