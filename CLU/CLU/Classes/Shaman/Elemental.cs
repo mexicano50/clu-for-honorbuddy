@@ -20,6 +20,8 @@ using CLU.Settings;
 using CLU.Base;
 using Rest = CLU.Base.Rest;
 using Styx.WoWInternals;
+using Styx.CommonBot;
+using global::CLU.Managers;
 
 namespace CLU.Classes.Shaman
 {
@@ -160,24 +162,41 @@ namespace CLU.Classes.Shaman
                         //Rotation
                         //6	0.00	wind_shear
                         //7	0.01	bloodlust,if=target.health.pct<25|time>5
-                        //8	1.00	jade_serpent_potion,if=time>60&(pet.primal_fire_elemental.active|pet.greater_fire_elemental.active|target.time_to_die<=60)
-                        //L	7.86	use_item,name=firebirds_gloves,if=((cooldown.ascendance.remains>10|level<87)&cooldown.fire_elemental_totem.remains>10)|buff.ascendance.up|buff.bloodlust.up|totem.fire_elemental_totem.active
-                        //M	4.25	blood_fury,if=buff.bloodlust.up|buff.ascendance.up|((cooldown.ascendance.remains>10|level<87)&cooldown.fire_elemental_totem.remains>10)
-                        //N	0.00	elemental_mastery,if=talent.elemental_mastery.enabled&time>15&((!buff.bloodlust.up&time<120)|(!buff.berserking.up&!buff.bloodlust.up&buff.ascendance.up)|(time>=200&(cooldown.ascendance.remains>30|level<87)))
-                        //O	2.00	fire_elemental_totem,if=!active
-                        //P	2.96	ascendance,if=dot.flame_shock.remains>buff.ascendance.duration&(target.time_to_die<20|buff.bloodlust.up|time>=180)
-                        //Q	0.00	ancestral_swiftness,if=talent.ancestral_swiftness.enabled&!buff.ascendance.up
-                        //R	0.00	unleash_elements,if=talent.unleashed_fury.enabled&!buff.ascendance.up
-                        //S	15.30	flame_shock,if=!buff.ascendance.up&(!ticking|ticks_remain<2|((buff.bloodlust.up|buff.elemental_mastery.up)&ticks_remain<3))
-                        //T	87.75	lava_burst,if=dot.flame_shock.remains>cast_time&(buff.ascendance.up|cooldown_react)
-                        //U	29.71	elemental_blast,if=talent.elemental_blast.enabled&!buff.ascendance.up
-                        //V	29.87	earth_shock,if=buff.lightning_shield.react=buff.lightning_shield.max_stack
-                        //W	3.06	earth_shock,if=buff.lightning_shield.react>3&dot.flame_shock.remains>cooldown&dot.flame_shock.remains<cooldown+action.flame_shock.tick_time
-                        //X	1.94	earth_elemental_totem,if=!active&cooldown.fire_elemental_totem.remains>=50
-                        //Y	5.85	searing_totem,if=!totem.fire.active
-                        //Z	0.00	spiritwalkers_grace,moving=1
-                        //a	0.00	unleash_elements,moving=1
-                        //b	141.47	lightning_bolt
+                        //jade_serpent_potion,if=time>60&(pet.primal_fire_elemental.active|pet.greater_fire_elemental.active|target.time_to_die<=60)
+                        //use_item,name=firebirds_gloves,if=((cooldown.ascendance.remains>10|level<87)&cooldown.fire_elemental_totem.remains>10)|buff.ascendance.up|buff.bloodlust.up|totem.fire_elemental_totem.active
+                        Item.UseEngineerGloves(),
+                        //blood_fury,if=buff.bloodlust.up|buff.ascendance.up|((cooldown.ascendance.remains>10|level<87)&cooldown.fire_elemental_totem.remains>10)
+                        Racials.UseRacials(),
+                        //elemental_mastery,if=talent.elemental_mastery.enabled&time>15&((!buff.bloodlust.up&time<120)|(!buff.berserking.up&!buff.bloodlust.up&buff.ascendance.up)|(time>=200&(cooldown.ascendance.remains>30|level<87)))
+                        Spell.CastSelfSpell("Elemental Mastery", ret => TalentManager.HasTalent(10) && (!Buff.UnitHasHasteBuff(Me) || (!Buff.PlayerHasActiveBuff("Berserking") && !Buff.UnitHasHasteBuff(Me) && Buff.PlayerHasActiveBuff("Ascendance")) || (SpellManager.Spells["Ascendance"].CooldownTimeLeft.Seconds >30 || Me.CurrentTarget.Level < 87)), "Elemental Mastery"),
+                        //fire_elemental_totem,if=!active
+                        Spell.CastSpell("Fire Elemental Totem", ret => true, "Fire Elemental Totem"),
+                        //ascendance,if=dot.flame_shock.remains>buff.ascendance.duration&(target.time_to_die<20|buff.bloodlust.up|time>=180)
+                        Spell.CastSelfSpell("Ascendance", ret => Buff.TargetDebuffTimeLeft("Flame shock").Seconds > 15 && Unit.TimeToDeath(Me.CurrentTarget) < 20, "Ascendance"),
+                        //ancestral_swiftness,if=talent.ancestral_swiftness.enabled&!buff.ascendance.up
+                        Spell.CastSelfSpell("Ancestral Swiftness", ret => TalentManager.HasTalent(11) && !Buff.PlayerHasActiveBuff("Ascendance"), "Ancestral Swiftness"),
+                        //unleash_elements,if=talent.unleashed_fury.enabled&!buff.ascendance.up
+                        Spell.CastSpell("Unleash Elements", ret => TalentManager.HasTalent(16) && !Buff.PlayerHasActiveBuff("Ascendance"), "Unleash Elements"),
+                        //flame_shock,if=!buff.ascendance.up&(!ticking|ticks_remain<2|((buff.bloodlust.up|buff.elemental_mastery.up)&ticks_remain<3))
+                        Spell.CastSpell("Flame Shock", ret => !Buff.PlayerHasActiveBuff("Ascendance") && (!Buff.TargetHasDebuff("Flame Shock") || Buff.TargetDebuffTimeLeft("Flame Shock").Seconds < 5 || ((Buff.UnitHasHasteBuff(Me) || Buff.PlayerHasActiveBuff("Elemental Mastery")) && Buff.TargetDebuffTimeLeft("Flame Shock").TotalSeconds < 7.50)), "Flame Shock"),
+                        //lava_burst,if=dot.flame_shock.remains>cast_time&(buff.ascendance.up|cooldown_react)
+                        Spell.CastSpell("Lava Burst", ret => Buff.TargetDebuffTimeLeft("Flame Shock").TotalSeconds > 1.25 && (Buff.PlayerHasActiveBuff("Ascendance") || SpellManager.CanCast("Lava Burst")), "Lava Burst"),
+                        //elemental_blast,if=talent.elemental_blast.enabled&!buff.ascendance.up
+                        Spell.CastSpell("Elemental Blast", ret => TalentManager.HasTalent(18) && !Buff.PlayerHasActiveBuff("Ascendance"), "Elemental Blast"),
+                        //earth_shock,if=buff.lightning_shield.react=buff.lightning_shield.max_stack
+                        Spell.CastSpell("Earth Shock", ret => Buff.PlayerCountBuff("Lightning Shield") == 7, "Earth Shock"),
+                        //earth_shock,if=buff.lightning_shield.react>3&dot.flame_shock.remains>cooldown&dot.flame_shock.remains<cooldown+action.flame_shock.tick_time
+                        Spell.CastSpell("Earth Shock", ret => Buff.PlayerCountBuff("Lightning Shield") > 3 && Buff.TargetDebuffTimeLeft("Flame Shock").Seconds > 5 && Buff.TargetDebuffTimeLeft("Flame Shock").TotalSeconds < 5 + 2.50, "Earth Shock"),
+                        //earth_elemental_totem,if=!active&cooldown.fire_elemental_totem.remains>=50
+                        Spell.CastSpell("Earth Elemental Totem", ret => SpellManager.Spells["Fire Elemental Totem"].CooldownTimeLeft.Seconds >= 50, "Earth Elemental Totem"),
+                        //searing_totem,if=!totem.fire.active
+                        Spell.CastSpell("Searing Totem", ret => Totems.Exist(WoWTotemType.Fire), "Searing Totem"),
+                        //spiritwalkers_grace,moving=1
+                        Spell.CastSelfSpell("Spiritwalker's Grace", ret => Me.IsMoving, "Spiritwalker's Grace"),
+                        //unleash_elements,moving=1
+                        Spell.CastSpell("Unleash Elements", ret => Me.IsMoving, "Unleash Elements"),
+                        //lightning_bolt
+                        Spell.CastSpell("Lightning Bolt", ret => true, "Lightning Bolt")
                 ));
             }
         }
@@ -233,12 +252,8 @@ namespace CLU.Classes.Shaman
                         new Decorator(ret => Macro.Manual || BotChecker.BotBaseInUse("BGBuddy"),
                             new Decorator(ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget),
                                 new PrioritySelector(
-                                    new Decorator(ret => Macro.rotationSwap && !BotChecker.BotBaseInUse("BGbuddy"), wepSwapDefensive),
-                                    new Decorator(ret => !Macro.rotationSwap && !BotChecker.BotBaseInUse("BGbuddy"), wepSwapOffensive),
                                     Item.UseTrinkets(),
-                                    Racials.UseRacials(),
                                     Buff.CastBuff("Lifeblood", ret => true, "Lifeblood"),
-                                    Item.UseEngineerGloves(),
                                     new Action(delegate
                                     {
                                         Macro.isMultiCastMacroInUse();
@@ -256,41 +271,5 @@ namespace CLU.Classes.Shaman
                 return this.SingleRotation;
             }
         }
-
-        #region Weapon swap stuff
-
-        public Composite wepSwapDefensive
-        {
-            get
-            {
-                return (
-                    new Decorator(ret => Me.Inventory.Equipped.OffHand == null && !string.IsNullOrEmpty(CLUSettings.Instance.Warrior.PvPMainHandItemName) && !string.IsNullOrEmpty(CLUSettings.Instance.Warrior.PvPOffHandItemName) && CLUSettings.Instance.Warrior.PvPMainHandItemName != "Input the name of your mainhand weapon here" && CLUSettings.Instance.Warrior.PvPOffHandItemName != "Input the name of your offhand weapon here",
-                        new Action(delegate
-                        {
-                            CLU.Log("Switching to defensive mode. Using MainHand: [{0}] Using OffHand: [{1}]", CLUSettings.Instance.Warrior.PvPMainHandItemName, CLUSettings.Instance.Warrior.PvPOffHandItemName);
-                            Lua.DoString("RunMacroText(\"/equipslot 16 " + CLUSettings.Instance.Warrior.PvPMainHandItemName + "\")");
-                            Lua.DoString("RunMacroText(\"/equipslot 17 " + CLUSettings.Instance.Warrior.PvPOffHandItemName + "\")");
-                            return RunStatus.Failure;
-                        })
-                ));
-            }
-        }
-
-        public Composite wepSwapOffensive
-        {
-            get
-            {
-                return (
-                    new Decorator(ret => Me.Inventory.Equipped.OffHand != null && !string.IsNullOrEmpty(CLUSettings.Instance.Warrior.PvPTwoHandItemName) && CLUSettings.Instance.Warrior.PvPTwoHandItemName != "Input the name of your TwoHand weapon here",
-                        new Action(delegate
-                        {
-                            CLU.Log("Switching to offensive mode. Using TwoHand: [{0}] ", CLUSettings.Instance.Warrior.PvPTwoHandItemName);
-                            Lua.DoString("RunMacroText(\"/equipslot 16 " + CLUSettings.Instance.Warrior.PvPTwoHandItemName + "\")");
-                            return RunStatus.Failure;
-                        })
-                ));
-            }
-        }
-        #endregion
     }
 }
