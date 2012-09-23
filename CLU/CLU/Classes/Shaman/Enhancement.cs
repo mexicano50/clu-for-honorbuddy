@@ -207,7 +207,7 @@ namespace CLU.Classes.Shaman
                         //earth_elemental_totem,if=!active&cooldown.fire_elemental_totem.remains>=50
                         Totems.CreateTotemsPvPBehavior(),
                         //spiritwalkers_grace,moving=1
-                        Spell.CastSelfSpell("Spiritwalkers Grace", ret => Me.IsMoving, "Spiritwalkers Grace"),
+                        Spell.CastSelfSpell("Spiritwalker's Grace", ret => Me.IsMoving, "Spiritwalker's Grace"),
                         //lightning_bolt,if=buff.maelstrom_weapon.react>1&!buff.ascendance.up
                         Spell.CastSpell("Lightning Bolt", ret => Buff.PlayerCountBuff("Maelstrom Weapon") > 1 && !Buff.PlayerHasActiveBuff("Ascendance"), "Lightning Bolt")
                 ));
