@@ -276,17 +276,12 @@ namespace CLU.Classes.Warrior
             get
             {
                 return (
-                    new Decorator(ret => Me.Inventory.Equipped.OffHand == null && 
-                        !string.IsNullOrEmpty(CLUSettings.Instance.Warrior.PvPMainHandItemName) &&
-                        !string.IsNullOrEmpty(CLUSettings.Instance.Warrior.PvPOffHandItemName) &&
-                        CLUSettings.Instance.Warrior.PvPMainHandItemName != "Input the name of your mainhand weapon here" &&
-                        CLUSettings.Instance.Warrior.PvPOffHandItemName != "Input the name of your offhand weapon here",
+                    new Decorator(ret => Me.Inventory.Equipped.OffHand == null && !string.IsNullOrEmpty(CLUSettings.Instance.Warrior.PvPMainHandItemName) && !string.IsNullOrEmpty(CLUSettings.Instance.Warrior.PvPOffHandItemName) && CLUSettings.Instance.Warrior.PvPMainHandItemName != "Input the name of your mainhand weapon here" && CLUSettings.Instance.Warrior.PvPOffHandItemName != "Input the name of your offhand weapon here",
                         new Action(delegate
                         {
                             CLU.Log("Switching to defensive mode. Using MainHand: [{0}] Using OffHand: [{1}]", CLUSettings.Instance.Warrior.PvPMainHandItemName, CLUSettings.Instance.Warrior.PvPOffHandItemName);
                             Lua.DoString("RunMacroText(\"/equipslot 16 " + CLUSettings.Instance.Warrior.PvPMainHandItemName + "\")");
                             Lua.DoString("RunMacroText(\"/equipslot 17 " + CLUSettings.Instance.Warrior.PvPOffHandItemName + "\")");
-                            CLU.Log("Switching to defensive mode");
                             return RunStatus.Failure;
                         })
                 ));
@@ -298,8 +293,7 @@ namespace CLU.Classes.Warrior
             get
             {
                 return (
-                    new Decorator(ret => Me.Inventory.Equipped.OffHand != null && !string.IsNullOrEmpty(CLUSettings.Instance.Warrior.PvPTwoHandItemName) &&
-                                CLUSettings.Instance.Warrior.PvPTwoHandItemName != "Input the name of your TwoHand weapon here",
+                    new Decorator(ret => Me.Inventory.Equipped.OffHand != null && !string.IsNullOrEmpty(CLUSettings.Instance.Warrior.PvPTwoHandItemName) && CLUSettings.Instance.Warrior.PvPTwoHandItemName != "Input the name of your TwoHand weapon here",
                         new Action(delegate
                         {
                             CLU.Log("Switching to offensive mode. Using TwoHand: [{0}] ", CLUSettings.Instance.Warrior.PvPTwoHandItemName);

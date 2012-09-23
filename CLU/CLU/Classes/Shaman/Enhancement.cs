@@ -19,6 +19,7 @@ using CLU.Lists;
 using CLU.Settings;
 using CLU.Base;
 using Rest = CLU.Base.Rest;
+using global::CLU.Managers;
 
 namespace CLU.Classes.Shaman
 {
@@ -49,10 +50,12 @@ namespace CLU.Classes.Shaman
                 return "Lava Lash";
             }
         }
+
         public override int KeySpellId
         {
             get { return 60103; }
         }
+
         public override float CombatMaxDistance
         {
             get {
@@ -60,7 +63,6 @@ namespace CLU.Classes.Shaman
             }
         }
 
-        // adding some help about cooldown management
         public override string Help
         {
             get {
@@ -82,7 +84,7 @@ namespace CLU.Classes.Shaman
                        "4. AoE with Magma Totem, Chain Lightning, Fire Nova\n" +
                        "4. Heal using: Lightning Shield\n" +
                        "6. Best Suited for end game raiding\n" +
-                       "NOTE: PvP uses single target rotation - It's not designed for PvP use. \n" +
+                       "NOTE: PvP rotations have been implemented in the most basic form, once MoP is released I will go back & revise the rotations for optimal functionality 'Dagradt'. \n" +
                        "Credits to fluffyhusky, sjussju , Stormchasing\n" +
                        "----------------------------------------------------------------------\n";
             }
@@ -139,6 +141,75 @@ namespace CLU.Classes.Shaman
             }
         }
 
+        public Composite burstRotation
+        {
+            get
+            {
+                return (
+                    new PrioritySelector(
+                ));
+            }
+        }
+
+        public Composite baseRotation
+        {
+            get
+            {
+                return (
+                    new PrioritySelector(
+                        //new Action(a => { CLU.Log("I am the start of public Composite baseRotation"); return RunStatus.Failure; }),
+                        //PvP Utilities
+
+                        //Rotation
+                        //7	0.00	wind_shear
+                        //8	0.99	bloodlust,if=target.health.pct<25|time>5
+                        //use_item,name=firebirds_grips
+                        Item.UseEngineerGloves(),
+                        //virmens_bite_potion,if=time>60&(pet.primal_fire_elemental.active|pet.greater_fire_elemental.active|target.time_to_die<=60)
+                        //blood_fury
+                        Racials.UseRacials(),
+                        //elemental_mastery,if=talent.elemental_mastery.enabled
+                        Spell.CastSelfSpell("Elemental Mastery", ret => TalentManager.HasTalent(10), "Elemental Mastery"),
+                        //W	2.00	fire_elemental_totem,if=!active&(buff.bloodlust.up|buff.elemental_mastery.up|target.time_to_die<=totem.fire_elemental_totem.duration+10|(talent.elemental_mastery.enabled&(cooldown.elemental_mastery.remains=0|cooldown.elemental_mastery.remains>80)|time>=60))
+                        //X	2.94	ascendance,if=cooldown.strike.remains>=3
+                        //Y	6.92	searing_totem,if=!totem.fire.active
+                        //unleash_elements,if=talent.unleashed_fury.enabled
+                        Spell.CastSpell("Unleash Elements", ret => TalentManager.HasTalent(16), "Unleash Elements"),
+                        //elemental_blast,if=talent.elemental_blast.enabled
+                        Spell.CastSpell("Elemental Blast", ret => TalentManager.HasTalent(18), "Elemental Blast"),
+                        //lightning_bolt,if=buff.maelstrom_weapon.react=5|(set_bonus.tier13_4pc_melee=1&buff.maelstrom_weapon.react>=4&pet.spirit_wolf.active)
+                        Spell.CastSpell("Lightning Bolt", ret => Buff.PlayerCountBuff("Maelstrom Weapon") == 5, "Lightning Bolt"),
+                        //stormblast
+                        Spell.CastSpell("Stormblast", ret => true, "Stormblast"),
+                        //flame_shock,if=buff.unleash_flame.up&!ticking
+                        Spell.CastSpell("Flame Shock", ret => Buff.PlayerHasActiveBuff("Unleash Flame") && !Buff.TargetHasDebuff("Flame Shock"), "Flame Shock"),
+                        //stormstrike
+                        Spell.CastSpell("Primal Strike", ret => true, "Stormstrike"),
+                        //lava_lash
+                        Spell.CastSpell("Lava Lash", ret => true, "Lava Lash"),
+                        //unleash_elements
+                        Spell.CastSpell("Unleash Elements", ret => true, "Unleash Elements"),
+                        //lightning_bolt,if=buff.maelstrom_weapon.react>=3&target.debuff.unleashed_fury_ft.up&!buff.ascendance.up
+                        Spell.CastSpell("Lightning Bolt", ret => Buff.PlayerCountBuff("Maelstrom Weapon") >= 3 && Buff.TargetHasDebuff("Unleashed Fury") && !Buff.PlayerHasActiveBuff("Ascendance"), "Lightning Bolt"),
+                        //ancestral_swiftness,if=talent.ancestral_swiftness.enabled&buff.maelstrom_weapon.react<2
+                        Spell.CastSelfSpell("Ancestral Swiftness", ret => TalentManager.HasTalent(11) && Buff.PlayerCountBuff("Maelstrom Weapon") < 2, "Ancestral Swiftness"),
+                        //lightning_bolt,if=buff.ancestral_swiftness.up
+                        Spell.CastSpell("Lightning Bolt", ret => Buff.PlayerHasActiveBuff("Ancestral Swiftness"), "Lightning Bolt"),
+                        //flame_shock,if=buff.unleash_flame.up&dot.flame_shock.remains<=3
+                        Spell.CastSpell("Flame Shock", ret => Buff.PlayerHasActiveBuff("Unleash Flame") && Buff.TargetDebuffTimeLeft("Flame Shock").Seconds <= 3, "Flame Shock"),
+                        //earth_shock
+                        Spell.CastSpell("Earth Shock", ret => true, "Earth Shock"),
+                        //feral_spirit
+                        Spell.CastSpell("Feral Spirit", ret => true, "Feral Spirit"),
+                        //n	1.90	earth_elemental_totem,if=!active&cooldown.fire_elemental_totem.remains>=50
+                        //spiritwalkers_grace,moving=1
+                        Spell.CastSelfSpell("Spiritwalkers Grace", ret => Me.IsMoving, "Spiritwalkers Grace"),
+                        //lightning_bolt,if=buff.maelstrom_weapon.react>1&!buff.ascendance.up
+                        Spell.CastSpell("Lightning Bolt", ret => Buff.PlayerCountBuff("Maelstrom Weapon") > 1 && !Buff.PlayerHasActiveBuff("Ascendance"), "Lightning Bolt")
+                ));
+            }
+        }
+
         public override Composite Medic
         {
             get {
@@ -157,13 +228,17 @@ namespace CLU.Classes.Shaman
 
         public override Composite PreCombat
         {
-            get {
-                return new Decorator(
-                           ret => !Me.Mounted && !Me.IsDead && !Me.Combat && !Me.IsFlying && !Me.IsOnTransport && !Me.HasAura("Food") && !Me.HasAura("Drink"),
-                           new PrioritySelector(
-                                Common.HandleCompulsoryShamanBuffs(),
-                                Common.HandleTotemRecall()
-                              ));
+            get
+            {
+                return (
+                    new Decorator(ret => !Me.Mounted && !Me.IsDead && !Me.Combat && !Me.IsFlying && !Me.IsOnTransport && !Me.HasAura("Food") && !Me.HasAura("Drink"),
+                        new PrioritySelector(
+                            //flask,type=spring_blossoms
+                            //food,type=sea_mist_rice_noodles
+                            Common.HandleCompulsoryShamanBuffs(),
+                            //virmens_bite_potion
+                            Common.HandleTotemRecall()
+                )));
             }
         }
 
@@ -176,8 +251,27 @@ namespace CLU.Classes.Shaman
 
         public override Composite PVPRotation
         {
-            get {
-                return this.SingleRotation;
+            get
+            {
+                return (
+                    new PrioritySelector(
+                    //new Action(a => { CLU.Log("I am the start of public override Composite PVPRotation"); return RunStatus.Failure; }),
+                        CrowdControl.freeMe(),
+                        new Decorator(ret => Macro.Manual || BotChecker.BotBaseInUse("BGBuddy"),
+                            new Decorator(ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget),
+                                new PrioritySelector(
+                                    new Decorator(ret => Macro.rotationSwap && !BotChecker.BotBaseInUse("BGbuddy"), wepSwapDefensive),
+                                    new Decorator(ret => !Macro.rotationSwap && !BotChecker.BotBaseInUse("BGbuddy"), wepSwapOffensive),
+                                    Item.UseTrinkets(),
+                                    Buff.CastBuff("Lifeblood", ret => true, "Lifeblood"),
+                                    new Action(delegate
+                                    {
+                                        Macro.isMultiCastMacroInUse();
+                                        return RunStatus.Failure;
+                                    }),
+                                    new Decorator(ret => Macro.Burst, burstRotation),
+                                    new Decorator(ret => !Macro.Burst || BotChecker.BotBaseInUse("BGBuddy"), baseRotation)))
+                )));
             }
         }
 
@@ -187,5 +281,42 @@ namespace CLU.Classes.Shaman
                 return this.SingleRotation;
             }
         }
+
+        #region Weapon swap stuff
+
+        public Composite wepSwapDefensive
+        {
+            get
+            {
+                return (
+                    new Decorator(ret => Me.Inventory.Equipped.OffHand == null && !string.IsNullOrEmpty(CLUSettings.Instance.Warrior.PvPMainHandItemName) && !string.IsNullOrEmpty(CLUSettings.Instance.Warrior.PvPOffHandItemName) && CLUSettings.Instance.Warrior.PvPMainHandItemName != "Input the name of your mainhand weapon here" && CLUSettings.Instance.Warrior.PvPOffHandItemName != "Input the name of your offhand weapon here",
+                        new Action(delegate
+                        {
+                            CLU.Log("Switching to defensive mode. Using MainHand: [{0}] Using OffHand: [{1}]", CLUSettings.Instance.Warrior.PvPMainHandItemName, CLUSettings.Instance.Warrior.PvPOffHandItemName);
+                            Lua.DoString("RunMacroText(\"/equipslot 16 " + CLUSettings.Instance.Warrior.PvPMainHandItemName + "\")");
+                            Lua.DoString("RunMacroText(\"/equipslot 17 " + CLUSettings.Instance.Warrior.PvPOffHandItemName + "\")");
+                            return RunStatus.Failure;
+                        })
+                ));
+            }
+        }
+
+        public Composite wepSwapOffensive
+        {
+            get
+            {
+                return (
+                    new Decorator(ret => Me.Inventory.Equipped.OffHand != null && !string.IsNullOrEmpty(CLUSettings.Instance.Warrior.PvPTwoHandItemName) && CLUSettings.Instance.Warrior.PvPTwoHandItemName != "Input the name of your TwoHand weapon here",
+                        new Action(delegate
+                        {
+                            CLU.Log("Switching to offensive mode. Using TwoHand: [{0}] ", CLUSettings.Instance.Warrior.PvPTwoHandItemName);
+                            Lua.DoString("RunMacroText(\"/equipslot 16 " + CLUSettings.Instance.Warrior.PvPTwoHandItemName + "\")");
+                            Lua.DoString("RunMacroText(\"/equipslot 17 " + CLUSettings.Instance.Warrior.PvPOffHandItemName + "\")");
+                            return RunStatus.Failure;
+                        })
+                ));
+            }
+        }
+        #endregion
     }
 }
