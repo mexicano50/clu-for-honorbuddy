@@ -334,24 +334,24 @@ namespace CLU.Settings
         #region PvP
 
         [Setting]
-        [DefaultValue("Input the name of your mainhand weapon here")]
+        [DefaultValue("Input the name of your Main-Hand weapon here")]
         [Category("PvP")]
-        [DisplayName("PvP Main Hand Item Name")]
-        [Description("Type in the name for your main Hand to use when switching to offensive and devensive (Only used in PvP using Dagradt's PvP Rotations)")]
+        [DisplayName("PvP Main-Hand weapon item name")]
+        [Description("Type in the name of your Main-Hand to use when switching to Devensive Mode. (Only used in PvP when using Dagradt's PvP Rotations)")]
         public string PvPMainHandItemName { get; set; }
 
         [Setting]
-        [DefaultValue("Input the name of your offhand weapon here")]
+        [DefaultValue("Input the name of your Off-Hand weapon here")]
         [Category("PvP")]
-        [DisplayName("PvP Off Hand Item Name")]
-        [Description("Type in the name for your off Hand to use when switching to offensive and devensive (Only used in PvP using Dagradt's PvP Rotations)")]
+        [DisplayName("PvP Off-Hand item name")]
+        [Description("Type in the name of your Off-Hand to use when switching to Devensive Mode. (Only used in PvP when using Dagradt's PvP Rotations)")]
         public string PvPOffHandItemName { get; set; }
 
         [Setting]
-        [DefaultValue("Input the name of your TwoHand weapon here")]
+        [DefaultValue("Input the name of your Two-Hand weapon here")]
         [Category("PvP")]
-        [DisplayName("PvP Two Hand Item Name")]
-        [Description("Type in the name for your Two Hand to use when switching to offensive and devensive (Only used in PvP using Dagradt's PvP Rotations)")]
+        [DisplayName("PvP Two-Hand weapon item name")]
+        [Description("Type in the name of your Two-Hand to use when switching to Offensive Mode. (Only used in PvP when using Dagradt's PvP Rotations)")]
         public string PvPTwoHandItemName { get; set; }
 
         #endregion
