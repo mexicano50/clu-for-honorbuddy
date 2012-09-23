@@ -190,7 +190,7 @@ namespace CLU.Classes.Shaman
                         //earth_elemental_totem,if=!active&cooldown.fire_elemental_totem.remains>=50
                         Spell.CastSpell("Earth Elemental Totem", ret => SpellManager.Spells["Fire Elemental Totem"].CooldownTimeLeft.Seconds >= 50, "Earth Elemental Totem"),
                         //searing_totem,if=!totem.fire.active
-                        Spell.CastSpell("Searing Totem", ret => Totems.Exist(WoWTotemType.Fire), "Searing Totem"),
+                        Spell.CastSpell("Searing Totem", ret => !Totems.Exist(WoWTotemType.Fire), "Searing Totem"),
                         //spiritwalkers_grace,moving=1
                         Spell.CastSelfSpell("Spiritwalker's Grace", ret => Me.IsMoving, "Spiritwalker's Grace"),
                         //unleash_elements,moving=1
