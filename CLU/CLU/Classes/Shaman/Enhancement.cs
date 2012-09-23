@@ -241,6 +241,8 @@ namespace CLU.Classes.Shaman
                             //food,type=sea_mist_rice_noodles
                             Common.HandleCompulsoryShamanBuffs(),
                             //virmens_bite_potion
+                            new Decorator(ret => Macro.rotationSwap && !BotChecker.BotBaseInUse("BGbuddy"), wepSwapDefensive),
+                            new Decorator(ret => !Macro.rotationSwap && !BotChecker.BotBaseInUse("BGbuddy"), wepSwapOffensive),
                             Common.HandleTotemRecall()
                 )));
             }
