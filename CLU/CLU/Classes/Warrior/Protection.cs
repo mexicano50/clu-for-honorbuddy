@@ -117,7 +117,7 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
                          new PrioritySelector(
                              Spell.CastConicSpell("Shockwave", 11f, 33f, ret => true, "Shockwave"),
                              Spell.CastSpell("Cleave",          ret => Buff.PlayerHasActiveBuff("Ultimatum") || Me.RagePercent >= CLUSettings.Instance.Warrior.ProtAoECleaveRagePercent, "Cleave"),
-                             Spell.CastAreaSpell("Thunder Clap", 10, false, CLUSettings.Instance.Warrior.ProtAoECount, 0.0, 0.0, ret => !WoWSpell.FromId(6343).Cooldown, "Thunder Clap"),
+                             Spell.CastAreaSpell("Thunder Clap", 10, false, CLUSettings.Instance.Warrior.ProtAoECount, 0.0, 0.0, ret => !WoWSpell.FromId(6343).Cooldown && Me.IsWithinMeleeRange, "Thunder Clap"),
                              Spell.CastSpell("Intimidating Shout", ret => TalentManager.HasGlyph("Intimidating Shout"), "Intimidating Shout") //only use if glyphed
                              )),
                     // START Main Rotation
@@ -126,7 +126,7 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
                      Spell.CastSpell("Revenge",             ret => true, "Revenge on CD"),
                      Spell.CastSelfSpell("Deadly Calm",     ret => CLUSettings.Instance.Warrior.UseDeadlyCalm && CLUSettings.Instance.UseCooldowns, "Deadly Calm"),
                      Spell.CastSelfSpell("Berserker Rage", ret => Me.CurrentTarget != null && (CLUSettings.Instance.Warrior.UseBerserkerRage && CLUSettings.Instance.UseCooldowns && Me.CurrentTarget.IsWithinMeleeRange), "Berserker Rage"),
-                     Spell.CastAreaSpell("Thunder Clap", 8, false, 1, 0.0, 0.0, ret => !Buff.UnitHasWeakenedBlows(Me.CurrentTarget), "Thunder Clap for Weakened Blows"),
+                     Spell.CastAreaSpell("Thunder Clap", 8, false, 1, 0.0, 0.0, ret => !Buff.UnitHasWeakenedBlows(Me.CurrentTarget) && Me.IsWithinMeleeRange, "Thunder Clap for Weakened Blows"),
                      Buff.CastDebuff("Demoralizing Shout",  ret => Me.CurrentTarget != null && !Buff.UnitHasWeakenedBlows(Me.CurrentTarget) && CLUSettings.Instance.Warrior.UseDemoralizingShout, "Demoralizing Shout"),
                      Spell.CastSpell("Commanding Shout",    ret => Me.RagePercent < 40 && CLUSettings.Instance.Warrior.ShoutSelection == WarriorShout.Commanding, "Commanding Shout for Rage"),
                      Spell.CastSpell("Battle Shout",        ret => Me.RagePercent < 40 && CLUSettings.Instance.Warrior.ShoutSelection == WarriorShout.Battle, "Battle Shout for Rage"),
@@ -167,7 +167,7 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
                         Spell.CastSpell("Shield Slam",              ret => Me.CurrentRage < 75, "Shield Slam"),
                         Spell.CastSpell("Revenge",                  ret => Me.CurrentRage < 75, "revenge"),
                         Spell.CastSpell("Shield Block",             ret => true, "Shield Block"),
-                        Spell.CastSpell("Thunder Clap",             ret => true, "Thunder Clap"),
+                        Spell.CastSpell("Thunder Clap",             ret => Me.IsWithinMeleeRange, "Thunder Clap"),
                         Buff.CastBuff("Battle Shout",               ret => Me.CurrentRage < 80, "Battle Shout"),
                         Spell.CastSpell("Sunder Armor",             ret => true, "Devastate")
                 ));
