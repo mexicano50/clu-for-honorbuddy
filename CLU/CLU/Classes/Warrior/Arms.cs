@@ -116,7 +116,7 @@ namespace CLU.Classes.Warrior
                                     Spell.CastSelfSpell("Deadly Calm", ret => (Me.CurrentRage > 40 || Buff.PlayerCountBuff("Taste For Blood") > 3) && CLUSettings.Instance.Warrior.UseDeadlyCalm, "Deadly Calm"),
                                     Spell.CastSelfSpell("Recklessness", ret => Me.CurrentTarget != null && ((HasColossusSmash || IsColossusSmashOnCooldown) && Unit.IsTargetWorthy(Me.CurrentTarget)) && CLUSettings.Instance.Warrior.UseRecklessness && CLUSettings.Instance.UseCooldowns, "Recklessness"),
                                     Spell.CastAreaSpell("Sweeping Strikes", 5, false, 2, 0.0, 0.0, a => true, "Sweeping Strikes"),
-                                    Spell.CastAreaSpell("Thunder Clap", 5, false, 3, 0.0, 0.0, a => Me.IsWithinMeleeRange, "Thunder Clap"),
+                                    Spell.CastAreaSpell("Thunder Clap", 5, false, 3, 0.0, 0.0, a => Me.CurrentTarget != null && Me.CurrentTarget.IsWithinMeleeRange, "Thunder Clap"),
                                     Spell.CastAreaSpell("Cleave", 5, false, 3, 0.0, 0.0, a => Me.CurrentRage > 40, "Cleave"),
                                     Spell.CastSpell("Dragon Roar",          ret => true, "Dragon Roar"),
                                     Spell.CastAreaSpell("Whirlwind", 5, false, 3, 0.0, 0.0, a => Me.CurrentRage > 50, "Whirlwind"),
