@@ -64,7 +64,7 @@ namespace CLU.CombatLog
                 Lua.Events.AttachEvent("PARTY_MEMBERS_CHANGED", this.HandlePartyMembersChanged);
 
                 if ((CLU.LocationContext != GroupLogic.Battleground &&
-                !StyxWoW.Me.CurrentMap.IsRaid) || TalentManager.CurrentSpec == WoWSpec.DruidFeral)
+                !StyxWoW.Me.CurrentMap.IsRaid && CLU.LocationContext != GroupLogic.PVE) || TalentManager.CurrentSpec == WoWSpec.DruidFeral)
                     AttachCombatLogEvent();
             }
             catch (Exception ex)
@@ -144,7 +144,7 @@ namespace CLU.CombatLog
             try {
 
                 if ((CLU.LocationContext == GroupLogic.Battleground ||
-                StyxWoW.Me.CurrentMap.IsRaid) && TalentManager.CurrentSpec != WoWSpec.DruidFeral)
+                StyxWoW.Me.CurrentMap.IsRaid || CLU.LocationContext == GroupLogic.PVE) && TalentManager.CurrentSpec != WoWSpec.DruidFeral)
                     DetachCombatLogEvent();
                 else
                     AttachCombatLogEvent();
