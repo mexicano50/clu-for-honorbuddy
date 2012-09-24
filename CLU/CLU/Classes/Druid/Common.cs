@@ -161,5 +161,44 @@ namespace CLU.Classes.Druid
                 return Buff.PlayerHasBuff("Incarnation: King of the Jungle") || Buff.PlayerHasBuff("Prowl");
             }
         }
+
+        /// <summary>
+        /// Checks which Eclipse we have if any and based of that and what increment we are current on within the Eclips meter we can determine which spell can be cast and which direction we are going
+        /// </summary>
+        /// <returns>A numeric value for Right/Left or Centered</returns>
+        public static int goingDir()
+        {
+            //We have the Lunar buff and are casting at Starfire increments
+            if (Buff.PlayerHasBuff("Eclipse (Lunar)") && (Me.CurrentEclipse == -100 || Me.CurrentEclipse == -80 || Me.CurrentEclipse == -60 || Me.CurrentEclipse == -40 || Me.CurrentEclipse == -20))
+            {
+                return +1;
+            }
+            //We have no buff but are still casting at Starfire increments
+            if (!Buff.PlayerHasBuff("Eclipse (Lunar)") && !Buff.PlayerHasBuff("Eclipse (Solar)") && (Me.CurrentEclipse == 0 || Me.CurrentEclipse == +40 || Me.CurrentEclipse == +80))
+            {
+                return +1;
+            }
+            //We have the solar buff and are casting at Wrath increments
+            if (Buff.PlayerHasBuff("Eclipse (Solar)") && (Me.CurrentEclipse == +100 || Me.CurrentEclipse == +85 || Me.CurrentEclipse == +70 || Me.CurrentEclipse == +55 || Me.CurrentEclipse == +40 || Me.CurrentEclipse == +25 || Me.CurrentEclipse == +10))
+            {
+                return -1;
+            }
+            //We have no buff and are still casting at Wrath increments
+            if (!Buff.PlayerHasBuff("Eclipse (Solar)") && !Buff.PlayerHasBuff("Eclipse (Lunar)") && (Me.CurrentEclipse == -5 || Me.CurrentEclipse == -35 || Me.CurrentEclipse == -65 || Me.CurrentEclipse == -95))
+            {
+                return -1;
+            }
+            //Assume we have yet to start combat and we can go either direction
+            return 0;
+        }
+
+        /// <summary>
+        /// Returns the Eclipse direction we are going
+        /// </summary>
+        /// <returns>Eclipse direction</returns>
+        public static int eclipseDir()
+        {
+            return goingDir();
+        }
     }
 }
