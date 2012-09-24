@@ -169,60 +169,75 @@ namespace CLU.Classes.Druid
             {
                 return (
                     new PrioritySelector(
-                        //new Action(a => { CLU.Log("I am the start of public Composite baseRotation"); return RunStatus.Failure; }),
-                        //PvP Utilities
+                        #region Boomkin Form
+                        new Decorator(ret => Buff.PlayerHasBuff("Boomkin Form"),
+                            new PrioritySelector(
+                                //new Action(a => { CLU.Log("I am the start of public Composite baseRotation"); return RunStatus.Failure; }),
+                                //PvP Utilities
 
-                        //Rotation
-                        //jade_serpent_potion,if=buff.bloodlust.react|target.time_to_die<=40|buff.celestial_alignment.up
-                        //starfall,if=!buff.starfall.up
-                        Spell.CastSpell("Starfall", ret => !Buff.PlayerHasBuff("Starfall"), "Starfall"),
-                        //treants,if=talent.force_of_nature.enabled
-                        Spell.CastSpell("Force of Nature", ret => TalentManager.HasTalent(12), "Force of Nature"),
-                        //berserking
-                        Racials.UseRacials(),
-                        //wild_mushroom_detonate,moving=0,if=buff.wild_mushroom.stack>0&buff.solar_eclipse.up
-                        Spell.CastSpell("Wild Mushroom: Detonate", ret => !Me.IsMoving && MushroomCount > 0 && Buff.PlayerHasBuff("Eclipse (Solar)"), "Wild Mushroom: Detonate"),
-                        //natures_swiftness,if=talent.dream_of_cenarius.enabled&talent.natures_swiftness.enabled
-                        Spell.CastSelfSpell("Nature's Swiftness", ret => TalentManager.HasTalent(17) && TalentManager.HasTalent(4), "Nature's Swiftness"),
-                        //healing_touch,if=!buff.dream_of_cenarius_damage.up&talent.dream_of_cenarius.enabled
-                        Spell.CastHeal("Healing Touch", ret => !Buff.PlayerHasActiveBuff(108381) && TalentManager.HasTalent(17), "Healing Touch"),
-                        //incarnation,if=talent.incarnation.enabled&(buff.lunar_eclipse.up|buff.solar_eclipse.up)
-                        Spell.CastSelfSpell("Incarnation", ret => TalentManager.HasTalent(11) && (Buff.PlayerHasBuff("Eclipse (Lunar)") || Buff.PlayerHasBuff("Eclipse (Solar)")), "Incarnation"),
-                        //celestial_alignment,if=((eclipse_dir=-1&eclipse<=0)|(eclipse_dir=1&eclipse>=0))&(buff.chosen_of_elune.up|!talent.incarnation.enabled)
-                        Spell.CastSelfSpell("Celestial Alignment", ret => ((Common.eclipseDir() == -1 && Me.CurrentEclipse <= 0) || (Common.eclipseDir() == 1 && Me.CurrentEclipse >= 0)) && (Buff.PlayerHasActiveBuff("Incarnation: Chosen of Elune") || !TalentManager.HasTalent(11)), "Celestial Alignment"),
-                        //natures_vigil,if=((talent.incarnation.enabled&buff.chosen_of_elune.up)|(!talent.incarnation.enabled&buff.celestial_alignment.up))&talent.natures_vigil.enabled
-                        Spell.CastSelfSpell("Nature's Vigil", ret => ((TalentManager.HasTalent(11) && Buff.PlayerHasActiveBuff("Incarnation: Chosen of Elune")) || (!TalentManager.HasTalent(11) && Buff.PlayerHasActiveBuff("Celestial Alignment"))) && TalentManager.HasTalent(18), "Nature's Vigil"),
-                        //wrath,if=eclipse<=-70&eclipse_dir<=0
-                        Spell.CastSpell("Wrath", ret => Me.CurrentEclipse <= -70 && Common.eclipseDir() <= 0, "Wrath"),
-                        //starfire,if=eclipse>=60&eclipse_dir>=0
-                        Spell.CastSpell("Starfire", ret => Me.CurrentEclipse >= 60 && Common.eclipseDir() >= 0, "Starfire"),
-                        //J	15.60	moonfire,if=buff.lunar_eclipse.up&(dot.moonfire.remains<(buff.natures_grace.remains-2+2*set_bonus.tier14_4pc_caster))
-                        //K	11.96	sunfire,if=buff.solar_eclipse.up&!buff.celestial_alignment.up&(dot.sunfire.remains<(buff.natures_grace.remains-2+2*set_bonus.tier14_4pc_caster))
-                        //moonfire,if=!dot.moonfire.ticking&!buff.celestial_alignment.up&(buff.dream_of_cenarius_damage.up|!talent.dream_of_cenarius.enabled)
-                        Spell.CastSpell("Moonfire", ret => !Buff.TargetHasDebuff("Moonfire") && !Buff.PlayerHasActiveBuff("Celestial Alignment") && (Buff.PlayerHasActiveBuff(108381) || !TalentManager.HasTalent(17)), "Sunfire"),
-                        //sunfire,if=!dot.sunfire.ticking&!buff.celestial_alignment.up&(buff.dream_of_cenarius_damage.up|!talent.dream_of_cenarius.enabled)
-                        Spell.CastSpell("Sunfire", ret => !Buff.TargetHasDebuff("Sunfire") && !Buff.PlayerHasActiveBuff("Celestial Alignment") && (Buff.PlayerHasActiveBuff(108381) || !TalentManager.HasTalent(17)), "Sunfire"),
-                        //starsurge
-                        Spell.CastSpell("Starsurge", ret => true, "Starsurge"),
-                        //starfire,if=buff.celestial_alignment.up&cast_time<buff.celestial_alignment.remains
-                        Spell.CastSpell("Starfire", ret => Buff.PlayerHasActiveBuff("Celestial Alignment") && SpellManager.Spells["Starfire"].CastTime < Buff.PlayerActiveBuffTimeLeft("Celestial Alignment").TotalSeconds, "Starfire"),
-                        //wrath,if=buff.celestial_alignment.up&cast_time<buff.celestial_alignment.remains
-                        Spell.CastSpell("Wrath", ret => Buff.PlayerHasActiveBuff("Celestial Alignment") && SpellManager.Spells["Wrath"].CastTime < Buff.PlayerActiveBuffTimeLeft("Celestial Alignment").TotalSeconds, "Wrath"),
-                        //starfire,if=eclipse_dir=1|(eclipse_dir=0&eclipse>0)
-                        Spell.CastSpell("Starfire", ret => Common.eclipseDir() == 1 || (Common.eclipseDir() == 0 && Me.CurrentEclipse > 0), "Starfire"),
-                        //wrath,if=eclipse_dir=-1|(eclipse_dir=0&eclipse<=0)
-                        Spell.CastSpell("Wrath", ret => Common.eclipseDir() == -1 || (Common.eclipseDir() == 0 && Me.CurrentEclipse <= 0), "Wrath"),
-                        //moonfire,moving=1,if=!dot.sunfire.ticking
-                        Spell.CastSpell("Moonfire", ret => Me.IsMoving && !Buff.TargetHasDebuff("Sunfire"), "Moonfire"),
-                        //sunfire,moving=1,if=!dot.moonfire.ticking
-                        Spell.CastSpell("Sunfire", ret => Me.IsMoving && !Buff.TargetHasDebuff("Moonfire"), "Sunfire"),
-                        //U	0.00	wild_mushroom,moving=1,if=buff.wild_mushroom.stack<5
-                        //starsurge,moving=1,if=buff.shooting_stars.react
-                        Spell.CastSpell("Starsurge", ret => Me.IsMoving && Buff.PlayerHasActiveBuff("Shooting Stars"), "Starsurge"),
-                        //moonfire,moving=1,if=buff.lunar_eclipse.up
-                        Spell.CastSpell("Moonfire", ret => Me.IsMoving && Buff.PlayerHasBuff("Eclipse (Lunar)"), "Moonfire"),
-                        //sunfire,moving=1
-                        Spell.CastSpell("Sunfire", ret => Me.IsMoving, "Sunfire")
+                                //Rotation
+                                //jade_serpent_potion,if=buff.bloodlust.react|target.time_to_die<=40|buff.celestial_alignment.up
+                                new Decorator(ret => !Me.IsMoving,
+                                    new PrioritySelector(
+                                        //starfall,if=!buff.starfall.up
+                                        Spell.CastSpell("Starfall", ret => !Buff.PlayerHasBuff("Starfall"), "Starfall"),
+                                        //treants,if=talent.force_of_nature.enabled
+                                        Spell.CastSpell("Force of Nature", ret => TalentManager.HasTalent(12), "Force of Nature"),
+                                        //berserking
+                                        Racials.UseRacials(),
+                                        //wild_mushroom_detonate,moving=0,if=buff.wild_mushroom.stack>0&buff.solar_eclipse.up
+                                        Spell.CastSpell("Wild Mushroom: Detonate", ret => !Me.IsMoving && MushroomCount > 0 && Buff.PlayerHasBuff("Eclipse (Solar)"), "Wild Mushroom: Detonate"),
+                                        //natures_swiftness,if=talent.dream_of_cenarius.enabled&talent.natures_swiftness.enabled
+                                        Spell.CastSelfSpell("Nature's Swiftness", ret => TalentManager.HasTalent(17) && TalentManager.HasTalent(4), "Nature's Swiftness"),
+                                        //healing_touch,if=!buff.dream_of_cenarius_damage.up&talent.dream_of_cenarius.enabled
+                                        Spell.CastHeal("Healing Touch", ret => !Buff.PlayerHasActiveBuff(108381) && TalentManager.HasTalent(17), "Healing Touch"),
+                                        //incarnation,if=talent.incarnation.enabled&(buff.lunar_eclipse.up|buff.solar_eclipse.up)
+                                        Spell.CastSelfSpell("Incarnation", ret => TalentManager.HasTalent(11) && (Buff.PlayerHasBuff("Eclipse (Lunar)") || Buff.PlayerHasBuff("Eclipse (Solar)")), "Incarnation"),
+                                        //celestial_alignment,if=((eclipse_dir=-1&eclipse<=0)|(eclipse_dir=1&eclipse>=0))&(buff.chosen_of_elune.up|!talent.incarnation.enabled)
+                                        Spell.CastSelfSpell("Celestial Alignment", ret => ((Common.eclipseDir() == -1 && Me.CurrentEclipse <= 0) || (Common.eclipseDir() == 1 && Me.CurrentEclipse >= 0)) && (Buff.PlayerHasActiveBuff("Incarnation: Chosen of Elune") || !TalentManager.HasTalent(11)), "Celestial Alignment"),
+                                        //natures_vigil,if=((talent.incarnation.enabled&buff.chosen_of_elune.up)|(!talent.incarnation.enabled&buff.celestial_alignment.up))&talent.natures_vigil.enabled
+                                        Spell.CastSelfSpell("Nature's Vigil", ret => ((TalentManager.HasTalent(11) && Buff.PlayerHasActiveBuff("Incarnation: Chosen of Elune")) || (!TalentManager.HasTalent(11) && Buff.PlayerHasActiveBuff("Celestial Alignment"))) && TalentManager.HasTalent(18), "Nature's Vigil"),
+                                        //wrath,if=eclipse<=-70&eclipse_dir<=0
+                                        Spell.CastSpell("Wrath", ret => Me.CurrentEclipse <= -70 && Common.eclipseDir() <= 0, "Wrath"),
+                                        //starfire,if=eclipse>=60&eclipse_dir>=0
+                                        Spell.CastSpell("Starfire", ret => Me.CurrentEclipse >= 60 && Common.eclipseDir() >= 0, "Starfire"),
+                                        //J	15.60	moonfire,if=buff.lunar_eclipse.up&(dot.moonfire.remains<(buff.natures_grace.remains-2+2*set_bonus.tier14_4pc_caster))
+                                        //K	11.96	sunfire,if=buff.solar_eclipse.up&!buff.celestial_alignment.up&(dot.sunfire.remains<(buff.natures_grace.remains-2+2*set_bonus.tier14_4pc_caster))
+                                        //moonfire,if=!dot.moonfire.ticking&!buff.celestial_alignment.up&(buff.dream_of_cenarius_damage.up|!talent.dream_of_cenarius.enabled)
+                                        Spell.CastSpell("Moonfire", ret => !Buff.TargetHasDebuff("Moonfire") && !Buff.PlayerHasActiveBuff("Celestial Alignment") && (Buff.PlayerHasActiveBuff(108381) || !TalentManager.HasTalent(17)), "Sunfire"),
+                                        //sunfire,if=!dot.sunfire.ticking&!buff.celestial_alignment.up&(buff.dream_of_cenarius_damage.up|!talent.dream_of_cenarius.enabled)
+                                        Spell.CastSpell("Sunfire", ret => !Buff.TargetHasDebuff("Sunfire") && !Buff.PlayerHasActiveBuff("Celestial Alignment") && (Buff.PlayerHasActiveBuff(108381) || !TalentManager.HasTalent(17)), "Sunfire"),
+                                        //starsurge
+                                        Spell.CastSpell("Starsurge", ret => true, "Starsurge"),
+                                        //starfire,if=buff.celestial_alignment.up&cast_time<buff.celestial_alignment.remains
+                                        Spell.CastSpell("Starfire", ret => Buff.PlayerHasActiveBuff("Celestial Alignment") && SpellManager.Spells["Starfire"].CastTime < Buff.PlayerActiveBuffTimeLeft("Celestial Alignment").TotalSeconds, "Starfire"),
+                                        //wrath,if=buff.celestial_alignment.up&cast_time<buff.celestial_alignment.remains
+                                        Spell.CastSpell("Wrath", ret => Buff.PlayerHasActiveBuff("Celestial Alignment") && SpellManager.Spells["Wrath"].CastTime < Buff.PlayerActiveBuffTimeLeft("Celestial Alignment").TotalSeconds, "Wrath"),
+                                        //starfire,if=eclipse_dir=1|(eclipse_dir=0&eclipse>0)
+                                        Spell.CastSpell("Starfire", ret => Common.eclipseDir() == 1 || (Common.eclipseDir() == 0 && Me.CurrentEclipse > 0), "Starfire"),
+                                        //wrath,if=eclipse_dir=-1|(eclipse_dir=0&eclipse<=0)
+                                        Spell.CastSpell("Wrath", ret => Common.eclipseDir() == -1 || (Common.eclipseDir() == 0 && Me.CurrentEclipse <= 0), "Wrath"))),
+                                new Decorator(ret => Me.IsMoving,
+                                    new PrioritySelector(
+                                        //moonfire,moving=1,if=!dot.sunfire.ticking
+                                        Spell.CastSpell("Moonfire", ret => Me.IsMoving && !Buff.TargetHasDebuff("Sunfire"), "Moonfire"),
+                                        //sunfire,moving=1,if=!dot.moonfire.ticking
+                                        Spell.CastSpell("Sunfire", ret => Me.IsMoving && !Buff.TargetHasDebuff("Moonfire"), "Sunfire"),
+                                        //U	0.00	wild_mushroom,moving=1,if=buff.wild_mushroom.stack<5
+                                        //starsurge,moving=1,if=buff.shooting_stars.react
+                                        Spell.CastSpell("Starsurge", ret => Me.IsMoving && Buff.PlayerHasActiveBuff("Shooting Stars"), "Starsurge"),
+                                        //moonfire,moving=1,if=buff.lunar_eclipse.up
+                                        Spell.CastSpell("Moonfire", ret => Me.IsMoving && Buff.PlayerHasBuff("Eclipse (Lunar)"), "Moonfire"),
+                                        //sunfire,moving=1
+                                        Spell.CastSpell("Sunfire", ret => Me.IsMoving, "Sunfire")))
+                        )),
+                        #endregion
+
+                        #region Bear Form
+                        new Decorator(ret => Buff.PlayerHasBuff("Bear Form"),
+                            new PrioritySelector(
+                        ))
+                        #endregion
                 ));
             }
         }

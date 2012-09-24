@@ -165,7 +165,7 @@ namespace CLU.Classes.Druid
         public static string lastEclipse;
 
         /// <summary>
-        /// Checks which Eclipse we have if any and based of that and what increment we are current on within the Eclips meter we can determine which spell can be cast and which direction we are going
+        /// Checks which Eclipse we have if any, and returns which direction we are going
         /// </summary>
         /// <returns>A numeric value for Right/Left or Centered && our last gained Eclipse</returns>
         public static int goingDir()
