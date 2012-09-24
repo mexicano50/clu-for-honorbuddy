@@ -41,6 +41,19 @@ namespace CLU.Settings
             set;
         }
 
+
+        [Setting]
+        [DefaultValue(55)]
+        [Category("Common")]
+        [DisplayName("Word of Glory Health")]
+        [Description("Word of Glory will be used at this value (Warning Shared setting for Protection and Retribution, Holy does not use this setting.)")]
+        public int WordofGloryPercent
+        {
+            get;
+            set;
+        }
+
+
         [Setting]
         [DefaultValue(40)]
         [Category("Common")]
@@ -151,16 +164,6 @@ namespace CLU.Settings
             set;
         }
 
-        [Setting]
-        [DefaultValue(55)]
-        [Category("Protection")]
-        [DisplayName("Word of Glory Health")]
-        [Description("Word of Glory will be used at this value")]
-        public int WordofGloryPercent
-        {
-            get;
-            set;
-        }
 
 
         [Setting]
