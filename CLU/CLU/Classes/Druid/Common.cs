@@ -162,29 +162,46 @@ namespace CLU.Classes.Druid
             }
         }
 
+        //public static string lastEclipse()
+        //{
+        //    if (Buff.PlayerHasBuff("Eclipse (Lunar)"))
+        //    {
+        //        return "Lunar";
+        //    }
+        //    if (Buff.PlayerHasBuff("Eclipse (Solar)"))
+        //    {
+        //        return "Solar";
+        //    }
+        //    return "None";
+        //}
+
+        public static string lastEclipse;
+
         /// <summary>
         /// Checks which Eclipse we have if any and based of that and what increment we are current on within the Eclips meter we can determine which spell can be cast and which direction we are going
         /// </summary>
         /// <returns>A numeric value for Right/Left or Centered</returns>
         public static int goingDir()
         {
-            //We have the Lunar buff and are casting at Starfire increments
-            if (Buff.PlayerHasBuff("Eclipse (Lunar)") && (Me.CurrentEclipse == -100 || Me.CurrentEclipse == -80 || Me.CurrentEclipse == -60 || Me.CurrentEclipse == -40 || Me.CurrentEclipse == -20))
+            //We have the Lunar buff and are casting at Starfire increments(Me.CurrentEclipse == -100 || Me.CurrentEclipse == -80 || Me.CurrentEclipse == -60 || Me.CurrentEclipse == -40 || Me.CurrentEclipse == -20))
+            if (Buff.PlayerHasBuff("Eclipse (Lunar)") && Me.CurrentEclipse >= -100 && Me.CurrentEclipse <= -1)
+            {
+                lastEclipse = "Lunar";
+                return +1;
+            }
+            //We have no buff but are still casting at Starfire increments(Me.CurrentEclipse == 0 || Me.CurrentEclipse == +40 || Me.CurrentEclipse == +80))
+            if (!Buff.PlayerHasBuff("Eclipse (Lunar)") && !Buff.PlayerHasBuff("Eclipse (Solar)") && Me.CurrentEclipse >= 0 && lastEclipse == "Lunar")//and lastEclipse == "Lunar"
             {
                 return +1;
             }
-            //We have no buff but are still casting at Starfire increments
-            if (!Buff.PlayerHasBuff("Eclipse (Lunar)") && !Buff.PlayerHasBuff("Eclipse (Solar)") && (Me.CurrentEclipse == 0 || Me.CurrentEclipse == +40 || Me.CurrentEclipse == +80))
+            //We have the solar buff and are casting at Wrath increments(Me.CurrentEclipse == +100 || Me.CurrentEclipse == +85 || Me.CurrentEclipse == +70 || Me.CurrentEclipse == +55 || Me.CurrentEclipse == +40 || Me.CurrentEclipse == +25 || Me.CurrentEclipse == +10))
+            if (Buff.PlayerHasBuff("Eclipse (Solar)") && Me.CurrentEclipse <= 100 && Me.CurrentEclipse >= 1)
             {
-                return +1;
-            }
-            //We have the solar buff and are casting at Wrath increments
-            if (Buff.PlayerHasBuff("Eclipse (Solar)") && (Me.CurrentEclipse == +100 || Me.CurrentEclipse == +85 || Me.CurrentEclipse == +70 || Me.CurrentEclipse == +55 || Me.CurrentEclipse == +40 || Me.CurrentEclipse == +25 || Me.CurrentEclipse == +10))
-            {
+                lastEclipse = "Solar";
                 return -1;
             }
-            //We have no buff and are still casting at Wrath increments
-            if (!Buff.PlayerHasBuff("Eclipse (Solar)") && !Buff.PlayerHasBuff("Eclipse (Lunar)") && (Me.CurrentEclipse == -5 || Me.CurrentEclipse == -35 || Me.CurrentEclipse == -65 || Me.CurrentEclipse == -95))
+            //We have no buff and are still casting at Wrath increments(Me.CurrentEclipse == -5 || Me.CurrentEclipse == -35 || Me.CurrentEclipse == -65 || Me.CurrentEclipse == -95))
+            if (!Buff.PlayerHasBuff("Eclipse (Solar)") && !Buff.PlayerHasBuff("Eclipse (Lunar)") && Me.CurrentEclipse <= 0 && lastEclipse == "Solar")//and lastEclipse == "Solar"
             {
                 return -1;
             }
