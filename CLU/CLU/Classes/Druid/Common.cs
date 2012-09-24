@@ -162,25 +162,29 @@ namespace CLU.Classes.Druid
             }
         }
 
-        //public static string lastEclipse()
-        //{
-        //    if (Buff.PlayerHasBuff("Eclipse (Lunar)"))
-        //    {
-        //        return "Lunar";
-        //    }
-        //    if (Buff.PlayerHasBuff("Eclipse (Solar)"))
-        //    {
-        //        return "Solar";
-        //    }
-        //    return "None";
-        //}
+        /// <summary>
+        /// Checks to see if we've capped one side of the Eclipse meter and gained an Eclipse
+        /// </summary>
+        /// <returns>Yes or No</returns>
+        public static bool didICap()
+        {
+            if (Buff.PlayerHasBuff("Eclipse (Lunar)"))
+            {
+                return true;
+            }
+            if (Buff.PlayerHasBuff("Eclipse (Solar)"))
+            {
+                return true;
+            }
+            return false;
+        }
 
         public static string lastEclipse;
 
         /// <summary>
         /// Checks which Eclipse we have if any and based of that and what increment we are current on within the Eclips meter we can determine which spell can be cast and which direction we are going
         /// </summary>
-        /// <returns>A numeric value for Right/Left or Centered</returns>
+        /// <returns>A numeric value for Right/Left or Centered && our last gained Eclipse</returns>
         public static int goingDir()
         {
             //We have the Lunar buff and are casting at Starfire increments(Me.CurrentEclipse == -100 || Me.CurrentEclipse == -80 || Me.CurrentEclipse == -60 || Me.CurrentEclipse == -40 || Me.CurrentEclipse == -20))
