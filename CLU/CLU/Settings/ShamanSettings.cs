@@ -13,6 +13,7 @@
 // This file was part of Singular - A community driven Honorbuddy CC
 
 using System.ComponentModel;
+using CLU.Base;
 using Styx.Helpers;
 using DefaultValue = Styx.Helpers.DefaultValueAttribute;
 
@@ -41,6 +42,18 @@ namespace CLU.Settings
         }
 
         [Setting]
+        [DefaultValue(StormlashTotem.OnHaste)]
+        [Category("Common")]
+        [DisplayName("Stormlash Totem Usage")]
+        [Description("Will pop Stormlash Totem. Will pop Stormlash Totem on Heroism, Bloodlust, or any of the Haste buffs, or Cooldown or never.")]
+        public StormlashTotem UseStormlashTotem
+        {
+            get;
+            set;
+        }
+
+        [Browsable(false)]
+        [Setting]
         [DefaultValue(WoWTotem.None)]
         [Category("Elemental Totems")]
         [DisplayName("EarthTotem")]
@@ -51,6 +64,7 @@ namespace CLU.Settings
             set;
         }
 
+        [Browsable(false)]
         [Setting]
         [DefaultValue(WoWTotem.None)]
         [Category("Elemental Totems")]
@@ -62,6 +76,7 @@ namespace CLU.Settings
             set;
         }
 
+        [Browsable(false)]
         [Setting]
         [DefaultValue(WoWTotem.None)]
         [Category("Elemental Totems")]
@@ -84,6 +99,7 @@ namespace CLU.Settings
         //    set;
         //}
 
+        [Browsable(false)]
         [Setting]
         [DefaultValue(WoWTotem.None)]
         [Category("Enhancement Totems")]
@@ -95,6 +111,7 @@ namespace CLU.Settings
             set;
         }
 
+        [Browsable(false)]
         [Setting]
         [DefaultValue(WoWTotem.None)]
         [Category("Enhancement Totems")]
@@ -106,6 +123,7 @@ namespace CLU.Settings
             set;
         }
 
+        [Browsable(false)]
         [Setting]
         [DefaultValue(WoWTotem.None)]
         [Category("Enhancement Totems")]
@@ -128,6 +146,7 @@ namespace CLU.Settings
         //    set;
         //}
 
+        [Browsable(false)]
         [Setting]
         [DefaultValue(WoWTotem.None)]
         [Category("Restoration Totems")]
@@ -139,6 +158,7 @@ namespace CLU.Settings
             set;
         }
 
+        [Browsable(false)]
         [Setting]
         [DefaultValue(WoWTotem.None)]
         [Category("Restoration Totems")]
@@ -150,6 +170,7 @@ namespace CLU.Settings
             set;
         }
 
+        [Browsable(false)]
         [Setting]
         [DefaultValue(WoWTotem.None)]
         [Category("Restoration Totems")]

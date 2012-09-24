@@ -16,7 +16,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using CLU.Base;
-
+using CLU.Settings;
 using Styx;
 
 using Styx.CommonBot;
@@ -141,8 +141,8 @@ namespace CLU.Classes.Shaman
 
                 Spell.CastSpell("Stormlash Totem",
                     ret => ((bool)ret)
-                        && Me.HasAnyAura(Me.IsHorde ? "Bloodlust" : "Heroism", "Timewarp", "Ancient Hysteria")
-                        && !Exist(WoWTotemType.Air),"Stormlash Totem")
+                        && ((CLUSettings.Instance.Shaman.UseStormlashTotem == StormlashTotem.OnHaste && Me.HasAnyAura(Me.IsHorde ? "Bloodlust" : "Heroism", "Timewarp", "Ancient Hysteria") || CLUSettings.Instance.Shaman.UseStormlashTotem == StormlashTotem.OnCooldown)
+                        && !Exist(WoWTotemType.Air)),"Stormlash Totem")
 
                 );
 

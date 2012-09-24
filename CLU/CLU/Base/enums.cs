@@ -34,8 +34,15 @@ namespace CLU.Base
 
     public enum Burst {
         onBoss,
-        onMob
+        onMob,
     }
+
+     public enum StormlashTotem
+     {
+        OnCooldown,
+        OnHaste,
+        Never
+     }
 
     public enum DeathKnightTierOneTalent {
         PlagueLeech,
