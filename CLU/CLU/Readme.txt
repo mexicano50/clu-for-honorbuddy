@@ -13,7 +13,7 @@
 
 CLU (Codified Likeness Utility) the Rotation CC for Combat/Raid/Lazyraider bots Powered by Felmaster technology
 
-Current Issues Updated: 20/September/2012
+Current Issues Updated: 24/September/2012
 =================================
 None. - well maybe a few :P
 
@@ -79,8 +79,8 @@ Three Rotation Modes - Single, PVE, PVP
 
 * Druid
 - [T] Balance
-- [PC] Feral
-- [PC] Guardian	
+- [T] Feral
+- [T] Guardian	
 - [U] Restoration
 
 * Hunter
@@ -91,7 +91,7 @@ Three Rotation Modes - Single, PVE, PVP
 * Mage
 - [T] Arcane
 - [T] Fire
-- [U] Frost
+- [T] Frost
 
 * Monk
 - [U] Brewmaster
@@ -105,13 +105,13 @@ Three Rotation Modes - Single, PVE, PVP
 
 * Priest
 - [T] Shadow
-- [U] Discipline
-- [U] Holy	
+- [T] Discipline
+- [T] Holy	
 
 * Rogue
 - [T] Assassination
 - [T] Combat
-- [U] Subtlety	
+- [T] Subtlety	
 
 * Shaman
 - [U] Elemental	 	
@@ -211,6 +211,8 @@ Miscellaneous functionality
 - Emergency healing via class specific spells/abilities.
 - Will Drink and Eat food
 
+
+
 Managers
 ------------------
 
@@ -236,6 +238,7 @@ Movement
 CLU will take over movement when the botbase (questing, bgbuddy,gatherbuddy,etc) gives control to CLU.
 
  * Overview:
+- Blacklist EVADE/IMMUNE units.	
 - Acquire Target
 - Face Target
 - Move to Location (LoS)
@@ -250,7 +253,8 @@ Targeting
 
 CLU will take over targeting when the botbase (questing, bgbuddy,gatherbuddy,etc) gives control to CLU.
 
-* Target Priority:	
+* Target Priority:
+- Blacklist EVADE/IMMUNE units.	
 - If we have a RaF leader, then use its target.
 - Healers first (Battlegrounds/arenas)
 - Enemy’s  Attacking Us  (Battlegrounds/arenas)
