@@ -62,8 +62,10 @@ namespace CLU.CombatLog
                 Lua.Events.AttachEvent("UNIT_SPELLCAST_STOP", this.OnSpellFired_FAIL);
                 CLU.TroubleshootLog("CombatLogEvents: Connect PARTY_MEMBERS_CHANGED");
                 Lua.Events.AttachEvent("PARTY_MEMBERS_CHANGED", this.HandlePartyMembersChanged);
-                
-                AttachCombatLogEvent();
+
+                if ((CLU.LocationContext != GroupLogic.Battleground &&
+                !StyxWoW.Me.CurrentMap.IsRaid) || TalentManager.CurrentSpec == WoWSpec.DruidFeral)
+                    AttachCombatLogEvent();
             }
             catch (Exception ex)
             { 
@@ -140,6 +142,12 @@ namespace CLU.CombatLog
         public void Player_OnMapChanged(BotEvents.Player.MapChangedEventArgs args)
         {
             try {
+
+                if ((CLU.LocationContext == GroupLogic.Battleground ||
+                StyxWoW.Me.CurrentMap.IsRaid) && TalentManager.CurrentSpec != WoWSpec.DruidFeral)
+                    DetachCombatLogEvent();
+                else
+                    AttachCombatLogEvent();
 
                 //Why would we create same behaviors all over ?
                 if (CLU.LastLocationContext == CLU.LocationContext)
