@@ -155,7 +155,7 @@ namespace CLU.Settings
         #region Assassination
 
         [Setting]
-        [DefaultValue(4)]
+        [DefaultValue(5)]
         [Category("Assasination Spec")]
         [DisplayName("Fan of Knives Add Count")]
         [Description("Will use Fan of Knives when agro mob count is equal to or higher then this value.")]

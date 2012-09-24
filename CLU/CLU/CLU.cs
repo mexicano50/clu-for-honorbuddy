@@ -502,6 +502,11 @@ namespace CLU
 
         public override void Pulse()
         {
+            if (!Me.IsValid || !StyxWoW.IsInGame)
+            {
+                return;
+            }
+
             PulseHander handler = this.PulseEvent;
 
             if (handler != null)
@@ -509,10 +514,6 @@ namespace CLU
                 handler();
             }
 
-            if (!Me.IsValid || !StyxWoW.IsInGame)
-            {
-                return;
-            }
             switch (StyxWoW.Me.Class)
             {
                 case WoWClass.Hunter:

@@ -12,6 +12,7 @@
 
 #endregion
 
+using System.Collections.Generic;
 using System.Linq;
 
 using CLU.Base;
@@ -26,6 +27,7 @@ using JetBrains.Annotations;
 using Styx;
 using Styx.CommonBot;
 using Styx.TreeSharp;
+using Styx.WoWInternals.WoWObjects;
 
 using Rest = CLU.Base.Rest;
 
@@ -34,6 +36,9 @@ namespace CLU.Classes.Rogue
     [UsedImplicitly]
     public class Assassination : RotationBase
     {
+        private const string DispatchOverride = "Sinister Strike";
+        private const string EnvenomOverride = "Eviscerate";
+
         #region Public Properties
 
         public override float CombatMaxDistance
@@ -152,39 +157,64 @@ namespace CLU.Classes.Rogue
             {
                 return new PrioritySelector
                     (new Decorator(ret => CLUSettings.Instance.PauseRotation, new ActionAlwaysSucceed()),
-                     MovementHelpers, EncounterSpecific.ExtraActionButton(), Cooldowns,
+                    Reset,
+                     MovementHelpers,
+                     EncounterSpecific.ExtraActionButton(),
+                     Cooldowns,
                      Spell.CastSelfSpell
-                         ("Feint",
-                          ret =>
-                          Me.CurrentTarget != null &&
-                          ( /*Me.CurrentTarget.ThreatInfo.RawPercent > 80 ||*/ EncounterSpecific.IsMorchokStomp()),
-                          "Feint"),
+                         ("Feint", ret => Me.CurrentTarget != null && ( EncounterSpecific.IsMorchokStomp() ), "Feint"),
                      Spell.CastSpell
-                         ("Tricks of the Trade", u => Unit.BestTricksTarget, ret => Unit.BestTricksTarget != null,
-                          "Tricks of the Trade"), Spell.CastInterupt("Kick", ret => Me.IsWithinMeleeRange, "Kick"),
-                     Spell.CastSpell("Redirect", ret => Me.RawComboPoints > 0 && Me.ComboPoints < 1, "Redirect"), AoE,
+                         ("Tricks of the Trade",
+                          u => TricksTarget,
+                          ret => TricksTarget != null,
+                          "Tricks of the Trade"),
+                     Spell.CastInterupt("Kick", ret => Me.IsWithinMeleeRange, "Kick"),
+                     Spell.CastSpell("Redirect", ret => Me.RawComboPoints > 0 && Me.ComboPoints < 1, "Redirect"),
+                     AoE,
                      Spell.CastSelfSpell
                          ("Slice and Dice", ret => !Buff.PlayerHasActiveBuff("Slice and Dice"), "Slice and Dice"),
-                     Vanish, Rupture,
+                     Vanish,
+                     Rupture,
                      Spell.CastSpell
                          ("Vendetta",
                           ret =>
                           Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget) &&
-                          Buff.PlayerActiveBuffTimeLeft("Slice and Dice").TotalSeconds > 6 && Buff.TargetDebuffTimeLeft("Rupture").TotalSeconds > 6, "Vendetta"),
+                          Buff.PlayerActiveBuffTimeLeft("Slice and Dice").TotalSeconds > 6 &&
+                          Buff.TargetDebuffTimeLeft("Rupture").TotalSeconds > 6,
+                          "Vendetta"),
                      Spell.CastSelfSpell
                          ("Preparation",
                           ret =>
                           SpellManager.HasSpell(14185) && Unit.IsTargetWorthy(Me.CurrentTarget) &&
-                          SpellManager.Spells["Vanish"].Cooldown, "Preparation"),
+                          SpellManager.Spells["Vanish"].Cooldown,
+                          "Preparation"),
                      Spell.CastSpell
-                         ("Sinister Strike", ret => Me.ComboPoints < 5 && Buff.PlayerHasBuff("Blindside"),
-                          "Dispatch @ Blindside"), Envenom,
+                         (DispatchOverride,
+                          ret => Me.ComboPoints < 5 && Buff.PlayerHasBuff("Blindside"),
+                          "Dispatch @ Blindside"),
+                     Envenom,
                      Spell.CastSpell
-                         ("Sinister Strike", ret => Me.ComboPoints < ReqCmbPts && Me.CurrentTarget.HealthPercent < 35,
+                         (DispatchOverride,
+                          ret => Me.ComboPoints < ReqCmbPts && Me.CurrentTarget.HealthPercent < 35,
                           "Dispatch"),
                      Spell.CastSpell
-                         ("Mutilate", ret => Me.ComboPoints < ReqCmbPts && Me.CurrentTarget.HealthPercent >= 35,
+                         ("Mutilate",
+                          ret => Me.ComboPoints < ReqCmbPts && Me.CurrentTarget.HealthPercent >= 35,
                           "Mutilate"));
+            }
+        }
+
+        private static Action Reset
+        {
+            get
+            {
+                return new Action(delegate
+                    {
+                        _aoeTargets = null;
+                        _tricksTarget = null;
+                        _tricksTargetChecked = false;
+                        return RunStatus.Failure;
+                    });
             }
         }
 
@@ -196,17 +226,59 @@ namespace CLU.Classes.Rogue
         /// Gets the area of effect rotaion.
         /// Rotation by Wulf.
         /// </summary>
-        private static PrioritySelector AoE
+        private static Composite AoE
         {
             get
             {
-                return new PrioritySelector
-                    (Spell.CastAreaSpell
-                         ("Crimson Tempest", 8, false, 4, 0, 0,
-                          ret => Unit.EnemyUnits.Any(a => !a.HasMyAura("Crimson Tempest") && Me.ComboPoints > 3),
-                          "Crimson Tempest"),
-                     Spell.CastAreaSpell
-                         ("Fan of Knives", 8, false, CLUSettings.Instance.Rogue.AssasinationFanOfKnivesCount, 0.0, 0.0, ret => Me.ComboPoints < 5, "Fan of Knives"));
+                return new Decorator
+                    (ret => AoETargets.All(x => x.Combat),
+                     new PrioritySelector
+                         (Spell.CastAreaSpell
+                              ("Crimson Tempest",
+                               8,
+                               false,
+                               CLUSettings.Instance.Rogue.AssasinationFanOfKnivesCount,
+                               0,
+                               0,
+                               ret => AoETargets.Any(a => !a.HasMyAura("Crimson Tempest")) && Me.ComboPoints > 3,
+                               "Crimson Tempest"),
+                          Spell.CastAreaSpell
+                              ("Fan of Knives",
+                               8,
+                               false,
+                               CLUSettings.Instance.Rogue.AssasinationFanOfKnivesCount,
+                               0.0,
+                               0.0,
+                               ret => Me.ComboPoints < 5,
+                               "Fan of Knives")));
+            }
+        }
+
+        private static IEnumerable<WoWUnit> _aoeTargets;
+
+        private static IEnumerable<WoWUnit> AoETargets
+        {
+            get { return _aoeTargets ?? ( _aoeTargets = Unit.EnemyUnits.Where(x => x.DistanceSqr <= 100) ); }
+        }
+
+        private static WoWUnit _tricksTarget;
+
+        private static bool _tricksTargetChecked;
+
+        private static WoWUnit TricksTarget
+        {
+            get
+            {
+                if ( _tricksTargetChecked )
+                    return _tricksTarget;
+
+                if ( _tricksTarget == null )
+                {
+                    _tricksTarget = Unit.BestTricksTarget;
+                    _tricksTargetChecked = true;
+                }
+
+                return _tricksTarget;
             }
         }
 
@@ -243,25 +315,25 @@ namespace CLU.Classes.Rogue
                     (cond => Buff.PlayerHasActiveBuff("Slice and Dice"),
                      new PrioritySelector
                          (Spell.CastSpell
-                              ("Eviscerate",
+                              (EnvenomOverride,
                                ret =>
                                Me.ComboPoints >= ReqCmbPts && Me.CurrentEnergy > 70 &&
                                Buff.TargetDebuffTimeLeft("Rupture").TotalSeconds > 2, "Pooling Envenom"),
                           // Envenom if we have enough combo points, Rupture is safe and we're about to cap.
                           Spell.CastSpell
-                              ("Envenom",
+                              (EnvenomOverride,
                                ret =>
-                               Me.ComboPoints >= 2 && Buff.PlayerActiveBuffTimeLeft("Slice and Dice").TotalSeconds < 2,
+                               Me.ComboPoints > 0 && Buff.PlayerActiveBuffTimeLeft("Slice and Dice").TotalSeconds < 2,
                                "SnD Refresh Envenom"),
                           // Envenom if SnD is about to fall off. This should never happen.
                           Spell.CastSpell
-                              ("Eviscerate",
+                              (EnvenomOverride,
                                ret =>
                                Me.ComboPoints == 5 && Me.CurrentTarget.HealthPercent < 35 && Buff.TargetDebuffTimeLeft("Rupture").TotalSeconds > 2,
                                "Execute Envenom"),
                         // Envenom if SnD is about to fall off. This should never happen.
                           Spell.CastSpell
-                              ("Eviscerate",
+                              (EnvenomOverride,
                                ret =>
                                Me.ComboPoints >= 1 && Buff.PlayerHasBuff("Fury of the Destroyer") && Buff.TargetDebuffTimeLeft("Rupture").TotalSeconds > 2,
                                "FoTF Envenom")
@@ -321,7 +393,13 @@ namespace CLU.Classes.Rogue
 
         private static int ReqCmbPts
         {
-            get { return (Me.CurrentTarget != null) && (Me.CurrentTarget.HealthPercent < 35) ? 5 : 4; }
+            get
+            {
+                if (TalentManager.HasTalent(18))
+                    return 5;
+
+                return (Me.CurrentTarget != null) && (Me.CurrentTarget.HealthPercent < 35) ? 5 : 4;
+            }
         }
 
         private static Decorator Rupture
@@ -345,8 +423,8 @@ namespace CLU.Classes.Rogue
         {
             get
             {
-                return (Me.Combat || Me.RaidMembers.Any(rm => rm.Combat) || Unit.IsTrainingDummy(Me.CurrentTarget)) &&
-                       Unit.IsTargetWorthy(Me.CurrentTarget);
+                return ( ( Me.Combat || Me.RaidMembers.Any(rm => rm.Combat) || Unit.IsTrainingDummy(Me.CurrentTarget) ) &&
+                         Unit.IsTargetWorthy(Me.CurrentTarget) );
             }
         }
 
@@ -363,14 +441,21 @@ namespace CLU.Classes.Rogue
                 return new Decorator
                     (x =>
                      BuffsSafeForVanish && Unit.IsTargetWorthy(Me.CurrentTarget) && Me.ComboPoints < 4 &&
-                     VanishWithShadowFocus && Me.CurrentTarget.IsWithinMeleeRange && !Buff.PlayerHasActiveBuff("Blindside"),
+                     EnergySafeForVanish && Me.CurrentTarget.IsWithinMeleeRange && !Buff.PlayerHasActiveBuff("Blindside"),
                      Spell.CastSelfSpell("Vanish", x => true, "Vanish"));
             }
         }
 
-        private static bool VanishWithShadowFocus
+        /// <summary>
+        /// If we have Shadow Focus, spells cost 0 energy.  Thus, we should vanish only when there's no fear of capping.
+        /// If we do not have Shadow Focus, we should Vanish only if we have enough energy for Ambush.
+        /// </summary>
+        /// <value>
+        /// 	<c>true</c> if [vanish with shadow focus]; otherwise, <c>false</c>.
+        /// </value>
+        private static bool EnergySafeForVanish
         {
-            get { return ((HasShadowFocus && Me.EnergyPercent < 50) || !HasShadowFocus); }
+            get { return ((HasShadowFocus && Me.EnergyPercent < 50) || !HasShadowFocus && Me.CurrentEnergy >= 60); }
         }
 
         #endregion
@@ -396,21 +481,27 @@ namespace CLU.Classes.Rogue
                 return;
             }
 
-            if (Me.CurrentTarget.HealthPercent >= 35)
+            // If we're not behind, attempt to shadowstep and wait for next pulse.
+            if (SpellManager.HasSpell("Shadowstep") && !StyxWoW.Me.IsBehind(Me.CurrentTarget) &&
+                      Spell.CanCast("Shadowstep", Me.CurrentTarget))
+            {
+                CLU.Log(" [Casting] Shadowstep on {0} @ StealthedCombat", CLU.SafeName(Me.CurrentTarget));
+                SpellManager.Cast("Shadowstep");
+            }
+            else if (Me.Behind(Me.CurrentTarget) && (Me.CurrentEnergy >= 60 || HasShadowFocus))
+            {
+                CLU.Log(" [Casting] Ambush on {0} @ StealthCombat", CLU.SafeName(Me.CurrentTarget));
+                SpellManager.Cast("Ambush");
+            }
+            else if (Me.CurrentTarget.HealthPercent < 35 || Buff.PlayerHasBuff("Blindside"))
+            {
+                CLU.Log(" [Casting] Dispatch on {0} @ StealthedCombat", CLU.SafeName(Me.CurrentTarget));
+                SpellManager.Cast(DispatchOverride);
+            }
+            else
             {
                 CLU.Log(" [Casting] Mutilate on {0} @ StealthedCombat", CLU.SafeName(Me.CurrentTarget));
                 SpellManager.Cast("Mutilate");
-            }
-            else if (SpellManager.HasSpell("Shadowstep") && !StyxWoW.Me.IsBehind(Me.CurrentTarget) &&
-                      Spell.CanCast("Shadowstep", Me.CurrentTarget))
-            {
-                CLU.Log(" [Casting] Shadowstep on {0}", CLU.SafeName(Me.CurrentTarget));
-                SpellManager.Cast("Shadowstep");
-            }
-            else if (Me.CurrentTarget.HealthPercent < 35 && Spell.CanCast("Sinister Strike", Me.CurrentTarget))
-            {
-                CLU.Log(" [Casting] Dispatch on {0} @ StealthedCombat", CLU.SafeName(Me.CurrentTarget));
-                SpellManager.Cast("Sinister Strike");
             }
         }
 
