@@ -131,9 +131,14 @@ namespace CLU.Classes.Shaman
                                             && !Totems.Exist(WoWTotem.FireElemental), "Magma Totem"),
                                    Spell.CastSpell("Chain Lightning", ret => Buff.PlayerCountBuff("Maelstrom Weapon") == 5, "Chain Lightning"),
                                    Spell.CastSpell("Flame Shock", ret => !Buff.TargetHasDebuff("Flame Shock") || Buff.TargetDebuffTimeLeft("Flame Shock").Seconds <= 3, "Flame Shock"),
+                                   Spell.CastSpell("Flame Shock", ret => Buff.PlayerHasActiveBuff("Unleash Flame"), "Flame Shock"),
                                    Spell.CastSpell("Lava Lash", ret => Buff.TargetHasDebuff("Flame Shock"), "Lava Lash"),
                                    Spell.CastSpell("Fire Nova", ret => true, "Fire Nova"),
-                                   Spell.CastSpell("Primal Strike", ret => true, "Stormstrike")
+                                   Spell.CastSpell("Primal Strike", ret => true, "Stormstrike"),
+                                   Spell.CastSpell("Lava Lash", ret => true, "Lava Lash"),
+                                   Spell.CastSpell("Unleash Elements", ret => true, "Unleash Elements"),
+                                   Spell.CastSpell("Earth Shock", ret => Buff.TargetHasDebuff("Flame Shock"), "Earth Shock")
+
                                )),
                     // Default Rotaion
                            Spell.CastSpell("Searing Totem", ret => !Totems.Exist(WoWTotemType.Fire) && !Totems.Exist(WoWTotem.FireElemental), "Searing Totem"),
@@ -151,7 +156,7 @@ namespace CLU.Classes.Shaman
                                         && !Totems.Exist(WoWTotemType.Air)),"Stormlash Totem"),
                            Spell.CastSpell("Feral Spirit", ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget), "Feral Spirit"),
                            Spell.CastSpell("Earth Elemental Totem", ret => Unit.IsTargetWorthy(Me.CurrentTarget), "Earth Elemental Totem"),
-                           Spell.CastSpell("Fire Elemental Totem", ret => Unit.IsTargetWorthy(Me.CurrentTarget) && Buff.TargetCountDebuff("Searing Flames") <= 4, "Fire Elemental Totem"),
+                           Spell.CastSpell("Fire Elemental Totem", ret => Unit.IsTargetWorthy(Me.CurrentTarget) && Buff.TargetCountDebuff("Searing Flames") <= 3, "Fire Elemental Totem"),
                            Buff.CastBuff("Spiritwalker's Grace", ret => Me.IsMoving, "Spiritwalker's Grace"),
                            Spell.CastSpell("Lightning Bolt", ret => Buff.PlayerCountBuff("Maelstrom Weapon") > 1 && !Buff.PlayerHasActiveBuff("Ascendance") && EverythingOnCoolDown && Buff.TargetHasDebuff("Flame Shock"), "Lightning Bolt"));
             }
