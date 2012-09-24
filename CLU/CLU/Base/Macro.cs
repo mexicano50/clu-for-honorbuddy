@@ -41,7 +41,15 @@ namespace CLU.Base
         {
             get
             {
-                return Convert.ToBoolean(Lua.GetReturnVal<int>("return Manual and 0 or 1", 0));
+                try
+                {
+                    return Convert.ToBoolean(Lua.GetReturnVal<int>("return Manual and 0 or 1", 0));
+                }
+                catch
+                {
+                    CLU.DiagnosticLog("Lua failed in Macro.Manual");
+                    return false;
+                } 
             }
         }
 
@@ -52,7 +60,15 @@ namespace CLU.Base
         {
             get
             {
-                return Convert.ToBoolean(Lua.GetReturnVal<int>("return Burst and 0 or 1", 0));
+                try
+                {
+                    return Convert.ToBoolean(Lua.GetReturnVal<int>("return Burst and 0 or 1", 0));
+                }
+                catch
+                {
+                    CLU.DiagnosticLog("Lua failed in Macro.Burst");
+                    return false;
+                }  
             }
         }
 
@@ -63,7 +79,15 @@ namespace CLU.Base
         {
             get
             {
-                return Convert.ToBoolean(Lua.GetReturnVal<int>("return rotationSwap and 0 or 1", 0));
+                try
+                {
+                    return Convert.ToBoolean(Lua.GetReturnVal<int>("return rotationSwap and 0 or 1", 0));
+                }
+                catch
+                {
+                    CLU.DiagnosticLog("Lua failed in Macro.rotationSwap");
+                    return false;
+                }                
             }
         }
 
@@ -74,7 +98,16 @@ namespace CLU.Base
         {
             get
             {
-                return Convert.ToBoolean(Lua.GetReturnVal<int>("return weaponSwap and 0 or 1", 0));
+                try
+                {
+                    return Convert.ToBoolean(Lua.GetReturnVal<int>("return weaponSwap and 0 or 1", 0));
+                }
+                catch
+                {
+                    CLU.DiagnosticLog("Lua failed in Macro.weaponSwap");
+                    return false;
+                } 
+                
             }
         }
 
@@ -84,7 +117,15 @@ namespace CLU.Base
         /// <param name="Which">Spell name</param>
         public static void resetMacro(string Which)
         {
-            Lua.DoString(Which + " = 0;");
+            try
+            {
+                Lua.DoString(Which + " = 0;");
+            }
+            catch
+            {
+                CLU.DiagnosticLog("Lua failed in Macro.resetMacro");
+            } 
+            
         }
 
         /// <summary>
@@ -113,9 +154,17 @@ namespace CLU.Base
         {
             using (StyxWoW.Memory.AcquireFrame())
             {
-                MultiCastMacroMT = Lua.GetReturnVal<int>("return MultiCastMT", 0);
-                MultiCastMacroFT = Lua.GetReturnVal<int>("return MultiCastFT", 0);
-                whatSpell = Lua.GetReturnVal<String>("return spellName", 0);
+                try
+                {
+                    MultiCastMacroMT = Lua.GetReturnVal<int>("return MultiCastMT", 0);
+                    MultiCastMacroFT = Lua.GetReturnVal<int>("return MultiCastFT", 0);
+                    whatSpell = Lua.GetReturnVal<String>("return spellName", 0);
+                }
+                catch
+                {
+                    CLU.DiagnosticLog("Lua failed in Macro.isMultiCastMacroInUse");
+                }
+             
             }
             if (MultiCastMacroMT > 0 || MultiCastMacroFT > 0)
             {
@@ -147,7 +196,15 @@ namespace CLU.Base
                 {
                     if (SpellManager.CanCast(whatSpell))
                     {
-                        Lua.DoString("RunMacroText(\"/cast " + whatSpell + "\")");
+                        try
+                        {
+                            Lua.DoString("RunMacroText(\"/cast " + whatSpell + "\")");
+                        }
+                        catch
+                        {
+                            CLU.DiagnosticLog("Lua failed in Macro.isMultiCastMacroInUse");
+                        }
+                        
                         SpellManager.ClickRemoteLocation(Me.CurrentTarget.Location);
                         CLU.Log("Casting " + whatSpell);
                         resetMacro("MultiCastMT");
@@ -166,7 +223,15 @@ namespace CLU.Base
                 {
                     if (SpellManager.CanCast(whatSpell))
                     {
-                        Lua.DoString("RunMacroText(\"/cast [@focus] " + whatSpell + "\")");
+                        try
+                        {
+                            Lua.DoString("RunMacroText(\"/cast [@focus] " + whatSpell + "\")");
+                        }
+                        catch
+                        {
+                            CLU.DiagnosticLog("Lua failed in Macro.isMultiCastMacroInUse");
+                        }
+                        
                         SpellManager.ClickRemoteLocation(Me.FocusedUnit.Location);
                         CLU.Log("Casting " + whatSpell);
                         resetMacro("MultiCastFT");

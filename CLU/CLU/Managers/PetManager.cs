@@ -265,8 +265,15 @@ namespace CLU.Managers
             var spell = Me.PetSpells.FirstOrDefault(p => p.ToString() == name);
             if (spell == null)
                 return;
-
-            Lua.DoString("CastPetAction({0})", spell.ActionBarIndex + 1);
+            try
+            {
+                Lua.DoString("CastPetAction({0})", spell.ActionBarIndex + 1);
+            }
+            catch
+            {
+                CLU.DiagnosticLog("Lua failed in CastMyPetSpell");
+            } 
+            
         }
 
         /// <summary>Casts a Pet spell at the units location</summary>

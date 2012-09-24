@@ -1144,7 +1144,16 @@ namespace CLU.Base
                 return name;
             }
 
-            loc = Lua.GetReturnValues("return select(1, GetSpellInfo(" + id + "))")[0];
+            try
+            {
+                loc = Lua.GetReturnValues("return select(1, GetSpellInfo(" + id + "))")[0];
+            }
+            catch
+            {
+                CLU.DiagnosticLog("Lua failed in LocalizeSpellName");
+                return name;
+            } 
+            
             LocalizedSpellNames[name] = loc;
             CLU.TroubleshootLog("Localized spell: '" + name + "' is '" + loc + "'.");
             return loc;
@@ -1391,18 +1400,50 @@ namespace CLU.Base
 
         public static int CurrentDemonicFury
         {
-            get { return Lua.GetReturnVal<int>("return UnitPower(\"player\", SPELL_POWER_DEMONIC_FURY)", 0); }
+            get
+            {
+                try
+                {
+                    return Lua.GetReturnVal<int>("return UnitPower(\"player\", SPELL_POWER_DEMONIC_FURY)", 0);
+                }
+                catch
+                {
+                    CLU.DiagnosticLog("Lua failed in CurrentDemonicFury");
+                    return 0;
+                } 
+                
+            }
         }
         public static int CurrentBurningEmber
         {
-            get { return Lua.GetReturnVal<int>("return UnitPower(\"player\", SPELL_POWER_BURNING_EMBERS, true)", 0); }
+            get
+            {
+                try
+                {
+                    return Lua.GetReturnVal<int>("return UnitPower(\"player\", SPELL_POWER_BURNING_EMBERS, true)", 0);
+                }
+                catch
+                {
+                    CLU.DiagnosticLog("Lua failed in CurrentBurningEmber");
+                    return 0;
+                }
+                
+            }
         }
 
         // TODO: Remove this.
         public static void CastSpellByName(string name)
         {
-            name = LocalizeSpellName(name);
-            Lua.DoString(string.Format("CastSpellByName(\"{0}\")", RealLuaEscape(name)));
+            try
+            {
+                name = LocalizeSpellName(name);
+                Lua.DoString(string.Format("CastSpellByName(\"{0}\")", RealLuaEscape(name)));
+            }
+            catch
+            {
+                CLU.DiagnosticLog("Lua failed in CastSpellByName");
+            }
+ 
         }
 
         // //TODO: REMOVE THIS SHIT..WAS TESTING -- WULF.
@@ -1410,11 +1451,19 @@ namespace CLU.Base
         {
             get
             {
-                var Id = 53301;
-                var luaTime = Lua.GetReturnVal<double>(string.Format("local x,y=GetSpellCooldown({0}); return x+y-GetTime()", Id), 0);
-                if (luaTime <= 0)
+                try
+                {
+                    var Id = 53301;
+                    var luaTime = Lua.GetReturnVal<double>(string.Format("local x,y=GetSpellCooldown({0}); return x+y-GetTime()", Id), 0);
+                    if (luaTime <= 0)
+                        return TimeSpan.Zero;
+                    return TimeSpan.FromSeconds(luaTime);
+                }
+                catch
+                {
+                    CLU.DiagnosticLog("Lua failed in CooldownTimeLeft (GetSpellCooldown)");
                     return TimeSpan.Zero;
-                return TimeSpan.FromSeconds(luaTime);
+                }
             }
         }
 

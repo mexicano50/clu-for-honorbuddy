@@ -10,6 +10,8 @@
  */
 #endregion
 
+using System;
+
 namespace CLU.Base
 {
     using System.Linq;
@@ -213,12 +215,21 @@ namespace CLU.Base
         /// <returns>true of false</returns>
         private static bool CanUseEquippedItem(WoWItem item)
         {
-            // Check for engineering tinkers!
-            var itemSpell = Lua.GetReturnVal<string>("return GetItemSpell(" + item.Entry + ")", 0);
-            if (string.IsNullOrEmpty(itemSpell))
-                return false;
+            try
+            {
+                // Check for engineering tinkers!
+                var itemSpell = Lua.GetReturnVal<string>("return GetItemSpell(" + item.Entry + ")", 0);
+                if (string.IsNullOrEmpty(itemSpell))
+                    return false;
 
-            return item.Usable && item.Cooldown <= 0;
+                return item.Usable && item.Cooldown <= 0;
+            }
+            catch
+            {
+                CLU.DiagnosticLog("Lua failed in CanUseEquippedItem");
+                return false;
+            }
+
         }
 
         /// <summary>

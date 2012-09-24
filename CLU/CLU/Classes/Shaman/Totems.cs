@@ -11,6 +11,7 @@
 
 #endregion
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -196,7 +197,15 @@ namespace CLU.Classes.Shaman
                 return;
             }
 
-            Lua.DoString("DestroyTotem({0})", (int)type);
+            try
+            {
+                Lua.DoString("DestroyTotem({0})", (int)type);
+            }
+            catch
+            {
+                CLU.DiagnosticLog("Lua failed in DestroyTotem");
+            } 
+            
         }
 
 
