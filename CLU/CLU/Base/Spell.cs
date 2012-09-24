@@ -80,7 +80,7 @@ namespace CLU.Base
         {
             get
             {
-                return ChanneledTimeLeft > TimeSpan.FromSeconds(0);//StyxWoW.Me.ChanneledCastingSpellId != 0;
+                return ChanneledTimeLeft() > 0;//StyxWoW.Me.ChanneledCastingSpellId != 0;
             }
         }
 
@@ -741,8 +741,8 @@ namespace CLU.Base
             SpellManager.Spells.TryGetValue(name, out spell);
             return
                 new PrioritySelector(
-                    new Decorator(x => KnownChanneledSpells.Contains(name) && ChanneledTimeLeft > TimeSpan.FromSeconds(0), //TODO: HB fix PlayerIsChanneling && Me.ChanneledCastingSpellId == spell.Id
-                            new Action(a => CLU.Log(" [Channeling] {0} : {1} seconds remaining", name, ChanneledTimeLeft))),
+                    new Decorator(x => KnownChanneledSpells.Contains(name) && ChanneledTimeLeft() > 0, //TODO: HB fix PlayerIsChanneling && Me.ChanneledCastingSpellId == spell.Id
+                            new Action(a => CLU.Log(" [Channeling] {0} : {1} seconds remaining", name, ChanneledTimeLeft()))),
                     CastSpell(name, cond, label));
         }
 
@@ -758,8 +758,8 @@ namespace CLU.Base
             return
                 new PrioritySelector(
                     new Decorator(
-                        x => KnownChanneledSpells.Contains(spell.Name) && ChanneledTimeLeft > TimeSpan.FromSeconds(0), //TODO: HB fix PlayerIsChanneling && Me.ChanneledCastingSpellId == spell.Id
-                        new Action(a => CLU.Log(" [Channeling] {0} : {1} seconds remaining", spell.Name, ChanneledTimeLeft))),
+                        x => KnownChanneledSpells.Contains(spell.Name) && ChanneledTimeLeft() > 0, //TODO: HB fix PlayerIsChanneling && Me.ChanneledCastingSpellId == spell.Id
+                        new Action(a => CLU.Log(" [Channeling] {0} : {1} seconds remaining", spell.Name, ChanneledTimeLeft()))),
                     CastSpell(spell, cond, label));
         }
 
@@ -1467,24 +1467,29 @@ namespace CLU.Base
             }
         }
 
-         public static TimeSpan ChanneledTimeLeft
+
+        /// <summary>
+        /// temporary wrapper for upcomming HB shit.
+        /// </summary>
+        /// <returns></returns>
+        public static double ChanneledTimeLeft()
         {
-            get
+            using (StyxWoW.Memory.AcquireFrame())
             {
                 try
                 {
-                    var luaTime = Lua.GetReturnVal<double>(string.Format("local spell, _, _, _, _, endTime=UnitChannelInfo(\"player\"); return endTime/1000 - GetTime()"), 0);
-                    if (luaTime <= 0)
-                        return TimeSpan.Zero;
-                    return TimeSpan.FromSeconds(luaTime);
+                    var lua = String.Format("local x=select(6, UnitChannelInfo('player')); if x==nil then return 0 else return x/1000-GetTime() end");
+                    var t = Double.Parse(Lua.GetReturnValues(lua)[0]);
+                    return t;
                 }
                 catch
                 {
                     CLU.DiagnosticLog("Lua failed in ChanneledTimeLeft");
-                    return TimeSpan.Zero;
+                    return 999999;
                 }
-               
             }
+
+            // return GetAuraTimeLeft(Me, name, true);
         }
 
 
