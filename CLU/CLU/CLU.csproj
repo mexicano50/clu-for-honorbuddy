@@ -17,7 +17,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\..\Honorbuddy\Routines\CLU\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -32,7 +32,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Honorbuddy">
-      <HintPath>..\..\..\..\Applications\HB\Honorbuddy.exe</HintPath>
+      <HintPath>..\..\Honorbuddy\Honorbuddy.exe</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="System" />
@@ -46,13 +46,19 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="Tripper.Tools">
-      <HintPath>..\..\..\..\Applications\HB\Tripper.Tools.dll</HintPath>
+      <HintPath>..\..\Honorbuddy\Tripper.Tools.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Base\CrowdControl.cs" />
-    <Compile Include="Base\Macro.cs" />
-    <Compile Include="Base\Racials.cs" />
+    <Compile Include="Base\CrowdControl.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Base\Macro.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Base\Racials.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
     <Compile Include="Classes\DeathKnight\Blood.cs" />
     <Compile Include="Classes\DeathKnight\Common.cs" />
     <Compile Include="Classes\DeathKnight\Frost.cs" />
@@ -88,6 +94,7 @@
     <Compile Include="Classes\Shaman\Enhancement.cs" />
     <Compile Include="Classes\Shaman\Restoration.cs" />
     <Compile Include="Classes\Warlock\Affliction.cs" />
+    <Compile Include="Classes\Warlock\Common.cs" />
     <Compile Include="Classes\Warlock\Demonology.cs" />
     <Compile Include="Classes\Warlock\Destruction.cs" />
     <Compile Include="Classes\Warrior\Arms.cs" />
@@ -115,26 +122,38 @@
       <DependentUpon>TargetInfo.cs</DependentUpon>
     </Compile>
     <Compile Include="Helpers\BotChecker.cs" />
-    <Compile Include="Base\Buff.cs" />
+    <Compile Include="Base\Buff.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
     <Compile Include="Helpers\CircularBuffer.cs" />
     <Compile Include="CombatLog\EventArgs.cs" />
     <Compile Include="CombatLog\CombatLogEvents.cs" />
     <Compile Include="Helpers\DpsMeter.cs" />
     <Compile Include="Helpers\EncounterSpecific.cs" />
     <Compile Include="Helpers\HealableUnit.cs" />
-    <Compile Include="Base\Item.cs" />
+    <Compile Include="Base\Item.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
     <Compile Include="Helpers\Keybinds.cs" />
-    <Compile Include="Base\Movement.cs" />
+    <Compile Include="Base\Movement.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
     <Compile Include="Managers\PetManager.cs" />
     <Compile Include="Classes\Rogue\Poisons.cs" />
-    <Compile Include="Base\Rest.cs" />
+    <Compile Include="Base\Rest.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
     <Compile Include="Sound\SoundManager.cs" />
-    <Compile Include="Base\Spell.cs" />
+    <Compile Include="Base\Spell.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
     <Compile Include="Managers\SpellImmunityManager.cs" />
     <Compile Include="Managers\TalentManager.cs" />
     <Compile Include="Helpers\TargetBase.cs" />
     <Compile Include="Classes\Shaman\Totems.cs" />
-    <Compile Include="Base\Unit.cs" />
+    <Compile Include="Base\Unit.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
     <Compile Include="Helpers\UnitOracle.cs" />
     <Compile Include="CombatLog\WoWStats.cs" />
     <Compile Include="Lists\Bosslist.cs" />
@@ -153,7 +172,9 @@
     <Compile Include="Settings\ShamanSettings.cs" />
     <Compile Include="Settings\WarlockSettings.cs" />
     <Compile Include="Settings\WarriorSettings.cs" />
-    <Compile Include="Base\enums.cs" />
+    <Compile Include="Base\enums.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="GUI\ConfigurationForm.resx">
