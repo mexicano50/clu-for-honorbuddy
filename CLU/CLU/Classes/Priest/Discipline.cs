@@ -163,8 +163,8 @@ namespace CLU.Classes.Priest
                                           ),
 
                            // Smite to build stacks of Evangelism
-                           Spell.CastSpellOnMostFocusedTarget("Holy Fire", u => Unit.MostFocusedUnit.Unit, ret => IsAtonementSpec && StyxWoW.Me.Combat && (Buff.PlayerCountBuff("Evangelism") < 5 || Buff.PlayerBuffTimeLeft("Evangelism") < (3.5 + CombatLogEvents.ClientLag)), "Holy Fire for Evangelism stacks.", true),
-                           Spell.CastSpellOnMostFocusedTarget("Smite", u => Unit.MostFocusedUnit.Unit, ret => IsAtonementSpec && StyxWoW.Me.Combat && (Buff.PlayerCountBuff("Evangelism") < 5 || Buff.PlayerBuffTimeLeft("Evangelism") < (3.5 + CombatLogEvents.ClientLag)), "Smite for Evangelism stacks.", true),
+                           //Spell.CastSpellOnMostFocusedTarget("Holy Fire", u => Unit.MostFocusedUnit.Unit, ret => IsAtonementSpec && StyxWoW.Me.Combat && (Buff.PlayerCountBuff("Evangelism") < 5 || Buff.PlayerBuffTimeLeft("Evangelism") < (3.5 + CombatLogEvents.ClientLag)), "Holy Fire for Evangelism stacks.", true),
+                           //Spell.CastSpellOnMostFocusedTarget("Smite", u => Unit.MostFocusedUnit.Unit, ret => IsAtonementSpec && StyxWoW.Me.Combat && (Buff.PlayerCountBuff("Evangelism") < 5 || Buff.PlayerBuffTimeLeft("Evangelism") < (3.5 + CombatLogEvents.ClientLag)), "Smite for Evangelism stacks.", true),
 
                            // party healing // FindParty
                            Healer.FindParty(a => true, CLUSettings.Instance.Priest.PrayerofHealingPartyminAH, CLUSettings.Instance.Priest.PrayerofHealingPartymaxAH, CLUSettings.Instance.Priest.PrayerofHealingPartymaxDBP, CLUSettings.Instance.Priest.PrayerofHealingPartyminPlayers, "party healing: Prayer of Healing",
@@ -204,8 +204,8 @@ namespace CLU.Classes.Priest
                                                              Spell.CastSpell("Inner Focus", a => true, "Inner Focus"),
                                                              Spell.CastHeal("Greater Heal", a => Buff.PlayerHasActiveBuff("Inner Focus"), "Greater heal")
                                                      )),
-                                                 Spell.CastSpellOnCurrentTargetsTarget("Holy Fire", u => HealTarget, ret => HealTarget != null && IsAtonementSpec && StyxWoW.Me.Combat, "Holy Fire. Using " + CLU.SafeName(HealTarget) + "'s Target", true),
-                                                 Spell.CastSpellOnCurrentTargetsTarget("Smite", u => HealTarget, ret => HealTarget != null && IsAtonementSpec && StyxWoW.Me.Combat, "Smite. Using " + CLU.SafeName(HealTarget) + "'s Target", true),
+                                                 //Spell.CastSpellOnCurrentTargetsTarget("Holy Fire", u => HealTarget, ret => HealTarget != null && IsAtonementSpec && StyxWoW.Me.Combat, "Holy Fire. Using " + CLU.SafeName(HealTarget) + "'s Target", true),
+                                                 //Spell.CastSpellOnCurrentTargetsTarget("Smite", u => HealTarget, ret => HealTarget != null && IsAtonementSpec && StyxWoW.Me.Combat, "Smite. Using " + CLU.SafeName(HealTarget) + "'s Target", true),
                                                  Spell.CastHeal("Greater Heal", a => HealTarget != null && HealTarget.HealthPercent < CLUSettings.Instance.Priest.GreaterHealParty, "Greater heal"),
                                                  Spell.CastHeal("Heal", a => true, "heal")
                                                 ),

@@ -985,7 +985,7 @@ namespace CLU.Base
         /// <returns>The player has buff.</returns>
         public static bool PlayerHasBuff(string name)
         {
-            return Me.HasAura(name);
+            return HasAura(Me, name, null);
         }
 
         //// todo: temporary fix.

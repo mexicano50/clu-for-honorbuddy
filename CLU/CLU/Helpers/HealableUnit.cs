@@ -37,7 +37,7 @@ namespace CLU.Helpers
         public static LocalPlayer Me { get { return StyxWoW.Me; } }
         internal static bool IsInDungeonParty { get { return Me.GroupInfo.IsInParty && !Me.GroupInfo.IsInRaid; } }
         internal static bool IsInGroup { get { return Me.GroupInfo.IsInRaid || Me.GroupInfo.IsInParty; } }
-        internal static readonly IEnumerable<WoWPlayer> Groupofplayers = Me.GroupInfo.IsInRaid ? Me.RaidMembers : Me.PartyMembers;
+        internal static readonly IEnumerable<WoWPartyMember> Groupofplayers = (Me.GroupInfo.IsInRaid ? Me.GroupInfo.RaidMembers : Me.GroupInfo.PartyMembers);
         internal static IEnumerable<WoWPartyMember> GroupMembers { get { return !Me.GroupInfo.IsInRaid ? Me.GroupInfo.PartyMembers : Me.GroupInfo.RaidMembers; } }
 
 
