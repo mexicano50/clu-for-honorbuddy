@@ -50,7 +50,7 @@ namespace CLU.Classes.Shaman
         {
             get
             {
-                return "Stormstrike";
+                return "Lava Lash";
             }
         }
 
@@ -90,7 +90,7 @@ namespace CLU.Classes.Shaman
                        "4. Heal using: Lightning Shield\n" +
                        "6. Best Suited for end game raiding\n" +
                        "NOTE: PvP rotations have been implemented in the most basic form, once MoP is released I will go back & revise the rotations for optimal functionality 'Dagradt'. \n" +
-                       "Credits to fluffyhusky, sjussju , Stormchasing\n" +
+                       "Credits to fluffyhusky, sjussju , Stormchasing, alxaw\n" +
                        "----------------------------------------------------------------------\n";
             }
         }
@@ -122,8 +122,6 @@ namespace CLU.Classes.Shaman
                            Buff.CastBuff("Wind Shear", ret => Me.CurrentTarget != null && Me.CurrentTarget.ThreatInfo.RawPercent > 90, "Wind Shear (Threat)"),
                     // Totem management
                            Totems.CreateTotemsBehavior(),
-                    //SelfBuffs
-                    //       Spell.CastSelfSpell("Windfury Weapon", ret => !Buff.PlayerHasBuff("Windfury Weapon"), "Windfury Weapon"),
                     // AoE
                            new Decorator(
                                ret => !Me.IsMoving && Me.CurrentTarget != null && Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 8) >= 2 && !BossList.IgnoreAoE.Contains(Unit.CurrentTargetEntry),
