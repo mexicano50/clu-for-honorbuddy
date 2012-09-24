@@ -174,12 +174,12 @@ namespace CLU.Classes.Druid
             if (Buff.PlayerHasBuff("Eclipse (Lunar)") && Me.CurrentEclipse >= -100 && Me.CurrentEclipse <= -1)
             {
                 lastEclipse = "Lunar";
-                return +1;
+                return 1;
             }
             //We have no buff but are still casting at Starfire increments(Me.CurrentEclipse == 0 || Me.CurrentEclipse == +40 || Me.CurrentEclipse == +80))
             if (!Buff.PlayerHasBuff("Eclipse (Lunar)") && !Buff.PlayerHasBuff("Eclipse (Solar)") && Me.CurrentEclipse >= 0 && lastEclipse == "Lunar")//and lastEclipse == "Lunar"
             {
-                return +1;
+                return 1;
             }
             //We have the solar buff and are casting at Wrath increments(Me.CurrentEclipse == +100 || Me.CurrentEclipse == +85 || Me.CurrentEclipse == +70 || Me.CurrentEclipse == +55 || Me.CurrentEclipse == +40 || Me.CurrentEclipse == +25 || Me.CurrentEclipse == +10))
             if (Buff.PlayerHasBuff("Eclipse (Solar)") && Me.CurrentEclipse <= 100 && Me.CurrentEclipse >= 1)
