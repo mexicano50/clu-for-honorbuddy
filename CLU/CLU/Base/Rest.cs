@@ -80,8 +80,8 @@ namespace CLU.Base
                         // Check if we're allowed to eat (and make sure we have some food. Don't bother going further if we have none.
                         new Decorator(
                             ret =>
-                            !StyxWoW.Me.IsSwimming && StyxWoW.Me.HealthPercent <= 65 && !StyxWoW.Me.HasAura("Food") &&
-                            Consumable.GetBestFood(false) != null,
+                            !StyxWoW.Me.IsSwimming && StyxWoW.Me.HealthPercent <= CLUSettings.Instance.MinHealth && !StyxWoW.Me.HasAura("Food") &&
+                            Consumable.GetBestFood(false) != null && !StyxWoW.Me.IsCasting,
                             new PrioritySelector(
                                 new Decorator(
                                     ret => StyxWoW.Me.IsMoving,
@@ -98,7 +98,7 @@ namespace CLU.Base
                                                                                                    // TODO: Does this Druid check need to be still in here?
                             !StyxWoW.Me.IsSwimming && (StyxWoW.Me.PowerType == WoWPowerType.Mana || StyxWoW.Me.Class == WoWClass.Druid) &&
                             StyxWoW.Me.ManaPercent <= CLUSettings.Instance.MinMana &&
-                            !StyxWoW.Me.HasAura("Drink") && Consumable.GetBestDrink(false) != null,
+                            !StyxWoW.Me.HasAura("Drink") && Consumable.GetBestDrink(false) != null && !StyxWoW.Me.IsCasting,
                             new PrioritySelector(
                                 new Decorator(
                                     ret => StyxWoW.Me.IsMoving,
