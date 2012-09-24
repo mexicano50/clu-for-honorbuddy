@@ -72,20 +72,10 @@ namespace CLU.Classes.Warlock
             get {
                 return "\n" +
                        "----------------------------------------------------------------------\n" +
-                       "This CC will:\n" +
-                       "1. Soulshatter, Interupts with Axe Toss, Soul Harvest < 2 shards out of combat\n" +
-                       "2. AutomaticCooldowns has: \n" +
-                       "==> UseTrinkets \n" +
-                       "==> UseRacials \n" +
-                       "==> UseEngineerGloves \n" +
-                       "==> Demon Soul & Summon Doomguard & Metamorphosis & Curse of the Elements & Lifeblood\n" +
-                       "==> Felgaurd to Felhunter Swap\n" +
-                       "3. AoE with Hellfire and Felstorm and Shadowflame\n" +
-                       "4. Best Suited for end game raiding\n" +
-                       "Ensure you're at least at 10yards from your target to maximize your dps, even during burst phase if possible.\n" +
-                       "NOTE: PvP uses single target rotation - It's not designed for PvP use. \n" +
-                       "Credits to cowdude\n" +
+                       "This Rotation will:\n" +
+                       "to be done\n" +
                        "----------------------------------------------------------------------\n";
+
             }
         }
 
@@ -126,20 +116,17 @@ namespace CLU.Classes.Warlock
 
                            // lets get our pet back
                             PetManager.CastPetSummonSpell(105174, ret => (!Me.IsMoving || Me.ActiveAuras.ContainsKey("Soulburn")) && !Me.GotAlivePet && !Me.ActiveAuras.ContainsKey(WoWSpell.FromId(108503).Name), "Summon Pet"),
-                            //Grimoire of Service
-                            //Spell.CastSpell(111897, ret => Me.GotAlivePet && !WoWSpell.FromId(111897).Cooldown && TalentManager.HasTalent(14), "Grimoire of Service"),
-                            //Sacrifice Pet
-                            Spell.CastSelfSpell("Grimoire of Sacrifice", ret => Me.GotAlivePet && TalentManager.HasTalent(15) && !Me.ActiveAuras.ContainsKey(WoWSpell.FromId(108503).Name), "Grimoire of Sacrifice"),
+                            Common.WarlockGrimoire,                            
 
                            // Threat
                            Buff.CastBuff("Soulshatter", ret => Me.CurrentTarget != null && Me.GotTarget && Me.CurrentTarget.ThreatInfo.RawPercent > 90 && !Spell.PlayerIsChanneling, "[High Threat] Soulshatter - Stupid Tank"),
                             //Cooldowns
                             new Decorator(ret=> CLUSettings.Instance.UseCooldowns,
                                 new PrioritySelector(
-                                    Buff.CastBuff("Dark Soul", "Dark Soul: Knowledge", ret => !WoWSpell.FromId(113861).Cooldown && Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget) && !Me.IsMoving, "Dark Soul: Knowledge")
-                                    //// TODO: Remove this when Apoc fixs Spellmanager. -- wulf 
-                                   // Spell.CastSpell(18540, ret => !WoWSpell.FromId(18540).Cooldown && Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget), "Summon Doomguard")
-                                    )),
+                                    Buff.CastBuff("Dark Soul", ret => !WoWSpell.FromId(113861).Cooldown && Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget) && !Me.IsMoving && !Me.HasAnyAura(Common.DarkSoul), "Dark Soul"),
+                                    Spell.CastSpell("Summon Doomguard", ret => !WoWSpell.FromId(18540).Cooldown && Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget), "Summon Doomguard"),
+                                    Spell.CastSelfSpell("Unending Resolve", ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget) && Me.HealthPercent < 40, "Unending Resolve (Save my life)"),
+                                    Spell.CastSelfSpell("Twilight Warden", ret => Me.CurrentTarget != null && Me.CurrentTarget.IsCasting && Unit.IsTargetWorthy(Me.CurrentTarget) && Me.HealthPercent < 80, "Twilight Warden (Protect me from magical damage)"))),
                            //Demonic Fury or Pull
                            new Decorator(ret => Me.CurrentTarget != null && ((!Me.CurrentTarget.HasMyAura(603) || (Me.CurrentTarget.ActiveAuras.ContainsKey("Corruption") && Spell.CurrentDemonicFury > 800 && Me.CurrentTarget.ActiveAuras.ContainsKey("Shadowflame")))),
                                new PrioritySelector(
@@ -165,45 +152,27 @@ namespace CLU.Classes.Warlock
 
         public override Composite Medic
         {
-            get {
-                return new Decorator(
-                           ret => Me.HealthPercent < 100 && CLUSettings.Instance.EnableSelfHealing,
-                           new PrioritySelector(Item.UseBagItem("Healthstone", ret => Me.HealthPercent < 40, "Healthstone")));
-            }
+            get {return Common.WarlockMedic;}
         }
-
         public override Composite PreCombat
         {
-            get {
-                return new PrioritySelector(
-                           new Decorator(
-                               ret => !Me.Mounted && !Me.IsDead && !Me.Combat && !Me.IsFlying && !Me.IsOnTransport && !Me.HasAura("Food") && !Me.HasAura("Drink"),
-                               new PrioritySelector(
-                                   Buff.CastBuff("Dark Intent", ret => true, "Dark Intent"),
-                                   PetManager.CastPetSummonSpell(30146, ret => !Me.IsMoving && !Me.GotAlivePet, " Summoning Pet Felguard")
-                                  )));
-            }
+            get {return Common.WarlockPreCombat;}
         }
+
 
         public override Composite Resting
         {
-            get {
-                return Rest.CreateDefaultRestBehaviour();
-            }
+            get {return Rest.CreateDefaultRestBehaviour();}
         }
 
         public override Composite PVPRotation
         {
-            get {
-                return this.SingleRotation;
-            }
+            get {return this.SingleRotation;}
         }
 
         public override Composite PVERotation
         {
-            get {
-                return this.SingleRotation;
-            }
+            get {return this.SingleRotation;}
         }
     }
 }

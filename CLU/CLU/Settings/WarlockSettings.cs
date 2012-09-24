@@ -11,7 +11,7 @@
 #endregion
 
 // This file was part of Singular - A community driven Honorbuddy CC
-
+using CLU.Base;
 using System.ComponentModel;
 using Styx.Helpers;
 using DefaultValue = Styx.Helpers.DefaultValueAttribute;
@@ -28,6 +28,17 @@ namespace CLU.Settings
         }
 
         #region Common
+        [Setting]
+        [DefaultValue(PetType.None)]
+        [Category("Pet Selection")]
+        [DisplayName("Select Pet to Summon")]
+        [Description("Choose your Pet to Summon. Default Felhunter, if not learned Summon Imp")]
+        public PetType CurrentPetType
+        {
+            get;
+            set;
+        }
+
         #endregion
 
         #region Affliction
