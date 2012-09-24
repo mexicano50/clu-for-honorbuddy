@@ -96,7 +96,7 @@ namespace CLU.Classes.Shaman
         }
 
         //[SpellManager] Stormstrike (17364) overrides Primal Strike (73899)
-        private static bool EverythingOnCoolDown { get { return Spell.SpellCooldown("Stormstrike").TotalSeconds > 1.0 && Spell.SpellCooldown("Lava Lash").TotalSeconds > 1.0 && Spell.SpellCooldown("Unleash Elements").TotalSeconds > 1.0 && Spell.SpellCooldown("Earth Shock").Seconds > 1.0; } }
+        private static bool EverythingOnCoolDown { get { return Spell.SpellCooldown("Primal Strike").TotalSeconds > 1.0 && Spell.SpellCooldown("Lava Lash").TotalSeconds > 1.0 && Spell.SpellCooldown("Unleash Elements").TotalSeconds > 1.0 && Spell.SpellCooldown("Earth Shock").Seconds > 1.0; } }
 
         public override Composite SingleRotation
         {
