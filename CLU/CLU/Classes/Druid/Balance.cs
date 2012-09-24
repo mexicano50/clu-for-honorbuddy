@@ -189,13 +189,13 @@ namespace CLU.Classes.Druid
                         //incarnation,if=talent.incarnation.enabled&(buff.lunar_eclipse.up|buff.solar_eclipse.up)
                         Spell.CastSelfSpell("Incarnation", ret => TalentManager.HasTalent(11) && (Buff.PlayerHasBuff("Eclipse (Lunar)") || Buff.PlayerHasBuff("Eclipse (Solar)")), "Incarnation"),
                         //celestial_alignment,if=((eclipse_dir=-1&eclipse<=0)|(eclipse_dir=1&eclipse>=0))&(buff.chosen_of_elune.up|!talent.incarnation.enabled)
-                        Spell.CastSelfSpell("Celestial Alignment", ret => (Me.CurrentEclipse <= 0 || Me.CurrentEclipse >= 0) && (Buff.PlayerHasActiveBuff("Incarnation: Chosen of Elune") || !TalentManager.HasTalent(11)), "Celestial Alignment"),
+                        Spell.CastSelfSpell("Celestial Alignment", ret => ((Common.eclipseDir() == -1 && Me.CurrentEclipse <= 0) || (Common.eclipseDir() == +1 && Me.CurrentEclipse >= 0)) && (Buff.PlayerHasActiveBuff("Incarnation: Chosen of Elune") || !TalentManager.HasTalent(11)), "Celestial Alignment"),
                         //natures_vigil,if=((talent.incarnation.enabled&buff.chosen_of_elune.up)|(!talent.incarnation.enabled&buff.celestial_alignment.up))&talent.natures_vigil.enabled
                         Spell.CastSelfSpell("Nature's Vigil", ret => ((TalentManager.HasTalent(11) && Buff.PlayerHasActiveBuff("Incarnation: Chosen of Elune")) || (!TalentManager.HasTalent(11) && Buff.PlayerHasActiveBuff("Celestial Alignment"))) && TalentManager.HasTalent(18), "Nature's Vigil"),
                         //wrath,if=eclipse<=-70&eclipse_dir<=0
-                        Spell.CastSpell("Wrath", ret => Common.didICap() && Me.CurrentEclipse <= -70 && Common.eclipseDir() <= 0, "Wrath"),
+                        Spell.CastSpell("Wrath", ret => Me.CurrentEclipse <= -70 && Common.eclipseDir() <= 0, "Wrath"),
                         //starfire,if=eclipse>=60&eclipse_dir>=0
-                        Spell.CastSpell("Starfire", ret => Common.didICap() && Me.CurrentEclipse >= 60 && Common.eclipseDir() >= 0, "Starfire"),
+                        Spell.CastSpell("Starfire", ret => Me.CurrentEclipse >= 60 && Common.eclipseDir() >= 0, "Starfire"),
                         //J	15.60	moonfire,if=buff.lunar_eclipse.up&(dot.moonfire.remains<(buff.natures_grace.remains-2+2*set_bonus.tier14_4pc_caster))
                         //K	11.96	sunfire,if=buff.solar_eclipse.up&!buff.celestial_alignment.up&(dot.sunfire.remains<(buff.natures_grace.remains-2+2*set_bonus.tier14_4pc_caster))
                         //moonfire,if=!dot.moonfire.ticking&!buff.celestial_alignment.up&(buff.dream_of_cenarius_damage.up|!talent.dream_of_cenarius.enabled)
@@ -209,9 +209,9 @@ namespace CLU.Classes.Druid
                         //wrath,if=buff.celestial_alignment.up&cast_time<buff.celestial_alignment.remains
                         Spell.CastSpell("Wrath", ret => Buff.PlayerHasActiveBuff("Celestial Alignment") && SpellManager.Spells["Wrath"].CastTime < Buff.PlayerActiveBuffTimeLeft("Celestial Alignment").TotalSeconds, "Wrath"),
                         //starfire,if=eclipse_dir=1|(eclipse_dir=0&eclipse>0)
-                        Spell.CastSpell("Starfire", ret => Common.didICap() && (Common.eclipseDir() == 1 || (Common.eclipseDir() == 0 && Me.CurrentEclipse > 0)), "Starfire"),
+                        Spell.CastSpell("Starfire", ret => Common.eclipseDir() == +1 || (Common.eclipseDir() == 0 && Me.CurrentEclipse > 0), "Starfire"),
                         //wrath,if=eclipse_dir=-1|(eclipse_dir=0&eclipse<=0)
-                        Spell.CastSpell("Wrath", ret => Common.didICap() && (Common.eclipseDir() == -1 || (Common.eclipseDir() == 0 && Me.CurrentEclipse <= 0)), "Wrath"),
+                        Spell.CastSpell("Wrath", ret => Common.eclipseDir() == -1 || (Common.eclipseDir() == 0 && Me.CurrentEclipse <= 0), "Wrath"),
                         //moonfire,moving=1,if=!dot.sunfire.ticking
                         Spell.CastSpell("Moonfire", ret => Me.IsMoving && !Buff.TargetHasDebuff("Sunfire"), "Moonfire"),
                         //sunfire,moving=1,if=!dot.moonfire.ticking

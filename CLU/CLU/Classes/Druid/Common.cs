@@ -162,23 +162,6 @@ namespace CLU.Classes.Druid
             }
         }
 
-        /// <summary>
-        /// Checks to see if we've capped one side of the Eclipse meter and gained an Eclipse
-        /// </summary>
-        /// <returns>Yes or No</returns>
-        public static bool didICap()
-        {
-            if (Buff.PlayerHasBuff("Eclipse (Lunar)"))
-            {
-                return true;
-            }
-            if (Buff.PlayerHasBuff("Eclipse (Solar)"))
-            {
-                return true;
-            }
-            return false;
-        }
-
         public static string lastEclipse;
 
         /// <summary>
