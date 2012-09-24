@@ -676,7 +676,7 @@ namespace CLU.Base
                     if (!cond(a))
                         return false;
 
-                    if (onUnit != null && !(onUnit(a).IsCasting && onUnit(a).CanInterruptCurrentSpellCast))
+                    if (onUnit != null && onUnit(a) != null && !(onUnit(a).IsCasting && onUnit(a).CanInterruptCurrentSpellCast))
                         return false;
 
                     if (onUnit != null && CanCast(name, onUnit(a)))
