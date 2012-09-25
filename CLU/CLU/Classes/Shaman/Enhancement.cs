@@ -135,6 +135,7 @@ namespace CLU.Classes.Shaman
                                    Spell.CastSpell("Lava Lash", ret => Buff.TargetHasDebuff("Flame Shock"), "Lava Lash"),
                                    Spell.CastSpell("Fire Nova", ret => true, "Fire Nova"),
                                    Spell.CastSpell("Primal Strike", ret => true, "Stormstrike"),
+                                   Spell.CastSpell("Stormblast", ret => Buff.PlayerHasActiveBuff("Ascendance"), "Stormblast"),
                                    Spell.CastSpell("Lava Lash", ret => true, "Lava Lash"),
                                    Spell.CastSpell("Unleash Elements", ret => true, "Unleash Elements"),
                                    Spell.CastSpell("Earth Shock", ret => Buff.TargetHasDebuff("Flame Shock"), "Earth Shock")
@@ -157,6 +158,7 @@ namespace CLU.Classes.Shaman
                            Buff.CastDebuff("Flame Shock", ret => !Buff.TargetHasDebuff("Flame Shock") || Buff.TargetDebuffTimeLeft("Flame Shock").Seconds <= 3, "Flame Shock"),
                            Spell.CastSpell("Flame Shock", ret => Buff.PlayerHasActiveBuff("Unleash Flame"), "Flame Shock"),
                            Spell.CastSpell("Lightning Bolt", ret => Buff.PlayerCountBuff("Maelstrom Weapon") == 5 || (Item.Has4PcTeirBonus(ItemSetId) ? Buff.PlayerCountBuff("Maelstrom Weapon") == 5 : Buff.PlayerCountBuff("Maelstrom Weapon") >= 4 && (Spell.SpellCooldown("Feral Spirit").TotalSeconds > 90 && Spell.SpellOnCooldown("Feral Spirit"))), "Lightning Bolt"),
+                           Spell.CastSpell("Stormblast", ret => Buff.PlayerHasActiveBuff("Ascendance"), "Stormblast"),
                            Spell.CastSpell("Primal Strike", ret => true, "Stormstrike"),
                            Spell.CastSpell("Lava Lash", ret => true, "Lava Lash"),
                            Spell.CastSpell("Unleash Elements", ret => true, "Unleash Elements"),
