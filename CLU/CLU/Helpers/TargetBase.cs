@@ -152,6 +152,8 @@ namespace CLU.Helpers
                                 var targetPerformanceTimer = new Stopwatch(); // lets see if we can get some performance on this one.
                                 targetPerformanceTimer.Start(); // lets see if we can get some performance on this one.
 
+                                //CrabbyProfiler.Instance.Runs.Add(new Run("FindTarget"));
+                                
                                 // Nothing to filter against
                                 if (!UnitsFilter(filter).Any())
                                 {
@@ -187,6 +189,7 @@ namespace CLU.Helpers
                                     return RunStatus.Success;
                                 }
                                 HealableUnit.HealTarget = null;
+                                //CrabbyProfiler.Instance.EndLast();
                                 return RunStatus.Failure;
                             }),
                            new Action(a => StyxWoW.SleepForLagDuration()),

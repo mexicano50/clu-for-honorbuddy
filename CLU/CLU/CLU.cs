@@ -299,12 +299,18 @@ namespace CLU
         {
             get
             {
-                switch (StyxWoW.Me.Shapeshift)
-                {
-                    case ShapeshiftForm.FlightForm:
-                    case ShapeshiftForm.EpicFlightForm:
-                        return true;
-                }
+                 //[Aquatic Form] [Bear Form] [Cat Form] [Flight Form] [Swift Flight Form] [Travel Form]
+                //switch (StyxWoW.Me.Shapeshift)
+                //{
+                //    case ShapeshiftForm.FlightForm:
+                //    case ShapeshiftForm.EpicFlightForm:
+                //        return true;
+                //}
+                // TODO: This is temporary fix until shapeshift is fixed.
+                if (Buff.PlayerHasBuff("Flight Form")) return true;
+                if (Buff.PlayerHasBuff("Swift Flight Form")) return true;
+                if (Buff.PlayerHasBuff("Travel Form")) return true;
+                if (Buff.PlayerHasBuff("Aquatic Form")) return true;
                 return StyxWoW.Me.Mounted;
             }
         }

@@ -89,7 +89,7 @@ namespace CLU.Classes.Priest
                     // Pause Rotation
                            new Decorator(ret => CLUSettings.Instance.PauseRotation, new ActionAlwaysSucceed()),
 
-                           new Action(delegate { CrabbyProfiler.Instance.Runs.Add(new Run("name")); }),
+                           //new Action(delegate { CrabbyProfiler.Instance.Runs.Add(new Run("name")); }),
 
                            // if someone dies make sure we retarget.
                     //TargetBase.EnsureTarget(ret => StyxWoW.Me.CurrentTarget == null),
@@ -233,8 +233,8 @@ namespace CLU.Classes.Priest
                            // cast renew while moving
                            Healer.FindRaidMember(a => Me.IsMoving, x => x.ToUnit().InLineOfSight && !x.ToUnit().IsDead && x.HealthPercent < CLUSettings.Instance.Priest.RenewMovingParty && !x.ToUnit().HasAura("Renew"), (a, b) => (int)(a.CurrentHealth - b.CurrentHealth), "cast renew while moving",
                                                  Spell.CastHeal("Renew", a => true, "Renew while moving")
-                                                ),
-                                                new Action(delegate { CrabbyProfiler.Instance.EndLast(); })
+                                                )
+                                                
                        );
             }
         }
