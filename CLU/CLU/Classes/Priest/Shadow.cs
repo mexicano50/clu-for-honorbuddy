@@ -79,8 +79,8 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
             }
         }
 
-        private static bool CanMindFlay { get { return Buff.TargetHasBuff("Vampiric Touch") && Buff.PlayerCountBuff("Shadow Orb") < 3; } }
-        private static bool CanMindFlaywhileleveling { get { return  Buff.PlayerCountBuff("Shadow Orb") < 3; } }
+        private static bool CanMindFlay { get { return Buff.TargetHasBuff("Vampiric Touch") && Buff.PlayerCountBuff("Shadow Orb") < 3 && Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 12) < 6; } }
+        private static bool CanMindFlaywhileleveling { get { return Buff.PlayerCountBuff("Shadow Orb") < 3 && Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 12) < 6; } }
 
         // OVERIDES!!! [SpellManager] Mind Flay (15407) overrides Smite (585)
         public override Composite SingleRotation
@@ -127,7 +127,7 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
                                    Buff.CastDebuff("Devouring Plague",      ret => Me.CurrentTarget != null && Unit.TimeToDeath(Me.CurrentTarget) > 20, "Devouring Plague"),
                                    Spell.CastSpell("Shadowfiend",           ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget), "Shadowfiend"),
                                    Spell.CastSpell("Mind Spike",            ret => true, "Mind Spike"),
-                                   Spell.CastSpecialSpell("Smite",          ret => CanMindFlaywhileleveling && Buff.TargetDebuffTimeLeft("Mind Flay").TotalSeconds <= Spell.ClippingDuration(), "Mind Flay")
+                                   Spell.CastSpecialSpell("Smite", ret => CanMindFlaywhileleveling && Buff.TargetDebuffTimeLeft("Mind Flay").TotalSeconds <= Spell.ClippingDuration(), "Mind Flay")
                                )),
 
 
@@ -144,13 +144,13 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
                                    Spell.CastSpell("Shadow Word: Death",      ret => Me.CurrentTarget != null && (TalentManager.HasGlyph("Shadow Word: Death") ? Me.CurrentTarget.HealthPercent <= 100 : Me.CurrentTarget.HealthPercent <= 25), "Shadow Word: Death"),
                                    Spell.CastSpell("Mind Spike",              ret => Buff.PlayerHasActiveBuff("Surge of Darkness"), "Mind Spike"),
                                    Spell.CastSpell("Mindbender",              ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget), "Mindbender"),
-                                   Spell.ChannelSpell("Mind Sear", ret => Me.CurrentTarget != null && Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 12) > 2 && !BossList.IgnoreAoE.Contains(Unit.CurrentTargetEntry), "Mind Sear - [PvE]"),
+                                   Spell.ChannelSpell("Mind Sear",            ret => Me.CurrentTarget != null && Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 12) > 4 && !BossList.IgnoreAoE.Contains(Unit.CurrentTargetEntry), "Mind Sear - [PvE]"),
                                    Spell.CastSpell("Shadow Word: Death",      ret => Me.ManaPercent < 10, "Shadow Word: Death - Low Mana"),
                                    Spell.CastSpell("Shadow Word: Death",      ret => Me.IsMoving, "Shadow Word: Death - Moving"),
                                    Spell.CastSpell("Devouring Plague",        ret => Me.IsMoving && Me.ManaPercent > 10, "Devouring Plague"),
                                    Spell.CastSpell("Mind Blast",              ret => Buff.PlayerHasActiveBuff("Divine Insight"), "Mind Blast"),
                                    Spell.CastSelfSpell("Dispersion",          ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget) && (Me.HealthPercent < 10 || Me.ManaPercent < 10), "Dispersion"),
-                                   Spell.CastSpecialSpell("Smite",            ret => CanMindFlay && Buff.TargetDebuffTimeLeft("Mind Flay").TotalSeconds <= Spell.ClippingDuration(), "Mind Flay")
+                                   Spell.CastSpecialSpell("Smite", ret => CanMindFlay && Buff.TargetDebuffTimeLeft("Mind Flay").TotalSeconds <= Spell.ClippingDuration(), "Mind Flay targets=" + Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 12))
                                )) 
                        );
             }
