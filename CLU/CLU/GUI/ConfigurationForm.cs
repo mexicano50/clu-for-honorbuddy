@@ -513,7 +513,8 @@ namespace CLU.GUI
         /// </summary>
         private void DebugbuttonClick(object sender, EventArgs e)
         {
-            ObjectManager.Update();
+            //ObjectManager.Update();
+            CrabbyProfiler.Instance.Report();
         }
 
         /// <summary>
