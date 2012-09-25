@@ -196,7 +196,38 @@ namespace CLU.Settings
         #endregion
 
         #region Enhancement
+        [Setting]
+        [DefaultValue(true)]
+        [Category("Enhancement")]
+        [DisplayName("Ascendance")]
+        [Description("Let's you change to use Ascendance cooldown on Boss or just blow it on cooldown")]
+        public bool Ascendance
+        {
+            get;
+            set;
+        }
 
+        [Setting]
+        [DefaultValue(true)]
+        [Category("Enhancement")]
+        [DisplayName("Feral Spirit")]
+        [Description("Let's you change to use Feral Spirit on cooldown on Boss or just blow it on cooldown")]
+        public bool FeralSpirit
+        {
+            get;
+            set;
+        }
+
+        [Setting]
+        [DefaultValue(OnBoss)]
+        [Category("Enhancement")]
+        [DisplayName("Elemental Mastery")]
+        [Description("Let's you change to use Elemental Mastery on cooldown on Boss or just blow it on cooldown")]
+        public bool ElementalMastery
+        {
+            get;
+            set;
+        }
 
         #endregion
 

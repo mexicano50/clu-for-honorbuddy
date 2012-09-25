@@ -32,6 +32,27 @@ namespace CLU.Base
         FifthSlot
     }
 
+    public enum Ascendance
+    {
+        OnBoss,
+        OnCooldown
+
+    }
+
+    public enum ElementalMastery
+    {
+        OnBoss,
+        OnCooldown
+
+    }
+
+    public enum FeralSpirit
+    {
+        OnBoss,
+        OnCooldown
+
+    }
+
     public enum Burst {
         onBoss,
         onMob,
