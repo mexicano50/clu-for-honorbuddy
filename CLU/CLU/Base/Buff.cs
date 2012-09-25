@@ -53,7 +53,7 @@ namespace CLU.Base
 
         // ====================  Buffs ====================
         private static readonly HashSet<int> Stats = new HashSet<int> {
-            115921,     //Legacy of The Emperor
+            117666,     //Legacy of The Emperor
             1126,       //Mark of The Wild
             20217,      //Blessing Of Kings
             90363,      //Embrace of the Shale Spider
