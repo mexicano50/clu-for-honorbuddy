@@ -51,7 +51,7 @@ namespace CLU.Classes.Monk
         }
         public override int KeySpellId
         {
-            get { return 0; }
+            get { return 117418; }
         }
         public override float CombatMaxDistance
         {
