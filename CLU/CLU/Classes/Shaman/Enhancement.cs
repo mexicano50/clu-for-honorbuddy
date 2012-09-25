@@ -149,8 +149,8 @@ namespace CLU.Classes.Shaman
                                         && ((CLUSettings.Instance.Shaman.UseStormlashTotem == StormlashTotem.OnHaste && Me.HasAnyAura(Me.IsHorde ? "Bloodlust" : "Heroism", "Timewarp", "Ancient Hysteria")
                                         || CLUSettings.Instance.Shaman.UseStormlashTotem == StormlashTotem.OnCooldown)
                                         && !Totems.Exist(WoWTotemType.Air)), "Stormlash Totem"),
-                           Spell.CastSpell("Ascendance", ret => CLUSettings.Instance.Shaman.AscendanceSelection == Ascendance.OnBoss, "Ascendance"),
-                           Spell.CastSpell("Ascendance", ret => CLUSettings.Instance.Shaman.AscendanceSelection == Ascendance.OnCooldown, "Ascendance"),
+                           Spell.CastSelfSpell("Ascendance", ret => CLUSettings.Instance.Shaman.AscendanceSelection == Ascendance.OnBoss, "Ascendance"),
+                           Spell.CastSelfSpell("Ascendance", ret => CLUSettings.Instance.Shaman.AscendanceSelection == Ascendance.OnCooldown, "Ascendance"),
                            Spell.CastSpell("Feral Spirit", ret => Me.CurrentTarget != null && CLUSettings.Instance.Shaman.FeralSpiritSelection == FeralSpirit.OnBoss, "Feral Spirit"),
                            Spell.CastSpell("Feral Spirit", ret => Me.CurrentTarget != null && CLUSettings.Instance.Shaman.FeralSpiritSelection == FeralSpirit.OnCooldown, "Feral Spirit"),
                            Spell.CastSpell("Fire Elemental Totem", ret => Unit.IsTargetWorthy(Me.CurrentTarget) && (Me.HasAnyAura(Me.IsHorde ? "Bloodlust" : "Heroism", "Timewarp", "Ancient Hysteria") || Buff.PlayerHasActiveBuff("Elemental Mastery")), "Fire Elemental Totem"),
