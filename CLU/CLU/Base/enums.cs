@@ -34,23 +34,20 @@ namespace CLU.Base
 
     public enum Ascendance
     {
-        OnBoss,
-        OnCooldown
-
+       OnBoss,
+       OnCooldown
     }
 
     public enum ElementalMastery
     {
         OnBoss,
         OnCooldown
-
     }
 
     public enum FeralSpirit
     {
         OnBoss,
-        OnCooldown
-
+        OnCooldown,
     }
 
     public enum Burst {

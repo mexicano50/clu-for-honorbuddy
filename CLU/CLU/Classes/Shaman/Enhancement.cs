@@ -142,22 +142,25 @@ namespace CLU.Classes.Shaman
                                )),
                     // Default Rotaion
                            Spell.CastSpell("Searing Totem", ret => !Totems.Exist(WoWTotemType.Fire) && !Totems.Exist(WoWTotem.FireElemental), "Searing Totem"),
-                           Spell.CastSpell("Lightning Bolt", ret => Buff.PlayerCountBuff("Maelstrom Weapon") == 5 || (Item.Has4PcTeirBonus(ItemSetId) ? Buff.PlayerCountBuff("Maelstrom Weapon") == 5 : Buff.PlayerCountBuff("Maelstrom Weapon") >= 4 && (Spell.SpellCooldown("Feral Spirit").TotalSeconds > 90 && Spell.SpellOnCooldown("Feral Spirit"))), "Lightning Bolt"),
+                                                      Spell.CastSelfSpell("Elemental Mastery", ret => CLUSettings.Instance.Shaman.ElementalMasterySelection == ElementalMastery.OnBoss && TalentManager.HasTalent(10), "Elemental Mastery"),
+                           Spell.CastSelfSpell("Elemental Mastery", ret => CLUSettings.Instance.Shaman.ElementalMasterySelection == ElementalMastery.OnCooldown && TalentManager.HasTalent(10), "Elemental Mastery"),
+                            Spell.CastSpell("Stormlash Totem", ret => CLUSettings.Instance.Shaman.UseStormlashTotem != StormlashTotem.Never
+                                        && ((CLUSettings.Instance.Shaman.UseStormlashTotem == StormlashTotem.OnHaste && Me.HasAnyAura(Me.IsHorde ? "Bloodlust" : "Heroism", "Timewarp", "Ancient Hysteria")
+                                        || CLUSettings.Instance.Shaman.UseStormlashTotem == StormlashTotem.OnCooldown)
+                                        && !Totems.Exist(WoWTotemType.Air)), "Stormlash Totem"),
+                           Spell.CastSpell("Ascendance", ret => CLUSettings.Instance.Shaman.AscendanceSelection == Ascendance.OnBoss, "Ascendance"),
+                           Spell.CastSpell("Ascendance", ret => CLUSettings.Instance.Shaman.AscendanceSelection == Ascendance.OnCooldown, "Ascendance"),
+                           Spell.CastSpell("Feral Spirit", ret => Me.CurrentTarget != null && CLUSettings.Instance.Shaman.FeralSpiritSelection == FeralSpirit.OnBoss, "Feral Spirit"),
+                           Spell.CastSpell("Feral Spirit", ret => Me.CurrentTarget != null && CLUSettings.Instance.Shaman.FeralSpiritSelection == FeralSpirit.OnCooldown, "Feral Spirit"),
+                           Spell.CastSpell("Fire Elemental Totem", ret => Unit.IsTargetWorthy(Me.CurrentTarget) && (Me.HasAnyAura(Me.IsHorde ? "Bloodlust" : "Heroism", "Timewarp", "Ancient Hysteria") || Buff.PlayerHasActiveBuff("Elemental Mastery")), "Fire Elemental Totem"),
+                           Spell.CastSpell("Earth Elemental Totem", ret => Unit.IsTargetWorthy(Me.CurrentTarget) && SpellManager.Spells["Fire Elemental Totem"].CooldownTimeLeft.Seconds >= 50, "Earth Elemental Totem"),
                            Buff.CastDebuff("Flame Shock", ret => !Buff.TargetHasDebuff("Flame Shock") || Buff.TargetDebuffTimeLeft("Flame Shock").Seconds <= 3, "Flame Shock"),
                            Spell.CastSpell("Flame Shock", ret => Buff.PlayerHasActiveBuff("Unleash Flame"), "Flame Shock"),
+                           Spell.CastSpell("Lightning Bolt", ret => Buff.PlayerCountBuff("Maelstrom Weapon") == 5 || (Item.Has4PcTeirBonus(ItemSetId) ? Buff.PlayerCountBuff("Maelstrom Weapon") == 5 : Buff.PlayerCountBuff("Maelstrom Weapon") >= 4 && (Spell.SpellCooldown("Feral Spirit").TotalSeconds > 90 && Spell.SpellOnCooldown("Feral Spirit"))), "Lightning Bolt"),
                            Spell.CastSpell("Primal Strike", ret => true, "Stormstrike"),
                            Spell.CastSpell("Lava Lash", ret => true, "Lava Lash"),
                            Spell.CastSpell("Unleash Elements", ret => true, "Unleash Elements"),
                            Spell.CastSpell("Earth Shock", ret => Buff.TargetHasDebuff("Flame Shock"), "Earth Shock"),
-                           Spell.CastSelfSpell("Elemental Mastery", ret => TalentManager.HasTalent(10) && CLUSettings.Instance.Shaman.ElementalMastery, "Elemental Mastery"),
-                            Spell.CastSpell("Stormlash Totem", ret => CLUSettings.Instance.Shaman.UseStormlashTotem != StormlashTotem.Never
-                                        && ((CLUSettings.Instance.Shaman.UseStormlashTotem == StormlashTotem.OnHaste && Me.HasAnyAura(Me.IsHorde ? "Bloodlust" : "Heroism", "Timewarp", "Ancient Hysteria") 
-                                        || CLUSettings.Instance.Shaman.UseStormlashTotem == StormlashTotem.OnCooldown)
-                                        && !Totems.Exist(WoWTotemType.Air)),"Stormlash Totem"),
-                           Spell.CastSpell("Ascendance", ret => CLUSettings.Instance.Shaman.Ascendance, "Ascendance"),
-                           Spell.CastSpell("Feral Spirit", ret => Me.CurrentTarget != null && CLUSettings.Instance.Shaman.FeralSpirit, "Feral Spirit"),
-                           Spell.CastSpell("Fire Elemental Totem", ret => Unit.IsTargetWorthy(Me.CurrentTarget) && (Me.HasAnyAura(Me.IsHorde ? "Bloodlust" : "Heroism", "Timewarp", "Ancient Hysteria") || Buff.PlayerHasActiveBuff("Elemental Mastery")), "Fire Elemental Totem"),
-                           Spell.CastSpell("Earth Elemental Totem", ret => Unit.IsTargetWorthy(Me.CurrentTarget) && SpellManager.Spells["Fire Elemental Totem"].CooldownTimeLeft.Seconds >= 50, "Earth Elemental Totem"),
                            Buff.CastBuff("Spiritwalker's Grace", ret => Me.IsMoving, "Spiritwalker's Grace"),
                            Spell.CastSpell("Lightning Bolt", ret => Buff.PlayerCountBuff("Maelstrom Weapon") > 1 && !Buff.PlayerHasActiveBuff("Ascendance") && EverythingOnCoolDown && Buff.TargetHasDebuff("Flame Shock"), "Lightning Bolt"));
             }
