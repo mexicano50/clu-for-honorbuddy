@@ -150,7 +150,7 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
                                    Spell.CastSpell("Devouring Plague",        ret => Me.IsMoving && Me.ManaPercent > 10, "Devouring Plague"),
                                    Spell.CastSpell("Mind Blast",              ret => Buff.PlayerHasActiveBuff("Divine Insight"), "Mind Blast"),
                                    Spell.CastSelfSpell("Dispersion",          ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget) && (Me.HealthPercent < 10 || Me.ManaPercent < 10), "Dispersion"),
-                                   Spell.CastSpecialSpell("Smite", ret => CanMindFlay && Buff.TargetDebuffTimeLeft("Mind Flay").TotalSeconds <= Spell.ClippingDuration(), "Mind Flay targets=" + Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 12))
+                                   Spell.CastSpecialSpell("Smite", ret => CanMindFlay && Buff.TargetDebuffTimeLeft("Mind Flay").TotalSeconds <= Spell.ClippingDuration(), "Mind Flay")
                                )) 
                        );
             }
