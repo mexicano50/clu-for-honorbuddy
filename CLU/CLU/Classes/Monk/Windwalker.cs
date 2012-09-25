@@ -126,7 +126,7 @@ namespace CLU.Classes.Monk
                            Spell.CastSpell("Energizing Brew", ret => Me.CurrentEnergy <= 30, "Energizing Brew"),
                            Spell.CastSpell("Touch of Death", ret => true, "Touch of Death"),
                            Spell.CastSpell("Rising Sun Kick", ret => true, "Rising Sun Kick"),
-                           Spell.CastSpell("Tiger Palm", ret => Buff.PlayerCountBuff("Tiger Power") < 3 || Buff.PlayerBuffTimeLeft("Tiger Power") < 3, "Tiger Power"),
+                           Spell.CastSpell("Tiger Palm", ret => Buff.PlayerCountBuff("Tiger Power") < 3 || Buff.PlayerBuffTimeLeft("Tiger Power") < 3, "Tiger Palm"),
                            Spell.CastSelfSpell("Invoke Xuen, the White Tiger", ret => TalentManager.HasTalent(17) && Buff.PlayerCountBuff("Tiger Power") == 3 && Buff.TargetHasDebuff("Rising Sun Kick") && Me.CurrentEnergy <= 80, "Invoke Xuen"),
                            Spell.CastSpell("Rushing Jade Wind", ret => TalentManager.HasTalent(16) && Buff.PlayerCountBuff("Tiger Power") == 3 && Buff.TargetHasDebuff("Rising Sun Kick") && Me.CurrentEnergy <= 80, "Rushing Jade Wind"),
                            Spell.CastSpell("Fists of Fury", ret => !Me.IsMoving && !Buff.PlayerHasActiveBuff("Energizing Brew") && Me.CurrentEnergy <= 50 && Buff.PlayerBuffTimeLeft("Tiger Power") > 4 && Buff.PlayerCountBuff("Tiger Power") == 3 && Spell.SpellCooldown("Rising Sun Kick").TotalSeconds >= 2, "Fists of Fury"),
