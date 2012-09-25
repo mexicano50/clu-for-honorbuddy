@@ -117,14 +117,14 @@ CREDITS TO: HandNavi - because he owns the business.
                            ret => Me.HealthPercent < 100 && CLUSettings.Instance.EnableSelfHealing,
                            new PrioritySelector(
                                new Decorator(
-                                   ret => Me.Shapeshift == ShapeshiftForm.Bear,
+                                   ret => Buff.PlayerHasBuff("Bear Form"),
                                    new PrioritySelector(
                                        Spell.CastSelfSpell("Frenzied Regeneration",   ret => Me.HealthPercent <= 25 && !Buff.PlayerHasBuff("Survival Instincts"), "Frenzied Regeneration"),
                                        Spell.CastSelfSpell("Survival Instincts",      ret => Me.HealthPercent <= 40 && !Buff.PlayerHasBuff("Frenzied Regeneration"), "Survival Instincts"),
                                        Spell.CastSelfSpell("Barkskin",                ret => Me.HealthPercent <= 80, "Barkskin"),
                                        Item.UseBagItem("Healthstone",                 ret => Me.HealthPercent < 40, "Healthstone"))),
                                new Decorator(
-                                   ret => Me.Shapeshift == ShapeshiftForm.Cat,
+                                   ret => Buff.PlayerHasBuff("Cat Form"),
                                    new PrioritySelector(
                                        
                                        Spell.CastSelfSpell("Survival Instincts",      ret => Me.HealthPercent <= 40, "Survival Instincts"),

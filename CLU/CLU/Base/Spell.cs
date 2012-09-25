@@ -80,7 +80,7 @@ namespace CLU.Base
         {
             get
             {
-                return ChanneledTimeLeft() > 0;//StyxWoW.Me.ChanneledCastingSpellId != 0;
+                return ChanneledTimeLeft() > 0;//StyxWoW.Me.ChanneledCastingSpellId != 0; // ChanneledTimeLeft() > 0 && 
             }
         }
 
@@ -741,7 +741,7 @@ namespace CLU.Base
             SpellManager.Spells.TryGetValue(name, out spell);
             return
                 new PrioritySelector(
-                    new Decorator(x => KnownChanneledSpells.Contains(name) && ChanneledTimeLeft() > 0, //TODO: HB fix PlayerIsChanneling && Me.ChanneledCastingSpellId == spell.Id
+                    new Decorator(x => KnownChanneledSpells.Contains(name) && ChanneledTimeLeft() > 0, //TODO: HB fix PlayerIsChanneling && Me.ChanneledCastingSpellId == spell.Id ChanneledTimeLeft() > 0
                             new Action(a => CLU.Log(" [Channeling] {0} : {1} seconds remaining", name, ChanneledTimeLeft()))),
                     CastSpell(name, cond, label));
         }
@@ -758,7 +758,7 @@ namespace CLU.Base
             return
                 new PrioritySelector(
                     new Decorator(
-                        x => KnownChanneledSpells.Contains(spell.Name) && ChanneledTimeLeft() > 0, //TODO: HB fix PlayerIsChanneling && Me.ChanneledCastingSpellId == spell.Id
+                        x => KnownChanneledSpells.Contains(spell.Name) && ChanneledTimeLeft() > 0, //TODO: HB fix PlayerIsChanneling && Me.ChanneledCastingSpellId == spell.Id ChanneledTimeLeft() > 0
                         new Action(a => CLU.Log(" [Channeling] {0} : {1} seconds remaining", spell.Name, ChanneledTimeLeft()))),
                     CastSpell(spell, cond, label));
         }
