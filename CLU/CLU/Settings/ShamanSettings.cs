@@ -197,7 +197,7 @@ namespace CLU.Settings
 
         #region Enhancement
         [Setting]
-        [DefaultValue(true)]
+        [DefaultValue(Burst.onBoss)]
         [Category("Enhancement")]
         [DisplayName("Ascendance")]
         [Description("Let's you change to use Ascendance cooldown on Boss or just blow it on cooldown")]
@@ -208,7 +208,7 @@ namespace CLU.Settings
         }
 
         [Setting]
-        [DefaultValue(true)]
+        [DefaultValue(Burst.onBoss)]
         [Category("Enhancement")]
         [DisplayName("Feral Spirit")]
         [Description("Let's you change to use Feral Spirit on cooldown on Boss or just blow it on cooldown")]
@@ -219,7 +219,7 @@ namespace CLU.Settings
         }
 
         [Setting]
-        [DefaultValue(OnBoss)]
+        [DefaultValue(Burst.onBoss)]
         [Category("Enhancement")]
         [DisplayName("Elemental Mastery")]
         [Description("Let's you change to use Elemental Mastery on cooldown on Boss or just blow it on cooldown")]
