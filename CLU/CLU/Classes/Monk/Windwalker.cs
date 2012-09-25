@@ -86,7 +86,7 @@ namespace CLU.Classes.Monk
         {
             get
             {
-                return StyxWoW.Me.GetCurrentPower(WoWPowerType.LightForce);    // Me.GetMaxPower(WoWPowerType.LightForce) //possibly changing to WoWPowerType.Chi
+                return Me.CurrentChi;// StyxWoW.Me.GetCurrentPower(WoWPowerType.LightForce);
             }
         }
 
