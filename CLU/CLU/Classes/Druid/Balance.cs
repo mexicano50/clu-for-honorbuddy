@@ -116,7 +116,7 @@ namespace CLU.Classes.Druid
                         ret => CLUSettings.Instance.EnableMovement,
                         new PrioritySelector(
                             Spell.CastSelfSpell(
-                                "Moonkin Form", ret => !Buff.PlayerHasBuff("Moonkin Form"), "Moonkin Form"))),
+                                "Moonkin Form", ret => !Buff.PlayerHasBuff("Moonkin Form") && !CLU.IsMounted, "Moonkin Form"))),
 
                     new Decorator(
                         ret => Buff.PlayerHasBuff("Moonkin Form") && !Buff.PlayerHasActiveBuff("Shadowmeld"),

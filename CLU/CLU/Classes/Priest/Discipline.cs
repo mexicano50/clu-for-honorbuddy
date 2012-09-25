@@ -89,8 +89,6 @@ namespace CLU.Classes.Priest
                     // Pause Rotation
                            new Decorator(ret => CLUSettings.Instance.PauseRotation, new ActionAlwaysSucceed()),
 
-                           //new Action(delegate { CrabbyProfiler.Instance.Runs.Add(new Run("name")); }),
-
                            // if someone dies make sure we retarget.
                     //TargetBase.EnsureTarget(ret => StyxWoW.Me.CurrentTarget == null),
 

@@ -145,7 +145,7 @@ namespace CLU.Helpers
             return new Decorator(
                        cond,
                        new Sequence(
-                // get a target
+                         // get a target
                            new Action(
                             delegate
                             {
