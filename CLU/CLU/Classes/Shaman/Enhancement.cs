@@ -143,15 +143,15 @@ namespace CLU.Classes.Shaman
                                )),
                     // Default Rotaion
                            Spell.CastSpell("Searing Totem", ret => !Totems.Exist(WoWTotemType.Fire) && !Totems.Exist(WoWTotem.FireElemental), "Searing Totem"),
-                                                      Spell.CastSelfSpell("Elemental Mastery", ret => CLUSettings.Instance.Shaman.ElementalMasterySelection == ElementalMastery.OnBoss && TalentManager.HasTalent(10), "Elemental Mastery"),
+                                                      Spell.CastSelfSpell("Elemental Mastery", ret => Me.CurrentTarget != null && CLUSettings.Instance.Shaman.ElementalMasterySelection == ElementalMastery.OnBoss && Unit.IsTargetWorthy(Me.CurrentTarget) && TalentManager.HasTalent(10), "Elemental Mastery"),
                            Spell.CastSelfSpell("Elemental Mastery", ret => CLUSettings.Instance.Shaman.ElementalMasterySelection == ElementalMastery.OnCooldown && TalentManager.HasTalent(10), "Elemental Mastery"),
                             Spell.CastSpell("Stormlash Totem", ret => CLUSettings.Instance.Shaman.UseStormlashTotem != StormlashTotem.Never
                                         && ((CLUSettings.Instance.Shaman.UseStormlashTotem == StormlashTotem.OnHaste && Me.HasAnyAura(Me.IsHorde ? "Bloodlust" : "Heroism", "Timewarp", "Ancient Hysteria")
                                         || CLUSettings.Instance.Shaman.UseStormlashTotem == StormlashTotem.OnCooldown)
                                         && !Totems.Exist(WoWTotemType.Air)), "Stormlash Totem"),
-                           Buff.CastBuff("Ascendance", ret => CLUSettings.Instance.Shaman.AscendanceSelection == Ascendance.OnBoss, "Ascendance"),
-                           Buff.CastBuff("Ascendance", ret => CLUSettings.Instance.Shaman.AscendanceSelection == Ascendance.OnCooldown, "Ascendance"),
-                           Spell.CastSpell("Feral Spirit", ret => Me.CurrentTarget != null && CLUSettings.Instance.Shaman.FeralSpiritSelection == FeralSpirit.OnBoss, "Feral Spirit"),
+                           Buff.CastBuff("Ascendance", ret => Me.CurrentTarget != null && CLUSettings.Instance.Shaman.AscendanceSelection == Ascendance.OnBoss && Unit.IsTargetWorthy(Me.CurrentTarget), "Ascendance"),
+                           Buff.CastBuff("Ascendance", ret => Me.CurrentTarget != null && CLUSettings.Instance.Shaman.AscendanceSelection == Ascendance.OnCooldown, "Ascendance"),
+                           Spell.CastSpell("Feral Spirit", ret => Me.CurrentTarget != null && CLUSettings.Instance.Shaman.FeralSpiritSelection == FeralSpirit.OnBoss && Unit.IsTargetWorthy(Me.CurrentTarget), "Feral Spirit"),
                            Spell.CastSpell("Feral Spirit", ret => Me.CurrentTarget != null && CLUSettings.Instance.Shaman.FeralSpiritSelection == FeralSpirit.OnCooldown, "Feral Spirit"),
                            Spell.CastSpell("Fire Elemental Totem", ret => Unit.IsTargetWorthy(Me.CurrentTarget) && (Me.HasAnyAura(Me.IsHorde ? "Bloodlust" : "Heroism", "Timewarp", "Ancient Hysteria") || Buff.PlayerHasActiveBuff("Elemental Mastery")), "Fire Elemental Totem"),
                            Spell.CastSpell("Earth Elemental Totem", ret => Unit.IsTargetWorthy(Me.CurrentTarget) && SpellManager.Spells["Fire Elemental Totem"].CooldownTimeLeft.Seconds >= 50, "Earth Elemental Totem"),
