@@ -110,8 +110,8 @@ namespace CLU.Classes.Monk
                            Spell.CastAreaSpell("Spinning Crane Kick", 8, false, 3, 0.0, 0.0, ret => true, "Spinning Crane Kick"),
                            // low abilities
                            Spell.CastSpell("Blackout Kick",              ret => Chi >= 1, "Blackout Kick"),
-                           Spell.CastSpell("TigerPalm",                  ret => Buff.PlayerCountBuff("Tiger Power") == 3, "TigerPalm"),
-                           Spell.CastSpell("TigerPalm",                  ret => Buff.PlayerCountBuff("Tiger Power") <= 3, "TigerPalm"),
+                           Spell.CastSpell("Tiger Palm",                  ret => Buff.PlayerCountBuff("Tiger Power") == 3, "Tiger Palm"),
+                           Spell.CastSpell("Tiger Palm",                  ret => Buff.PlayerCountBuff("Tiger Power") <= 3, "Tiger Palm"),
                            Spell.CastSpell(JabSpellList.Find(SpellManager.CanCast), ret => true, "JabSpell"));
             }
         }
