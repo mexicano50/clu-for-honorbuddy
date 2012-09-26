@@ -256,7 +256,7 @@ namespace CLU.Classes.Shaman
                            new PrioritySelector(
                                Item.UseBagItem("Healthstone", ret => Me.HealthPercent < 30, "Healthstone"),
                                Buff.CastBuff("Shamanistic Rage", ret => Me.CurrentTarget != null && (Me.HealthPercent < 60 || (Me.ManaPercent < 65 && Me.CurrentTarget.HealthPercent >= 75)), "Shamanistic Rage"),
-                               Spell.CastSpell("Healing Surge", ret => Me, ret => Me.HealthPercent < 55 && CLUSettings.Instance.EnableSelfHealing && Buff.PlayerCountBuff("Maelstorm Weapon") > 3, "Healing Surge"))));
+                               Spell.CastSpell("Healing Surge", ret => Me, ret => Me.HealthPercent < 55 && CLUSettings.Instance.EnableSelfHealing && Buff.PlayerCountBuff("Maelstorm Weapon") >= 3, "Healing Surge"))));
             }
         }
 
