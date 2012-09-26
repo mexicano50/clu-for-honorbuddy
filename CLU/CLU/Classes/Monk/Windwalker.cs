@@ -103,7 +103,7 @@ namespace CLU.Classes.Monk
                             Buff.CastBuff("Lifeblood", ret => true, "Lifeblood"),
                             Item.UseEngineerGloves())),
                     //Single Target
-                    Spell.CastSpell("Touch of Death", ret => Buff.PlayerHasBuff("Death Note"), "Touch of Death"),
+                    Spell.CastSpell("Touch of Death", ret => Me.HasAura("Death Note"), "Touch of Death"),
                     Spell.CastSelfSpell("Tigereye Brew",
                                         ret =>
                                         !Buff.PlayerHasBuff("Tigereye Brew Use") &&
