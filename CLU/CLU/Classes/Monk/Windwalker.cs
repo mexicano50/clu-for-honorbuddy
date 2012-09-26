@@ -165,6 +165,7 @@ namespace CLU.Classes.Monk
                                     "Blackout Kick"),
                     //Spell.CastSpell("Jab", ret => TalentManager.HasTalent(8) && Chi <= 3, "Jab"), is not identifying the talent, is using jab at 3 chi without the talent
                     Spell.CastSpell("Expel Harm", ret => Chi <= 2 && Me.HealthPercent <= 80, "Expel Harm"),
+                    Spell.CastSpell("Touch of Karma", ret => Chi <= 2 && Me.HealthPercent <= 40, "Touch of Karma"),
                     Spell.CastSpell("Jab",
                                     ret =>
                                     Chi <= 2 && Me.HealthPercent > 80 ||
