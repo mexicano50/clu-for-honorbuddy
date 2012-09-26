@@ -110,7 +110,7 @@ namespace CLU.Classes.Monk
                                         "Tigerye Brew"),
                     //Spell.CastSpell("Chi Brew", ret => TalentManager.HasTalent(9) && Buff.PlayerHasBuff("Tigereye Brew Use" && Chi == 0 && Me.CurrentEnergy <= 50, "Chi Brew"),     is not identifying "tigereye brew use" buff
                     Spell.CastSpell("Energizing Brew", ret => Me.CurrentEnergy <= 30, "Energizing Brew"),
-                    Spell.CastSpell("Touch of Death", ret => !Me.CurrentTarget.IsPlayer && Me.CurrentTarget.CurrentHealth < Me.CurrentHealth, "Touch of Death"),
+                    Spell.CastSpell("Touch of Death", ret => !Me.CurrentTarget.IsPlayer && !Me.CurrentTarget.IsPet && Me.CurrentTarget.CurrentHealth < Me.CurrentHealth, "Touch of Death"),
                     Spell.CastSpell("Rising Sun Kick",
                                     ret =>
                                     !Buff.TargetHasDebuff("Rising Sun Kick") ||
