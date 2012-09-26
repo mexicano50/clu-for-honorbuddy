@@ -138,7 +138,7 @@ namespace CLU.Classes.Rogue
                            Spell.CancelMyAura("Blade Flurry", ret => Unit.EnemyUnits.Count() < 2 && Buff.PlayerHasBuff("Blade Flurry"), "Blade Flurry"),
                            //Item.RunMacroText("/cancelaura Blade Flurry", ret => Unit.EnemyUnits.Count() < 2 && Buff.PlayerHasBuff("Blade Flurry"), "[CancelAura] Blade Flurry"),
                            Spell.CastSpell("Crimson Tempest", ret => Unit.EnemyUnits.Count() > 7 && Me.ComboPoints == 5, "Crimson Tempest"),
-                           Buff.CastBuff("Blade Flurry", ret => (Unit.EnemyUnits.Count() > 1 && Unit.EnemyUnits.Count() < 6) && CLUSettings.Instance.UseAoEAbilities, "Blade Flurry"),
+                           Spell.CastSelfSpell("Blade Flurry", ret => (Unit.EnemyUnits.Count() > 1 && Unit.EnemyUnits.Count() < 6) && CLUSettings.Instance.UseAoEAbilities, "Blade Flurry"),
                            Spell.CastSpell("Ambush", ret => Me.IsBehind(Me.CurrentTarget), "Ambush"),
                            Spell.CastAreaSpell("Fan of Knives", 8, false, CLUSettings.Instance.Rogue.CombatFanOfKnivesCount, 0.0, 0.0, ret => Me.CurrentEnergy > 85, "Fan of Knives"),
                            Spell.CastSpell("Tricks of the Trade", u => Unit.BestTricksTarget, ret => CLUSettings.Instance.Rogue.UseTricksOfTheTrade, "Tricks of the Trade"),
@@ -148,8 +148,8 @@ namespace CLU.Classes.Rogue
                            Spell.CastSelfSpell("Adrenaline Rush", ret => Me.CurrentTarget != null && Me.CurrentEnergy < 35 && Unit.IsTargetWorthy(Me.CurrentTarget), "Adrenaline Rush"),
                            Spell.CastSpell("Rupture", ret => Me.CurrentTarget != null && Me.ComboPoints == 5 && !Buff.TargetHasDebuff("Rupture"), "Rupture"), //removed bleed check no longer ingame --  wulf
                            Spell.CastSpell("Eviscerate", ret => (Me.ComboPoints == 5 && Buff.PlayerHasBuff("Deep Insight")) || Buff.PlayerCountBuff("Anticipation") > 4, "Eviscerate"),
-                           Spell.CastSpell("Revealing Strike", ret => !Buff.PlayerHasActiveBuff("Deep Insight") || (Buff.PlayerHasActiveBuff("Deep Insight") && Me.ComboPoints < 5 && Buff.PlayerBuffTimeLeft("Deep Insight") < 2), "Revealing Strike"),
-                           Spell.CastSpell("Sinister Strike", ret => Buff.TargetHasDebuff("Revealing Strike") || (Buff.PlayerHasActiveBuff("Deep Insight") && Me.ComboPoints < 5), "Sinister Strike")
+                           Spell.CastSpell("Sinister Strike", ret => Buff.TargetHasDebuff("Revealing Strike") || (Buff.PlayerHasActiveBuff("Deep Insight") && Me.ComboPoints < 5), "Sinister Strike"),
+                           Spell.CastSpell("Revealing Strike", ret => !Buff.PlayerHasActiveBuff("Deep Insight") || (Buff.PlayerHasActiveBuff("Deep Insight") && Me.ComboPoints < 5 && Buff.PlayerBuffTimeLeft("Deep Insight") < 2), "Revealing Strike")
                        );
             }
         }
