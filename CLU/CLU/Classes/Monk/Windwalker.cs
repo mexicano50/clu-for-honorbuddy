@@ -65,9 +65,7 @@ namespace CLU.Classes.Monk
 
         private static uint Chi
         {
-            get
-            {
-                return Me.CurrentChi; // StyxWoW.Me.GetCurrentPower(WoWPowerType.LightForce);
+            get { return Me.CurrentChi; // StyxWoW.Me.GetCurrentPower(WoWPowerType.LightForce);
             }
         }
 
@@ -79,7 +77,8 @@ namespace CLU.Classes.Monk
         // TODO: CHECK JAB IS NOT AFFECTED BY THE WEAPON YOU ARE CARRYING AND WE ONLY NEED TO USE JAB AND THE SPELLID AND ICON WILL CHANGE.
 
 
-        private static readonly List<string> JabSpellList = new List<string> { "Jab", "Club", "Slice", "Sever", "Pike", "Clobber" };
+        private static readonly List<string> JabSpellList = new List<string>
+                                                                {"Jab", "Club", "Slice", "Sever", "Pike", "Clobber"};
 
         private static bool RisingSunKickCoolDown
         {
@@ -110,7 +109,12 @@ namespace CLU.Classes.Monk
                                         "Tigerye Brew"),
                     //Spell.CastSpell("Chi Brew", ret => TalentManager.HasTalent(9) && Buff.PlayerHasBuff("Tigereye Brew Use" && Chi == 0 && Me.CurrentEnergy <= 50, "Chi Brew"),     is not identifying "tigereye brew use" buff
                     Spell.CastSpell("Energizing Brew", ret => Me.CurrentEnergy <= 30, "Energizing Brew"),
-                    Spell.CastSpell("Touch of Death", ret => !Me.CurrentTarget.IsPlayer && !Me.CurrentTarget.IsPet && Me.CurrentTarget.CurrentHealth < Me.CurrentHealth, "Touch of Death"),
+                    Spell.CastSpell("Touch of Death",
+                                    ret =>
+                                    !Me.CurrentTarget.IsPlayer && !Me.CurrentTarget.IsPet &&
+                                    Me.CurrentTarget.CurrentHealth < Me.CurrentHealth, "Touch of Death"),
+                    Spell.CastSpell("Expel Harm", ret => Me.HealthPercent < 80 && Me.CurrentEnergy >= 40 && Chi <= 2,
+                                    "Expel Harm"),
                     Spell.CastSpell("Rising Sun Kick",
                                     ret =>
                                     !Buff.TargetHasDebuff("Rising Sun Kick") ||
@@ -181,9 +185,9 @@ namespace CLU.Classes.Monk
                     ret => Me.HealthPercent < 100 && CLUSettings.Instance.EnableSelfHealing,
                     new PrioritySelector(
                         Buff.CastBuff("Fortifying Brew", ret => Me.HealthPercent < 50, "Fortifying Brew"),
-                    // Turns your skin to stone, increasing your health by 20%, and reducing damage taken by 20%. Lasts 20 sec.
+                        // Turns your skin to stone, increasing your health by 20%, and reducing damage taken by 20%. Lasts 20 sec.
                         Buff.CastBuff("Guard", ret => Me.HealthPercent < 50, "Guard"),
-                    // absorbs damage for 30secs and increases any healing by 30%
+                        // absorbs damage for 30secs and increases any healing by 30%
                         Item.UseBagItem("Healthstone", ret => Me.HealthPercent < 40, "Healthstone")));
             }
         }
