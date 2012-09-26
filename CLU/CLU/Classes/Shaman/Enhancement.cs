@@ -12,7 +12,9 @@
 
 
 using CLU.Helpers;
+using Styx;
 using Styx.TreeSharp;
+using Styx.Common;
 using System.Linq;
 using CommonBehaviors.Actions;
 using CLU.Lists;
@@ -149,7 +151,7 @@ namespace CLU.Classes.Shaman
                                         && ((CLUSettings.Instance.Shaman.UseStormlashTotem == StormlashTotem.OnHaste && Me.HasAnyAura(Me.IsHorde ? "Bloodlust" : "Heroism", "Timewarp", "Ancient Hysteria")
                                         || CLUSettings.Instance.Shaman.UseStormlashTotem == StormlashTotem.OnCooldown)
                                         && !Totems.Exist(WoWTotemType.Air)), "Stormlash Totem"),
-                           Spell.CastSpell("Lightning Bolt", ret => Buff.PlayerCountBuff("Maelstrom Weapon") == 5 || (Item.Has4PcTeirBonus(ItemSetId) ? Buff.PlayerCountBuff("Maelstrom Weapon") == 5 : Buff.PlayerCountBuff("Maelstrom Weapon") >= 4 && (Spell.SpellCooldown("Feral Spirit").TotalSeconds > 90 && Spell.SpellOnCooldown("Feral Spirit"))), "Lightning Bolt"),
+                           Spell.CastSpell("Lightning Bolt", ret => Buff.PlayerCountBuff("Maelstrom Weapon") == 5, "Lightning Bolt"),
                            Buff.CastBuff("Ascendance", ret => Me.CurrentTarget != null && CLUSettings.Instance.Shaman.AscendanceSelection == Ascendance.OnBoss && Unit.IsTargetWorthy(Me.CurrentTarget), "Ascendance"),
                            Buff.CastBuff("Ascendance", ret => Me.CurrentTarget != null && CLUSettings.Instance.Shaman.AscendanceSelection == Ascendance.OnCooldown, "Ascendance"),
                            Spell.CastSpell("Feral Spirit", ret => Me.CurrentTarget != null && CLUSettings.Instance.Shaman.FeralSpiritSelection == FeralSpirit.OnBoss && Unit.IsTargetWorthy(Me.CurrentTarget), "Feral Spirit"),
@@ -168,6 +170,7 @@ namespace CLU.Classes.Shaman
             }
         }
 
+        
         public Composite burstRotation
         {
             get
