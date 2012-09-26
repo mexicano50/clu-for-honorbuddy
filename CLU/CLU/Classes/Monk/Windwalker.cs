@@ -113,6 +113,8 @@ namespace CLU.Classes.Monk
                     Spell.CastSpell("Energizing Brew", ret => Me.CurrentEnergy <= 30, "Energizing Brew"),
                     Spell.CastSpell("Expel Harm", ret => Me.HealthPercent < 80 && Me.CurrentEnergy >= 40 && Chi <= 2,
                                     "Expel Harm"),
+                    Spell.CastSpell("Disable", ret => Me.CurrentEnergy >= 15 && (Me.CurrentTarget.IsPlayer || Me.CurrentTarget.Fleeing) && Me.CurrentTarget.MovementInfo.RunSpeed > 3.5,
+                                    "Disable"),
                     Spell.CastSpell("Rising Sun Kick",
                                     ret =>
                                     !Buff.TargetHasDebuff("Rising Sun Kick") ||
