@@ -103,6 +103,7 @@ namespace CLU.Classes.Monk
                             Buff.CastBuff("Lifeblood", ret => true, "Lifeblood"),
                             Item.UseEngineerGloves())),
                     //Single Target
+                    Spell.CastSpell("Touch of Death", ret => Buff.PlayerHasBuff("Death Note"), "Touch of Death"),
                     Spell.CastSelfSpell("Tigereye Brew",
                                         ret =>
                                         !Buff.PlayerHasBuff("Tigereye Brew Use") &&
@@ -110,7 +111,6 @@ namespace CLU.Classes.Monk
                                         "Tigerye Brew"),
                     //Spell.CastSpell("Chi Brew", ret => TalentManager.HasTalent(9) && Buff.PlayerHasBuff("Tigereye Brew Use" && Chi == 0 && Me.CurrentEnergy <= 50, "Chi Brew"),     is not identifying "tigereye brew use" buff
                     Spell.CastSpell("Energizing Brew", ret => Me.CurrentEnergy <= 30, "Energizing Brew"),
-                    Spell.CastSpell("Touch of Death", ret => Buff.PlayerHasBuff("Death Note"), "Touch of Death"),
                     Spell.CastSpell("Expel Harm", ret => Me.HealthPercent < 80 && Me.CurrentEnergy >= 40 && Chi <= 2,
                                     "Expel Harm"),
                     Spell.CastSpell("Rising Sun Kick",
