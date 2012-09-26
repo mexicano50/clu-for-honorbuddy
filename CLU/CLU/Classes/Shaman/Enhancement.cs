@@ -98,7 +98,7 @@ namespace CLU.Classes.Shaman
         }
 
         //[SpellManager] Stormstrike (17364) overrides Primal Strike (73899)
-        private static bool EverythingOnCoolDown { get { return Spell.SpellCooldown("Primal Strike").TotalSeconds > 1.5 && Spell.SpellCooldown("Lava Lash").TotalSeconds > 2.0 && Spell.SpellCooldown("Unleash Elements").TotalSeconds > 2.0 && Spell.SpellCooldown("Earth Shock").Seconds > 2.0; } }
+        private static bool EverythingOnCoolDown { get { return Spell.SpellCooldown("Primal Strike").TotalSeconds > 1.5 && Spell.SpellCooldown("Lava Lash").TotalSeconds > 1.5 && Spell.SpellCooldown("Unleash Elements").TotalSeconds > 2.0 && Spell.SpellCooldown("Earth Shock").Seconds > 2.0; } }
 
         public override Composite SingleRotation
         {
@@ -136,7 +136,6 @@ namespace CLU.Classes.Shaman
                                    Spell.CastSpell("Flame Shock", ret => Buff.PlayerHasActiveBuff("Unleash Flame"), "Flame Shock"),
                                    Spell.CastSpell("Lava Lash", ret => Buff.TargetHasDebuff("Flame Shock"), "Lava Lash"),
                                    Spell.CastSpell("Fire Nova", ret => true, "Fire Nova"),
-                                   Spell.CastSpell("Lightning Bolt", ret => Buff.PlayerCountBuff("Maelstrom Weapon") == 5, "Lightning Bolt"),
                                    Spell.CastSpell("Primal Strike", ret => true, "Stormstrike"),
                                    Spell.CastSpell("Lava Lash", ret => true, "Lava Lash"),
                                    Spell.CastSpell("Unleash Elements", ret => true, "Unleash Elements"),
@@ -151,7 +150,7 @@ namespace CLU.Classes.Shaman
                                         && ((CLUSettings.Instance.Shaman.UseStormlashTotem == StormlashTotem.OnHaste && Me.HasAnyAura(Me.IsHorde ? "Bloodlust" : "Heroism", "Timewarp", "Ancient Hysteria")
                                         || CLUSettings.Instance.Shaman.UseStormlashTotem == StormlashTotem.OnCooldown)
                                         && !Totems.Exist(WoWTotemType.Air)), "Stormlash Totem"),
-                           Spell.CastSpell("Lightning Bolt", ret => Buff.PlayerCountBuff("Maelstrom Weapon") >= 5, "Lightning Bolt"),
+                           Spell.CastSpell("Lightning Bolt", ret => Buff.PlayerCountBuff("Maelstrom Weapon") == 5, "Lightning Bolt"),
                            Buff.CastBuff("Ascendance", ret => CLUSettings.Instance.Shaman.AscendanceSelection == Ascendance.OnBoss && Unit.IsTargetWorthy(Me.CurrentTarget), "Ascendance"),
                            Buff.CastBuff("Ascendance", ret => CLUSettings.Instance.Shaman.AscendanceSelection == Ascendance.OnCooldown, "Ascendance"),
                            Spell.CastSpell("Feral Spirit", ret => CLUSettings.Instance.Shaman.FeralSpiritSelection == FeralSpirit.OnBoss && Unit.IsTargetWorthy(Me.CurrentTarget), "Feral Spirit"),
