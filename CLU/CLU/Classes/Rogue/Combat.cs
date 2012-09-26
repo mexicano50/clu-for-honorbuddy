@@ -135,7 +135,7 @@ namespace CLU.Classes.Rogue
                     //Spell.CastSpell("Feint", ret => Me.CurrentTarget != null && (Me.CurrentTarget.ThreatInfo.RawPercent > 80 || EncounterSpecific.IsMorchokStomp()) && CLUSettings.Instance.EnableSelfHealing, "Feint"),
                            Spell.CastInterupt("Kick", ret => true, "Kick"),
                            Spell.CastSpell("Redirect", ret => Me.RawComboPoints > 0 && Me.ComboPoints < 1, "Redirect"),
-                           Spell.CancelMyAura("Blade Flurry", ret => Unit.EnemyUnits.Count() < 2 && Buff.PlayerHasBuff("Blade Flurry"), "Blade Flurry"),
+                           Spell.CancelMyAura("Blade Flurry", ret => Unit.EnemyUnits.Count() < 2 && Buff.PlayerHasActiveBuff("Blade Flurry"), "Blade Flurry"),
                            //Item.RunMacroText("/cancelaura Blade Flurry", ret => Unit.EnemyUnits.Count() < 2 && Buff.PlayerHasBuff("Blade Flurry"), "[CancelAura] Blade Flurry"),
                            Spell.CastSpell("Crimson Tempest", ret => Unit.EnemyUnits.Count() > 7 && Me.ComboPoints == 5, "Crimson Tempest"),
                            Spell.CastSelfSpell("Blade Flurry", ret => (Unit.EnemyUnits.Count() > 1 && Unit.EnemyUnits.Count() < 6) && CLUSettings.Instance.UseAoEAbilities, "Blade Flurry"),
