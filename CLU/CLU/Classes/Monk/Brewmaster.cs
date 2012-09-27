@@ -1,4 +1,5 @@
 ﻿#region Revision info
+
 /*
  * $Author$
  * $Date$
@@ -8,6 +9,7 @@
  * $LastChangedBy$
  * $ChangesMade$
  */
+
 #endregion
 
 using Styx.TreeSharp;
@@ -16,6 +18,7 @@ using CLU.Helpers;
 using CLU.Settings;
 using System.Collections.Generic;
 using CLU.Base;
+using CLU.Managers;
 using Styx.CommonBot;
 using Rest = CLU.Base.Rest;
 
@@ -23,56 +26,39 @@ namespace CLU.Classes.Monk
 {
     using Styx;
 
-    class Brewmaster : RotationBase
+    internal class Brewmaster : RotationBase
     {
         public override string Name
         {
-            get {
-                return "Brewmaster Monk";
-            }
+            get { return "Brewmaster Monk"; }
         }
 
         public override string Revision
         {
-            get
-            {
-                return "$Rev$";
-            }
+            get { return "$Rev$"; }
         }
 
         public override string KeySpell
         {
-            get {
-                return "Dizzying Haze";
-            }
+            get { return "Dizzying Haze"; }
         }
+
         public override int KeySpellId
         {
             get { return 115180; }
         }
+
         public override float CombatMaxDistance
         {
-            get {
-                return 3.2f;
-            }
+            get { return 3.2f; }
         }
 
         public override string Help
         {
-            get {
+            get
+            {
                 return "----------------------------------------------------------------------\n" +
-                       "This Rotation will:\n" +
-                       "1. \n" +
-                       "==> \n" +
-                       "2. AutomaticCooldowns has: \n" +
-                       "==> UseTrinkets \n" +
-                       "==> UseRacials \n" +
-                       "==> UseEngineerGloves \n" +
-                       "==> \n" +
-                       "3. \n" +
-                       "4. Best Suited for end game raiding\n" +
-                       "NOTE: PvP uses single target rotation - It's not designed for PvP use. \n" +
-                       "Credits: Me\n" +
+                       "Credits: alxaw , Kbrebel04" +
                        "----------------------------------------------------------------------\n";
             }
         }
@@ -81,83 +67,100 @@ namespace CLU.Classes.Monk
         {
             get
             {
-                return Me.CurrentChi;// StyxWoW.Me.GetCurrentPower(WoWPowerType.LightForce);
+                return Me.CurrentChi; // StyxWoW.Me.GetCurrentPower(WoWPowerType.LightForce);
             }
         }
 
-        private static readonly List<string> JabSpellList = new List<string> { "Jab", "Club", "Slice", "Sever", "Pike", "Clobber" };
+        // TODO: CHECK COMBO BREAKER NAMES.
+        // TODO: CHECK CHI
+        // TODO: FIND AWAY TO RETURN ENERGY REGEN RATE
+        // TODO: CHECK ALL SPELL NAMES FROM "SPELLS" DUMP
+        // TODO: CHECK ALL AURAS
+        // TODO: CHECK JAB IS NOT AFFECTED BY THE WEAPON YOU ARE CARRYING AND WE ONLY NEED TO USE JAB AND THE SPELLID AND ICON WILL CHANGE.
 
         public override Composite SingleRotation
         {
-            get {
+            get
+            {
                 return new PrioritySelector(
-                           // Pause Rotation
-                           new Decorator(ret => CLUSettings.Instance.PauseRotation, new ActionAlwaysSucceed()),
+                    // Pause Rotation
+                    new Decorator(ret => CLUSettings.Instance.PauseRotation, new ActionAlwaysSucceed()),
+                    // For DS Encounters.
+                    EncounterSpecific.ExtraActionButton(),
+                    new Decorator(
+                        ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget),
+                        new PrioritySelector(
+                            Item.UseTrinkets(),
+                            Racials.UseRacials(),
+                            Buff.CastBuff("Lifeblood", ret => true, "Lifeblood"),
+                            Item.UseEngineerGloves())),
+                    //Single Target
+                    Spell.CastSpell("Clash", ret => Me.CurrentTarget.DistanceSqr >= 8 * 8 && Me.CurrentTarget.DistanceSqr <= 50 * 50, "Clash"),
+                    Spell.CastSpell("Touch of Death", ret => Buff.PlayerHasBuff("Death Note"), "Touch of Death"),
+                    Spell.CastSpell("Elusive Brew", ret => !Buff.PlayerHasBuff("Elusive Brew Use") && Buff.PlayerCountBuff("Elusive Brew") >= 6 && Me.HealthPercent <= 80, "Elusive Brew"),
+                    Spell.CastSpell("Purifying Brew", ret => Chi >= 1 && Me.HasAura("Moderate Stagger") && Me.HealthPercent <= 60 || Chi >= 1 && Me.HasAura("Heavy Stagger") && Me.HealthPercent <= 60, "Purifying Brew"),
+                    Spell.CastOnUnitLocation("Summon Black Ox Statue", u => Me.CurrentTarget, ret => Me.HealthPercent <= 70, "Summon Black Ox Statue"),
+                    Spell.CastSpell("Disable", ret => Me.CurrentEnergy >= 15 && (Me.CurrentTarget.IsPlayer || Me.CurrentTarget.Fleeing) && Me.CurrentTarget.MovementInfo.RunSpeed > 3.5, "Disable"),
+                    Spell.CastSelfSpell("Chi Wave", ret => TalentManager.HasTalent(4) && Chi >= 2 && Me.HealthPercent <= 40, "Chi Wave"),
+                    Spell.CastSelfSpell("Guard", ret => Chi >= 2 && Buff.PlayerHasBuff("Power Guard"), "Guard"),
+                    Spell.CastSpell("Tiger Palm", ret => Buff.PlayerCountBuff("Tiger Power") < 3 || Buff.PlayerBuffTimeLeft("Tiger Power") <= 3, "Tiger Palm"),
+                    Spell.CastSpell("Blackout Kick", ret => Chi >= 2 && !Buff.PlayerHasActiveBuff("Shuffle") || Chi >= 2 && Buff.PlayerCountBuff("Tiger Power") == 3 && Buff.PlayerBuffTimeLeft("Tiger Power") >= 3 && Buff.PlayerHasActiveBuff("Guard"), "Blackout Kick"),
+                    Spell.CastSelfSpell("Invoke Xuen, the White Tiger", ret => TalentManager.HasTalent(17) && Buff.PlayerCountBuff("Tiger Power") == 3 && Me.CurrentEnergy <= 80, "Invoke Xuen"),
+                    Spell.CastSpell("Rushing Jade Wind", ret => TalentManager.HasTalent(16) && Buff.PlayerCountBuff("Tiger Power") == 3 && Me.CurrentEnergy <= 80, "Rushing Jade Wind"),
+                    Spell.CastSpell("Keg Smash", ret => Chi <= 2, "Keg Smash"),
+                    Spell.CastSpell("Expel Harm", ret => Chi <= 2 && Me.HealthPercent <= 80 && Spell.SpellOnCooldown("Keg Smash"), "Keg Smash"),
+                    Spell.CastSpell("Touch of Karma", ret => Chi <= 2 && Me.HealthPercent <= 40, "Touch of Karma"),
+                    Spell.CastSpell("Jab", ret => Chi <= 2 && Me.HealthPercent > 80 && Spell.SpellOnCooldown("Keg Smash") || Chi <= 2 && Spell.SpellOnCooldown("Expel Harm") && Spell.SpellOnCooldown("Keg Smash") && Me.HealthPercent <= 80, "Jab"),
+                    Spell.CastSpell("Tiger Palm", ret => Chi < 2 && Me.CurrentEnergy < 40, "Tiger Palm"),
 
-                           // For DS Encounters.
-                           EncounterSpecific.ExtraActionButton(),
-
-                           new Decorator(
-                               ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget),
-                               new PrioritySelector(
-                                   Item.UseTrinkets(),
-                                   Racials.UseRacials(),
-                                   Buff.CastBuff("Lifeblood", ret => true, "Lifeblood"),
-                                   Item.UseEngineerGloves())),
-                           // Interupt
-                           Spell.CastInterupt("Spear Hand Strike",       ret => true, "Spear Hand Strike"),
-                           // AoE
-                           Spell.CastAreaSpell("Spinning Crane Kick", 8, false, 3, 0.0, 0.0, ret => true, "Spinning Crane Kick"),
-                           // low abilities
-                           Spell.CastSpell("Blackout Kick",              ret => Chi >= 1, "Blackout Kick"),
-                           Spell.CastSpell("TigerPalm",                  ret => Buff.PlayerCountBuff("Tiger Power") == 3, "TigerPalm"),
-                           Spell.CastSpell("TigerPalm",                  ret => Buff.PlayerCountBuff("Tiger Power") <= 3, "TigerPalm"),
-                           Spell.CastSpell(JabSpellList.Find(SpellManager.CanCast), ret => true, "JabSpell"));
+                    // Interupt
+                    Spell.CastInterupt("Spear Hand Strike", ret => true, "Spear Hand Strike"),
+                    // AoE
+                    Spell.CastOnUnitLocation("Dizzying Haze", u => Me.CurrentTarget, ret => Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 8) >= 3 && !Buff.TargetHasDebuff("Dizzying Haze"), "Dizzying Haze"),
+                    Spell.CastSpell("Breath of Fire", ret => Chi >= 2 && Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 8) >= 3 && Buff.TargetHasDebuff("Dizzying Haze") && !Buff.TargetHasDebuff("Breath of Fire"), "Breath of Fire"),
+                    Spell.CastAreaSpell("Spinning Crane Kick", 8, false, 7, 0.0, 0.0, ret => true, "Spinning Crane Kick"));
             }
         }
 
         public override Composite Medic
         {
-            get {
+            get
+            {
                 return new Decorator(
-                           ret => Me.HealthPercent < 100 && CLUSettings.Instance.EnableSelfHealing,
-                           new PrioritySelector(
-                               Buff.CastBuff("Fortifying Brew",            ret => Me.HealthPercent < 50, "Fortifying Brew"), // Turns your skin to stone, increasing your health by 20%, and reducing damage taken by 20%. Lasts 20 sec.
-                               Buff.CastBuff("Guard",                      ret => Me.HealthPercent < 50, "Guard"), // absorbs damage for 30secs and increases any healing by 30%
-                               Item.UseBagItem("Healthstone",              ret => Me.HealthPercent < 40, "Healthstone")));
+                    ret => Me.HealthPercent < 100 && CLUSettings.Instance.EnableSelfHealing,
+                    new PrioritySelector(
+                        Buff.CastBuff("Fortifying Brew", ret => Me.HealthPercent < 50, "Fortifying Brew"),
+                    // Turns your skin to stone, increasing your health by 20%, and reducing damage taken by 20%. Lasts 20 sec.
+                        Item.UseBagItem("Healthstone", ret => Me.HealthPercent < 40, "Healthstone")));
             }
         }
 
         public override Composite PreCombat
         {
-            get {
+            get
+            {
                 return new Decorator(
-                           ret => !Me.Mounted && !Me.IsDead && !Me.Combat && !Me.IsFlying && !Me.IsOnTransport && !Me.HasAura("Food") && !Me.HasAura("Drink"),
-                           new PrioritySelector(
-                               Buff.CastRaidBuff("Legacy of the Emperor", ret => true, "Legacy of the Emperor"),
-                               Buff.CastRaidBuff("Legacy of the White Tiger", 	ret => true, "Legacy of the White Tiger")));
+                    ret =>
+                    !Me.Mounted && !Me.IsDead && !Me.Combat && !Me.IsFlying && !Me.IsOnTransport && !Me.HasAura("Food") &&
+                    !Me.HasAura("Drink"),
+                    new PrioritySelector(
+                        Buff.CastRaidBuff("Legacy of the Emperor", ret => true, "Legacy of the Emperor")));
             }
         }
 
         public override Composite Resting
         {
-            get {
-                return Rest.CreateDefaultRestBehaviour();
-            }
+            get { return Rest.CreateDefaultRestBehaviour(); }
         }
 
         public override Composite PVPRotation
         {
-            get {
-                return this.SingleRotation;
-            }
+            get { return this.SingleRotation; }
         }
 
         public override Composite PVERotation
         {
-            get {
-                return this.SingleRotation;
-            }
+            get { return this.SingleRotation; }
         }
     }
 }
