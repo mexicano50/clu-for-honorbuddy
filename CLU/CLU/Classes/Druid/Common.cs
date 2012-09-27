@@ -10,6 +10,8 @@
  */
 #endregion
 
+using System.Collections.Generic;
+using System.Linq;
 using CLU.Settings;
 using Styx;
 using Styx.WoWInternals.WoWObjects;
@@ -76,6 +78,53 @@ namespace CLU.Classes.Druid
                  }
              }
          }
+        
+
+        public static int Units()
+        {
+            _nearbyUnfriendlyUnits = UnfriendlyUnitsNearTarget(10f);
+            return _nearbyUnfriendlyUnits.Count();
+        }
+
+        /*Get targets around us*/
+        public static IEnumerable<WoWUnit> _nearbyUnfriendlyUnits;
+        public static IEnumerable<WoWUnit> UnfriendlyUnitsNearTarget(float distance)
+        {
+            var dist = distance * distance;
+            var curTarLocation = StyxWoW.Me.CurrentTarget.Location;
+            return ObjectManager.GetObjectsOfType<WoWUnit>(false, false).Where(
+                        p => ValidUnit(p) && p.Location.DistanceSqr(curTarLocation) <= dist).ToList();
+        }
+
+        static bool ValidUnit(WoWUnit p)
+        {
+            // Ignore shit we can't select/attack
+            if (!p.CanSelect || !p.Attackable)
+                return false;
+
+            // Ignore friendlies!
+            if (p.IsFriendly)
+                return false;
+
+            // Duh
+            if (p.IsDead)
+                return false;
+
+            // Dummies/bosses are valid by default. Period.
+            if (Unit.IsTargetWorthy(Me.CurrentTarget))
+                return true;
+
+            // If its a pet, lets ignore it please.
+            if (p.IsPet || p.OwnedByRoot != null)
+                return false;
+
+            // And ignore critters/non-combat pets
+            if (p.IsNonCombatPet || p.IsCritter)
+                return false;
+
+            return true;
+        }
+
 
         /// <summary>
         /// Calculate time to energy cap.
