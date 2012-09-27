@@ -124,9 +124,9 @@ namespace CLU.Classes.Shaman
                     // Totem management
                            Totems.CreateTotemsBehavior(),
                     // AoE
-                                   Spell.CastAreaSpell("Magma Totem", 5, false, 3, 0.0, 0.0, a => Me.Totems.All(t => t.WoWTotem != WoWTotem.Magma) && !Totems.Exist(WoWTotem.FireElemental), "Magma Totem"),
-                                   Spell.CastAreaSpell("Chain Lightning", 5, false, 3, 0.0, 0.0, a => Buff.PlayerCountBuff("Maelstrom Weapon") > 4, "Chain Lightning"),	
-						           Spell.CastSpell("Flame Shock", ret => !Buff.TargetHasDebuff("Flame Shock") || Buff.TargetDebuffTimeLeft("Flame Shock").Seconds <= 3, "Flame Shock"),
+                                   Spell.CastTotem("Magma Totem", ret => Me.CurrentTarget != null && Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 8) >= 3, "Magma Totem"),
+                                   Spell.CastAreaSpell("Chain Lightning", 5, false, 3, 0.0, 0.0, a => Buff.PlayerCountBuff("Maelstrom Weapon") > 4, "Chain Lightning"),
+                                   Spell.CastSpell("Flame Shock", ret => !Buff.TargetHasDebuff("Flame Shock") || Buff.TargetDebuffTimeLeft("Flame Shock").Seconds <= 3, "Flame Shock"),
                                    Spell.CastSpell("Flame Shock", ret => Buff.PlayerHasActiveBuff("Unleash Flame"), "Flame Shock"),
                                    Spell.CastAreaSpell("Fire Nova", 5, false, 3, 0.0, 0.0, a => Buff.TargetHasDebuff("Flame Shock"), "Fire Nova"),
 
@@ -143,8 +143,8 @@ namespace CLU.Classes.Shaman
                            Spell.CastSpell("Lava Lash", ret => true, "Lava Lash"),
                            Spell.CastSpell("Unleash Elements", ret => true, "Unleash Elements"),
                            Spell.CastSpell("Earth Shock", ret => Buff.TargetHasDebuff("Flame Shock"), "Earth Shock"),
-				// Cooldowns
-						   Buff.CastBuff("Ascendance", ret => CLUSettings.Instance.Shaman.AscendanceSelection == Ascendance.OnBoss && Unit.IsTargetWorthy(Me.CurrentTarget), "Ascendance"),
+                    // Cooldowns
+                           Buff.CastBuff("Ascendance", ret => CLUSettings.Instance.Shaman.AscendanceSelection == Ascendance.OnBoss && Unit.IsTargetWorthy(Me.CurrentTarget), "Ascendance"),
                            Buff.CastBuff("Ascendance", ret => CLUSettings.Instance.Shaman.AscendanceSelection == Ascendance.OnCooldown, "Ascendance"),
                            Spell.CastSpell("Feral Spirit", ret => CLUSettings.Instance.Shaman.FeralSpiritSelection == FeralSpirit.OnBoss && Unit.IsTargetWorthy(Me.CurrentTarget), "Feral Spirit"),
                            Spell.CastSpell("Feral Spirit", ret => CLUSettings.Instance.Shaman.FeralSpiritSelection == FeralSpirit.OnCooldown, "Feral Spirit"),
