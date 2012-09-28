@@ -215,8 +215,8 @@ CREDITS TO: HandNavi - because he owns the business.
                                                       StyxWoW.Me.CurrentTarget.HealthPercent < 25, "Savage Roar"),
                                       Spell.CastSpell(106832,
                                                       ret =>
-                                                      Buff.TargetDebuffTimeLeft("Thrash").TotalSeconds < 3, "Thrash"),
-                                      Spell.CastSpell("Swipe", ret => Buff.TargetDebuffTimeLeft("Thrash").TotalSeconds >= 3, "Swipe")
+                                                      Buff.TargetDebuffTimeLeft("Thrash").TotalSeconds < 3 && Unit.TimeToDeath(Me.CurrentTarget) >= 6, "Thrash"),
+                                      Spell.CastSpell("Swipe", ret => Buff.TargetDebuffTimeLeft("Thrash").TotalSeconds >= 3 || Unit.TimeToDeath(Me.CurrentTarget) < 6, "Swipe")
                                       )
                         ),
                     new Decorator(ret => Common.Units() <= 2,
