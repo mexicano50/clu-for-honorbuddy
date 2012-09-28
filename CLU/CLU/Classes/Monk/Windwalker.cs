@@ -218,7 +218,7 @@ namespace CLU.Classes.Monk
             {
                 return
                     new PrioritySelector(
-                        Spell.CastSpell("Roll", ret => CLUSettings.Instance.EnableMovement, "Roll"),
+                        Spell.CastSpell("Roll", ret => CLUSettings.Instance.EnableMovement && !CLU.IsMounted && Me.Level < 20, "Roll"),
                         Rest.CreateDefaultRestBehaviour());
             }
         }
