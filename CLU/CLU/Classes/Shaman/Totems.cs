@@ -218,11 +218,8 @@ namespace CLU.Classes.Shaman
         {
             get
             {
-#if PRE_504_TOTEM_LOGIC
+
                 return TotemsInRange == 0 && StyxWoW.Me.Totems.Count(t => t.Unit != null) != 0; 
-#else
-                return false;
-#endif
             }
         }
 
