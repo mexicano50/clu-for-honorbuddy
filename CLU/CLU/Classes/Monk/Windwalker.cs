@@ -116,7 +116,7 @@ namespace CLU.Classes.Monk
                     Spell.CastSpell("Disable",
                                     ret =>
                                     Me.CurrentEnergy >= 15 && (Me.CurrentTarget.IsPlayer || Me.CurrentTarget.Fleeing) &&
-                                    Me.CurrentTarget.MovementInfo.RunSpeed > 3.5,
+                                    Me.CurrentTarget != null && Me.CurrentTarget.MovementInfo.RunSpeed > 3.5,
                                     "Disable"),
                     Spell.CastSpell("Rising Sun Kick",
                                     ret =>
@@ -172,13 +172,14 @@ namespace CLU.Classes.Monk
                                     ret =>
                                     Chi <= 2 && Me.HealthPercent > 80 ||
                                     Chi <= 2 && Spell.SpellOnCooldown("Expel Harm") && Me.HealthPercent <= 80, "Jab"),
-                    //Spell.CastSpell("Blackout Kick", ret => (Me.CurrentEnergy > 30 && RisingSunKickCoolDown) || (Chi > 4 && Buff.PlayerHasActiveBuff("Ascension")) || (Chi > 5 && Buff.PlayerHasActiveBuff("Ascension")), "Blackout Kick"),
+                    Spell.CastSpell("Blackout Kick", ret => Chi > 4, "Blackout Kick"),
 
                     // Interupt
                     Spell.CastInterupt("Spear Hand Strike", ret => true, "Spear Hand Strike"),
                     // AoE
                     Spell.CastAreaSpell("Fists of Fury", 8, false, 4, 0.0, 0.0, ret => true, "Fists of Fury"),
-                    Spell.CastAreaSpell("Spinning Crane Kick", 8, false, 4, 0.0, 0.0, ret => true, "Spinning Crane Kick"));
+                    Spell.CastAreaSpell("Spinning Crane Kick", 8, false, 4, 0.0, 0.0, ret => true, "Spinning Crane Kick"),
+                    Spell.CastSpell("Jab", ret => true, "Jab"));
             }
         }
 
@@ -213,7 +214,13 @@ namespace CLU.Classes.Monk
 
         public override Composite Resting
         {
-            get { return Rest.CreateDefaultRestBehaviour(); }
+            get
+            {
+                return
+                    new PrioritySelector(
+                        Spell.CastSpell("Roll", ret => CLUSettings.Instance.EnableMovement, "Roll"),
+                        Rest.CreateDefaultRestBehaviour());
+            }
         }
 
         public override Composite PVPRotation
