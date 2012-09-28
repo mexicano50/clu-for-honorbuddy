@@ -126,12 +126,12 @@ namespace CLU.Classes.Shaman
                     // Rotation 
 					// AuraId = 118470 is unleashing fury which comes from Unleashed Fury talent. Lightning bolt gains extra dmg.
 					// AoE
-                           Spell.CastSelfSpell("Magma Totem",ret => Unit.EnemyUnits.Count(u => u.Distance <= Totems.GetTotemRange(WoWTotem.Magma)) >= 3 && !Totems.Exist( WoWTotem.FireElemental),"Magma Totem"),
+                           Spell.CastSelfSpell("Magma Totem", ret => Unit.RangedPvEUnits.Count(u => u.DistanceSqr <= Totems.GetTotemRange(WoWTotem.Magma) * Totems.GetTotemRange(WoWTotem.Magma)) >= 3 && !Totems.Exist(WoWTotem.FireElemental), "Magma Totem"),
                            Spell.CastAreaSpell("Chain Lightning", 5, false, 3, 0.0, 0.0, a => Buff.PlayerCountBuff("Maelstrom Weapon") == 5, "Chain Lightning"),
                            Spell.CastSpell("Flame Shock", ret => !Buff.TargetHasDebuff("Flame Shock") || Buff.TargetDebuffTimeLeft("Flame Shock").Seconds < 3 || Buff.PlayerHasBuff("Unleash Flame"), "Flame Shock"),
                            Spell.CastAreaSpell("Fire Nova", 5, false, 3, 0.0, 0.0, a => Buff.TargetHasDebuff("Flame Shock"), "Fire Nova"),
                     //Single Target
-						   Item.RunMacroText("/Cast Stormblast", ret => Buff.PlayerHasActiveBuff("Ascendance"), "Stormblast"),
+						   Item.RunMacroText("/Cast Stormblast", ret => Buff.PlayerHasActiveBuff("Ascendance") && !WoWSpell.FromId(115356).Cooldown, "Stormblast"),
 						   Spell.CastSpell("Primal Strike", ret => true, "Stormstrike"),
 						   Spell.CastSpell("Lightning Bolt", ret => Buff.PlayerCountBuff("Maelstrom Weapon") == 5 || (Buff.PlayerCountBuff("Maelstrom Weapon") > 3 && StyxWoW.Me.HasAura(118470)) ||(Buff.PlayerCountBuff("Maelstrom Weapon") > 1 && !Buff.PlayerHasActiveBuff("Ascendance") && EverythingOnCoolDown && Buff.TargetHasDebuff("Flame Shock")), "Lightning Bolt"),
                            Spell.CastSpell("Lava Lash", ret => Buff.PlayerCountBuff("Searing Flames") == 5 && StromstrikeOnCoolDown || Buff.PlayerHasActiveBuff("Ascendance"), "Lava Lash"),
