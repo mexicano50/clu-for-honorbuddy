@@ -70,11 +70,12 @@ namespace CLU.Classes.Shaman
                     Spell.CastSelfSpell("Fire Elemental",
                         ret => ((bool)ret)
                             || (Unit.EnemyUnits.Count() >= StressMobCount && !SpellManager.CanBuff(WoWTotem.EarthElemental.ToSpellId(), false)), "Fire Elemental"),
-                /*  Magma - handle within AoE DPS logic only
-                                    Spell.BuffSelf("Magma Totem",
-                                        ret => Unit.NearbyUnitsInCombatWithMe.Count(u => u.Distance <= GetTotemRange(WoWTotem.Magma)) >= StressMobCount
+                  /*Magma - handle within AoE DPS logic only
+                                    Spell.CastSelfSpell("Magma Totem",
+                                        ret => Unit.EnemyUnits.Count(u => u.Distance <= GetTotemRange(WoWTotem.Magma)) >= StressMobCount
                                             && !Exist( WoWTotem.FireElemental),"Magma Totem"),
-                */
+                   * */
+                
                     Spell.CastSelfSpell("Searing Totem",
                         ret => Me.GotTarget
                             && Me.CurrentTarget.Distance < GetTotemRange(WoWTotem.Searing) - 2f

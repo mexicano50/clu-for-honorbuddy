@@ -126,7 +126,7 @@ namespace CLU.Classes.Shaman
                     // Rotation 
 					// AuraId = 118470 is unleashing fury which comes from Unleashed Fury talent. Lightning bolt gains extra dmg.
 					// AoE
-                           Spell.CastSelfSpell("Magma Totem",ret => Unit.EnemyUnits.Count(u => u.Distance <= GetTotemRange(WoWTotem.Magma)) >= StressMobCount && !Exist( WoWTotem.FireElemental),"Magma Totem"),
+                           Spell.CastSelfSpell("Magma Totem",ret => Unit.EnemyUnits.Count(u => u.Distance <= Totems.GetTotemRange(WoWTotem.Magma)) >= 3 && !Totems.Exist( WoWTotem.FireElemental),"Magma Totem"),
                            Spell.CastAreaSpell("Chain Lightning", 5, false, 3, 0.0, 0.0, a => Buff.PlayerCountBuff("Maelstrom Weapon") == 5, "Chain Lightning"),
                            Spell.CastSpell("Flame Shock", ret => !Buff.TargetHasDebuff("Flame Shock") || Buff.TargetDebuffTimeLeft("Flame Shock").Seconds < 3 || Buff.PlayerHasBuff("Unleash Flame"), "Flame Shock"),
                            Spell.CastAreaSpell("Fire Nova", 5, false, 3, 0.0, 0.0, a => Buff.TargetHasDebuff("Flame Shock"), "Fire Nova"),
