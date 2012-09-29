@@ -13,7 +13,7 @@
 
 CLU (Codified Likeness Utility) the Rotation CC for Combat/Raid/Lazyraider bots Powered by Felmaster technology
 
-Current Issues Updated: 24/September/2012
+Current Issues Updated: 29/September/2012
 =================================
 None. - well maybe a few :P
 
@@ -78,10 +78,10 @@ Three Rotation Modes - Single, PVE, PVP
 - [T] Unholy
 
 * Druid
-- [T] Balance
+- [PC] Balance
 - [T] Feral
 - [T] Guardian	
-- [U] Restoration
+- [X] Restoration
 
 * Hunter
 - [T] BeastMastery
@@ -94,29 +94,29 @@ Three Rotation Modes - Single, PVE, PVP
 - [T] Frost
 
 * Monk
-- [U] Brewmaster
-- [U] Mistweaver
-- [U] Windwalker
+- [T] Brewmaster
+- [PC] Mistweaver
+- [T] Windwalker
 
 * Paladin
-- [T] Holy
+- [U] Holy
 - [T] Protection
 - [T] Retribution
 
 * Priest
 - [T] Shadow
-- [T] Discipline
-- [T] Holy	
+- [X] Discipline
+- [X] Holy	
 
 * Rogue
 - [T] Assassination
 - [T] Combat
-- [T] Subtlety	
+- [PC] Subtlety	
 
 * Shaman
 - [U] Elemental	 	
-- [T] Restoration
-- [U] Enhancement
+- [X] Restoration
+- [PC] Enhancement
 
 * Warlock
 - [T] Affliction
@@ -124,7 +124,7 @@ Three Rotation Modes - Single, PVE, PVP
 - [T] Destruction
 
 * Warrior
-- [T] Arms
+- [PC] Arms
 - [T] Protection
 - [T] Fury
 	
@@ -407,8 +407,7 @@ A. Update to Microsoft .Net 4
 
 Q. Can I use this CC for low level questing/grinding/GB2/BGBuddy?
 A. CLU was designed for High level Raiding - having said that it is capable of performing movement, targeting, buffing, combat from level 20-90.
-*Note: Using it for these functions are not fully supported. If it's not working they way you want..its for a reason..we just do not want to support 
-	   low level combat currently. Please use Singular for this, it ships free with Honorbuddy.
+*Note: Using it for these functions are not fully supported. If it's not working they way you want..its for a reason..we just do not want to support low level combat currently. Please use Singular for this, it ships free with Honorbuddy.
 
 Q. Can CLU tank raids and heroic dungeons ?
 A. All Tank/Healing specs provided have been tested for Heroics/Raids.
@@ -416,12 +415,42 @@ A. All Tank/Healing specs provided have been tested for Heroics/Raids.
 Q. Will CLU taunt targets for me when tanking?
 A. No CLU does not taunt for you.
 
+Q: What bot should i run frost dk with if i wanna control it in battleground?
+A: Dagradt is changing rotations to use his new PvP Macro abilties. Instructions should be in this post.
+
 Q. What Botbase should I use for Raiding/ Heroic Dungeons?
 A. Depends on what you want to do. CLU works best with Raidbot but Lazyraider and Combat can be used as well. When Healing Use Lazyraider and turn of Tank selection (aka: Solo Mode)
 
 Q. Where is XYZ setting?
-A. If you do not see it in the UI settings it's not there yet!
+A. If you do not see it in the UI settings its not there yet!
 
-Q. Is there any way for me to have control over blade flurry as a rogue? 
+Q. Is there any way for me to have control over blade flurry as a rogue?
 A. Turn off AoE, this is true for all class AoE abilities.
+
+Q: A question. Will we have to restart HB when we want to change rotation?
+A: No, you can simply swap rotations without having to restart Honorbuddy
+
+Q: Hunter - It doesnt heal the pet
+A: Its commented out at the moment has issues.
+
+Q: Hunter - It uses feign death and it stays feign death-ed till i move the char manually
+A: yes (remember this is a RAID CC if you guys dont like the FD downtime..use singular)
+
+Q: Seems the extra action button not working in LFR Fall of Deathwing?
+A: Correct its balls anyway..dont be lazy haha. will fix it soon.
+
+Q: disc priest isnt using smite or holy fire?
+A: Disc AA spec has not been updated since patch 4.3. Its on the TODO list. check back soon.
+
+Q: Do I need to delete any other routines while using CLU?
+A: CLU in most cases can co-exist with other Routines. However sometimes if CLU is not loading properly it is necessary to remove other routines. I have not found out why yet and removing routines to get CLU working is not intended behaviour.
+
+Q: Seem to be having a severe lag/stutter whenever CLU is active
+A: First, perform a fresh install of Honorbuddy and CLU removing all your settings. If that doesn't help provide a FULL log and we will look at the issue.
+
+Q: Self healing does not work on ret pallys..instead of using word of glory or using a 3 point selfless healer flash of light, the bot used lay on hands for heals and nothing else..sup with that?
+A: Retribution Paladin will only use Cooldowns to heal in combat (No Healing spells, so *Only* LoH, HoP, etc will be used). If you enable movement and are resting (out of combat), it will attempt to use Flash of Light to top you up to Full health instead of eating food. Self healing will be implemented after every other rotation is working for MoP (its not on the high priority list.)
+
+
+
 
