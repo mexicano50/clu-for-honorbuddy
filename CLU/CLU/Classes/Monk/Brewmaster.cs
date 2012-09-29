@@ -116,7 +116,7 @@ namespace CLU.Classes.Monk
                     // Interupt
                     Spell.CastInterupt("Spear Hand Strike", ret => true, "Spear Hand Strike"),
                     // AoE
-                    Spell.CastOnUnitLocation("Dizzying Haze", u => Me.CurrentTarget, ret => Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 8) >= 3 && !Buff.TargetHasDebuff("Dizzying Haze"), "Dizzying Haze"),
+                    //Spell.CastOnGround("Dizzying Haze", u => Me.CurrentTarget.Location, ret => Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 8) >= 3 && !Buff.TargetHasDebuff("Dizzying Haze")),
                     Spell.CastSpell("Breath of Fire", ret => Chi >= 2 && Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 8) >= 3 && Buff.TargetHasDebuff("Dizzying Haze") && !Buff.TargetHasDebuff("Breath of Fire"), "Breath of Fire"),
                     Spell.CastAreaSpell("Spinning Crane Kick", 8, false, 7, 0.0, 0.0, ret => true, "Spinning Crane Kick"));
             }
@@ -144,6 +144,7 @@ namespace CLU.Classes.Monk
                     !Me.Mounted && !Me.IsDead && !Me.Combat && !Me.IsFlying && !Me.IsOnTransport && !Me.HasAura("Food") &&
                     !Me.HasAura("Drink"),
                     new PrioritySelector(
+                        Buff.CastBuff("Stance of the Sturdy Ox", ret => !Me.HasMyAura("Stance of the Sturdy Ox"), "Stance of the Sturdy Ox We need it!"),
                         Buff.CastRaidBuff("Legacy of the Emperor", ret => true, "Legacy of the Emperor")));
             }
         }
