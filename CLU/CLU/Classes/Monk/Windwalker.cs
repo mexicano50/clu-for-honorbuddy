@@ -58,6 +58,7 @@ namespace CLU.Classes.Monk
             get
             {
                 return "----------------------------------------------------------------------\n" +
+                       "This rotation does not support the use of Ascencion" +
                        "Credits: alxaw , Kbrebel04" +
                        "----------------------------------------------------------------------\n";
             }
@@ -95,43 +96,51 @@ namespace CLU.Classes.Monk
                     new Decorator(ret => CLUSettings.Instance.PauseRotation, new ActionAlwaysSucceed()),
                     // For DS Encounters.
                     EncounterSpecific.ExtraActionButton(),
+
+                    // Utility
+                    new Decorator(ret => CLUSettings.Instance.EnableMovement,
+                        new PrioritySelector( 
+                            Spell.CastSpell("Disable", ret => Me.CurrentEnergy >= 15 && (Me.CurrentTarget.IsPlayer || Me.CurrentTarget.Fleeing) && Me.CurrentTarget.MovementInfo.RunSpeed > 3.5, "Disable")
+                            )),
+
+                    //Cooldowns
                     new Decorator(
-                        ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget),
+                        ret => !Spell.PlayerIsChanneling,
                         new PrioritySelector(
                             Item.UseTrinkets(),
-                            Racials.UseRacials(),
-                            Buff.CastBuff("Lifeblood", ret => true, "Lifeblood"),
                             Item.UseEngineerGloves())),
+
+                    //Interupts
+                    Spell.CastInterupt("Spear Hand Strike", ret => true, "Spear Hand Strike"),
+                    Spell.CastInterupt("Grapple Weapon", ret => true, "Grapple Weapon"),
+
+                    // AoE
+                    Spell.CastAreaSpell("Rising Sun Kick", 8, false, 4, 0.0, 0.0, ret => !Buff.TargetHasDebuff("Rising Sun Kick"), "Rising Sun Kick"),
+                    Spell.CastAreaSpell("Fists of Fury", 8, false, 4, 0.0, 0.0, ret => true, "Fists of Fury"),
+                    Spell.CastAreaSpell("Spinning Crane Kick", 8, false, 4, 0.0, 0.0, ret => true, "Spinning Crane Kick"),
+
                     //Single Target
                     Spell.CastSpell("Touch of Death", ret => Buff.PlayerHasBuff("Death Note"), "Touch of Death"),
-                    Spell.CastInterupt("Spear Hand Strike", ret => true, "Spear Hand Strike"),
                     Spell.CastSelfSpell("Tigereye Brew",
                                         ret =>
                                         !Buff.PlayerHasBuff("Tigereye Brew Use") &&
-                                        Buff.PlayerCountBuff("Tigereye Brew") == 10 && CLUSettings.Instance.UseCooldowns,
+                                        Buff.PlayerCountBuff("Tigereye Brew") == 10 && Unit.IsTargetWorthy(Me.CurrentTarget),
                                         "Tigerye Brew"),
-                    //Spell.CastSpell("Chi Brew", ret => TalentManager.HasTalent(9) && Buff.PlayerHasBuff("Tigereye Brew Use" && Chi == 0 && Me.CurrentEnergy <= 50, "Chi Brew"),     is not identifying "tigereye brew use" buff
-                    Spell.CastSelfSpell("Chi Wave", ret => TalentManager.HasTalent(4) && Chi >= 2 && Me.HealthPercent <= 40, "Chi Wave"),
-                    Spell.CastSpell("Energizing Brew", ret => Me.CurrentEnergy <= 30, "Energizing Brew"),
-                    Spell.CastSpell("Disable",
-                                    ret =>
-                                    Me.CurrentEnergy >= 15 && (Me.CurrentTarget.IsPlayer || Me.CurrentTarget.Fleeing) &&
-                                    Me.CurrentTarget != null && Me.CurrentTarget.MovementInfo.RunSpeed > 3.5,
-                                    "Disable"),
+                    Spell.CastSelfSpell("Chi Brew", ret => TalentManager.HasTalent(9) && Chi == 0 && Me.CurrentEnergy <= 50, "Chi Brew"),
+                    Spell.CastSpell("Energizing Brew", ret => Me.CurrentEnergy <= 40, "Energizing Brew"),
                     Spell.CastSpell("Rising Sun Kick",
                                     ret =>
                                     !Buff.TargetHasDebuff("Rising Sun Kick") ||
                                     Buff.PlayerBuffTimeLeft("Tiger Power") < 5 &&
-                                    Buff.PlayerBuffTimeLeft("Tiger Power") > 3 && Me.CurrentEnergy >= 40 ||
+                                    Buff.PlayerBuffTimeLeft("Tiger Power") >= 3 && Me.CurrentEnergy >= 40 || Buff.PlayerBuffTimeLeft("Tiger Power") < 5 && Buff.PlayerBuffTimeLeft("Tiger Power") >= 3 && Chi > 2 || Buff.PlayerBuffTimeLeft("Tiger Power") < 5 && Buff.PlayerBuffTimeLeft("Tiger Power") < 3 && Buff.PlayerHasActiveBuff("Combo Breaker: Tiger Palm") ||
                                     Buff.PlayerBuffTimeLeft("Tiger Power") >= 5, "Rising Sun Kick"),
                     Spell.CastSpell("Tiger Palm",
                                     ret =>
                                     Buff.PlayerCountBuff("Tiger Power") < 3 ||
-                                    Buff.PlayerBuffTimeLeft("Tiger Power") <= 3, "Tiger Palm"),
-                    Spell.CastSelfSpell("Invoke Xuen, the White Tiger",
+                                    Buff.PlayerBuffTimeLeft("Tiger Power") < 3, "Tiger Palm"),
+                    Spell.CastSpell("Invoke Xuen, the White Tiger",
                                         ret =>
-                                        TalentManager.HasTalent(17) && Buff.PlayerCountBuff("Tiger Power") == 3 &&
-                                        Buff.TargetHasDebuff("Rising Sun Kick") && Me.CurrentEnergy <= 80, "Invoke Xuen"),
+                                        TalentManager.HasTalent(17) && Me.CurrentEnergy < 80 && Unit.IsTargetWorthy(Me.CurrentTarget), "Invoke Xuen"),
                     Spell.CastSpell("Rushing Jade Wind",
                                     ret =>
                                     TalentManager.HasTalent(16) && Buff.PlayerCountBuff("Tiger Power") == 3 &&
@@ -140,46 +149,28 @@ namespace CLU.Classes.Monk
                     Spell.CastSpell("Fists of Fury",
                                     ret =>
                                     !Me.IsMoving && !Buff.PlayerHasActiveBuff("Energizing Brew") &&
-                                    Me.CurrentEnergy <= 50 && Buff.PlayerBuffTimeLeft("Tiger Power") > 5 &&
+                                    Me.CurrentEnergy <= 60 && Buff.PlayerBuffTimeLeft("Tiger Power") > 5 &&
                                     Buff.PlayerCountBuff("Tiger Power") == 3 &&
                                     Spell.SpellCooldown("Rising Sun Kick").TotalSeconds >= 2, "Fists of Fury"),
-                    Spell.CastSpell("Blackout Kick", ret => Buff.PlayerHasActiveBuff("Combo Breaker: Blackout Kick") && Spell.SpellOnCooldown("Rising Sun Kick"),
+                    Spell.CastSpell("Blackout Kick", ret => Buff.PlayerHasActiveBuff("Combo Breaker: Blackout Kick") && Spell.SpellOnCooldown("Rising Sun Kick") && Buff.PlayerCountBuff("Tiger Power") == 3 && Chi >= 3 || Buff.PlayerHasActiveBuff("Combo Breaker: Blackout Kick") && Spell.SpellOnCooldown("Rising Sun Kick") && Buff.PlayerCountBuff("Tiger Power") == 3 && Chi < 3 && Me.CurrentEnergy <= 80,
                                     "Blackout Kick"),
                     Spell.CastSpell("Tiger Palm",
                                     ret =>
                                     (Buff.PlayerHasActiveBuff("Combo Breaker: Tiger Palm") && Me.CurrentEnergy < 90 && Spell.SpellOnCooldown("Rising Sun Kick")) ||
                                     (Buff.PlayerBuffTimeLeft("Combo Breaker: Tiger Palm") < 2 &&
                                      Buff.PlayerHasActiveBuff("Combo Breaker: Tiger Palm")), "Tiger Palm"),
-                   Spell.CastSpell("Blackout Kick",
+                    Spell.CastSpell("Blackout Kick",
                                     ret =>
-                                    Chi >= 2 && Chi < 4 && Spell.SpellOnCooldown("Fists of Fury") &&
-                                    SpellManager.HasSpell("Rising Sun Kick") &&
-                                    SpellManager.Spells["Rising Sun Kick"].CooldownTimeLeft.Seconds >= 2 || Chi == 4 && Spell.SpellOnCooldown("Fists of Fury") &&
-                                    SpellManager.HasSpell("Rising Sun Kick") &&
-                                    Spell.SpellOnCooldown("Rising Sun Kick") ||
-                                    Chi >= 2 && Spell.SpellOnCooldown("Fists of Fury") &&
-                                    !SpellManager.HasSpell("Rising Sun Kick") ||
-                                    Chi >= 3 && Me.CurrentEnergy <= 50 && Me.IsMoving &&
-                                    !Spell.SpellOnCooldown("Fists of Fury") && SpellManager.HasSpell("Rising Sun Kick") &&
-                                    SpellManager.Spells["Rising Sun Kick"].CooldownTimeLeft.Seconds >= 2 ||
-                                    Chi >= 3 && Me.CurrentEnergy > 50 && SpellManager.HasSpell("Rising Sun Kick") &&
-                                    SpellManager.Spells["Rising Sun Kick"].CooldownTimeLeft.Seconds >= 2,
-                                    "Blackout Kick"),
-                    //Spell.CastSpell("Jab", ret => TalentManager.HasTalent(8) && Chi <= 3, "Jab"), is not identifying the talent, is using jab at 3 chi without the talent
-                    Spell.CastSpell("Expel Harm", ret => Chi <= 2 && Me.HealthPercent <= 80, "Expel Harm"),
-                    Spell.CastSpell("Touch of Karma", ret => Chi <= 2 && Me.HealthPercent <= 40, "Touch of Karma"),
+                                    Chi > 1 && Chi < 4 && Spell.SpellOnCooldown("Fists of Fury") && Spell.SpellCooldown("Rising Sun Kick").TotalSeconds >= 2 && Me.CurrentEnergy >= 20 && Buff.PlayerCountBuff("Tiger Power") == 3 || Chi == 4 && Spell.SpellOnCooldown("Fists of Fury") && Spell.SpellOnCooldown("Rising Sun Kick") && Buff.PlayerCountBuff("Tiger Power") == 3 || !Spell.SpellOnCooldown("Fists of Fury") && Spell.SpellOnCooldown("Rising Sun Kick") && Me.CurrentEnergy > 60 && Buff.PlayerCountBuff("Tiger Power") == 3 || !Spell.SpellOnCooldown("Fists of Fury") && Spell.SpellOnCooldown("Rising Sun Kick") && Me.CurrentEnergy <= 60 && Me.IsMoving && Buff.PlayerCountBuff("Tiger Power") == 3 || !Spell.SpellOnCooldown("Fists of Fury") && Spell.SpellOnCooldown("Rising Sun Kick") && Me.CurrentEnergy <= 60 && Buff.PlayerHasActiveBuff("Energizing Brew") && Buff.PlayerCountBuff("Tiger Power") == 3, "Blackout Kick"),
+                    Spell.CastSpell("Chi Wave", ret => TalentManager.HasTalent(4) && Chi >= 2 && Me.HealthPercent <= 40, "Chi Wave"),
+                    Spell.CastSpell("Expel Harm", ret => Chi <= 2 && Me.HealthPercent <= 80 && Me.CurrentEnergy > 80 || Chi == 2 && Me.HealthPercent <= 80 && !Spell.SpellOnCooldown("Fists of Fury"), "Expel Harm"),
+                    Spell.CastSpell("Touch of Karma", ret => Chi >= 2 && Me.HealthPercent <= 40, "Touch of Karma"),
                     Spell.CastSpell("Jab",
                                     ret =>
-                                    Chi <= 2 && Me.HealthPercent > 80 ||
-                                    Chi <= 2 && Spell.SpellOnCooldown("Expel Harm") && Me.HealthPercent <= 80, "Jab"),
-                    Spell.CastSpell("Blackout Kick", ret => Chi > 4, "Blackout Kick"),
+                                    Chi <= 2 && Me.HealthPercent > 80 && Me.CurrentEnergy > 80 || Chi < 2 && Me.HealthPercent > 80 || Chi < 2 && Spell.SpellOnCooldown("Expel Harm") && Me.HealthPercent <= 80 || Chi <= 2 && Me.HealthPercent > 80 && !Spell.SpellOnCooldown("Fists of Fury") || Chi <= 2 && Spell.SpellOnCooldown("Expel Harm") && Me.HealthPercent <= 80 && !Spell.SpellOnCooldown("Fists of Fury") ||
+                                    Chi <= 2 && Spell.SpellOnCooldown("Expel Harm") && Me.HealthPercent <= 80 && Me.CurrentEnergy > 80, "Jab"));
 
-                    // Interupt
-                    Spell.CastInterupt("Spear Hand Strike", ret => true, "Spear Hand Strike"),
-                    // AoE
-                    Spell.CastAreaSpell("Fists of Fury", 8, false, 4, 0.0, 0.0, ret => true, "Fists of Fury"),
-                    Spell.CastAreaSpell("Spinning Crane Kick", 8, false, 4, 0.0, 0.0, ret => true, "Spinning Crane Kick"),
-                    Spell.CastSpell("Jab", ret => true, "Jab"));
+
             }
         }
 
@@ -218,7 +209,7 @@ namespace CLU.Classes.Monk
             {
                 return
                     new PrioritySelector(
-                        Spell.CastSpell("Roll", ret => CLUSettings.Instance.EnableMovement && !CLU.IsMounted && Me.Level < 20, "Roll"),
+                        Spell.CastSpell("Roll", ret => CLUSettings.Instance.EnableMovement && Me.Level < 20 && !CLU.IsMounted, "Roll"),
                         Rest.CreateDefaultRestBehaviour());
             }
         }
