@@ -94,6 +94,10 @@ namespace CLU.Classes.Monk
                             Racials.UseRacials(),
                             Buff.CastBuff("Lifeblood", ret => true, "Lifeblood"),
                             Item.UseEngineerGloves())),
+
+                    // Interupt
+                    Spell.CastInterupt("Spear Hand Strike", ret => true, "Spear Hand Strike"),
+
                     //Single Target
                     Spell.CastSpell("Clash", ret => Me.CurrentTarget.DistanceSqr >= 8 * 8 && Me.CurrentTarget.DistanceSqr <= 50 * 50, "Clash"),
                     Spell.CastSpell("Touch of Death", ret => Buff.PlayerHasBuff("Death Note"), "Touch of Death"),
@@ -113,8 +117,7 @@ namespace CLU.Classes.Monk
                     Spell.CastSpell("Jab", ret => Chi <= 2 && Me.HealthPercent > 80 && Spell.SpellOnCooldown("Keg Smash") || Chi <= 2 && Spell.SpellOnCooldown("Expel Harm") && Spell.SpellOnCooldown("Keg Smash") && Me.HealthPercent <= 80, "Jab"),
                     Spell.CastSpell("Tiger Palm", ret => Chi < 2 && Me.CurrentEnergy < 40, "Tiger Palm"),
 
-                    // Interupt
-                    Spell.CastInterupt("Spear Hand Strike", ret => true, "Spear Hand Strike"),
+                    
                     // AoE
                     //Spell.CastOnGround("Dizzying Haze", u => Me.CurrentTarget.Location, ret => Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 8) >= 3 && !Buff.TargetHasDebuff("Dizzying Haze")),
                     Spell.CastSpell("Breath of Fire", ret => Chi >= 2 && Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 8) >= 3 && Buff.TargetHasDebuff("Dizzying Haze") && !Buff.TargetHasDebuff("Breath of Fire"), "Breath of Fire"),

@@ -112,7 +112,7 @@ namespace CLU.Classes.Monk
 
                     //Interupts
                     Spell.CastInterupt("Spear Hand Strike", ret => true, "Spear Hand Strike"),
-                    Spell.CastInterupt("Grapple Weapon", ret => true, "Grapple Weapon"),
+                    //Spell.CastInterupt("Grapple Weapon", ret => true, "Grapple Weapon"),
 
                     // AoE
                     Spell.CastAreaSpell("Rising Sun Kick", 8, false, 4, 0.0, 0.0, ret => !Buff.TargetHasDebuff("Rising Sun Kick"), "Rising Sun Kick"),
