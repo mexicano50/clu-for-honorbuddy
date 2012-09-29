@@ -132,10 +132,10 @@ namespace CLU.Classes.Shaman
                            Spell.CastAreaSpell("Fire Nova", 5, false, 3, 0.0, 0.0, a => Buff.TargetHasDebuff("Flame Shock"), "Fire Nova"),
                     //Single Target
 						   Item.RunMacroText("/Cast Stormblast", ret => Buff.PlayerHasActiveBuff("Ascendance") && !WoWSpell.FromId(115356).Cooldown, "Stormblast"),
-						   Spell.CastSpell("Primal Strike", ret => true, "Stormstrike"),
+                           Spell.CastSpell("Primal Strike", ret => !WoWSpell.FromId(17364).Cooldown, "Stormstrike"),
 						   Spell.CastSpell("Lightning Bolt", ret => Buff.PlayerCountBuff("Maelstrom Weapon") == 5 || (Buff.PlayerCountBuff("Maelstrom Weapon") > 3 && StyxWoW.Me.HasAura(118470)) ||(Buff.PlayerCountBuff("Maelstrom Weapon") > 1 && !Buff.PlayerHasActiveBuff("Ascendance") && EverythingOnCoolDown && Buff.TargetHasDebuff("Flame Shock")), "Lightning Bolt"),
                            Spell.CastSpell("Lava Lash", ret => Buff.PlayerCountBuff("Searing Flames") == 5 && StromstrikeOnCoolDown || Buff.PlayerHasActiveBuff("Ascendance"), "Lava Lash"),
-                           Spell.CastSpell("Unleash Elements", ret => true, "Unleash Elements"),
+                           Spell.CastSpell("Unleash Elements", ret => !WoWSpell.FromId(73680).Cooldown, "Unleash Elements"),
                            Spell.CastSpell("Earth Shock", ret => !Buff.PlayerHasBuff("Unleash Flame") && Buff.TargetHasDebuff("Flame Shock"), "Earth Shock"),
 						   Spell.CastSpell("Searing Totem", ret => !Totems.Exist(WoWTotemType.Fire) && !Totems.Exist(WoWTotem.FireElemental), "Searing Totem"),
 				    //Cooldowns
