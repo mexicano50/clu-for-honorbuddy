@@ -117,12 +117,12 @@ namespace CLU.Classes.DeathKnight
                                     Common.SpreadDiseasesBehavior(ret => Me.CurrentTarget),
                                     Spell.CastSpell("Howling Blast",    ret => Common.BloodRuneSlotsActive == 2 || Common.FrostRuneSlotsActive == 2 || (Common.BloodRuneSlotsActive == 2 || Common.FrostRuneSlotsActive == 2), "Howling Blast (Aoe)"),
                                     Spell.CastAreaSpell("Death and Decay", 10, true, 3, 0.0, 0.0, ret => Me.CurrentTarget != null && !BossList.IgnoreAoE.Contains(Unit.CurrentTargetEntry) && Me.UnholyRuneCount == 2 && !Me.IsMoving && !Me.CurrentTarget.IsMoving, "Death and Decay"),
-                                    Spell.CastSpell("Frost Strike",     ret => Me.CurrentRunicPower >= 90, "Frost Strike (Aoe)"),
+                                    Spell.CastSpell("Blood Strike", ret => Me.CurrentRunicPower >= 90, "Frost Strike (Aoe)"),
                                     Spell.CastSpell("Obliterate",       ret => Common.UnholyRuneSlotsActive == 2 , "Obliterate (Aoe)"),
                                     Spell.CastSpell("Blood Tap", ret => Me.CurrentTarget, ret => Buff.PlayerCountBuff("Blood Charge") >= 5 && Common.UnholyRuneSlotsActive > 0, "Blood Tap (Refreshed a depleted Rune)"),  //Don't waste it on Unholy Runes
                                     Spell.CastSpell("Howling Blast",    ret => true, "Howling Blast (Aoe)"),
                                     Spell.CastAreaSpell("Death and Decay", 10, true, 3, 0.0, 0.0, ret => Me.CurrentTarget != null && !BossList.IgnoreAoE.Contains(Unit.CurrentTargetEntry) && !Me.IsMoving && !Me.CurrentTarget.IsMoving, "Death and Decay"),
-                                    Spell.CastSpell("Frost Strike",     ret => true, "Frost Strike (Aoe)")
+                                    Spell.CastSpell("Blood Strike", ret => true, "Frost Strike (Aoe)")
                                    )
                                ),
                            //Operation: Do Damage[Eyes only]
@@ -135,7 +135,7 @@ namespace CLU.Classes.DeathKnight
                                    Spell.CastSpell("Howling Blast", ret => Me.HasMyAura(59052), "Howling Blast"),
                                    Spell.CastSpell("Blood Tap", ret => Me.CurrentTarget, ret => Buff.PlayerCountBuff("Blood Charge") >= 5 && Common.UnholyRuneSlotsActive > 0, "Blood Tap (Refreshed a depleted Rune)"),  //Don't waste it on Unholy Runes
                                    Spell.CastSpell("Obliterate", ret => true, "Obliterate"),
-                                   Spell.CastSpell("Frost Strike", ret => true, "Frost Strike"),
+                                   Spell.CastSpell("Blood Strike", ret => true, "Frost Strike"),
                                    Spell.CastSpell("Horn of Winter", ret => Me, ret => CLUSettings.Instance.DeathKnight.UseHornofWinter, "Horn of Winter"),
                                    new Action(delegate { return RunStatus.Success; }) //Let's break the tree early; Saves useless checks!
                                    )
@@ -145,13 +145,13 @@ namespace CLU.Classes.DeathKnight
                                new PrioritySelector(
                                    Spell.CastSpell("Soul Reaper", ret => Me.CurrentTarget != null && Me.CurrentTarget.HealthPercent <= 35 && Unit.TimeToDeath(Me.CurrentTarget) > 5, "Soul Reaper"),
                                    Common.ApplyDiseases(ret => Me.CurrentTarget),
-                                   Spell.CastSpell("Frost Strike", ret => Me.HasMyAura(51124), "Frost Strike"),
+                                   Spell.CastSpell("Blood Strike", ret => Me.HasMyAura(51124), "Frost Strike"),
                                    Spell.CastSpell("Obliterate", ret => Me.HasMyAura(51124) && Common.UnholyRuneSlotsActive == 2, "Obliterate"),
-                                   Spell.CastSpell("Frost Strike", ret => Me.CurrentRunicPower >= 90, "Frost Strike"),
+                                   Spell.CastSpell("Blood Strike", ret => Me.CurrentRunicPower >= 90, "Frost Strike"),
                                    Spell.CastSpell("Howling Blast", ret => Me.HasMyAura(59052), "Howling Blast"),
                                    Spell.CastSpell("Obliterate", ret => Common.UnholyRuneSlotsActive == 2, "Obliterate"),
                                    Spell.CastSpell("Blood Tap", ret => Me.CurrentTarget, ret => Buff.PlayerCountBuff("Blood Charge") >= 5 && Common.UnholyRuneSlotsActive > 0, "Blood Tap (Refreshed a depleted Rune)"),  //Don't waste it on Unholy Runes
-                                   Spell.CastSpell("Frost Strike", ret => true, "Frost Strike"),
+                                   Spell.CastSpell("Blood Strike", ret => true, "Frost Strike"),
                                    Spell.CastSpell("Howling Blast", ret => true, "Howling Blast"),
                                    Spell.CastSpell("Horn of Winter", ret => Me, ret => CLUSettings.Instance.DeathKnight.UseHornofWinter, "Horn of Winter")
                                    )
