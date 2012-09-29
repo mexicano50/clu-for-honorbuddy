@@ -20,7 +20,7 @@ using Styx.TreeSharp;
 using CLU.Base;
 using Rest = CLU.Base.Rest;
 using Styx.CommonBot;
-using global::CLU.Managers;
+using CLU.Managers;
 
 namespace CLU.Classes.DeathKnight
 {
@@ -98,58 +98,62 @@ namespace CLU.Classes.DeathKnight
                                    Racials.UseRacials(),
                                    Buff.CastBuff("Lifeblood", ret => true, "Lifeblood"), // Thanks Kink
                                    Item.UseEngineerGloves())),
-                           
                            //Interrupts
-                           Spell.CastInterupt("Mind Freeze", 		ret => Me.CurrentTarget != null && Me.CurrentTarget.IsWithinMeleeRange, "Mind Freeze"), //Why does nobody check for the range of melee kicks? // CurrentTarget Null check, we are accessing the objects property ;) --wulf
+                           Spell.CastInterupt("Mind Freeze", 		ret => Me.CurrentTarget != null && Me.CurrentTarget.IsWithinMeleeRange, "Mind Freeze"),
                            Spell.CastInterupt("Strangulate", 		ret => true, "Strangulate"),
-                           Spell.CastInterupt("Asphyxiate", 		ret => true, "Asphyxiate"),// Replaces Strangulate -- Darth Vader like ability
-                           //Diseases
-                           Common.ApplyDiseases(ret => Me.CurrentTarget),
+                           Spell.CastInterupt("Asphyxiate", 		ret => true, "Asphyxiate"),
                            //Cooldowns
-                           new Decorator(ret => Unit.IsTargetWorthy(Me.CurrentTarget) && Me.IsWithinMeleeRange,//Check for the damn range, we don't want to pop anything when the destination is shit away
+                           new Decorator(ret => Unit.IsTargetWorthy(Me.CurrentTarget) && Me.CurrentTarget != null && Me.IsWithinMeleeRange,
                                          new PrioritySelector(
                                              Buff.CastBuff("Raise Dead", 				ret => Me.CurrentTarget != null && Buff.PlayerHasBuff("Pillar of Frost") && Buff.PlayerBuffTimeLeft("Pillar of Frost") <= 10 && Buff.PlayerHasBuff("Unholy Strength"), "Raise Dead"),
                                              Buff.CastBuff("Pillar of Frost", 			ret => Me.CurrentTarget != null, "Pillar of Frost"),
-                                             Spell.CastSelfSpell("Empower Rune Weapon", ret => Me.CurrentTarget != null && CLUSettings.Instance.DeathKnight.UseEmpowerRuneWeapon && StyxWoW.Me.FrostRuneCount < 1 && StyxWoW.Me.UnholyRuneCount < 2 && StyxWoW.Me.DeathRuneCount < 1 && !Buff.UnitHasHasteBuff(Me), "Empower Rune Weapon")
+                                             Spell.CastSelfSpell("Empower Rune Weapon", ret => Me.CurrentTarget != null && CLUSettings.Instance.DeathKnight.UseEmpowerRuneWeapon && Common.ActiveRuneCount < 2 && !Buff.UnitHasHasteBuff(Me), "Empower Rune Weapon")
                                          )
                                         ),
                            //Aoe
                            new Decorator(ret => CLUSettings.Instance.UseAoEAbilities && Unit.EnemyUnits.Count() >= 3,
                                new PrioritySelector(
-                                    Spell.CastSpell("Howling Blast",ret => (Me.FrostRuneCount >= 1 || Me.DeathRuneCount >= 1),"Howling Blast [Aoe]"),
-                                    Spell.CastAreaSpell("Death and Decay", 10, true, 3, 0.0, 0.0, 	ret => Me.CurrentTarget != null && !BossList.IgnoreAoE.Contains(Unit.CurrentTargetEntry) && Me.UnholyRuneCount == 2 && Unit.EnemyUnits.Count() >= 3 && !Me.IsMoving && !Me.CurrentTarget.IsMoving && Unit.IsTargetWorthy(Me.CurrentTarget), "Death and Decay"),
-                                    Spell.CastAreaSpell("Death and Decay", 10, true, 3, 0.0, 0.0, 	ret => Me.CurrentTarget != null && (!BossList.IgnoreAoE.Contains(Unit.CurrentTargetEntry) && (Spell.RuneCooldown(4) == 0 && Spell.RuneCooldown(3) <= 1) || (Spell.RuneCooldown(3) == 0 && Spell.RuneCooldown(4) <= 1) && Unit.EnemyUnits.Count() >= 3 && !Me.IsMoving && !Me.CurrentTarget.IsMoving && Unit.IsTargetWorthy(Me.CurrentTarget)), "Death and Decay"),
-                                    Common.SpreadDiseasesBehavior(ret => Me.CurrentTarget), // Used to spread your Diseases based upon your Tier one Talent. -- wulf
-                                    Spell.CastSpell("Plague Strike", ret => Spell.SpellCooldown("Death and Decay").TotalSeconds > 6 && Me.UnholyRuneCount == 2 && Unit.EnemyUnits.Count() >= 3, "Plague Strike [Aoe]")
+                                    Common.ApplyDiseases(ret => Me.CurrentTarget),
+                                    Common.SpreadDiseasesBehavior(ret => Me.CurrentTarget),
+                                    Spell.CastSpell("Howling Blast",    ret => Common.BloodRuneSlotsActive == 2 || Common.FrostRuneSlotsActive == 2 || (Common.BloodRuneSlotsActive == 2 || Common.FrostRuneSlotsActive == 2), "Howling Blast (Aoe)"),
+                                    Spell.CastAreaSpell("Death and Decay", 10, true, 3, 0.0, 0.0, ret => Me.CurrentTarget != null && !BossList.IgnoreAoE.Contains(Unit.CurrentTargetEntry) && Me.UnholyRuneCount == 2 && !Me.IsMoving && !Me.CurrentTarget.IsMoving, "Death and Decay"),
+                                    Spell.CastSpell("Frost Strike",     ret => Me.CurrentRunicPower >= 90, "Frost Strike (Aoe)"),
+                                    Spell.CastSpell("Obliterate",       ret => Common.UnholyRuneSlotsActive == 2 , "Obliterate (Aoe)"),
+                                    Spell.CastSpell("Blood Tap", ret => Me.CurrentTarget, ret => Buff.PlayerCountBuff("Blood Charge") >= 5 && Common.UnholyRuneSlotsActive > 0, "Blood Tap (Refreshed a depleted Rune)"),  //Don't waste it on Unholy Runes
+                                    Spell.CastSpell("Howling Blast",    ret => true, "Howling Blast (Aoe)"),
+                                    Spell.CastAreaSpell("Death and Decay", 10, true, 3, 0.0, 0.0, ret => Me.CurrentTarget != null && !BossList.IgnoreAoE.Contains(Unit.CurrentTargetEntry) && !Me.IsMoving && !Me.CurrentTarget.IsMoving, "Death and Decay"),
+                                    Spell.CastSpell("Frost Strike",     ret => true, "Frost Strike (Aoe)")
                                    )
                                ),
                            //Operation: Do Damage[Eyes only]
                            new Decorator(ret => Common.IsWieldingTwoHandedWeapon(),
                                new PrioritySelector(
-                                    Spell.CastSpell("Soul Reaper", ret => Me.CurrentTarget, ret => Me.CurrentTarget != null && Me.CurrentTarget.HealthPercent < 35, "Soul Reaping"),
-                                    Spell.CastSpell("Howling Blast", ret => Buff.PlayerHasBuff("Freezing Fog"), "Howling Blast (Rime)"),
-                                    Spell.CastSpell("Obliterate", ret => Me.CurrentTarget, ret => Buff.PlayerHasBuff("Killing Machine"), "Obliterate (2 Hand Killing Machine)"),
-                                    Spell.CastSpell("Obliterate", ret => Me.CurrentTarget, ret => Me.CurrentRunicPower < 85, "Obliterate (Utilize Runes)"),
-                                    Spell.CastSpell("Blood Strike", ret => Me.CurrentTarget, ret => Me.RunicPowerPercent >= 90, "Frost Strike (Dumping Runic Power) => BS"),
-                                    Spell.CastSpell("Blood Strike", ret => Me.CurrentTarget, ret => true, "Frost Strike (Because we can) => BS"),
-                                    Spell.CastSpell("Blood Tap", ret => Me.CurrentTarget, ret =>  Buff.PlayerCountBuff("Blood Charge") >= 5 && (Common.FrostRuneSlotsActive == 0 || Common.UnholyRuneSlotsActive == 0 || Common.BloodRuneSlotsActive == 0), "Blood Tap (Refreshed a depleted Rune)"), //Don't waste it on Unholy Runes
-                                    Buff.CastBuff("Horn of Winter", ret => CLUSettings.Instance.DeathKnight.UseHornofWinter, "Horn of Winter (Because we can)")
+                                   Spell.CastSpell("Soul Reaper", ret => Me.CurrentTarget != null && Me.CurrentTarget.HealthPercent <= 35 && Unit.TimeToDeath(Me.CurrentTarget) > 5, "Soul Reaper"),
+                                   Spell.CastSpell("Obliterate", ret => Me.HasMyAura(51124), "Obliterate"),
+                                   Common.ApplyDiseases(ret => Me.CurrentTarget),
+                                   Spell.CastSpell("Frost Strike", ret => Me.CurrentRunicPower >= 90, "Frost Strike"),
+                                   Spell.CastSpell("Howling Blast", ret => Me.HasMyAura(59052), "Howling Blast"),
+                                   Spell.CastSpell("Blood Tap", ret => Me.CurrentTarget, ret => Buff.PlayerCountBuff("Blood Charge") >= 5 && Common.UnholyRuneSlotsActive > 0, "Blood Tap (Refreshed a depleted Rune)"),  //Don't waste it on Unholy Runes
+                                   Spell.CastSpell("Obliterate", ret => true, "Obliterate"),
+                                   Spell.CastSpell("Frost Strike", ret => true, "Frost Strike"),
+                                   Spell.CastSpell("Horn of Winter", ret => Me, ret => CLUSettings.Instance.DeathKnight.UseHornofWinter, "Horn of Winter"),
+                                   new Action(delegate { return RunStatus.Success; }) //Let's break the tree early; Saves useless checks!
                                    )
                                ),
                            //Operation: Do Damage[Eyes only]
                            new Decorator(ret => !Common.IsWieldingTwoHandedWeapon(),
                                new PrioritySelector(
-                                    Spell.CastSpell("Soul Reaper", ret => Me.CurrentTarget, ret => Me.CurrentTarget != null && Me.CurrentTarget.HealthPercent < 35, "Soul Reaping"),
-                                    Spell.CastSpell("Howling Blast", ret => Buff.PlayerHasBuff("Freezing Fog"), "Howling Blast (Rime)"),
-                                    Spell.CastSpell("Blood Strike", ret => Me.CurrentTarget, ret => Buff.PlayerHasBuff("Killing Machine"), "Frost Strike (Dual Wield Killing Machine)"),
-                                    Spell.CastSpell("Blood Strike", ret => Me.CurrentTarget, ret => Me.RunicPowerPercent > 84, "Frost Strike (Dumping Runic Power)"),
-                                    Spell.CastSpell("Blood Tap", ret => Me.CurrentTarget, ret =>  Buff.PlayerCountBuff("Blood Charge") >= 5 && (Common.FrostRuneSlotsActive == 0 || Common.UnholyRuneSlotsActive == 0 || Common.BloodRuneSlotsActive == 0), "Blood Tap (Refreshed a depleted Rune)"), //Don't waste it on Unholy Runes
-                                    Spell.CastSpell("Obliterate", ret => (Me.FrostRuneCount == 2 && Me.UnholyRuneCount == 2) || Me.DeathRuneCount == 2, "Obliterate (Utilizing Killing Machine)"),
-                                    Spell.CastSpell("Obliterate", ret => Buff.PlayerHasBuff("Killing Machine") && Me.CurrentRunicPower <= 10, "Obliterate (Utilizing Killing Machine)"),
-                                    Spell.CastSpell("Howling Blast", ret => true, "Howling Blast (Because we can)"),
-                                    Spell.CastSpell("Blood Tap", ret => Me.CurrentTarget, ret =>  Buff.PlayerCountBuff("Blood Charge") >= 5 && (Common.FrostRuneSlotsActive == 0 || Common.UnholyRuneSlotsActive == 0 || Common.BloodRuneSlotsActive == 0), "Blood Tap (Refreshed a depleted Rune)"),  //Don't waste it on Unholy Runes
-                                    Spell.CastSpell("Blood Strike", ret => true, "Frost Strike (Because we can)"),
-                                    Spell.CastSpell("Horn of Winter", ret => Me, ret => CLUSettings.Instance.DeathKnight.UseHornofWinter, "Horn of Winter for RP")
+                                   Spell.CastSpell("Soul Reaper", ret => Me.CurrentTarget != null && Me.CurrentTarget.HealthPercent <= 35 && Unit.TimeToDeath(Me.CurrentTarget) > 5, "Soul Reaper"),
+                                   Common.ApplyDiseases(ret => Me.CurrentTarget),
+                                   Spell.CastSpell("Frost Strike", ret => Me.HasMyAura(51124), "Frost Strike"),
+                                   Spell.CastSpell("Obliterate", ret => Me.HasMyAura(51124) && Common.UnholyRuneSlotsActive == 2, "Obliterate"),
+                                   Spell.CastSpell("Frost Strike", ret => Me.CurrentRunicPower >= 90, "Frost Strike"),
+                                   Spell.CastSpell("Howling Blast", ret => Me.HasMyAura(59052), "Howling Blast"),
+                                   Spell.CastSpell("Obliterate", ret => Common.UnholyRuneSlotsActive == 2, "Obliterate"),
+                                   Spell.CastSpell("Blood Tap", ret => Me.CurrentTarget, ret => Buff.PlayerCountBuff("Blood Charge") >= 5 && Common.UnholyRuneSlotsActive > 0, "Blood Tap (Refreshed a depleted Rune)"),  //Don't waste it on Unholy Runes
+                                   Spell.CastSpell("Frost Strike", ret => true, "Frost Strike"),
+                                   Spell.CastSpell("Howling Blast", ret => true, "Howling Blast"),
+                                   Spell.CastSpell("Horn of Winter", ret => Me, ret => CLUSettings.Instance.DeathKnight.UseHornofWinter, "Horn of Winter")
                                    )
                                )
                        );
@@ -235,7 +239,7 @@ namespace CLU.Classes.DeathKnight
             get {
                 return
                     new PrioritySelector(
-                        Buff.CastBuff("Anti-Magic Shell", ret => Me.CurrentTarget != null && CLUSettings.Instance.EnableSelfHealing && CLUSettings.Instance.DeathKnight.UseAntiMagicShell && (Me.CurrentTarget.IsCasting || Me.CurrentTarget.ChanneledCastingSpellId != 0), "AMS"), // TODO: Put this back in when its fixed. && Me.CurrentTarget.IsTargetingMeOrPet
+                        Buff.CastBuff("Anti-Magic Shell", ret => Me.CurrentTarget != null && CLUSettings.Instance.EnableSelfHealing && CLUSettings.Instance.DeathKnight.UseAntiMagicShell && (Me.CurrentTarget.IsCasting || Me.CurrentTarget.ChanneledCastingSpellId != 0), "AMS"),
                         new Decorator(
                             ret => Me.HealthPercent < 100 && CLUSettings.Instance.EnableSelfHealing,
                             new PrioritySelector(
@@ -243,9 +247,7 @@ namespace CLU.Classes.DeathKnight
                                 Spell.CastSelfSpell("Raise Dead",			ret => Me.HealthPercent < CLUSettings.Instance.DeathKnight.FrostPetSacrificePercent && !Buff.PlayerHasBuff("Icebound Fortitude") && CLUSettings.Instance.DeathKnight.FrostUsePetSacrifice, "Raise Dead"),
                                 Spell.CastSelfSpell("Icebound Fortitude",	ret => Me.HealthPercent < CLUSettings.Instance.DeathKnight.FrostIceboundFortitudePercent && CLUSettings.Instance.DeathKnight.UseIceboundFortitude, "Icebound Fortitude "),
                                 Spell.CastSpell("Death Strike",				ret => Me.HealthPercent < CLUSettings.Instance.DeathKnight.DeathStrikeEmergencyPercent, "Death Strike"),
-                                Spell.CastSpell("Death Siphon",             ret => Me.HealthPercent < CLUSettings.Instance.DeathKnight.DeathSiphonPercent && CLUSettings.Instance.EnableMovement, "Death Siphon"), // Only if movement is enabled..i.e. we are questing, gathering, etc...
-                                // Conversion lasts until canceled!!..I am reluctant to put this in atm as its so underpowered
-                                // Buff.CastBuff("Conversion",                 ret => (Buff.PlayerHasBuff("Unholy Presence") && Buff.PlayerHasBuff("Anti-Magic Shell")/*Since conversion stops extra rune regen from Frost Presence but not from AMS we will go this way only for Unholy Dks*/), "Conversion (Restoring 3% HP every 1s for 10RP"),//Tricky One
+                                Spell.CastSpell("Death Siphon",             ret => Me.HealthPercent < CLUSettings.Instance.DeathKnight.DeathSiphonPercent, "Death Siphon"), // Only if movement is enabled..i.e. we are questing, gathering, etc... -- Why the hell would you do that? Weischbier
                                 Item.UseBagItem("Healthstone",				ret => Me.HealthPercent < CLUSettings.Instance.DeathKnight.HealthstonePercent, "Healthstone"))
                         )
                     );
