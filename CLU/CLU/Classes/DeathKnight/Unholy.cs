@@ -152,7 +152,7 @@ namespace CLU.Classes.DeathKnight
                     Spell.CastSpell("Blood Tap", ret => Me.CurrentTarget, ret => Buff.PlayerCountBuff("Blood Charge") >= 5 && (Common.FrostRuneSlotsActive == 0 || Common.UnholyRuneSlotsActive == 0 || Common.BloodRuneSlotsActive == 0), "Blood Tap (Refreshed a depleted Rune)"),  //Don't waste it on Unholy Runes
                     Spell.CastSpell("Scourge Strike", ret => true, "Scourge Strike"),
                     Spell.CastSpell("Festering Strike", ret => true, "Festering Strike"),
-                    Spell.CastSpell("Horn of Winter",ret => Me, ret => true, "Horn of Winter for RP"));
+                    Spell.CastSpell("Horn of Winter", ret => Me, ret => CLUSettings.Instance.DeathKnight.UseHornofWinter, "Horn of Winter for RP"));
             }
         }
 
@@ -201,7 +201,7 @@ namespace CLU.Classes.DeathKnight
                         Spell.CastSpell("Scourge Strike",       ret => true, "Scourge Strike"),
                         Spell.CastSpell("Festering Strike",     ret => true, "Festering Strike"),
                         Spell.CastSpell("Death Coil",           ret => SpellManager.Spells["Summon Gargoyle"].CooldownTimeLeft.Seconds > 8, "Death Coil"),
-                        Buff.CastRaidBuff("Horn of Winter",     ret => true, "Horn of Winter"),
+                        Buff.CastRaidBuff("Horn of Winter", ret => CLUSettings.Instance.DeathKnight.UseHornofWinter, "Horn of Winter"),
                         Spell.CastSpell("Empower Rune Weapon",  ret => true, "Empower Rune Weapon")
                 ));
             }

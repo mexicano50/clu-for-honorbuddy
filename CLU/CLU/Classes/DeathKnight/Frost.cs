@@ -133,7 +133,7 @@ namespace CLU.Classes.DeathKnight
                                     Spell.CastSpell("Blood Strike", ret => Me.CurrentTarget, ret => Me.RunicPowerPercent >= 90, "Frost Strike (Dumping Runic Power) => BS"),
                                     Spell.CastSpell("Blood Strike", ret => Me.CurrentTarget, ret => true, "Frost Strike (Because we can) => BS"),
                                     Spell.CastSpell("Blood Tap", ret => Me.CurrentTarget, ret =>  Buff.PlayerCountBuff("Blood Charge") >= 5 && (Common.FrostRuneSlotsActive == 0 || Common.UnholyRuneSlotsActive == 0 || Common.BloodRuneSlotsActive == 0), "Blood Tap (Refreshed a depleted Rune)"), //Don't waste it on Unholy Runes
-                                    Buff.CastBuff("Horn of Winter", ret => true, "Horn of Winter (Because we can)")
+                                    Buff.CastBuff("Horn of Winter", ret => CLUSettings.Instance.DeathKnight.UseHornofWinter, "Horn of Winter (Because we can)")
                                    )
                                ),
                            //Operation: Do Damage[Eyes only]
@@ -149,7 +149,7 @@ namespace CLU.Classes.DeathKnight
                                     Spell.CastSpell("Howling Blast", ret => true, "Howling Blast (Because we can)"),
                                     Spell.CastSpell("Blood Tap", ret => Me.CurrentTarget, ret =>  Buff.PlayerCountBuff("Blood Charge") >= 5 && (Common.FrostRuneSlotsActive == 0 || Common.UnholyRuneSlotsActive == 0 || Common.BloodRuneSlotsActive == 0), "Blood Tap (Refreshed a depleted Rune)"),  //Don't waste it on Unholy Runes
                                     Spell.CastSpell("Blood Strike", ret => true, "Frost Strike (Because we can)"),
-                                    Spell.CastSpell("Horn of Winter",ret => Me, ret => true, "Horn of Winter for RP")
+                                    Spell.CastSpell("Horn of Winter", ret => Me, ret => CLUSettings.Instance.DeathKnight.UseHornofWinter, "Horn of Winter for RP")
                                    )
                                )
                        );
@@ -203,7 +203,7 @@ namespace CLU.Classes.DeathKnight
                                 Spell.CastSpell("Obliterate",                   ret => !Macro.rotationSwap && Buff.PlayerHasBuff("Killing Machine") && Me.FrostRuneCount >= 1 && Me.UnholyRuneCount >= 1, "Obliterate"),
                                 Spell.CastSpell("Blood Tap",                    ret => TalentManager.HasTalent(13) && Buff.PlayerCountBuff("Blood Charge") >= 5 && (Common.FrostRuneSlotsActive == 0 || Common.UnholyRuneSlotsActive == 0 || Common.BloodRuneSlotsActive == 0), "Blood Tap"),
                                 Spell.CastSpell("Blood Strike",                 ret => true, "Frost Strike"),
-                                Buff.CastRaidBuff("Horn of Winter",             ret => true, "Horn of Winter"),
+                                Buff.CastRaidBuff("Horn of Winter", ret => CLUSettings.Instance.DeathKnight.UseHornofWinter, "Horn of Winter"),
                                 Spell.CastSpell("Empower Rune Weapon",          ret => true, "Empower Rune Weapon"))),
 
                         //DW
@@ -224,7 +224,7 @@ namespace CLU.Classes.DeathKnight
                                 Spell.CastOnUnitLocation("Death and Decay",     ret => Me.CurrentTarget, ret => true, "Death and Decay"),
                                 Spell.CastSpell("Plague Strike",                ret => true, "Plague Strike"),
                                 Spell.CastSpell("Blood Tap",                    ret => TalentManager.HasTalent(13) && Buff.PlayerCountBuff("Blood Charge") >= 5 && (Common.FrostRuneSlotsActive == 0 || Common.UnholyRuneSlotsActive == 0 || Common.BloodRuneSlotsActive == 0), "Blood Tap"),
-                                Buff.CastRaidBuff("Horn of Winter",             ret => true, "Horn of Winter"),
+                                Buff.CastRaidBuff("Horn of Winter", ret => CLUSettings.Instance.DeathKnight.UseHornofWinter, "Horn of Winter"),
                                 Spell.CastSpell("Empower Rune Weapon",          ret => true, "Empower Rune Weapon")))
                 ));
             }
