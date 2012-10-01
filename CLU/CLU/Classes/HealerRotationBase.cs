@@ -13,6 +13,7 @@
 using System.Linq;
 using CLU.Helpers;
 using Styx;
+using Styx.TreeSharp;
 using Styx.WoWInternals.WoWObjects;
 using CLU.Base;
 using CLU.Managers;
@@ -159,6 +160,14 @@ namespace CLU.Classes
             {
                 return HealTarget != null && Spell.SpellCooldown("Divine Favor").TotalSeconds < 0.5 || Spell.SpellCooldown("Guardian of Ancient Kings").TotalSeconds < 0.5 || Spell.SpellCooldown("Avenging Wrath").TotalSeconds < 0.5;
             }
+        }
+
+        /// <summary>
+        /// We shouldnt need Pull behavior in the healing rotations so lets just return an empty priority selector.
+        /// </summary>
+        public override Composite Pull
+        {
+            get { return new PrioritySelector(); }
         }
     }
 }

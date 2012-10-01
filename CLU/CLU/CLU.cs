@@ -196,6 +196,11 @@ namespace CLU
         /// </summary>
         private Composite Resting { get { return this.ActiveRotation.Resting; } }
 
+        /// <summary>
+        /// CLU Pulling Behavior
+        /// </summary>
+        private Composite Pulling { get { return this.ActiveRotation.Pull; } }
+
 
         public override double? PullDistance { get { return this.ActiveRotation.CombatMaxDistance; } }
 
@@ -230,7 +235,7 @@ namespace CLU
 
             if (_restBehavior != null) this._restBehavior = new Decorator(ret => !(CLUSettings.Instance.NeverDismount && IsMounted) && !Me.IsFlying, this.Resting);
 
-            if (_pullBehavior != null) this._pullBehavior = new Decorator(ret => AllowPulse, this.Rotation);
+            if (_pullBehavior != null) this._pullBehavior = new Decorator(ret => AllowPulse, this.Pulling);
 
             return true;
         }

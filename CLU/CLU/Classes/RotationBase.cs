@@ -38,6 +38,8 @@ namespace CLU.Classes
 
 		public abstract Composite PVERotation { get; }
 
+        public abstract Composite Pull { get; }
+
 		public abstract Composite Medic { get; }
 
 		public abstract Composite PreCombat { get; }

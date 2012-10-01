@@ -155,6 +155,11 @@ namespace CLU.Classes.Mage
             }
         }
 
+        public override Composite Pull
+        {
+            get { return this.SingleRotation; }
+        }
+
         public override Composite Medic
         {
             get

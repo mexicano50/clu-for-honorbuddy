@@ -140,6 +140,11 @@ Credits to Weischbier, because he owns the buisness and I want him to have my ba
             }
         }
 
+        public override Composite Pull
+        {
+            get { return this.SingleRotation; }
+        }
+
         public override Composite Medic
         {
             get {

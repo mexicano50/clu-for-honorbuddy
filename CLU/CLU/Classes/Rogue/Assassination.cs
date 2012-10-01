@@ -73,6 +73,11 @@ namespace CLU.Classes.Rogue
             get { return 1329; }
         }
 
+        public override Composite Pull
+        {
+            get { return this.SingleRotation; }
+        }
+
         /// <summary>
         /// Gets the healing rotation.
         /// Rotation created by wulf.

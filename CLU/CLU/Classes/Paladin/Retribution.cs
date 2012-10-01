@@ -152,6 +152,11 @@ NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagr
             }
         }
 
+        public override Composite Pull
+        {
+            get { return this.SingleRotation; }
+        }
+
         public override Composite Medic
         {
             get {

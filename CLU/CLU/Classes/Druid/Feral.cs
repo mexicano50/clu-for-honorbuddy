@@ -97,6 +97,11 @@ CREDITS TO: HandNavi - because he owns the business.
             }
         }
 
+        public override Composite Pull
+        {
+            get { return this.SingleRotation; }
+        }
+
         public override Composite Medic
         {
             get

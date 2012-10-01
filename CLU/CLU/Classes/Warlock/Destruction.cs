@@ -127,6 +127,11 @@ namespace CLU.Classes.Warlock
             }
         }
 
+        public override Composite Pull
+        {
+            get { return this.SingleRotation; }
+        }
+
         public override Composite Medic
         {
             get {return Common.WarlockMedic;}

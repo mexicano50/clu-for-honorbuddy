@@ -220,6 +220,11 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
             }
         }
 
+        public override Composite Pull
+        {
+            get { return this.SingleRotation; }
+        }
+
         public override Composite Medic
         {
             get {

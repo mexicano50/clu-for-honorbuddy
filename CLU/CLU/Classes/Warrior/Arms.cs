@@ -189,6 +189,11 @@ namespace CLU.Classes.Warrior
             }
         }
 
+        public override Composite Pull
+        {
+            get { return this.SingleRotation; }
+        }
+
         public override Composite Medic
         {
             get
