@@ -164,7 +164,7 @@ namespace CLU.Lists
             56471, // Mutated Corruption -- Dragon Soul: The MaelstromDragon
             52409, // Ragnaros (Firelands)
             56781, //Goriona ---- Warmaster Blackhorn
-            56877, // Raigonn = Gate of the Setting Sun
+            56895, // Raigonn = Gate of the Setting Sun
         };
 
         public static HashSet<uint> TrainingDummies
@@ -1324,6 +1324,7 @@ namespace CLU.Lists
             56636, // Commander Ri'mok
             61177, // Raigonn
             56877, // Raigonn
+            56895, // Raigonn
             
             // Mogu'shan Palace
             61442, // Kuai the Brute
