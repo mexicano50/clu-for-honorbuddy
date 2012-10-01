@@ -118,7 +118,7 @@ namespace CLU.Classes.Shaman
                                    Racials.UseRacials(),
                                    Item.UseEngineerGloves())),
                     // Interupts
-                    //       Spell.CastInterupt("Wind Shear", ret => true, "Wind Shear"),
+                           Spell.CastInterupt("Wind Shear", ret => Buff.InteruptableSpells, "Wind Shear"),
                     // Threat
                     //      Buff.CastBuff("Wind Shear", ret => Me.CurrentTarget != null && Me.CurrentTarget.ThreatInfo.RawPercent > 90, "Wind Shear (Threat)"),
                     // Totem management

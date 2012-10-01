@@ -226,6 +226,9 @@ namespace CLU.Base
             34914, // Vampiric Touch, // 
             5176, // Wrath, //
 
+            //MoP Instances
+            113134, // Mass Resurrection High Inquisitor Whitemane, //
+
 
         };
 
