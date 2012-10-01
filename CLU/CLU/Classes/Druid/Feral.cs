@@ -99,7 +99,7 @@ CREDITS TO: HandNavi - because he owns the business.
 
         public override Composite Pull
         {
-            get { return this.SingleRotation; }
+             get { return new PrioritySelector(); }
         }
 
         public override Composite Medic

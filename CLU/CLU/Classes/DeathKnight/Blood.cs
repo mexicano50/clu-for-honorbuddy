@@ -142,7 +142,7 @@ Credits to Weischbier, because he owns the buisness and I want him to have my ba
 
         public override Composite Pull
         {
-            get { return this.SingleRotation; }
+             get { return new PrioritySelector(); }
         }
 
         public override Composite Medic
