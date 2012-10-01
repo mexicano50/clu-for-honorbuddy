@@ -58,7 +58,7 @@ namespace CLU.Classes.Monk
             get
             {
                 return
-                     @"
+                    @"
 ----------------------------------------------------------------------
 Windwalker:
 [*] AutomaticCooldowns now works with Boss's or Mob's (See: General Setting)
@@ -80,6 +80,7 @@ This Rotation will:
 NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagradt changes that.
 Credits: alxaw , Kbrebel04
 ----------------------------------------------------------------------";
+            }
         }
 
         private static uint Chi
