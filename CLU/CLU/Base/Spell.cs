@@ -198,6 +198,40 @@ namespace CLU.Base
             }
         }
 
+       // Ama's spell checking (Healing)
+
+        public static Composite BreakMist()
+        {
+            return new Action(
+                delegate
+                {
+                    if (Me.IsCasting && HealableUnit.HealTarget.HealthPercent != null && HealableUnit.HealTarget.HealthPercent > 80 && HealableUnit.HealTarget.ToUnit().HasMyAura("Soothing Mist"))
+                    {
+                        CLU.Log(HealableUnit.HealTarget.Name + " has my Soothing Mist and HP is " + HealableUnit.HealTarget.HealthPercent);
+                        SpellManager.StopCasting();
+                    }
+
+                    return RunStatus.Failure;
+                }
+             );
+        }
+        public static Composite CastHealSpecial(string name, CanRunDecoratorDelegate cond, string label)
+        {
+            return new Decorator(
+                delegate(object a)
+                {
+                    if (!cond(a))
+                        return false;
+
+                    return true;
+                },
+            new Sequence(
+                new Action(a => CLU.Log(" [Casting] {0} ", label)), new Action(a => SpellManager.Cast(name, HealableUnit.HealTarget.ToUnit()))));
+        }
+       
+        
+        
+        
         /// <summary>This is CLU's cancast method. It checks ALOT! Returns true if the player can cast the spell.</summary>
         /// <param name="name">name of the spell to check.</param>
         /// <param name="target">The target.</param>

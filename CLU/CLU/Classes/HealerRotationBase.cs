@@ -13,10 +13,10 @@
 using System.Linq;
 using CLU.Helpers;
 using Styx;
-using Styx.TreeSharp;
 using Styx.WoWInternals.WoWObjects;
 using CLU.Base;
 using CLU.Managers;
+using Styx.TreeSharp;
 
 namespace CLU.Classes
 {
@@ -66,6 +66,11 @@ namespace CLU.Classes
             }
         }
 
+        protected static bool HealthCheck(int Percent)
+        {
+            return HealTarget != null && HealTarget.HealthPercent < Percent;
+        }
+
         // Restoration Druid ------------------------------------------------------------------------------------------------------------
 
         protected static bool CanNourish
@@ -73,6 +78,29 @@ namespace CLU.Classes
             get
             {
                 return HealTarget.HasAura("Wild Growth") || HealTarget.HasAura("Rejuvenation") || !HealTarget.HasAura("Harmony") || HealTarget.HasAura("Regrowth") || HealTarget.HasAura("Lifebloom");
+            }
+        }
+
+        //Monk ------------ ------------------------------------------------------------------------------------------------------------
+        protected static bool ChannelingSoothingMist
+        {
+            get
+            {
+                return Spell.PlayerIsChanneling && Me.ChanneledSpell == WoWSpell.FromId(115175);
+            }
+        }        
+        protected static bool GotTea
+        {
+            get
+            {
+                return Buff.PlayerCountBuff("Mana Tea") > 2;
+            }
+        }
+        protected static uint Chi
+        {
+            get
+            {
+                return Me.CurrentChi;// StyxWoW.Me.GetCurrentPower(WoWPowerType.LightForce);
             }
         }
 
@@ -160,14 +188,6 @@ namespace CLU.Classes
             {
                 return HealTarget != null && Spell.SpellCooldown("Divine Favor").TotalSeconds < 0.5 || Spell.SpellCooldown("Guardian of Ancient Kings").TotalSeconds < 0.5 || Spell.SpellCooldown("Avenging Wrath").TotalSeconds < 0.5;
             }
-        }
-
-        /// <summary>
-        /// We shouldnt need Pull behavior in the healing rotations so lets just return an empty priority selector.
-        /// </summary>
-        public override Composite Pull
-        {
-            get { return new PrioritySelector(); }
         }
     }
 }
