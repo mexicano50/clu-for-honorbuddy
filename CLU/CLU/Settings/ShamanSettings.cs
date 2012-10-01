@@ -209,6 +209,17 @@ namespace CLU.Settings
         }
 
         [Setting]
+        [DefaultValue(WindShear.OnBoss)]
+        [Category("Enhancement")]
+        [DisplayName("Wind Shear")]
+        [Description("Let's you choose if you want to use Wind Shear on cooldown or on boss only")]
+        public WindShear WindShearSelection
+        { 
+            get; 
+            set;
+        }
+
+        [Setting]
         [DefaultValue(FeralSpirit.OnBoss)]
         [Category("Enhancement")]
         [DisplayName("Feral Spirit")]

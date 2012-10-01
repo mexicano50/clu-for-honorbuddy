@@ -118,9 +118,10 @@ namespace CLU.Classes.Shaman
                                    Racials.UseRacials(),
                                    Item.UseEngineerGloves())),
                     // Interupts
-                     //      Spell.CastInterupt("Wind Shear", ret => Buff.InteruptableSpells, "Wind Shear"),
+                         Spell.CastInterupt("Wind Shear", ret => Me.CurrentTarget.CanInteruptCastSpell() && Unit.IsTargetWorthy(Me.CurrentTarget) && CLUSettings.Instance.Shaman.WindShearSelection == WindShear.OnBoss, "Wind Shear"),
+                         Spell.CastInterupt("Wind Shear", ret => Me.CurrentTarget.CanInteruptCastSpell() && CLUSettings.Instance.Shaman.WindShearSelection == WindShear.OnCooldown, "Wind Shear"),
                     // Threat
-                    //      Buff.CastBuff("Wind Shear", ret => Me.CurrentTarget != null && Me.CurrentTarget.ThreatInfo.RawPercent > 90, "Wind Shear (Threat)"),
+                  //        Buff.CastBuff("Wind Shear", ret => Me.CurrentTarget != null && Me.CurrentTarget.ThreatInfo.RawPercent > 90, "Wind Shear (Threat)"),
                     // Totem management
                            Totems.CreateTotemsBehavior(),
                     // Rotation 

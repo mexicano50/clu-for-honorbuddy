@@ -32,6 +32,12 @@ namespace CLU.Base
         FifthSlot
     }
 
+    public enum WindShear
+    {
+        OnBoss,
+        OnCooldown
+    }
+
     public enum Ascendance
     {
        OnBoss,

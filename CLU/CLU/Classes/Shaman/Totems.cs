@@ -73,14 +73,14 @@ namespace CLU.Classes.Shaman
                //   Magma - handle within AoE DPS logic only
                                 
                       
-                      Spell.CastSelfSpell("Magma Totem",
-                       ret => Unit.EnemyUnits.Count(u => u.Distance <= GetTotemRange(WoWTotem.Magma)) >= StressMobCount
-                        && !Exist( WoWTotem.FireElemental),"Magma Totem"),
+                  //    Spell.CastSelfSpell("Magma Totem",
+                 //      ret => Unit.EnemyUnits.Count(u => u.Distance <= GetTotemRange(WoWTotem.Magma)) >= StressMobCount
+              //          && !Exist( WoWTotem.FireElemental),"Magma Totem"),
                    
                 
-                    Spell.CastSelfSpell("Searing Totem",
-                        ret => Me.GotTarget && Unit.EnemyUnits.Count(u => u.Distance <= GetTotemRange(WoWTotem.Searing)) < 2
-                            && Me.CurrentTarget.Distance < GetTotemRange(WoWTotem.Searing) - 2f && !Exist(WoWTotemType.Fire), "Searing Totem")
+               //     Spell.CastSelfSpell("Searing Totem",
+               //         ret => Me.GotTarget && Unit.EnemyUnits.Count(u => u.Distance <= GetTotemRange(WoWTotem.Searing)) < 2
+               //             && Me.CurrentTarget.Distance < GetTotemRange(WoWTotem.Searing) - 2f && !Exist(WoWTotemType.Fire), "Searing Totem")
                     );
 
             if (Me.Specialization == WoWSpec.ShamanRestoration)
