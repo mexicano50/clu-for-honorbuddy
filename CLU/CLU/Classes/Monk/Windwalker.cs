@@ -57,11 +57,29 @@ namespace CLU.Classes.Monk
         {
             get
             {
-                return "----------------------------------------------------------------------\n" +
-                       "This rotation does not support the use of Ascencion" +
-                       "Credits: alxaw , Kbrebel04" +
-                       "----------------------------------------------------------------------\n";
-            }
+                return
+                     @"
+----------------------------------------------------------------------
+Windwalker:
+[*] AutomaticCooldowns now works with Boss's or Mob's (See: General Setting)
+[*] This rotation does not support the use of Ascencion
+This Rotation will:
+100% Optimal DPS rotation:
+-Uses Mark of Death
+-Rising Sun Kick on cooldown
+-Maintain 3 stacks of Tiger Power
+-Uses Summon Xuen, the White Tiger
+-Use 10 stacks of Tigerseye brew (only on bosses, do it manually if u want it on trash, this is to ensure you go into a fight with 10 stacks for the most possible DPS.)
+-Uses Fists of Fury on cooldown when certain requirements are met(Not Moving, Rising Sun Kick is on cooldown, not under the effects of energizing brew, and Tiger Power has more than 5 seconds left on it)
+-Uses Blackout Kick and Tiger Palm Mastery procs
+-Uses blackout kick will all of the above requirements are not met
+-Uses Chi Brew appropriately if you have it talented
+-Use Expel Harm instead of Jab at sum 80% health(this is a DPS increase) and uses Jab when expel harm is on cooldown
+-Uses Jab
+-Interrupts
+NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagradt changes that.
+Credits: alxaw , Kbrebel04
+----------------------------------------------------------------------";
         }
 
         private static uint Chi
