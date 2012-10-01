@@ -10,6 +10,8 @@
  */
 #endregion
 
+using CLU.Settings;
+
 namespace CLU.Base
 {
     using System.Collections.Generic;
@@ -32,6 +34,8 @@ namespace CLU.Base
         {
             return new PrioritySelector(delegate
             {
+                if (!CLUSettings.Instance.UseRacials) return false; // gtfo if we do not want to use racials.
+
                 foreach (WoWSpell r in CurrentRacials.Where(racial => Spell.CanCast(racial.Name, StyxWoW.Me) && RacialUsageSatisfied(racial)))
                 {
                     CLU.Log(" [Racial Abilitie] {0} ", r.Name);

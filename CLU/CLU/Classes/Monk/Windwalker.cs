@@ -99,7 +99,7 @@ namespace CLU.Classes.Monk
 
                     // Utility
                     new Decorator(ret => CLUSettings.Instance.EnableMovement,
-                        new PrioritySelector( 
+                        new PrioritySelector(
                             Spell.CastSpell("Disable", ret => Me.CurrentEnergy >= 15 && (Me.CurrentTarget.IsPlayer || Me.CurrentTarget.Fleeing) && Me.CurrentTarget.MovementInfo.RunSpeed > 3.5, "Disable")
                             )),
 
@@ -116,7 +116,7 @@ namespace CLU.Classes.Monk
 
                     // AoE
                     Spell.CastAreaSpell("Rising Sun Kick", 8, false, 4, 0.0, 0.0, ret => !Buff.TargetHasDebuff("Rising Sun Kick"), "Rising Sun Kick"),
-                    Spell.CastAreaSpell("Fists of Fury", 8, false, 4, 0.0, 0.0, ret => true, "Fists of Fury"),
+                    //Spell.CastAreaSpell("Fists of Fury", 8, false, 4, 0.0, 0.0, ret => true, "Fists of Fury"),
                     Spell.CastAreaSpell("Spinning Crane Kick", 8, false, 4, 0.0, 0.0, ret => true, "Spinning Crane Kick"),
 
                     //Single Target
@@ -127,7 +127,7 @@ namespace CLU.Classes.Monk
                                         Buff.PlayerCountBuff("Tigereye Brew") == 10 && Unit.IsTargetWorthy(Me.CurrentTarget),
                                         "Tigerye Brew"),
                     Spell.CastSelfSpell("Chi Brew", ret => TalentManager.HasTalent(9) && Chi == 0 && Me.CurrentEnergy <= 50, "Chi Brew"),
-                    Spell.CastSpell("Energizing Brew", ret => Me.CurrentEnergy <= 40, "Energizing Brew"),
+                    Spell.CastSpell("Energizing Brew", ret => Me.CurrentEnergy < 40 && !Spell.PlayerIsChanneling, "Energizing Brew"),
                     Spell.CastSpell("Rising Sun Kick",
                                     ret =>
                                     !Buff.TargetHasDebuff("Rising Sun Kick") ||
@@ -140,7 +140,7 @@ namespace CLU.Classes.Monk
                                     Buff.PlayerBuffTimeLeft("Tiger Power") < 3, "Tiger Palm"),
                     Spell.CastSpell("Invoke Xuen, the White Tiger",
                                         ret =>
-                                        TalentManager.HasTalent(17) && Me.CurrentEnergy < 80 && Unit.IsTargetWorthy(Me.CurrentTarget), "Invoke Xuen"),
+                                        TalentManager.HasTalent(17) && Me.CurrentEnergy <= 80 && Unit.IsTargetWorthy(Me.CurrentTarget), "Invoke Xuen"),
                     Spell.CastSpell("Rushing Jade Wind",
                                     ret =>
                                     TalentManager.HasTalent(16) && Buff.PlayerCountBuff("Tiger Power") == 3 &&

@@ -567,11 +567,11 @@ namespace CLU.Settings
 
         #region Category: Racials
 
-        //[Setting]
-        //[DefaultValue(true)]
-        //[Category("Racials")]
-        //[DisplayName("Use Racials")]
-        //public bool UseRacials { get; set; }
+        [Setting]
+        [DefaultValue(true)]
+        [Category("Racials")]
+        [DisplayName("Use Racials")]
+        public bool UseRacials { get; set; }
 
         //[Setting]
         //[DefaultValue(30)]
