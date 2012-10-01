@@ -67,19 +67,20 @@ namespace CLU.Classes.Shaman
             // create Fire Totems behavior first, then wrap if needed
             Composite fireTotemBehavior =
                 new PrioritySelector(
-                    Spell.CastSelfSpell("Fire Elemental",
-                        ret => ((bool)ret)
-                            || (Unit.EnemyUnits.Count() >= StressMobCount && !SpellManager.CanBuff(WoWTotem.EarthElemental.ToSpellId(), false)), "Fire Elemental"),
-                  /*Magma - handle within AoE DPS logic only
-                                    Spell.CastSelfSpell("Magma Totem",
-                                        ret => Unit.EnemyUnits.Count(u => u.Distance <= GetTotemRange(WoWTotem.Magma)) >= StressMobCount
-                                            && !Exist( WoWTotem.FireElemental),"Magma Totem"),
-                   * */
+                 //   Spell.CastSelfSpell("Fire Elemental",
+                   //     ret => ((bool)ret)
+                   //         || (Unit.EnemyUnits.Count() >= StressMobCount && !SpellManager.CanBuff(WoWTotem.EarthElemental.ToSpellId(), false)), "Fire Elemental"),
+               //   Magma - handle within AoE DPS logic only
+                                
+                      
+                      Spell.CastSelfSpell("Magma Totem",
+                       ret => Unit.EnemyUnits.Count(u => u.Distance <= GetTotemRange(WoWTotem.Magma)) >= StressMobCount
+                        && !Exist( WoWTotem.FireElemental),"Magma Totem"),
+                   
                 
                     Spell.CastSelfSpell("Searing Totem",
-                        ret => Me.GotTarget
-                            && Me.CurrentTarget.Distance < GetTotemRange(WoWTotem.Searing) - 2f
-                            && !Exist(WoWTotemType.Fire), "Searing Totem")
+                        ret => Me.GotTarget && Unit.EnemyUnits.Count(u => u.Distance <= GetTotemRange(WoWTotem.Searing)) < 2
+                            && Me.CurrentTarget.Distance < GetTotemRange(WoWTotem.Searing) - 2f && !Exist(WoWTotemType.Fire), "Searing Totem")
                     );
 
             if (Me.Specialization == WoWSpec.ShamanRestoration)
@@ -90,8 +91,7 @@ namespace CLU.Classes.Shaman
 
                 // check for stress - enemy player or elite within 8 levels nearby
                 // .. dont use NearbyUnitsInCombatWithMe since it checks .Tagged and we only care if we are being attacked 
-                ctx => Unit.EnemyUnits.Count() >= StressMobCount
-                    || Unit.EnemyUnits.Any(u => u.IsTargetingMeOrPet && (u.IsPlayer || (u.Elite && u.Level + 8 > Me.Level))),
+                ctx => Unit.EnemyUnits.Count() >= StressMobCount,
 
                 // earth totems
                 Spell.CastSelfSpell(WoWTotem.EarthElemental.ToSpellId(),
