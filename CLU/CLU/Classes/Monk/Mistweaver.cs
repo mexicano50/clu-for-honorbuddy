@@ -171,6 +171,14 @@ namespace CLU.Classes.Monk
             }
         }
 
+        /// <summary>
+        /// We shouldnt need Pull behavior in the healing rotations so lets just return an empty priority selector.
+        /// </summary>
+        public override Composite Pull
+        {
+            get { return new PrioritySelector(); }
+        }
+
         public override Composite Medic
         {
             get {

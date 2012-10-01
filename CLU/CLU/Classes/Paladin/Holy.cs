@@ -66,6 +66,14 @@ namespace CLU.Classes.Paladin
             }
         }
 
+        /// <summary>
+        /// We shouldnt need Pull behavior in the healing rotations so lets just return an empty priority selector.
+        /// </summary>
+        public override Composite Pull
+        {
+            get { return new PrioritySelector(); }
+        }
+
         // adding some help about cooldown management
         public override string Help
         {
