@@ -63,8 +63,7 @@ namespace CLU.CombatLog
                 CLU.TroubleshootLog("CombatLogEvents: Connect PARTY_MEMBERS_CHANGED");
                 Lua.Events.AttachEvent("PARTY_MEMBERS_CHANGED", this.HandlePartyMembersChanged);
 
-                if ((CLU.LocationContext != GroupLogic.Battleground &&
-                !StyxWoW.Me.CurrentMap.IsRaid && CLU.LocationContext != GroupLogic.PVE) || TalentManager.CurrentSpec == WoWSpec.DruidFeral)
+                if ((CLU.LocationContext != GroupLogic.Battleground && CLU.LocationContext != GroupLogic.PVE) || TalentManager.CurrentSpec == WoWSpec.DruidFeral)
                     AttachCombatLogEvent();
             }
             catch (Exception ex)
@@ -143,8 +142,7 @@ namespace CLU.CombatLog
         {
             try {
 
-                if ((CLU.LocationContext == GroupLogic.Battleground ||
-                StyxWoW.Me.CurrentMap.IsRaid || CLU.LocationContext == GroupLogic.PVE) && TalentManager.CurrentSpec != WoWSpec.DruidFeral)
+                if ((CLU.LocationContext == GroupLogic.Battleground || CLU.LocationContext == GroupLogic.PVE) && TalentManager.CurrentSpec != WoWSpec.DruidFeral)
                     DetachCombatLogEvent();
                 else
                     AttachCombatLogEvent();
@@ -177,6 +175,7 @@ namespace CLU.CombatLog
         private void OnSpellFired_ACK(object sender, LuaEventArgs raw)
         {
             this.OnSpellFired(true, true, raw);
+            WoWStats.Instance.UnitSpellcastSucceeded(sender, raw); //added to cut down on Lua attatched events...seeing as we already attatch UNIT_SPELLCAST_SUCCEEDED in this class --wulf
         }
 
         private void OnSpellFired_NACK(object sender, LuaEventArgs raw)

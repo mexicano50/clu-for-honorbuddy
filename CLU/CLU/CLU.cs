@@ -20,7 +20,6 @@ using System.Text;
 using System.Timers;
 using System.Windows.Forms;
 using System.Windows.Media;
-
 using CLU.Base;
 using CLU.Classes;
 using CLU.CombatLog;
@@ -29,7 +28,6 @@ using CLU.Helpers;
 using CLU.Managers;
 using CLU.Settings;
 using CLU.Sound;
-
 using Styx;
 using Styx.Common;
 using Styx.CommonBot;
@@ -65,8 +63,6 @@ using Timer = System.Timers.Timer;
 * Condemned for Mage Frost Update
 * Apoc for just about everything :P */
 
-//[assembly: CLSCompliant(true)]
-
 namespace CLU
 {
     internal delegate void PulseHander();
@@ -75,7 +71,7 @@ namespace CLU
     {
         #region Constants and Fields
 
-        public static readonly Version Version = new Version(3, 3, 3);
+        public static readonly Version Version = new Version(3, 3, 4);
         private readonly Timer _clupulsetimer = new Timer(10000); // A timer for keybinds
         private RotationBase _rotationBase;
         private List<RotationBase> _rotations; // list of Rotations
@@ -262,7 +258,7 @@ namespace CLU
         {
             get
             {
-                // setting to overide the LocationContext so that you can test and PvP, PvE, Single rotation without bieng in the normal context
+                // setting to overide the LocationContext so that you can test and PvP, PvE, Single rotation without being in the normal correct context
                 if (CLUSettings.Instance.EnableRotationOveride) return CLUSettings.Instance.RotationOveride; 
 
                 Map map = StyxWoW.Me.CurrentMap;
@@ -390,12 +386,10 @@ namespace CLU
         public override void Initialize()
         {
             TroubleshootLog("Attatching BotEvents");
-            BotEvents.OnBotStarted += WoWStats.Instance.WoWStatsOnStarted;
-            BotEvents.OnBotStopped += WoWStats.Instance.WoWStatsOnStopped;
             BotEvents.OnBotStarted += CombatLogEvents.Instance.CombatLogEventsOnStarted;
             BotEvents.OnBotStopped += CombatLogEvents.Instance.CombatLogEventsOnStopped;
             BotEvents.Player.OnMapChanged += CombatLogEvents.Instance.Player_OnMapChanged;
-            RoutineManager.Reloaded += this.RoutineManagerReloaded;
+            RoutineManager.Reloaded += RoutineManagerReloaded;
 
             ///////////////////////////////////////////////////////////////////
             // Start non invasive user information
@@ -447,24 +441,10 @@ namespace CLU
             {
                 TroubleshootLog(" Character Racial Abilitie: {0} ", racial.Name);
             }
-            TroubleshootLog
-                (" {0}",
-                 Me.IsInInstance ? "Character is currently in an Instance" : "Character seems to be outside an Instance");
-            TroubleshootLog
-                (" {0}",
-                 StyxWoW.Me.CurrentMap.IsArena
-                     ? "Character is currently in an Arena"
-                     : "Character seems to be outside an Arena");
-            TroubleshootLog
-                (" {0}",
-                 StyxWoW.Me.CurrentMap.IsBattleground
-                     ? "Character is currently in a Battleground  "
-                     : "Character seems to be outside a Battleground");
-            TroubleshootLog
-                (" {0}",
-                 StyxWoW.Me.CurrentMap.IsDungeon
-                     ? "Character is currently in a Dungeon  "
-                     : "Character seems to be outside a Dungeon");
+            TroubleshootLog(" {0}", Me.IsInInstance ? "Character is currently in an Instance" : "Character seems to be outside an Instance");
+            TroubleshootLog(" {0}", StyxWoW.Me.CurrentMap.IsArena ? "Character is currently in an Arena" : "Character seems to be outside an Arena");
+            TroubleshootLog(" {0}", StyxWoW.Me.CurrentMap.IsBattleground ? "Character is currently in a Battleground  " : "Character seems to be outside a Battleground");
+            TroubleshootLog(" {0}", StyxWoW.Me.CurrentMap.IsDungeon ? "Character is currently in a Dungeon  " : "Character seems to be outside a Dungeon");
             TroubleshootLog("Character HB Pull Range: {0}", Targeting.PullDistance);
             ///////////////////////////////////////////////////////////////////
             // END non invasive user information
@@ -504,6 +484,7 @@ namespace CLU
             TroubleshootLog("Routines were reloaded, re-creating behaviors");
             CreateBehaviors();
         }
+
         private static ConfigurationForm _a = null;
         public override void OnButtonPress()
         {
@@ -548,7 +529,7 @@ namespace CLU
         /// create an instance of a RotationBase subclass so we can interigate KeySpell within the RotationBase subclass,
         /// Check if the character has the Keyspell,
         /// Set the active rotation to the matching RotationBase subclass.</summary>
-        public void QueryClassTree()
+        private void QueryClassTree()
         {
             try
             {
@@ -667,9 +648,7 @@ namespace CLU
             Log(" I will create the perfect system for you.");
             Log(" I suggest we use the " + rb.Name + " rotation. Revision: " + rb.Revision);
             Log(" as I know you have " + rb.KeySpell);
-            Log
-                (" BotBase: {0}  ({1})", BotManager.Current.Name,
-                 BotChecker.SupportedBotBase() ? "Supported" : "Currently Not Supported");
+            Log(" BotBase: {0}  ({1})", BotManager.Current.Name, BotChecker.SupportedBotBase() ? "Supported" : "Currently Not Supported");
             Log(rb.Help);
             Log(" You can Access CLU's Settings by clicking the CLASS CONFIG button");
             Log(" Let's execute the plan!");
@@ -680,8 +659,7 @@ namespace CLU
             this.PulseEvent += rb.OnPulse;
 
             // Check for Instancebuddy and warn user that healing is not supported.
-            if (BotChecker.BotBaseInUse("Instancebuddy") &&
-                 this.ActiveRotation.GetType().BaseType == typeof(HealerRotationBase))
+            if (BotChecker.BotBaseInUse("Instancebuddy") && this.ActiveRotation.GetType().BaseType == typeof(HealerRotationBase))
             {
                 Log(" [BotChecker] Instancebuddy Detected. *UNABLE TO HEAL WITH CLU*");
                 StopBot("You cannot use CLU with InstanceBuddy as Healer");
@@ -689,8 +667,7 @@ namespace CLU
 
             if (this.ActiveRotation.GetType().BaseType == typeof(HealerRotationBase))
             {
-                TroubleshootLog
-                    (" [HealingChecker] HealerRotationBase Detected. *Activating Automatic HealableUnit refresh*");
+                TroubleshootLog(" [HealingChecker] HealerRotationBase Detected. *Activating Automatic HealableUnit refresh*");
                 IsHealerRotationActive = true;
             }
         }

@@ -44,6 +44,7 @@ namespace CLU.GUI
             var spellId = spellid_input.Value;
             var spellname = spellname_txt.Text;
             CurrentEclipse_lbl.Text = StyxWoW.Me.CurrentEclipse.ToString(CultureInfo.InvariantCulture);
+            ChanneledSpellID_lbl.Text = StyxWoW.Me.ChanneledCastingSpellId.ToString(CultureInfo.InvariantCulture);
 
             WoWSpell spell;
             SpellManager.Spells.TryGetValue(spellname, out spell);

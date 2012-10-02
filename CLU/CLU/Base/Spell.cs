@@ -80,7 +80,7 @@ namespace CLU.Base
         {
             get
             {
-                return ChanneledTimeLeft() > 0;//StyxWoW.Me.ChanneledCastingSpellId != 0; // ChanneledTimeLeft() > 0 && 
+                return StyxWoW.Me.ChanneledCastingSpellId != 0;
             }
         }
 
@@ -205,7 +205,7 @@ namespace CLU.Base
             return new Action(
                 delegate
                 {
-                    if (Me.IsCasting && HealableUnit.HealTarget.HealthPercent != null && HealableUnit.HealTarget.HealthPercent > 80 && HealableUnit.HealTarget.ToUnit().HasMyAura("Soothing Mist"))
+                    if (Me.IsCasting && HealableUnit.HealTarget != null && HealableUnit.HealTarget.HealthPercent > 80 && HealableUnit.HealTarget.ToUnit().HasMyAura("Soothing Mist"))
                     {
                         CLU.Log(HealableUnit.HealTarget.Name + " has my Soothing Mist and HP is " + HealableUnit.HealTarget.HealthPercent);
                         SpellManager.StopCasting();
@@ -775,8 +775,8 @@ namespace CLU.Base
             SpellManager.Spells.TryGetValue(name, out spell);
             return
                 new PrioritySelector(
-                    new Decorator(x => KnownChanneledSpells.Contains(name) && ChanneledTimeLeft() > 0, //TODO: HB fix PlayerIsChanneling && Me.ChanneledCastingSpellId == spell.Id ChanneledTimeLeft() > 0
-                            new Action(a => CLU.Log(" [Channeling] {0} : {1} seconds remaining", name, ChanneledTimeLeft()))),
+                    new Decorator(x => PlayerIsChanneling && Me.ChanneledCastingSpellId == spell.Id, 
+                            new Action(a => CLU.Log(" [Channeling] {0}", spell.Name))),
                     CastSpell(name, cond, label));
         }
 
@@ -792,8 +792,8 @@ namespace CLU.Base
             return
                 new PrioritySelector(
                     new Decorator(
-                        x => KnownChanneledSpells.Contains(spell.Name) && ChanneledTimeLeft() > 0, //TODO: HB fix PlayerIsChanneling && Me.ChanneledCastingSpellId == spell.Id ChanneledTimeLeft() > 0
-                        new Action(a => CLU.Log(" [Channeling] {0} : {1} seconds remaining", spell.Name, ChanneledTimeLeft()))),
+                        x => PlayerIsChanneling && Me.ChanneledCastingSpellId == spell.Id, 
+                        new Action(a => CLU.Log(" [Channeling] {0}", spell.Name))),
                     CastSpell(spell, cond, label));
         }
 
@@ -1260,46 +1260,6 @@ namespace CLU.Base
 
         // ===================================== Lua ==================================================================
 
-        /// <summary>
-        /// Returns the cooldown of a rune in seconds, Rune count is backwards (eg:4,3,2,1,0 Zero is READY)
-        /// </summary>
-        /// first_blood = 1
-        /// second_blood = 2
-        /// first_Unholy = 3
-        /// second_Unholy = 4
-        /// first_Frost = 5
-        /// second_Frost = 6
-        /// <param name="rune">number of the run to check (see above)</param>
-        /// <returns>The cooldown of the rune specified.</returns>
-        public static double RuneCooldown(int rune)
-        {
-            string runename = String.Empty;
-            if (rune == 1)
-                runename = "Blood_1";
-            else if (rune == 2)
-                runename = "Blood_2";
-            else if (rune == 3)
-                runename = "Unholy_1";
-            else if (rune == 4)
-                runename = "Unholy_2";
-            else if (rune == 5)
-                runename = "Frost_1";
-            else if (rune == 6)
-                runename = "Frost_2";
-
-            // Lets track some rune cooldowns!
-            var lua = String.Format("local r_start, r_duration, r_ready = GetRuneCooldown({0}) if r_start > 0 then return math.ceil((r_start + r_duration) - GetTime()) else return 0 end", rune);
-            try
-            {
-                var retValue = Double.Parse(Lua.GetReturnValues(lua)[0]);
-                return retValue;
-            }
-            catch
-            {
-                CLU.DiagnosticLog("Lua failed in RuneCooldown: " + lua);
-                return 9999;
-            }
-        }
 
         public static bool IsRuneCooldown(int rune)
         {
@@ -1427,108 +1387,5 @@ namespace CLU.Base
                 new Action(a => CLU.Log(" [CancelAura] {0}", name)),
                 new Action(a => Lua.DoString("RunMacroText(\"" + RealLuaEscape(macro) + "\")"))));
         }
-
-
-
-        //========================================= TO REMOVE OR CONSOLADATE ===================================================
-
-        public static int CurrentDemonicFury
-        {
-            get
-            {
-                try
-                {
-                    return Lua.GetReturnVal<int>("return UnitPower(\"player\", SPELL_POWER_DEMONIC_FURY)", 0);
-                }
-                catch
-                {
-                    CLU.DiagnosticLog("Lua failed in CurrentDemonicFury");
-                    return 0;
-                } 
-                
-            }
-        }
-        public static int CurrentBurningEmber
-        {
-            get
-            {
-                try
-                {
-                    return Lua.GetReturnVal<int>("return UnitPower(\"player\", SPELL_POWER_BURNING_EMBERS, true)", 0);
-                }
-                catch
-                {
-                    CLU.DiagnosticLog("Lua failed in CurrentBurningEmber");
-                    return 0;
-                }
-                
-            }
-        }
-
-        // TODO: Remove this.
-        public static void CastSpellByName(string name)
-        {
-            try
-            {
-                name = LocalizeSpellName(name);
-                Lua.DoString(string.Format("CastSpellByName(\"{0}\")", RealLuaEscape(name)));
-            }
-            catch
-            {
-                CLU.DiagnosticLog("Lua failed in CastSpellByName");
-            }
- 
-        }
-
-        // //TODO: REMOVE THIS SHIT..WAS TESTING -- WULF.
-        public static TimeSpan CooldownTimeLeft
-        {
-            get
-            {
-                try
-                {
-                    var Id = 53301;
-                    var luaTime = Lua.GetReturnVal<double>(string.Format("local x,y=GetSpellCooldown({0}); return x+y-GetTime()", Id), 0);
-                    if (luaTime <= 0)
-                        return TimeSpan.Zero;
-                    return TimeSpan.FromSeconds(luaTime);
-                }
-                catch
-                {
-                    CLU.DiagnosticLog("Lua failed in CooldownTimeLeft (GetSpellCooldown)");
-                    return TimeSpan.Zero;
-                }
-            }
-        }
-
-
-        /// <summary>
-        /// temporary wrapper for upcomming HB shit.
-        /// </summary>
-        /// <returns></returns>
-        public static double ChanneledTimeLeft()
-        {
-            using (StyxWoW.Memory.AcquireFrame())
-            {
-                try
-                {
-                    var lua = String.Format("local x=select(6, UnitChannelInfo('player')); if x==nil then return 0 else return x/1000-GetTime() end");
-                    var t = Double.Parse(Lua.GetReturnValues(lua)[0]);
-                    return t;
-                }
-                catch
-                {
-                    CLU.DiagnosticLog("Lua failed in ChanneledTimeLeft");
-                    return 999999;
-                }
-            }
-
-            // return GetAuraTimeLeft(Me, name, true);
-        }
-
-
-        // =======================================================================================================================
-
-
     }
 }

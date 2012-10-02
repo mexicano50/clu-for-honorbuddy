@@ -48,6 +48,8 @@ namespace CLU.GUI
             this.spellname_txt = new System.Windows.Forms.TextBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.CurrentEclipse_lbl = new System.Windows.Forms.Label();
+            this.label11 = new System.Windows.Forms.Label();
             this.smCooldownTimeLeft_lbl = new System.Windows.Forms.Label();
             this.label12 = new System.Windows.Forms.Label();
             this.smCooldownid_lbl = new System.Windows.Forms.Label();
@@ -67,8 +69,8 @@ namespace CLU.GUI
             this.label5 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.Timer1 = new System.Windows.Forms.Timer(this.components);
-            this.label11 = new System.Windows.Forms.Label();
-            this.CurrentEclipse_lbl = new System.Windows.Forms.Label();
+            this.label13 = new System.Windows.Forms.Label();
+            this.ChanneledSpellID_lbl = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.spellid_input)).BeginInit();
             this.groupBox2.SuspendLayout();
@@ -137,6 +139,8 @@ namespace CLU.GUI
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.ChanneledSpellID_lbl);
+            this.panel1.Controls.Add(this.label13);
             this.panel1.Controls.Add(this.CurrentEclipse_lbl);
             this.panel1.Controls.Add(this.label11);
             this.panel1.Controls.Add(this.smCooldownTimeLeft_lbl);
@@ -162,6 +166,24 @@ namespace CLU.GUI
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(548, 172);
             this.panel1.TabIndex = 0;
+            // 
+            // CurrentEclipse_lbl
+            // 
+            this.CurrentEclipse_lbl.AutoSize = true;
+            this.CurrentEclipse_lbl.Location = new System.Drawing.Point(199, 92);
+            this.CurrentEclipse_lbl.Name = "CurrentEclipse_lbl";
+            this.CurrentEclipse_lbl.Size = new System.Drawing.Size(22, 13);
+            this.CurrentEclipse_lbl.TabIndex = 22;
+            this.CurrentEclipse_lbl.Text = "xxx";
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(19, 92);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(96, 13);
+            this.label11.TabIndex = 21;
+            this.label11.Text = " Me.CurrentEclipse";
             // 
             // smCooldownTimeLeft_lbl
             // 
@@ -331,23 +353,23 @@ namespace CLU.GUI
             this.Timer1.Interval = 500;
             this.Timer1.Tick += new System.EventHandler(this.Timer1Tick);
             // 
-            // label11
+            // label13
             // 
-            this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(22, 92);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(96, 13);
-            this.label11.TabIndex = 21;
-            this.label11.Text = " Me.CurrentEclipse";
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(19, 115);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(146, 13);
+            this.label13.TabIndex = 23;
+            this.label13.Text = " Me.ChanneledCastingSpellId";
             // 
-            // CurrentEclipse_lbl
+            // ChanneledSpellID_lbl
             // 
-            this.CurrentEclipse_lbl.AutoSize = true;
-            this.CurrentEclipse_lbl.Location = new System.Drawing.Point(199, 92);
-            this.CurrentEclipse_lbl.Name = "CurrentEclipse_lbl";
-            this.CurrentEclipse_lbl.Size = new System.Drawing.Size(22, 13);
-            this.CurrentEclipse_lbl.TabIndex = 22;
-            this.CurrentEclipse_lbl.Text = "xxx";
+            this.ChanneledSpellID_lbl.AutoSize = true;
+            this.ChanneledSpellID_lbl.Location = new System.Drawing.Point(199, 115);
+            this.ChanneledSpellID_lbl.Name = "ChanneledSpellID_lbl";
+            this.ChanneledSpellID_lbl.Size = new System.Drawing.Size(22, 13);
+            this.ChanneledSpellID_lbl.TabIndex = 24;
+            this.ChanneledSpellID_lbl.Text = "xxx";
             // 
             // Spellchecker
             // 
@@ -401,6 +423,8 @@ namespace CLU.GUI
         private System.Windows.Forms.Label label12;
         private System.Windows.Forms.Label CurrentEclipse_lbl;
         private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.Label ChanneledSpellID_lbl;
 
     }
 }

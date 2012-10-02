@@ -38,7 +38,12 @@ namespace CLU.CombatLog
         
         private WoWStats()
         {
-
+            CLU.TroubleshootLog("WoWStats: Connected to the Grid");
+            this.spellCasts = 0;
+            this.spellList = new Dictionary<string, int>();
+            this.spellInterval = new Dictionary<string, List<DateTime>>();
+            this.healingStats = new Dictionary<DateTime, string>();
+            this.start = DateTime.Now;
         }
 
 		private static WoWStats instance;
@@ -59,35 +64,11 @@ namespace CLU.CombatLog
         }
 
         /// <summary>
-        /// Attatch and watch for spell cast succeed
-        /// </summary>
-        /// <param name="o">object</param>
-        public void WoWStatsOnStarted(object o)
-        {
-            Lua.Events.AttachEvent("UNIT_SPELLCAST_SUCCEEDED", this.UNIT_SPELLCAST_SUCCEEDED);
-            CLU.TroubleshootLog( "WoWStats: Connected to the Grid");
-            this.spellCasts = 0;
-            this.spellList = new Dictionary<string, int>();
-            this.spellInterval = new Dictionary<string, List<DateTime>>();
-            this.healingStats = new Dictionary<DateTime, string>();
-            this.start = DateTime.Now;
-        }
-
-        /// <summary>
-        /// Destroy
-        /// </summary>
-        /// <param name="o">object</param>
-        public void WoWStatsOnStopped(object o)
-        {
-            Lua.Events.DetachEvent("UNIT_SPELLCAST_SUCCEEDED", this.UNIT_SPELLCAST_SUCCEEDED);
-        }
-
-        /// <summary>
         /// Handle spellcast succeeded
         /// </summary>
         /// <param name="sender">sender</param>
         /// <param name="raw">raw Lua Events</param>
-        private void UNIT_SPELLCAST_SUCCEEDED(object sender, LuaEventArgs raw)
+        public void UnitSpellcastSucceeded(object sender, LuaEventArgs raw)
         {
             var args = raw.Args;
             var player = Convert.ToString(args[0]);

@@ -66,9 +66,9 @@ namespace CLU.Classes
             }
         }
 
-        protected static bool HealthCheck(int Percent)
+        protected static bool HealthCheck(int percent)
         {
-            return HealTarget != null && HealTarget.HealthPercent < Percent;
+            return HealTarget != null && HealTarget.HealthPercent < percent;
         }
 
         // Restoration Druid ------------------------------------------------------------------------------------------------------------
@@ -86,7 +86,7 @@ namespace CLU.Classes
         {
             get
             {
-                return Spell.PlayerIsChanneling && Me.ChanneledSpell == WoWSpell.FromId(115175);
+                return Spell.PlayerIsChanneling && StyxWoW.Me.ChanneledCastingSpellId == 115175;
             }
         }        
         protected static bool GotTea

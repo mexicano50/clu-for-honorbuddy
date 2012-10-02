@@ -543,75 +543,9 @@ namespace CLU.Base
         }
 
         /// <summary>
-        /// Retrieve Role via Lua
-        /// </summary>
-        /// <param name="player">Player</param>
-        /// <returns>true if the wowplayer is a tank</returns>
-        public static bool IsTank(WoWPlayer player)
-        {
-            using (StyxWoW.Memory.AcquireFrame())
-            {
-                try
-                {
-                    var retValue = player != null && Lua.GetReturnValues("return UnitGroupRolesAssigned('" + Spell.RealLuaEscape(player.Name) + "')").First() == "TANK";
-                    return retValue;
-                }
-                catch
-                {
-                    CLU.DiagnosticLog("Lua failed in IsTank");
-                    return false;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Retrieve Maintank via Lua
-        /// </summary>
-        /// <param name="unit">the unit to check </param>
-        /// <returns>true if the wowplayer is Maintank</returns>
-        public static bool IsMaintank(WoWUnit unit)
-        {
-            using (StyxWoW.Memory.AcquireFrame())
-            {
-                try
-                {
-                    var retValue = unit != null && Lua.GetReturnValues("return GetPartyAssignment('MAINTANK','" + Spell.RealLuaEscape(unit.Name) + "')").First() == "1";
-                    return retValue;
-                }
-                catch
-                {
-                    CLU.DiagnosticLog("Lua failed in IsMaintank");
-                    return false;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Retrieve Offtank (MainAssist) via Lua
-        /// </summary>
-        /// <param name="unit">the unit to check </param>
-        /// <returns>true if the wowplayer is Offtank</returns>
-        public static bool IsOfftank(WoWUnit unit)
-        {
-            using (StyxWoW.Memory.AcquireFrame())
-            {
-                try
-                {
-                    var retValue = unit != null && Lua.GetReturnValues("return GetPartyAssignment('MAINASSIST','" + Spell.RealLuaEscape(unit.Name) + "')").First() == "1";
-                    return retValue;
-                }
-                catch
-                {
-                    CLU.DiagnosticLog("Lua failed in IsOfftank");
-                    return false;
-                }
-            }
-        }
-
-        /// <summary>
         /// returns a list of healers.
         /// </summary>
-        public static List<WoWPlayer> Healers
+        public static IEnumerable<WoWPlayer> Healers
         {
             get
             {

@@ -16,16 +16,12 @@ using Styx.TreeSharp;
 using CommonBehaviors.Actions;
 using CLU.Helpers;
 using CLU.Settings;
-using System.Collections.Generic;
 using CLU.Base;
 using CLU.Managers;
-using Styx.CommonBot;
 using Rest = CLU.Base.Rest;
 
 namespace CLU.Classes.Monk
 {
-    using Styx;
-
     internal class Brewmaster : RotationBase
     {
         public override string Name

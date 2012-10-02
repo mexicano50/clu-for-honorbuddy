@@ -756,9 +756,6 @@ namespace CLU.Base
                         if (name.Contains(CLUSettings.Instance.Warrior.ShoutSelection.ToString()) && !PlayerHasBuff(name)) return true;
                         if (name.Contains(CLUSettings.Instance.Monk.LegacySelection.ToString()) && !PlayerHasBuff(name)) return true;
                         if (name.Contains(CLUSettings.Instance.Paladin.BlessingSelection.ToString()) && !PlayerHasBuff(name)) return true;
-                        //if (name.Contains(CLUSettings.Instance.Warrior.ShoutSelection.ToString()) && PlayerHasBuff(name)) return false;
-                        //if (name.Contains(CLUSettings.Instance.Monk.LegacySelection.ToString()) && PlayerHasBuff(name)) return false;
-                        //if (name.Contains(CLUSettings.Instance.Paladin.BlessingSelection.ToString()) && PlayerHasBuff(name)) return false;
                     }
 
                     // Continue on if we are in a raid group and check all raid members for the buffs we can provide and cast them if ok.
@@ -990,21 +987,6 @@ namespace CLU.Base
         {
             return HasAura(Me, name, null);
         }
-
-        //// todo: temporary fix.
-        //public static bool PlayerHasBuff(string name)
-        //{
-        //    try
-        //    {
-        //        var lua = string.Format("local x=UnitBuff('player', \"{0}\"); if x==nil then return 0 else return 1 end", Spell.RealLuaEscape(name));
-        //        return Lua.GetReturnValues(lua)[0] == "1";
-        //    }
-        //    catch
-        //    {
-        //        CLU.DiagnosticLog("Lua failed in PlayerHasBuff");
-        //        return false;
-        //    }
-        //}
 
         /// <summary>Returns true if the player has the ACTIVE buff. Good for checking procs.</summary>
         /// <param name="name">the name of the active buff to check for</param>
