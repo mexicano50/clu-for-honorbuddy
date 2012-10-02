@@ -10,6 +10,8 @@
  */
 #endregion
 
+using System.Globalization;
+
 namespace CLU.CombatLog
 {
     using System;
@@ -175,7 +177,7 @@ namespace CLU.CombatLog
         private void OnSpellFired_ACK(object sender, LuaEventArgs raw)
         {
             this.OnSpellFired(true, true, raw);
-            WoWStats.Instance.UnitSpellcastSucceeded(sender, raw); //added to cut down on Lua attatched events...seeing as we already attatch UNIT_SPELLCAST_SUCCEEDED in this class --wulf
+            if (CLUSettings.Instance.EnableWoWStats) WoWStats.Instance.UnitSpellcastSucceeded(sender, raw); //added to cut down on Lua attatched events...seeing as we already attatch UNIT_SPELLCAST_SUCCEEDED in this class --wulf
         }
 
         private void OnSpellFired_NACK(object sender, LuaEventArgs raw)
@@ -198,8 +200,9 @@ namespace CLU.CombatLog
             }
 
             // get the english spell name, not the localized one!
-            var spellID = Convert.ToInt32(args[4]);
-            var spellName = WoWSpell.FromId(spellID).Name;
+            var spellId = Convert.ToInt32(args[4]);
+            var spellName = WoWSpell.FromId(spellId).Name;
+            var sourceGuid = ulong.Parse(args[3].ToString().Replace("0x", string.Empty), NumberStyles.HexNumber);
 
             if (!success && spellCast) {
                 CLU.DiagnosticLog("Woops, '{0}' cast failed: {1}", spellName, raw.EventName);
@@ -226,6 +229,31 @@ namespace CLU.CombatLog
                         Locks[spellName] = DateTime.Now;
                     }
                 }
+            }
+
+            // We need to 'sleep' for these spells. Otherwise, we'll end up double-casting them. Which will cause issues
+            switch (spellName)
+            {
+                case "Rejuvenation":
+                case "Lifebloom":
+                case "Regrowth":
+                case "Nourish":
+                case "Healing Touch":
+                case "Remove Corruption":
+                case "Holy Light":
+                case "Holy Radiance":
+                case "Divine Light":
+                case "Holy Shock":
+                    CLU.DiagnosticLog("Sleeping for heal success. ({0})", spellName);
+                    StyxWoW.SleepForLagDuration();
+                    break;
+                case "Nature's Swiftness":
+                    CLU.DiagnosticLog("PrevNaturesSwiftness. ({0})", spellName);
+                    if (sourceGuid == StyxWoW.Me.Guid)
+                    {
+                        Classes.Druid.Common.PrevNaturesSwiftness = spellId == 132158;
+                    }
+                    break;
             }
         }
 

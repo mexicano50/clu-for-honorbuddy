@@ -80,32 +80,7 @@ namespace CLU.CombatLog
 
             // get the english spell name, not the localized one!
             var spellID = Convert.ToInt32(args[4]);
-            var spell = WoWSpell.FromId(spellID).Name;
-            var sourceGuid = ulong.Parse(args[3].ToString().Replace("0x", string.Empty), NumberStyles.HexNumber);
-
-            // We need to 'sleep' for these spells. Otherwise, we'll end up double-casting them. Which will cause issues
-            switch (spell) {
-            case "Rejuvenation":
-            case "Lifebloom":
-            case "Regrowth":
-            case "Nourish":
-            case "Healing Touch":
-            case "Remove Corruption":
-            case "Holy Light":
-            case "Holy Radiance":
-            case "Divine Light":
-            case "Holy Shock":
-                CLU.DiagnosticLog("Sleeping for heal success. ({0})", spell);
-                StyxWoW.SleepForLagDuration();
-                break;
-            case "Nature's Swiftness":
-                CLU.DiagnosticLog("PrevNaturesSwiftness. ({0})", spell);
-                if (sourceGuid == StyxWoW.Me.Guid)
-                {
-                    Classes.Druid.Common.PrevNaturesSwiftness = spellID == 132158;
-                }
-                break;
-            }
+            var spell = WoWSpell.FromId(spellID).Name;           
 
             // increments or decrements 
             int value;

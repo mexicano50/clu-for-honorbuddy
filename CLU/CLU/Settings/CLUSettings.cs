@@ -126,6 +126,19 @@ namespace CLU.Settings
 
         #region Category: General
 
+       
+
+        [Setting]
+        [DefaultValue(false)]
+        [Category("General")]
+        [DisplayName("Enable WoWStats")]
+        [Description("Disabled by default to save on performance. When this is enabled you will be able to Print detailed reports on spellcasts and spellcast intervals. Attacks per minute and average attacks per minute.")]
+        public bool EnableWoWStats
+        {
+            get;
+            set;
+        }
+        
         [Setting]
         [DefaultValue(false)]
         [Category("Do not Touch")]

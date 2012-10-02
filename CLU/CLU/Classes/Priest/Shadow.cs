@@ -79,8 +79,8 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
             }
         }
 
-        private static bool CanMindFlay { get { return Buff.TargetHasBuff("Vampiric Touch") && Buff.PlayerCountBuff("Shadow Orb") < 3 && Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 12) < 6; } }
-        private static bool CanMindFlaywhileleveling { get { return Buff.PlayerCountBuff("Shadow Orb") < 3 && Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 12) < 6; } }
+        private static bool CanMindFlay { get { return Buff.TargetHasBuff("Vampiric Touch") && Buff.PlayerCountBuff("Shadow Orb") < 3 && Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 12) < 6 && !Buff.PlayerHasActiveBuff("Surge of Darkness") && !Buff.PlayerHasActiveBuff("Divine Insight") && Buff.TargetDebuffTimeLeft("Vampiric Touch").Seconds > Buff.DotDelta("Vampiric Touch"); } }
+        private static bool CanMindFlaywhileleveling { get { return Buff.PlayerCountBuff("Shadow Orb") < 3 && Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 12) < 6 && !Buff.PlayerHasActiveBuff("Surge of Darkness") && !Buff.PlayerHasActiveBuff("Divine Insight"); } }
 
         // OVERIDES!!! [SpellManager] Mind Flay (15407) overrides Smite (585)
         public override Composite SingleRotation
