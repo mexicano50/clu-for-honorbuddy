@@ -120,7 +120,7 @@ NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagr
                                     Spell.CastSpell("Raging Blow",             ret => Buff.PlayerHasActiveBuff("Raging Blow!"), "Raging Blow"),
                                     Spell.CastSpell("Wild Strike",             ret => Me.CurrentTarget != null && (Buff.PlayerHasActiveBuff("Bloodsurge") && Me.CurrentTarget.HealthPercent >= 20), "Wild Strike"),
                                     Spell.CastConicSpell("Shockwave", 11f, 33f, ret => CLUSettings.Instance.Warrior.UseShockwave, "Shockwave"),
-                                    Spell.CastConicSpell("Dragon Roar", 11f, 33f, ret => CLUSettings.Instance.Warrior.UseDragonRoar, "Dragon Roar"),
+                                    Spell.CastSpell("Dragon Roar",              ret => CLUSettings.Instance.Warrior.UseDragonRoar && Me.CurrentTarget.IsWithinMeleeRange && TalentManager.HasTalent(12), "Dragon Roar"),
                                     Spell.CastSpell("Heroic Throw",            ret => StyxWoW.Me.Inventory.Equipped.MainHand != null, "Heroic Throw"),
                                     Spell.CastSpell("Bladestorm",              ret => Me.CurrentTarget != null && (SpellManager.HasSpell("Bladestorm") && Spell.SpellCooldown("Colossus Smash").TotalSeconds >= 5 && !Buff.TargetHasDebuff("Colossus Smash") && Spell.SpellCooldown("Bloodthirst").TotalSeconds >= 2 && Me.CurrentTarget.HealthPercent >= 20), "Bladestorm"),
                                     Spell.CastSpell("Wild Strike",             ret => Me.CurrentTarget != null && (Buff.TargetHasDebuff("Colossus Smash") && Me.CurrentTarget.HealthPercent >= 20), "Wild Strike"),
