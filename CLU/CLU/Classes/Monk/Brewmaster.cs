@@ -123,7 +123,7 @@ namespace CLU.Classes.Monk
 
         public override Composite Pull
         {
-             get { return new PrioritySelector(); }
+             get { return this.SingleRotation; }
         }
 
         public override Composite Medic

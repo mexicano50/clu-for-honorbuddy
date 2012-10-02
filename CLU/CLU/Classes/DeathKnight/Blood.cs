@@ -69,7 +69,6 @@ namespace CLU.Classes.Deathknight
                     @"
 ----------------------------------------------------------------------
 Blood:
-[*] *IMPORTANT* Please select you Tier one Talent in the settings UI
 [*] *IMPORTANT* Please Spec into Blood Tap for Maximum effectiveness.
 [*] Choose your own presence (blood is recommended)
 [*] AutomaticCooldowns now works with Boss's or Mob's (See: General Setting)
@@ -142,7 +141,7 @@ Credits to Weischbier, because he owns the buisness and I want him to have my ba
 
         public override Composite Pull
         {
-             get { return new PrioritySelector(); }
+             get { return this.SingleRotation; }
         }
 
         public override Composite Medic

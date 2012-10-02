@@ -236,7 +236,7 @@ namespace CLU.Classes.Shaman
 
         {
 
-             get { return new PrioritySelector(); }
+             get { return this.SingleRotation; }
 
                }
 

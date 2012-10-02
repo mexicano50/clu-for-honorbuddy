@@ -75,7 +75,7 @@ namespace CLU.Classes.Rogue
 
         public override Composite Pull
         {
-             get { return new PrioritySelector(); }
+             get { return this.SingleRotation; }
         }
 
         /// <summary>

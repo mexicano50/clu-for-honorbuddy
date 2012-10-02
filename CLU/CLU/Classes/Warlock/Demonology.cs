@@ -191,7 +191,7 @@ namespace CLU.Classes.Warlock
 
         public override Composite Pull
         {
-             get { return new PrioritySelector(); }
+             get { return this.SingleRotation; }
         }
 
         public override Composite Medic

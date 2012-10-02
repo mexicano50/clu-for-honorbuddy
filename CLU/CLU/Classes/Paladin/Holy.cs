@@ -71,7 +71,7 @@ namespace CLU.Classes.Paladin
         /// </summary>
         public override Composite Pull
         {
-            get { return new PrioritySelector(); }
+            get { return this.SingleRotation; }
         }
 
         // adding some help about cooldown management
