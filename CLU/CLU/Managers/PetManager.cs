@@ -339,7 +339,7 @@ namespace CLU.Managers
         public static bool PetHasBuff(string name)
         {
             // Me.Pet.ActiveAuras.ContainsKey(name);
-            return Me.GotAlivePet && Buff.HasAura(Me.Pet, name, Me.Pet);
+            return Me.GotAlivePet && Me.Pet.HasAura(name);
         }
 
         /// <summary>Returns true if the Pet has the buff</summary>

@@ -82,7 +82,7 @@ namespace CLU.Classes.Hunter
         {
             return new Decorator(ret => !Buff.PlayerHasBuff("Feign Death"),
                                new PrioritySelector(
-                                   Spell.CastSpell("Mend Pet", ret => Me.GotAlivePet && (Me.Pet.HealthPercent < CLUSettings.Instance.Hunter.MendPetPercent) && !Me.Pet.HasAura("Mend Pet"), "Mend Pet"),
+                                   Spell.CastSpell("Mend Pet", ret => Me.GotAlivePet && (Me.Pet.HealthPercent < CLUSettings.Instance.Hunter.MendPetPercent) && !PetManager.PetHasBuff("Mend Pet"), "Mend Pet"),
                                    PetManager.CastPetSpell("Heart of the Phoenix",  ret => !Me.GotAlivePet && CLUSettings.Instance.Hunter.UseHeartofthePhoenix, "Heart of the Phoenix")));
         }
 
