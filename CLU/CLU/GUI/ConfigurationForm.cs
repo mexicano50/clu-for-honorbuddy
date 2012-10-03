@@ -566,6 +566,13 @@ namespace CLU.GUI
             try {
                 if (Me.IsValid && StyxWoW.IsInGame) {
                     this.paint(); // SpellLockWatcher
+                    label10.Text = DpsMeter._dpsMeterInitialized ? "Initialized" : "Shutdown";
+
+                    if (DpsMeter._dpsMeterInitialized)
+                    {
+                        label13.Text = DpsMeter.GetDps(Me).ToString(CultureInfo.InvariantCulture);
+                        label15.Text = DpsMeter.GetCombatTimeLeft(Me).Seconds != 0 ? DpsMeter.GetCombatTimeLeft(Me).Seconds.ToString(CultureInfo.InvariantCulture) : "0";
+                    }
 
                     // HealingGrid
                     if (Me.CastingSpell != null) {
@@ -817,6 +824,21 @@ namespace CLU.GUI
         private void DumpGroupMembers(object sender, EventArgs e)
         {
             Unit.DumpGroupMembers();
+        }
+
+        private void button10_Click(object sender, EventArgs e)
+        {
+            DpsMeter.Initialize();
+        }
+
+        private void button11_Click(object sender, EventArgs e)
+        {
+            DpsMeter.Shutdown();
+        }
+
+        private void button12_Click(object sender, EventArgs e)
+        {
+            DpsMeter.Update();
         }
     }
 }

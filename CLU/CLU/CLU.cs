@@ -477,6 +477,10 @@ namespace CLU
             this._clupulsetimer.AutoReset = true; // To keep raising the Elapsed event
 
             GC.KeepAlive(this._clupulsetimer);
+
+            //TroubleshootLog("Initializing DpsMeter");
+            //DpsMeter.Initialize();
+            TroubleshootLog("Initialization Complete");
         }
 
         private void RoutineManagerReloaded(object sender, EventArgs e)

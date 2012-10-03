@@ -25,26 +25,26 @@ namespace CLU.Helpers
     internal class DpsMeter
     {
         private static readonly Dictionary<ulong, DpsInfo> DpsInfos = new Dictionary<ulong, DpsInfo>();
-        private static bool _initialized;
+        public static bool _dpsMeterInitialized;
 
         /// <summary>
         /// Starts the DpsMeter.
         /// </summary>
         public static void Initialize()
         {
-            if (!_initialized)
+            if (!_dpsMeterInitialized)
             {
                 DpsInfos.Clear();
-                _initialized = true;
+                _dpsMeterInitialized = true;
             }
         }
 
         public static void Shutdown()
         {
-            if (_initialized)
+            if (_dpsMeterInitialized)
             {
                 DpsInfos.Clear();
-                _initialized = false;
+                _dpsMeterInitialized = false;
             }
         }
 
