@@ -133,8 +133,8 @@ namespace CLU.Classes.Warrior
                                     Spell.CastSpell("Overpower",            ret => true, "Overpower"),
                                     Spell.CastSpell("Slam",                 ret => Me.CurrentTarget != null && Me.CurrentRage > 70 && Buff.TargetHasDebuff("Colossus Smash") && Me.CurrentTarget.HealthPercent > 20, "Slam"),
                                     Spell.CastSpell("Slam",                 ret => Me.CurrentTarget != null && Me.CurrentTarget.HealthPercent > 20, "Slam"),
-                                    Spell.CastSpell("Commanding Shout",     ret => Me.RagePercent < 60 && CLUSettings.Instance.Warrior.ShoutSelection == WarriorShout.Commanding, "Commanding Shout for Rage"),
-                                    Spell.CastSpell("Battle Shout",         ret => Me.RagePercent < 60 && CLUSettings.Instance.Warrior.ShoutSelection == WarriorShout.Battle, "Battle Shout for Rage"));
+                                    Spell.CastSpell("Commanding Shout",     ret => Me.RagePercent < 60 && !WoWSpell.FromId(469).Cooldown && CLUSettings.Instance.Warrior.ShoutSelection == WarriorShout.Commanding, "Commanding Shout for Rage"),
+                                    Spell.CastSpell("Battle Shout",         ret => Me.RagePercent < 60 && !WoWSpell.FromId(6673).Cooldown && CLUSettings.Instance.Warrior.ShoutSelection == WarriorShout.Battle, "Battle Shout for Rage"));
             }
         }
 
