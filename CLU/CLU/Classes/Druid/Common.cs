@@ -12,6 +12,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using CLU.Managers;
 using CLU.Settings;
 using Styx;
 using Styx.WoWInternals.WoWObjects;
@@ -195,8 +196,8 @@ namespace CLU.Classes.Druid
                 return new Decorator(
                          ret => CLUSettings.Instance.EnableMovement,
                                new PrioritySelector(
-                                   Spell.CastSelfSpell("Bear Form", ret => Me.HealthPercent <= 20 && !Buff.PlayerHasBuff("Bear Form"), "Bear Form"),
-                                   Spell.CastSelfSpell("Cat Form", ret => Me.HealthPercent > 20 && !Buff.PlayerHasBuff("Cat Form"), "Cat Form")));
+                                   Spell.CastSelfSpell("Bear Form", ret => TalentManager.CurrentSpec == WoWSpec.DruidGuardian && !Buff.PlayerHasBuff("Bear Form"), "Bear Form"),
+                                   Spell.CastSelfSpell("Cat Form", ret => TalentManager.CurrentSpec == WoWSpec.DruidFeral && !Buff.PlayerHasBuff("Cat Form"), "Cat Form")));
             }
         }
 
