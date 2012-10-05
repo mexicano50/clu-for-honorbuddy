@@ -93,7 +93,7 @@ namespace CLU.Classes.Monk
 
                     // Interupt
                     Spell.CastInterupt("Spear Hand Strike", ret => true, "Spear Hand Strike"),
-                    Spell.CastSpell("Leg Sweep", ret => TalentManager.HasTalent(12) && Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 8) >= 2, "Leg Sweep"),
+                    Spell.CastSpell("Leg Sweep", ret => TalentManager.HasTalent(12) && Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 8) >= 2 && Me.CurrentTarget.IsWithinMeleeRange, "Leg Sweep"),
 
                     //Single Target
                     Spell.CastSpell("Clash", ret => Me.CurrentTarget.DistanceSqr >= 8 * 8 && Me.CurrentTarget.DistanceSqr <= 50 * 50, "Clash"),
