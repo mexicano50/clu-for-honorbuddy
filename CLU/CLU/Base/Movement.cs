@@ -57,6 +57,12 @@ namespace CLU.Base
                        new DecoratorContinue(ret => (onUnit == null || onUnit(ret) == null || onUnit(ret).IsDead) && CLUSettings.Instance.EnableTargeting,
                                              new PrioritySelector(
                                              	ctx => {
+                                                    // Clear our current target if its Dead.
+                                                    if (onUnit(ctx).IsDead)
+                                                    {
+                                                        CLU.TroubleshootLog(" Target Appears to be dead. Clearing Current Target [" + CLU.SafeName((WoWUnit)ctx) + "]");
+                                                        StyxWoW.Me.ClearTarget();
+                                                    }
                                              		// Aquires a target.
                                              		if (Unit.EnsureUnitTargeted != null)
                                              		{
