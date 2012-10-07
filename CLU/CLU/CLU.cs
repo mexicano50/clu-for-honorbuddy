@@ -193,7 +193,13 @@ namespace CLU
         /// <summary>
         /// CLU Pulling Behavior
         /// </summary>
-        private Composite Pulling { get { return this.ActiveRotation.Pull; } }
+        private Composite Pulling { get
+        {
+            return new Sequence
+                    (new DecoratorContinue(x => CLUSettings.Instance.EnableMovement && (!Me.IsCasting || !Spell.PlayerIsChanneling), Movement.MovingFacingBehavior()),
+                     new DecoratorContinue(x => true, this.ActiveRotation.Pull));
+            } 
+        }
 
 
         public override double? PullDistance { get { return this.ActiveRotation.CombatMaxDistance; } }
