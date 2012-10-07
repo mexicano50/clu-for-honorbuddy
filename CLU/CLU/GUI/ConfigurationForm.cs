@@ -99,10 +99,9 @@ namespace CLU.GUI
             case WoWClass.Druid:
                 toSelect = main.Druid;
                 break;
-            //TODO: Monk Settings
-            //case WoWClass.Monk:
-            //    toSelect = main.Monk;
-            //    break;
+            case WoWClass.Monk:
+                toSelect = main.Monk;
+                break;
 
             default:
                 break;
