@@ -176,7 +176,7 @@ namespace CLU.Classes.Monk
 
                            //Build Chi
                            Spell.CastSpell(JabSpellList.Find(SpellManager.CanCast), ret => Me.CurrentTarget != null, "Jab"),
-                           Spell.CastSpell("Crackling Jade Lightning", ret => Me.CurrentTarget != null && !Me.CurrentTarget.IsWithinMeleeRange, "Crackling Jade Lightning"),
+                           //Spell.CastSpell("Crackling Jade Lightning", ret => Me.CurrentTarget != null && !Me.CurrentTarget.IsWithinMeleeRange, "Crackling Jade Lightning"),
 
                            // Interupt
                            Spell.CastInterupt("Spear Hand Strike",       ret => true, "Spear Hand Strike"),
