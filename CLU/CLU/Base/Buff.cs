@@ -1037,6 +1037,16 @@ namespace CLU.Base
         }
 
         /// <summary>
+        /// Returns # of people in group with buff
+        /// </summary>
+        /// <param name="name">the name of the buff to check</param>
+        /// <returns>the group count buff</returns>
+        public static uint GroupCountBuff(string name)
+        {
+            return (uint)ObjectManager.GetObjectsOfType<WoWPlayer>(true, false).GroupBy(p => p.IsInMyPartyOrRaid && p.HasMyAura(name)).Count();
+        }
+
+        /// <summary>
         /// Returns the buff count on the target
         /// </summary>
         /// <param name="name">the name of the buff to check</param>
