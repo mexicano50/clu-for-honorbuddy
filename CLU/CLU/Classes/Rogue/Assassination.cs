@@ -75,7 +75,7 @@ namespace CLU.Classes.Rogue
 
         public override Composite Pull
         {
-             get { return this.SingleRotation; }
+            get { return this.SingleRotation; }
         }
 
         /// <summary>
@@ -87,9 +87,9 @@ namespace CLU.Classes.Rogue
             get
             {
                 return new Decorator
-                    (ret => Me.HealthPercent < 100 && CLUSettings.Instance.EnableSelfHealing,
+                    (ret => Me.HealthPercent <= 100,
                      new PrioritySelector
-                         (Item.UseBagItem("Healthstone", ret => Me.HealthPercent < 40, "Healthstone"),
+                         (Item.UseBagItem("Kafa'Kota Berry", ret => Me.CurrentTarget != null && !Buff.PlayerHasBuff("Kafa Rush"), "Healthstone"),
                           Spell.CastSelfSpell
                               ("Smoke Bomb",
                                ret =>
@@ -183,26 +183,22 @@ namespace CLU.Classes.Rogue
                      Spell.CastSpell
                          ("Vendetta",
                           ret =>
-                          Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget) &&
-                          Buff.PlayerActiveBuffTimeLeft("Slice and Dice").TotalSeconds > 6 &&
-                          Buff.TargetDebuffTimeLeft("Rupture").TotalSeconds > 6,
+                          Me.CurrentTarget != null && CLUSettings.Instance.UseCooldowns,
                           "Vendetta"),
                      Spell.CastSpell
                          ("Shadow Blades",
                           ret =>
-                          Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget) &&
-                          Buff.PlayerActiveBuffTimeLeft("Slice and Dice").TotalSeconds > 6 &&
-                          Buff.TargetDebuffTimeLeft("Rupture").TotalSeconds > 6,
+                          Me.CurrentTarget != null && CLUSettings.Instance.UseCooldowns,
                           "Shadow Blades"),
                      Spell.CastSelfSpell
                          ("Preparation",
                           ret =>
-                          SpellManager.HasSpell(14185) && Unit.IsTargetWorthy(Me.CurrentTarget) &&
+                          SpellManager.HasSpell(14185) && CLUSettings.Instance.UseCooldowns &&
                           SpellManager.Spells["Vanish"].Cooldown,
                           "Preparation"),
                      Spell.CastSpell
                          (DispatchOverride,
-                          ret => Me.ComboPoints < 5 && Buff.PlayerHasBuff("Blindside"),
+                          ret => Buff.PlayerCountBuff("Anticipation") < 5 && Buff.PlayerHasBuff("Blindside"),
                           "Dispatch @ Blindside"),
                      Envenom,
                      Spell.CastSpell
@@ -314,7 +310,7 @@ namespace CLU.Classes.Rogue
                     //Switched to || instead of &&, we want to use trinkets on Cd and not every 2min
                      new PrioritySelector
                          (Item.UseTrinkets(), Racials.UseRacials(), Buff.CastBuff("Lifeblood", ret => true, "Lifeblood"),
-                    // Thanks Kink
+                        // Thanks Kink
                           Item.UseEngineerGloves()));
             }
         }
@@ -331,19 +327,19 @@ namespace CLU.Classes.Rogue
                                ret =>
                                Me.ComboPoints >= ReqCmbPts && Me.CurrentEnergy > 70 &&
                                Buff.TargetDebuffTimeLeft("Rupture").TotalSeconds > 2 && Me.CurrentTarget.HealthPercent >= 35, "Pooling Envenom"),
-                    // Envenom if we have enough combo points, Rupture is safe and we're about to cap.
+                           // Envenom if we have enough combo points, Rupture is safe and we're about to cap.
                           Spell.CastSpell
                               (EnvenomOverride,
                                ret =>
                                Me.ComboPoints > 0 && Buff.PlayerActiveBuffTimeLeft("Slice and Dice").TotalSeconds < 2,
                                "SnD Refresh Envenom"),
-                    // Envenom if SnD is about to fall off. This should never happen.
+                            // Envenom if SnD is about to fall off. This should never happen.
                           Spell.CastSpell
                               (EnvenomOverride,
                                ret =>
-                               Me.ComboPoints == 5 && Me.CurrentTarget.HealthPercent < 35 && Buff.TargetDebuffTimeLeft("Rupture").TotalSeconds > 2,
+                               Me.ComboPoints == 5 && Buff.TargetDebuffTimeLeft("Rupture").TotalSeconds > 2 && (Me.CurrentTarget.HealthPercent < 35 || Buff.PlayerHasBuff("Shadow Blades")),
                                "Execute Envenom"),
-                    // Envenom if SnD is about to fall off. This should never happen.
+                          // Envenom if SnD is about to fall off. This should never happen.
                           Spell.CastSpell
                               (EnvenomOverride,
                                ret =>
@@ -379,7 +375,7 @@ namespace CLU.Classes.Rogue
                          Spell.CastSpell
                              ("Mutilate",
                               ret => !SpellManager.HasSpell("Cheap Shot") && StyxWoW.Me.IsBehind(Me.CurrentTarget),
-                              "Mutilate")));
+                              "Cheap Shot")));
             }
         }
 
@@ -424,7 +420,7 @@ namespace CLU.Classes.Rogue
                          (Spell.CastSpell("Rupture", ret => !Buff.TargetHasDebuff("Rupture"), "Rupture @ Down"),
                     // Rupture if it's down.
                           Spell.CastSpell("Rupture", ret => Me.ComboPoints >= ReqCmbPts, "Rupture @ Low")));
-                // Rupture if it's about to fall off and we have 4 or 5 combo points.
+                    // Rupture if it's about to fall off and we have 4 or 5 combo points.
             }
         }
 

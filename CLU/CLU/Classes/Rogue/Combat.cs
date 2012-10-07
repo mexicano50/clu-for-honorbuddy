@@ -107,7 +107,7 @@ namespace CLU.Classes.Rogue
                            EncounterSpecific.ExtraActionButton(), // EncounterSpecific.ExtraActionButton(), new Decorator(x => Me.IsInInstance, EncounterSpecific.ExtraActionButton())
 
                            // Don't do anything if we have cast vanish
-                    // new Decorator( ret => Buff.PlayerHasActiveBuff("Vanish"), new ActionAlwaysSucceed()),
+                           // new Decorator( ret => Buff.PlayerHasActiveBuff("Vanish"), new ActionAlwaysSucceed()),
 
                            // Stealth
                            Buff.CastBuff("Stealth", ret => CLUSettings.Instance.Rogue.EnableAlwaysStealth && !CLU.IsMounted, "Stealth"),
@@ -116,11 +116,11 @@ namespace CLU.Classes.Rogue
                            new Decorator(
                                ret => CLUSettings.Instance.EnableMovement && Buff.PlayerHasBuff("Stealth"),
                                new PrioritySelector(
-                    // Spell.CastSpell("Pick Pocket", ret => Buff.PlayerHasBuff("Stealth"), "Gimme the caaash (Pick Pocket)"),
-                                   Spell.CastSelfSpell("Sprint", ret => Me.IsMoving && Unit.DistanceToTargetBoundingBox() >= 15, "Sprint"),
-                                   Spell.CastSpell("Garrote", ret => Me.CurrentTarget != null && IsBehind(Me.CurrentTarget), "Garrote"),
-                                   Spell.CastSpell("Cheap Shot", ret => Me.CurrentTarget != null && !SpellManager.HasSpell("Garrote") || !IsBehind(Me.CurrentTarget), "Cheap Shot"),
-                                   Spell.CastSpell("Ambush", ret => !SpellManager.HasSpell("Cheap Shot") && IsBehind(Me.CurrentTarget), "Ambush"))),
+                                    // Spell.CastSpell("Pick Pocket", ret => Buff.PlayerHasBuff("Stealth"), "Gimme the caaash (Pick Pocket)"),
+                                   Spell.CastSelfSpell("Sprint",        ret => Me.IsMoving && Unit.DistanceToTargetBoundingBox() >= 15, "Sprint"),
+                                   Spell.CastSpell("Garrote",           ret => Me.CurrentTarget != null && IsBehind(Me.CurrentTarget), "Garrote"),
+                                   Spell.CastSpell("Cheap Shot",        ret => Me.CurrentTarget != null && !SpellManager.HasSpell("Garrote") || !IsBehind(Me.CurrentTarget), "Cheap Shot"),
+                                   Spell.CastSpell("Ambush",            ret => !SpellManager.HasSpell("Cheap Shot") && IsBehind(Me.CurrentTarget), "Ambush"))),
 
                            // Trinkets & Cooldowns
                            new Decorator(
@@ -129,27 +129,30 @@ namespace CLU.Classes.Rogue
                                    Item.UseTrinkets(),
                                    Racials.UseRacials(),
                                    Buff.CastBuff("Lifeblood", ret => true, "Lifeblood"), // Thanks Kink
-                                   Spell.CastSelfSpell("Preparation", ret => SpellManager.HasSpell(14185) && Unit.IsTargetWorthy(Me.CurrentTarget) && SpellManager.Spells["Vanish"].Cooldown, "Preparation"),
+                                   Spell.CastSelfSpell("Preparation", ret => SpellManager.HasSpell(14185) && Unit.IsTargetWorthy(Me.CurrentTarget) && SpellManager.Spells["Vanish"].Cooldown && CLUSettings.Instance.UseCooldowns, "Preparation"),
                                    Item.UseEngineerGloves())),
-                    //Rotation added by SimulationCraft 18.09.2012(Simucraft 5.0.1) Ambush needs to be fixed. -- Alex
-                    //Spell.CastSpell("Feint", ret => Me.CurrentTarget != null && (Me.CurrentTarget.ThreatInfo.RawPercent > 80 || EncounterSpecific.IsMorchokStomp()) && CLUSettings.Instance.EnableSelfHealing, "Feint"),
-                           Spell.CastInterupt("Kick", ret => true, "Kick"),
-                           Spell.CastSpell("Redirect", ret => Me.RawComboPoints > 0 && Me.ComboPoints < 1, "Redirect"),
-                           Spell.CancelMyAura("Blade Flurry", ret => Unit.EnemyUnits.Count() < 2 && Buff.PlayerHasActiveBuff("Blade Flurry"), "Blade Flurry"),
-                           //Item.RunMacroText("/cancelaura Blade Flurry", ret => Unit.EnemyUnits.Count() < 2 && Buff.PlayerHasBuff("Blade Flurry"), "[CancelAura] Blade Flurry"),
-                           Spell.CastSpell("Crimson Tempest", ret => Unit.EnemyUnits.Count() > 7 && Me.ComboPoints == 5, "Crimson Tempest"),
-                           Spell.CastSelfSpell("Blade Flurry", ret => (Unit.EnemyUnits.Count() > 1 && Unit.EnemyUnits.Count() < 6) && CLUSettings.Instance.UseAoEAbilities, "Blade Flurry"),
-                           Spell.CastSpell("Ambush", ret => Me.IsBehind(Me.CurrentTarget), "Ambush"),
-                           Spell.CastAreaSpell("Fan of Knives", 8, false, CLUSettings.Instance.Rogue.CombatFanOfKnivesCount, 0.0, 0.0, ret => Me.CurrentEnergy > 85, "Fan of Knives"),
+                            
+                            //Spell.CastSpell("Feint", ret => Me.CurrentTarget != null && (Me.CurrentTarget.ThreatInfo.RawPercent > 80 || Encounte  rSpecific.IsMorchokStomp()) && CLUSettings.Instance.EnableSelfHealing, "Feint"),
+                           Spell.CastInterupt("Kick",           ret => true, "Kick"),
+                           Spell.CastSpell("Redirect",          ret => Me.RawComboPoints > 0 && Me.ComboPoints < 1, "Redirect"),
+                           Spell.CancelMyAura("Blade Flurry",   ret => Buff.PlayerHasBuff("Blade Flurry") && (Unit.EnemyUnits.Count() < 2 || Unit.EnemyUnits.Count() > 6), "Blade Flurry"),
+                           Spell.CastSpell("Crimson Tempest",   ret => Unit.EnemyUnits.Count() >= 7 && Me.ComboPoints == 5, "Crimson Tempest"),
+                           Spell.CastSelfSpell("Blade Flurry",  ret => Unit.EnemyUnits.Count() > 1 && Unit.EnemyUnits.Count() < 7 && !Buff.PlayerHasBuff("Blade Flurry"), "Blade Flurry"),
+                           Spell.CastSpell("Ambush",            ret => Me.IsBehind(Me.CurrentTarget), "Ambush"),
+                           Spell.CastAreaSpell("Fan of Knives", 8, false, CLUSettings.Instance.Rogue.CombatFanOfKnivesCount, 0.0, 0.0, ret => true, "Fan of Knives"),
                            Spell.CastSpell("Tricks of the Trade", u => Unit.BestTricksTarget, ret => CLUSettings.Instance.Rogue.UseTricksOfTheTrade, "Tricks of the Trade"),
-                           Spell.CastSpell("Expose Armor", ret => Me.CurrentTarget != null && Me.ComboPoints == 5 && Unit.IsTargetWorthy(Me.CurrentTarget) && !Buff.UnitHasWeakenedArmor(Me.CurrentTarget), "Expose Armor"),
-                           Spell.CastSelfSpell("Slice and Dice", ret => (Buff.PlayerBuffTimeLeft("Slice and Dice") < 2 && Me.CurrentEnergy >= 25) || (Buff.PlayerBuffTimeLeft("Slice and Dice") < 15 && Buff.PlayerHasActiveBuff("Deep Insight") && Me.ComboPoints == 4), "Slice and Dice"),
-                           Spell.CastSelfSpell("Killing Spree", ret => Me.CurrentEnergy < 35 && Buff.PlayerBuffTimeLeft("Slice and Dice") > 4 && !Buff.PlayerHasActiveBuff("Adrenaline Rush") && CLUSettings.Instance.UseCooldowns, "Killing Spree"),
-                           Spell.CastSelfSpell("Adrenaline Rush", ret => Me.CurrentTarget != null && Me.CurrentEnergy < 35 && Unit.IsTargetWorthy(Me.CurrentTarget), "Adrenaline Rush"),
-                           Spell.CastSpell("Rupture", ret => Me.CurrentTarget != null && Me.ComboPoints == 5 && !Buff.TargetHasDebuff("Rupture"), "Rupture"), //removed bleed check no longer ingame --  wulf
-                           Spell.CastSpell("Eviscerate", ret => (Me.ComboPoints == 5 && Buff.PlayerHasBuff("Deep Insight")) || Buff.PlayerCountBuff("Anticipation") > 4, "Eviscerate"),
-                           Spell.CastSpell("Sinister Strike", ret => Buff.TargetHasDebuff("Revealing Strike") || (Buff.PlayerHasActiveBuff("Deep Insight") && Me.ComboPoints < 5), "Sinister Strike"),
-                           Spell.CastSpell("Revealing Strike", ret => !Buff.PlayerHasActiveBuff("Deep Insight") || (Buff.PlayerHasActiveBuff("Deep Insight") && Me.ComboPoints < 5 && Buff.PlayerBuffTimeLeft("Deep Insight") < 2), "Revealing Strike")
+                            //Spell.CastSpell("Expose Armor", ret => Me.CurrentTarget != null && Me.ComboPoints == 5 && Unit.IsTargetWorthy(Me.CurrentTarget) && !Buff.UnitHasWeakenedArmor(Me.CurrentTarget), "Expose Armor"),
+                           Spell.CastSelfSpell("Slice and Dice",    ret => Me.ComboPoints >= 1 && Buff.PlayerBuffTimeLeft("Slice and Dice") < 2, "Slice and Dice"),
+                           Spell.CastSelfSpell("Killing Spree",     ret => Me.CurrentEnergy < 35 && Buff.PlayerBuffTimeLeft("Slice and Dice") > 4 && !Buff.PlayerHasActiveBuff("Adrenaline Rush") && CLUSettings.Instance.UseCooldowns, "Killing Spree"),
+                           Spell.CastSelfSpell("Adrenaline Rush",   ret => Me.CurrentTarget != null && Me.CurrentEnergy < 35 && Spell.SpellCooldown("Killing Spree").TotalSeconds > 10 && CLUSettings.Instance.UseCooldowns, "Adrenaline Rush"),
+                           Spell.CastSelfSpell("Shadow Blades",     ret => Me.CurrentTarget != null && Buff.PlayerHasBuff("Adrenaline Rush") && CLUSettings.Instance.UseCooldowns, "Shadow Blades"),
+                           Spell.CastSpell("Revealing Strike",      ret => SpellManager.HasSpell(114015) && Buff.TargetDebuffTimeLeft("Revealing Strike").TotalSeconds < 2 && Buff.PlayerCountBuff("Anticipation") < 5, "Revealing Strike"),
+                           Spell.CastSpell("Revealing Strike",      ret => !SpellManager.HasSpell(114015) && Buff.TargetDebuffTimeLeft("Revealing Strike").TotalSeconds < 2 && Me.ComboPoints < 5, "Revealing Strike"),
+                           Spell.CastSpell("Rupture",               ret => Unit.EnemyUnits.Count() < 2 && (Me.ComboPoints == 5 && Buff.TargetDebuffTimeLeft("Rupture").TotalSeconds < 3 && Unit.TimeToDeath(Me.CurrentTarget) > 10 || Me.ComboPoints == 5 && Buff.TargetDebuffTimeLeft("Rupture").TotalSeconds < 2 && Buff.PlayerHasBuff("Deep Insight") && Unit.TimeToDeath(Me.CurrentTarget) > 10 || Me.ComboPoints >= 1 && Buff.TargetDebuffTimeLeft("Rupture").TotalSeconds < 2 && Unit.TimeToDeath(Me.CurrentTarget) > 10), "Rupture @ Low"),
+                           Spell.CastSpell("Eviscerate",            ret => SpellManager.HasSpell(114015) && (Me.ComboPoints == 5 && Buff.PlayerHasBuff("Deep Insight") || Buff.PlayerCountBuff("Anticipation") > 4 && Me.CurrentEnergy >= 65), "Eviscerate"),
+                           Spell.CastSpell("Eviscerate",            ret => !SpellManager.HasSpell(114015) && (Me.ComboPoints > 4 && Me.CurrentEnergy >= 65 || Me.ComboPoints > 4 && Buff.TargetDebuffTimeLeft("Revealing Strike").TotalSeconds <= 2 || Me.ComboPoints >= 1 && Buff.PlayerHasBuff("Fury of the Destroyer") || Me.ComboPoints == 5 && Buff.PlayerHasBuff("Shadow Blades")), "Eviscerate Pre-90"),
+                           Spell.CastSpell("Sinister Strike",       ret => !SpellManager.HasSpell(114015) && (Buff.TargetHasDebuff("Revealing Strike") && Me.ComboPoints < 5), "Sinister Strike"),
+                           Spell.CastSpell("Sinister Strike",       ret => SpellManager.HasSpell(114015) && !Buff.PlayerHasActiveBuff("Shadow Blades") && Buff.PlayerCountBuff("Anticipation") < 4 || Buff.PlayerCountBuff("Anticipation") < 5, "Sinister Strike")
                        );
             }
         }
@@ -157,7 +160,7 @@ namespace CLU.Classes.Rogue
 
         public override Composite Pull
         {
-             get { return this.SingleRotation; }
+            get { return this.SingleRotation; }
         }
 
         public override Composite Medic
@@ -167,12 +170,11 @@ namespace CLU.Classes.Rogue
                 return new Decorator(
                            ret => Me.HealthPercent < 100 && CLUSettings.Instance.EnableSelfHealing,
                            new PrioritySelector(
-                               Spell.CastSelfSpell("Recuperate", ret => Me.HealthPercent < 55 && !Buff.PlayerHasBuff("Recuperate") && CLUSettings.Instance.EnableSelfHealing, "Recuperate"),
-                               Item.UseBagItem("Healthstone", ret => Me.HealthPercent < 40, "Healthstone"),
-                               Spell.CastSelfSpell("Smoke Bomb", ret => Me.CurrentTarget != null && Me.HealthPercent < 30 && Me.CurrentTarget.IsTargetingMeOrPet, "Smoke Bomb"),
-                               Spell.CastSelfSpell("Combat Readiness", ret => Me.CurrentTarget != null && Me.HealthPercent < 40 && Me.CurrentTarget.IsTargetingMeOrPet, "Combat Readiness"),
-                               Spell.CastSelfSpell("Evasion", ret => Me.HealthPercent < 35 && Unit.EnemyUnits.Count(u => u.DistanceSqr < 6 * 6 && u.IsTargetingMeOrPet) >= 1, "Evasion"),
-                               Spell.CastSelfSpell("Cloak of Shadows", ret => Unit.EnemyUnits.Count(u => u.IsTargetingMeOrPet && u.IsCasting) >= 1, "Cloak of Shadows"),
+                               Item.UseBagItem("Healthstone",           ret => Me.HealthPercent < 40, "Healthstone"),
+                               Spell.CastSelfSpell("Smoke Bomb",        ret => Me.CurrentTarget != null && Me.HealthPercent < 30 && Me.CurrentTarget.IsTargetingMeOrPet, "Smoke Bomb"),
+                               Spell.CastSelfSpell("Combat Readiness",  ret => Me.CurrentTarget != null && Me.HealthPercent < 40 && Me.CurrentTarget.IsTargetingMeOrPet, "Combat Readiness"),
+                               Spell.CastSelfSpell("Evasion",           ret => Me.HealthPercent < 35 && Unit.EnemyUnits.Count(u => u.DistanceSqr < 6 * 6 && u.IsTargetingMeOrPet) >= 1, "Evasion"),
+                               Spell.CastSelfSpell("Cloak of Shadows",  ret => Unit.EnemyUnits.Count(u => u.IsTargetingMeOrPet && u.IsCasting) >= 1, "Cloak of Shadows"),
                                Poisons.CreateApplyPoisons()));
             }
         }
@@ -184,10 +186,9 @@ namespace CLU.Classes.Rogue
                 return new Decorator(
                            ret => !Me.Mounted && !Me.IsDead && !Me.Combat && !Me.IsFlying && !Me.IsOnTransport && !Me.HasAura("Food") && !Me.HasAura("Drink"),
                            new PrioritySelector(
-                    // Stealth
-                               Spell.CastSelfSpell("Stealth", ret => !Buff.PlayerHasBuff("Stealth") && CLUSettings.Instance.Rogue.EnableAlwaysStealth && !CLU.IsMounted, "Stealth"),
-                               Spell.CancelMyAura("Blade Flurry", ret => Unit.EnemyUnits.Count() < 2 && Buff.PlayerHasBuff("Blade Flurry"), "Blade Flurry"),
-                               //Item.RunMacroText("/cancelaura Blade Flurry", ret => Unit.EnemyUnits.Count() < 2 && Buff.PlayerHasBuff("Blade Flurry"), "[CancelAura] Blade Flurry"),
+                            // Stealth
+                           Spell.CastSelfSpell("Stealth", ret => !Buff.PlayerHasBuff("Stealth") && CLUSettings.Instance.Rogue.EnableAlwaysStealth && !CLU.IsMounted, "Stealth"),
+                           Spell.CancelMyAura("Blade Flurry", ret => Buff.PlayerHasBuff("Blade Flurry") && (Unit.EnemyUnits.Count() < 2 || Unit.EnemyUnits.Count() > 6), "Blade Flurry"),
                                Poisons.CreateApplyPoisons()));
             }
         }
