@@ -13,6 +13,7 @@
 
 using System;
 using System.Linq;
+using CLU.Helpers;
 using Styx;
 using Styx.CommonBot;
 using Styx.WoWInternals;
@@ -59,14 +60,14 @@ namespace CLU.Classes.Shaman
                             && SpellManager.HasSpell(((Imbue)ret).ToSpellName())
                             && SpellManager.CanCast(((Imbue)ret).ToSpellName(), null, false, false),
                         new Sequence(
-                            new Action(ret => CLU.TroubleshootLog("Main hand currently imbued: " + ((Imbue)Me.Inventory.Equipped.MainHand.TemporaryEnchantment.Id).ToString())),
+                            new Action(ret => CLULogger.TroubleshootLog("Main hand currently imbued: " + ((Imbue)Me.Inventory.Equipped.MainHand.TemporaryEnchantment.Id).ToString())),
                             new Action(ret => Lua.DoString("CancelItemTempEnchantment(1)")),
                             new WaitContinue(1,
                                 ret => Me.Inventory.Equipped.MainHand != null && (Imbue)Me.Inventory.Equipped.MainHand.TemporaryEnchantment.Id == Imbue.None,
                                 new ActionAlwaysSucceed()),
                             new DecoratorContinue(ret => ((Imbue)ret) != Imbue.None,
                                 new Sequence(
-                                    new Action(ret => CLU.TroubleshootLog("Imbuing main hand weapon with " + ((Imbue)ret).ToString())),
+                                    new Action(ret => CLULogger.TroubleshootLog("Imbuing main hand weapon with " + ((Imbue)ret).ToString())),
                                     new Action(ret => SpellManager.Cast(((Imbue)ret).ToSpellName(), null)),
                                     new Action(ret => SetNextAllowedImbueTime())
                                     )
@@ -88,14 +89,14 @@ namespace CLU.Classes.Shaman
                             && SpellManager.HasSpell(((Imbue)ret).ToSpellName())
                             && SpellManager.CanCast(((Imbue)ret).ToSpellName(), null, false, false),
                         new Sequence(
-                            new Action(ret => CLU.TroubleshootLog("Off hand currently imbued: " + ((Imbue)Me.Inventory.Equipped.OffHand.TemporaryEnchantment.Id).ToString())),
+                            new Action(ret => CLULogger.TroubleshootLog("Off hand currently imbued: " + ((Imbue)Me.Inventory.Equipped.OffHand.TemporaryEnchantment.Id).ToString())),
                             new Action(ret => Lua.DoString("CancelItemTempEnchantment(2)")),
                             new WaitContinue(1,
                                 ret => Me.Inventory.Equipped.OffHand != null && (Imbue)Me.Inventory.Equipped.OffHand.TemporaryEnchantment.Id == Imbue.None,
                                 new ActionAlwaysSucceed()),
                             new DecoratorContinue(ret => ((Imbue)ret) != Imbue.None,
                                 new Sequence(
-                                    new Action(ret => CLU.TroubleshootLog("Imbuing Off hand weapon with " + ((Imbue)ret).ToString())),
+                                    new Action(ret => CLULogger.TroubleshootLog("Imbuing Off hand weapon with " + ((Imbue)ret).ToString())),
                                     new Action(ret => SpellManager.Cast(((Imbue)ret).ToSpellName(), null)),
                                     new Action(ret => SetNextAllowedImbueTime())
                                     )
@@ -190,7 +191,7 @@ namespace CLU.Classes.Shaman
             return new Decorator(
                 ret => Totems.NeedToRecallTotems,
                 new Sequence(
-                    new Action(ret => CLU.Log(" [Totems] Recalling Totems")), 
+                    new Action(ret => CLULogger.Log(" [Totems] Recalling Totems")), 
                     new Action(ret => Totems.RecallTotems())));
         }
 

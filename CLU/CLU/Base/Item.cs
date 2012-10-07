@@ -10,7 +10,7 @@
  */
 #endregion
 
-
+using CLU.Helpers;
 
 namespace CLU.Base
 {
@@ -88,19 +88,19 @@ namespace CLU.Base
             // GTFO if we have a fishing pole equiped
             if (StyxWoW.Me.Inventory.Equipped.MainHand.ItemInfo.WeaponClass == WoWItemWeaponClass.FishingPole) return true;
 
-            //CLU.DiagnosticLog( "Checking Weapon Imbue on " + slot + " for " + imbueName);
+            //SysLog.DiagnosticLog( "Checking Weapon Imbue on " + slot + " for " + imbueName);
             var item = StyxWoW.Me.Inventory.Equipped.GetEquippedItem(slot);
             if (item == null) {
-                CLU.TroubleshootLog( "We have no " + slot + " equipped!");
+                CLULogger.TroubleshootLog( "We have no " + slot + " equipped!");
                 return true;
             }
 
             var enchant = item.TemporaryEnchantment;
             if (enchant != null) {
-                //CLU.DiagnosticLog( "Enchantment Name: " + enchant.Name);
-                //CLU.DiagnosticLog("Enchantment ID: " + enchant.Id);
-                //CLU.DiagnosticLog("ImbueName: " + imbueName);
-                //CLU.DiagnosticLog("Enchant: " + enchant.Name + " - " + (enchant.Name == imbueName));
+                //SysLog.DiagnosticLog( "Enchantment Name: " + enchant.Name);
+                //SysLog.DiagnosticLog("Enchantment ID: " + enchant.Id);
+                //SysLog.DiagnosticLog("ImbueName: " + imbueName);
+                //SysLog.DiagnosticLog("Enchant: " + enchant.Name + " - " + (enchant.Name == imbueName));
             }
 
             return enchant != null && (imbueId == enchant.Id);  //enchant.Name == imbueName || 
@@ -121,7 +121,7 @@ namespace CLU.Base
                                       && StyxWoW.Me.Inventory.Equipped.MainHand.TemporaryEnchantment != null;
 
                 if (!suitableOffhand)
-                    CLU.Log("Please Ensure your weapons are correct for the TalentSpec you are using");
+                    CLULogger.Log("Please Ensure your weapons are correct for the TalentSpec you are using");
 
                 return suitableOffhand;
             }
@@ -131,7 +131,7 @@ namespace CLU.Base
                                        && Me.Inventory.Equipped.MainHand != null;
 
                 if (!suitableMainhand)
-                    CLU.Log("Please Ensure your weapons are correct for the TalentSpec you are using");
+                    CLULogger.Log("Please Ensure your weapons are correct for the TalentSpec you are using");
 
                 return suitableMainhand;
             }
@@ -150,7 +150,7 @@ namespace CLU.Base
             return new Decorator(
                        cond,
                        new Sequence(
-                           new Action(a => CLU.Log(" [RunMacro] {0} ", label)),
+                           new Action(a => CLULogger.Log(" [RunMacro] {0} ", label)),
                            new Action(a => Lua.DoString("RunMacroText(\"" + Spell.RealLuaEscape(macro) + "\")"))));
         }
 
@@ -170,7 +170,7 @@ namespace CLU.Base
             		return item != null;
             },
             new Sequence(
-                new Action(a => CLU.Log(" [BagItem] {0} ", label)),
+                new Action(a => CLULogger.Log(" [BagItem] {0} ", label)),
                 new Action(a => item.UseContainerItem())));
         }
 
@@ -228,7 +228,7 @@ namespace CLU.Base
             }
             catch
             {
-                CLU.DiagnosticLog("Lua failed in CanUseEquippedItem");
+                CLULogger.DiagnosticLog("Lua failed in CanUseEquippedItem");
                 return false;
             }
 
@@ -241,7 +241,7 @@ namespace CLU.Base
         private static void UseItem(WoWItem item)
         {
             if (item != null) {
-                CLU.Log(" [UseItem] {0} ", item.Name);
+                CLULogger.Log(" [UseItem] {0} ", item.Name);
                 item.Use();
             }
         }
@@ -256,7 +256,7 @@ namespace CLU.Base
                 foreach (WoWItem trinket in Trinkets.CurrentTrinkets.Where(trinket => CanUseEquippedItem(trinket) && TrinketUsageSatisfied(trinket) && !HasItemInBag(trinket) && HasCarriedItem(trinket)))
                 {
                     if (trinket != null) {
-                        CLU.Log(" [Trinket] {0} ", trinket.Name);
+                        CLULogger.Log(" [Trinket] {0} ", trinket.Name);
                         trinket.Use();
                     }
                 }

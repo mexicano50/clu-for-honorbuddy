@@ -126,18 +126,18 @@ namespace CLU
             {
                 if (this._rotationBase == null)
                 {
-                    TroubleshootLog("ActiveRotation is null..retrieving.");
+                    CLULogger.TroubleshootLog("ActiveRotation is null..retrieving.");
                     this.QueryClassTree();
                     if (this._rotationBase == null)
                     {
                         if (TalentManager.CurrentSpec == WoWSpec.None)
                         {
-                            Log(" Greetings, level {0} user. Unfortunelty CLU does not support such Low Level players at this time", Me.Level);
+                            CLULogger.Log(" Greetings, level {0} user. Unfortunelty CLU does not support such Low Level players at this time", Me.Level);
                             StopBot("Unable to find Active Rotation");
                         }
                         else
                         {
-                            Log(" Greetings, level {0} user. Unfortunelty CLU could not find a rotation for you.", Me.Level);
+                            CLULogger.Log(" Greetings, level {0} user. Unfortunelty CLU could not find a rotation for you.", Me.Level);
                             StopBot("Unable to find Active Rotation");
                         }
                     }
@@ -160,15 +160,15 @@ namespace CLU
                            
                             case GroupLogic.PVE:
                                 currentrotation = this.ActiveRotation.PVERotation;
-                                TroubleshootLog(" Setting Current rotation to {0}", GroupLogic.PVE.ToString());
+                                CLULogger.TroubleshootLog(" Setting Current rotation to {0}", GroupLogic.PVE.ToString());
                                 break;
                             case GroupLogic.Battleground:
                                 currentrotation = this.ActiveRotation.PVPRotation;
-                                TroubleshootLog(" Setting Current rotation to {0}", GroupLogic.Battleground.ToString());
+                                CLULogger.TroubleshootLog(" Setting Current rotation to {0}", GroupLogic.Battleground.ToString());
                                 break;
                             default:
                                 currentrotation = this.ActiveRotation.SingleRotation;
-                                TroubleshootLog(" Setting Current rotation to {0}", GroupLogic.Solo.ToString());
+                                CLULogger.TroubleshootLog(" Setting Current rotation to {0}", GroupLogic.Solo.ToString());
                                 break;
                         }
                 return new Sequence
@@ -213,7 +213,7 @@ namespace CLU
 
         public bool CreateBehaviors()
         {
-            TroubleshootLog("CreateBehaviors called.");
+            CLULogger.TroubleshootLog("CreateBehaviors called.");
             // let behaviors be notified if context changes.
             if (OnLocationContextChanged != null)
                 OnLocationContextChanged(this, new LocationContextEventArg(LocationContext, LastLocationContext));
@@ -325,67 +325,12 @@ namespace CLU
 
         #region Public Methods
 
-        /// <summary>writes debug messages to the log file (false by default)</summary>
-        /// <param name="msg">the message to write to the log</param>
-        /// <param name="args">the arguments that accompany the message</param>
-        public static void DiagnosticLog(string msg, params object[] args)
-        {
-            if (msg != null && CLUSettings.Instance.EnableDebugLogging)
-            {
-                Logging.Write(LogLevel.Diagnostic, Colors.White, "[CLU] " + Version + ": " + msg, args);
-            }
-        }
-
-        //private static string lastLine { get; set; }
-        public static void Log(string msg, params object[] args)
-        {
-            //if (msg == lastLine) return;
-            Logging.Write(LogLevel.Normal, Colors.Yellow, "[CLU] " + Version + ": " + msg, args);
-            //lastLine = msg;
-        }
-
-        /// <summary>writes debug messages to the log file. Only enable movement/Targeting  logs.</summary>
-        /// <param name="msg">the message to write to the log</param>
-        /// <param name="args">the arguments that accompany the message</param>
-        public static void MovementLog(string msg, params object[] args)
-        {
-            if (msg != null && CLUSettings.Instance.MovementLogging)
-            {
-                Logging.Write(LogLevel.Quiet, Colors.DimGray, "[CLU] " + Version + ": " + msg, args);
-            }
-        }
-
-        /// <summary>writes debug messages to the log file. This is necassary information for CLU's programmer</summary>
-        /// <param name="msg">the message to write to the log</param>
-        /// <param name="args">the arguments that accompany the message</param>
-        public static void TroubleshootLog(string msg, params object[] args)
-        {
-            if (msg != null)
-            {
-                Logging.Write(LogLevel.Quiet, Colors.DimGray, "[CLU] " + Version + ": " + msg, args);
-            }
-        }
-
-        /// <summary>
-        /// Returns the string "Myself" if the unit name is equal to our name.
-        /// </summary>
-        /// <param name="unit">the unit to check</param>
-        /// <returns>a safe name for the log</returns>
-        public static string SafeName(WoWUnit unit)
-        {
-            if (unit != null)
-            {
-                return (unit.Name == Me.Name) ? "Myself" : unit.Name;
-            }
-
-            return "No Target";
-        }
-
+       
         
 
         public override void Initialize()
         {
-            TroubleshootLog("Attatching BotEvents");
+            CLULogger.TroubleshootLog("Attatching BotEvents");
             BotEvents.OnBotStarted += CombatLogEvents.Instance.CombatLogEventsOnStarted;
             BotEvents.OnBotStopped += CombatLogEvents.Instance.CombatLogEventsOnStopped;
             BotEvents.Player.OnMapChanged += CombatLogEvents.Instance.Player_OnMapChanged;
@@ -394,14 +339,14 @@ namespace CLU
             ///////////////////////////////////////////////////////////////////
             // Start non invasive user information
             ///////////////////////////////////////////////////////////////////
-            TroubleshootLog("Character level: {0}", Me.Level);
-            TroubleshootLog("Character Faction: {0}", Me.IsAlliance ? "Alliance" : "Horde");
-            TroubleshootLog("Character Race: {0}", Me.Race);
-            TroubleshootLog("Character Mapname: {0}", Me.MapName);
-            TroubleshootLog("GroupType: {0}", GroupType.ToString());
-            TroubleshootLog("LocationContext: {0}", LocationContext.ToString());
+            CLULogger.TroubleshootLog("Character level: {0}", Me.Level);
+            CLULogger.TroubleshootLog("Character Faction: {0}", Me.IsAlliance ? "Alliance" : "Horde");
+            CLULogger.TroubleshootLog("Character Race: {0}", Me.Race);
+            CLULogger.TroubleshootLog("Character Mapname: {0}", Me.MapName);
+            CLULogger.TroubleshootLog("GroupType: {0}", GroupType.ToString());
+            CLULogger.TroubleshootLog("LocationContext: {0}", LocationContext.ToString());
             // Talents
-            TroubleshootLog("Retrieving Talent Spec");
+            CLULogger.TroubleshootLog("Retrieving Talent Spec");
             try
             {
                 TalentManager.Update();
@@ -410,7 +355,7 @@ namespace CLU
             {
                 StopBot(e.ToString());
             }
-            TroubleshootLog(" Character Current Build: {0}", TalentManager.CurrentSpec.ToString());
+            CLULogger.TroubleshootLog(" Character Current Build: {0}", TalentManager.CurrentSpec.ToString());
 
             // Intialize Behaviors....TODO: Change this ?
             if (_combatBehavior == null)
@@ -434,24 +379,24 @@ namespace CLU
             {
                 return;
             }
-            TroubleshootLog(" Behaviors created!");
+            CLULogger.TroubleshootLog(" Behaviors created!");
             // Racials
-            TroubleshootLog("Retrieving Racial Abilities");
+            CLULogger.TroubleshootLog("Retrieving Racial Abilities");
             foreach (WoWSpell racial in Racials.CurrentRacials)
             {
-                TroubleshootLog(" Character Racial Abilitie: {0} ", racial.Name);
+                CLULogger.TroubleshootLog(" Character Racial Abilitie: {0} ", racial.Name);
             }
-            TroubleshootLog(" {0}", Me.IsInInstance ? "Character is currently in an Instance" : "Character seems to be outside an Instance");
-            TroubleshootLog(" {0}", StyxWoW.Me.CurrentMap.IsArena ? "Character is currently in an Arena" : "Character seems to be outside an Arena");
-            TroubleshootLog(" {0}", StyxWoW.Me.CurrentMap.IsBattleground ? "Character is currently in a Battleground  " : "Character seems to be outside a Battleground");
-            TroubleshootLog(" {0}", StyxWoW.Me.CurrentMap.IsDungeon ? "Character is currently in a Dungeon  " : "Character seems to be outside a Dungeon");
-            TroubleshootLog("Character HB Pull Range: {0}", Targeting.PullDistance);
+            CLULogger.TroubleshootLog(" {0}", Me.IsInInstance ? "Character is currently in an Instance" : "Character seems to be outside an Instance");
+            CLULogger.TroubleshootLog(" {0}", StyxWoW.Me.CurrentMap.IsArena ? "Character is currently in an Arena" : "Character seems to be outside an Arena");
+            CLULogger.TroubleshootLog(" {0}", StyxWoW.Me.CurrentMap.IsBattleground ? "Character is currently in a Battleground  " : "Character seems to be outside a Battleground");
+            CLULogger.TroubleshootLog(" {0}", StyxWoW.Me.CurrentMap.IsDungeon ? "Character is currently in a Dungeon  " : "Character seems to be outside a Dungeon");
+            CLULogger.TroubleshootLog("Character HB Pull Range: {0}", Targeting.PullDistance);
             ///////////////////////////////////////////////////////////////////
             // END non invasive user information
             ///////////////////////////////////////////////////////////////////
 
             // Create the new List of HealableUnit type.
-            TroubleshootLog("Initializing list of HealableUnits");
+            CLULogger.TroubleshootLog("Initializing list of HealableUnits");
             switch (CLUSettings.Instance.SelectedHealingAquisition)
             {
                 case HealingAquisitionMethod.Proximity:
@@ -461,16 +406,16 @@ namespace CLU
                     HealableUnit.HealableUnitsByPartyorRaid();
                     break;
             }
-            TroubleshootLog(" {0}", IsHealerRotationActive ? "Healer Base Detected" : "No Healer Base Detectected");
+            CLULogger.TroubleshootLog(" {0}", IsHealerRotationActive ? "Healer Base Detected" : "No Healer Base Detectected");
 
             // Initialize Botchecks
-            TroubleshootLog("Initializing Bot Checker");
+            CLULogger.TroubleshootLog("Initializing Bot Checker");
             BotChecker.Initialize();
 
-            TroubleshootLog("Initializing Sound Player");
+            CLULogger.TroubleshootLog("Initializing Sound Player");
             SoundManager.Initialize();
 
-            TroubleshootLog("Initializing Keybinds");
+            CLULogger.TroubleshootLog("Initializing Keybinds");
             this._clupulsetimer.Interval = 1000; // 1second
             this._clupulsetimer.Elapsed += ClupulsetimerElapsed; // Attatch
             this._clupulsetimer.Enabled = true; // Enable
@@ -480,12 +425,12 @@ namespace CLU
 
             //TroubleshootLog("Initializing DpsMeter");
             //DpsMeter.Initialize();
-            TroubleshootLog("Initialization Complete");
+            CLULogger.TroubleshootLog("Initialization Complete");
         }
 
         private void RoutineManagerReloaded(object sender, EventArgs e)
         {
-            TroubleshootLog("Routines were reloaded, re-creating behaviors");
+            CLULogger.TroubleshootLog("Routines were reloaded, re-creating behaviors");
             CreateBehaviors();
         }
 
@@ -551,7 +496,7 @@ namespace CLU
                         var rb = constructorInfo.Invoke(new object[] { }) as RotationBase;
                         if (rb != null && SpellManager.HasSpell(rb.KeySpellId))
                         {
-                            TroubleshootLog(" Using " + rb.Name + " rotation. Character has " + rb.KeySpell);
+                            CLULogger.TroubleshootLog(" Using " + rb.Name + " rotation. Character has " + rb.KeySpell);
                             this._rotations.Add(rb);
                         }
                         else
@@ -580,7 +525,7 @@ namespace CLU
                 {
                     if (this._rotations.Count == 0)
                     {
-                        Log("Couldn't finde a rotation for you, Contact us!");
+                        CLULogger.Log("Couldn't finde a rotation for you, Contact us!");
                         StopBot("Unable to find Active Rotation");
                     }
                     else
@@ -588,7 +533,7 @@ namespace CLU
                         RotationBase r = this._rotations.FirstOrDefault();
                         if (r != null)
                         {
-                            Log("Found rotation: " + r.Name);
+                            CLULogger.Log("Found rotation: " + r.Name);
                             this.SetActiveRotation(r);
                         }
                     }
@@ -612,8 +557,8 @@ namespace CLU
                     sb.AppendLine();
                 }
                 string errorMessage = sb.ToString();
-                Log(" Woops, we could not set the rotation.");
-                Log(errorMessage);
+                CLULogger.Log(" Woops, we could not set the rotation.");
+                CLULogger.Log(errorMessage);
                 StopBot(" Unable to find Active Rotation: " + ex);
             }
         }
@@ -636,7 +581,7 @@ namespace CLU
 
         private static void StopBot(string reason)
         {
-            TroubleshootLog(reason);
+            CLULogger.TroubleshootLog(reason);
             TreeRoot.Stop();
         }
 
@@ -647,15 +592,15 @@ namespace CLU
         /// <param name="rb">an instance of the rotationbase</param>
         private void SetActiveRotation(RotationBase rb)
         {
-            Log(" Greetings, level {0} user!", Me.Level);
-            Log(" I am CLU.");
-            Log(" I will create the perfect system for you.");
-            Log(" I suggest we use the " + rb.Name + " rotation. Revision: " + rb.Revision);
-            Log(" as I know you have " + rb.KeySpell);
-            Log(" BotBase: {0}  ({1})", BotManager.Current.Name, BotChecker.SupportedBotBase() ? "Supported" : "Currently Not Supported");
-            Log(rb.Help);
-            Log(" You can Access CLU's Settings by clicking the CLASS CONFIG button");
-            Log(" Let's execute the plan!");
+            CLULogger.Log(" Greetings, level {0} user!", Me.Level);
+            CLULogger.Log(" I am CLU.");
+            CLULogger.Log(" I will create the perfect system for you.");
+            CLULogger.Log(" I suggest we use the " + rb.Name + " rotation. Revision: " + rb.Revision);
+            CLULogger.Log(" as I know you have " + rb.KeySpell);
+            CLULogger.Log(" BotBase: {0}  ({1})", BotManager.Current.Name, BotChecker.SupportedBotBase() ? "Supported" : "Currently Not Supported");
+            CLULogger.Log(rb.Help);
+            CLULogger.Log(" You can Access CLU's Settings by clicking the CLASS CONFIG button");
+            CLULogger.Log(" Let's execute the plan!");
 
             this._rotationBase = rb;
 
@@ -665,13 +610,13 @@ namespace CLU
             // Check for Instancebuddy and warn user that healing is not supported.
             if (BotChecker.BotBaseInUse("Instancebuddy") && this.ActiveRotation.GetType().BaseType == typeof(HealerRotationBase))
             {
-                Log(" [BotChecker] Instancebuddy Detected. *UNABLE TO HEAL WITH CLU*");
+                CLULogger.Log(" [BotChecker] Instancebuddy Detected. *UNABLE TO HEAL WITH CLU*");
                 StopBot("You cannot use CLU with InstanceBuddy as Healer");
             }
 
             if (this.ActiveRotation.GetType().BaseType == typeof(HealerRotationBase))
             {
-                TroubleshootLog(" [HealingChecker] HealerRotationBase Detected. *Activating Automatic HealableUnit refresh*");
+                CLULogger.TroubleshootLog(" [HealingChecker] HealerRotationBase Detected. *Activating Automatic HealableUnit refresh*");
                 IsHealerRotationActive = true;
             }
         }

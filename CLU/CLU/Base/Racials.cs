@@ -10,6 +10,7 @@
  */
 #endregion
 
+using CLU.Helpers;
 using CLU.Settings;
 
 namespace CLU.Base
@@ -38,7 +39,7 @@ namespace CLU.Base
 
                 foreach (WoWSpell r in CurrentRacials.Where(racial => Spell.CanCast(racial.Name, StyxWoW.Me) && RacialUsageSatisfied(racial)))
                 {
-                    CLU.Log(" [Racial Abilitie] {0} ", r.Name);
+                    CLULogger.Log(" [Racial Abilitie] {0} ", r.Name);
                     SpellManager.Cast(r.Name);
                 }
 

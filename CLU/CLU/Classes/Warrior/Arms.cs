@@ -154,7 +154,7 @@ namespace CLU.Classes.Warrior
             {
                 return (
                     new PrioritySelector(
-                        //new Action(a => { CLU.Log("I am the start of public Composite baseRotation"); return RunStatus.Failure; }),
+                        //new Action(a => { SysLog.Log("I am the start of public Composite baseRotation"); return RunStatus.Failure; }),
                         //PvP Utilities
                         Buff.CastBuff("Battle Stance",              ret => !Macro.weaponSwap && Me.Shapeshift != ShapeshiftForm.BattleStance, "Battle Stance"),
                         Buff.CastBuff("Defensive Stance",           ret => Macro.weaponSwap && Me.Shapeshift != ShapeshiftForm.DefensiveStance, "Defensive Stance"),
@@ -247,7 +247,7 @@ namespace CLU.Classes.Warrior
             {
                 return (
                     new PrioritySelector(
-                        //new Action(a => { CLU.Log("I am the start of public override Composite PVPRotation"); return RunStatus.Failure; }),
+                        //new Action(a => { SysLog.Log("I am the start of public override Composite PVPRotation"); return RunStatus.Failure; }),
                         CrowdControl.freeMe(),
                         new Decorator(ret => Macro.Manual || BotChecker.BotBaseInUse("BGBuddy"),
                             new Decorator(ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget),
@@ -284,7 +284,7 @@ namespace CLU.Classes.Warrior
                     new Decorator(ret => Me.Inventory.Equipped.OffHand == null && !string.IsNullOrEmpty(CLUSettings.Instance.Warrior.PvPMainHandItemName) && !string.IsNullOrEmpty(CLUSettings.Instance.Warrior.PvPOffHandItemName) && CLUSettings.Instance.Warrior.PvPMainHandItemName != "Input the name of your Main-Hand weapon here" && CLUSettings.Instance.Warrior.PvPOffHandItemName != "Input the name of your Off-Hand weapon here",
                         new Action(delegate
                         {
-                            CLU.Log("Switching to Defensive Mode. Using MainHand: [{0}] Using OffHand: [{1}]", CLUSettings.Instance.Warrior.PvPMainHandItemName, CLUSettings.Instance.Warrior.PvPOffHandItemName);
+                            CLULogger.Log("Switching to Defensive Mode. Using MainHand: [{0}] Using OffHand: [{1}]", CLUSettings.Instance.Warrior.PvPMainHandItemName, CLUSettings.Instance.Warrior.PvPOffHandItemName);
                             Lua.DoString("RunMacroText(\"/equipslot 16 " + CLUSettings.Instance.Warrior.PvPMainHandItemName + "\")");
                             Lua.DoString("RunMacroText(\"/equipslot 17 " + CLUSettings.Instance.Warrior.PvPOffHandItemName + "\")");
                             return RunStatus.Failure;
@@ -301,7 +301,7 @@ namespace CLU.Classes.Warrior
                     new Decorator(ret => Me.Inventory.Equipped.OffHand != null && !string.IsNullOrEmpty(CLUSettings.Instance.Warrior.PvPTwoHandItemName) && CLUSettings.Instance.Warrior.PvPTwoHandItemName != "Input the name of your Two-Hand weapon here",
                         new Action(delegate
                         {
-                            CLU.Log("Switching to Offensive Mode. Using TwoHand: [{0}] ", CLUSettings.Instance.Warrior.PvPTwoHandItemName);
+                            CLULogger.Log("Switching to Offensive Mode. Using TwoHand: [{0}] ", CLUSettings.Instance.Warrior.PvPTwoHandItemName);
                             Lua.DoString("RunMacroText(\"/equipslot 16 " + CLUSettings.Instance.Warrior.PvPTwoHandItemName + "\")");
                             return RunStatus.Failure;
                         })

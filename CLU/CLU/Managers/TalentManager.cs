@@ -12,6 +12,8 @@
 
 // This was part of Singular - A community driven Honorbuddy CC
 
+using CLU.Helpers;
+
 namespace CLU.Managers
 {
     using System;
@@ -77,7 +79,7 @@ namespace CLU.Managers
 
             if (CurrentSpec != oldSpec)
             {
-                CLU.TroubleshootLog("Your spec has been changed. Rebuilding rotation");
+                CLULogger.TroubleshootLog("Your spec has been changed. Rebuilding rotation");
                 //SpellManager.Update();
                 CLU.Instance.CreateBehaviors();
             }
@@ -124,15 +126,15 @@ namespace CLU.Managers
                         {
                             case 1:
                                 CLUSettings.Instance.DeathKnight.DeathKnightTierOneTalent = DeathKnightTierOneTalent.RoilingBlood;
-                                CLU.TroubleshootLog("TalentManager - Setting DeathKnightTierOneTalent to {0}", DeathKnightTierOneTalent.RoilingBlood);
+                                CLULogger.TroubleshootLog("TalentManager - Setting DeathKnightTierOneTalent to {0}", DeathKnightTierOneTalent.RoilingBlood);
                                 break;
                             case 2:
                                 CLUSettings.Instance.DeathKnight.DeathKnightTierOneTalent = DeathKnightTierOneTalent.PlagueLeech;
-                                CLU.TroubleshootLog("TalentManager - Setting DeathKnightTierOneTalent to {0}", DeathKnightTierOneTalent.PlagueLeech);
+                                CLULogger.TroubleshootLog("TalentManager - Setting DeathKnightTierOneTalent to {0}", DeathKnightTierOneTalent.PlagueLeech);
                                 break;
                             case 3:
                                 CLUSettings.Instance.DeathKnight.DeathKnightTierOneTalent = DeathKnightTierOneTalent.UnholyBlight;
-                                CLU.TroubleshootLog("TalentManager - Setting DeathKnightTierOneTalent to {0}", DeathKnightTierOneTalent.UnholyBlight);
+                                CLULogger.TroubleshootLog("TalentManager - Setting DeathKnightTierOneTalent to {0}", DeathKnightTierOneTalent.UnholyBlight);
                                 break;
                         }
                     }
@@ -142,7 +144,7 @@ namespace CLU.Managers
 
                 var glyphCount = Lua.GetReturnVal<int>("return GetNumGlyphSockets()", 0);
 
-                CLU.TroubleshootLog("Glyphdetection - GetNumGlyphSockets {0}", glyphCount);
+                CLULogger.TroubleshootLog("Glyphdetection - GetNumGlyphSockets {0}", glyphCount);
 
                 if (glyphCount != 0)
                 {
@@ -156,18 +158,18 @@ namespace CLU.Managers
                         {
                             if (glyphSpellId > 0)
                             {
-                                CLU.TroubleshootLog("Glyphdetection - SpellId: {0},Name:{1} ,WoWSpell: {2}", glyphSpellId, WoWSpell.FromId(glyphSpellId).Name, WoWSpell.FromId(glyphSpellId));
+                                CLULogger.TroubleshootLog("Glyphdetection - SpellId: {0},Name:{1} ,WoWSpell: {2}", glyphSpellId, WoWSpell.FromId(glyphSpellId).Name, WoWSpell.FromId(glyphSpellId));
                                 Glyphs.Add(WoWSpell.FromId(glyphSpellId).Name.Replace("Glyph of ", ""));
                             }
                             else
                             {
-                                CLU.TroubleshootLog("Glyphdetection - Couldn't find all values to detect the Glyph in slot {0}", i);
+                                CLULogger.TroubleshootLog("Glyphdetection - Couldn't find all values to detect the Glyph in slot {0}", i);
                             }
                         }
                         catch (Exception ex)
                         {
-                            CLU.DiagnosticLog("We couldn't detect your Glyphs");
-                            CLU.DiagnosticLog("Report this message to us: " + ex);
+                            CLULogger.DiagnosticLog("We couldn't detect your Glyphs");
+                            CLULogger.DiagnosticLog("Report this message to us: " + ex);
                         }
                     }
                 }
@@ -179,7 +181,7 @@ namespace CLU.Managers
         {
             foreach (var glyph in Glyphs)
             {
-                CLU.TroubleshootLog("{0}", glyph);
+                CLULogger.TroubleshootLog("{0}", glyph);
             }
         }
 

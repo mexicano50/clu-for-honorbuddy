@@ -167,7 +167,7 @@ namespace CLU.Helpers
             return new Decorator(
                        x => (IsFadingLight() || IsHourofTwilight()) && CLUSettings.Instance.ClickExtraActionButton, //|| IsShrapnel() todo: removed...cos its retarted.
                        new Sequence(
-                           new Action(a => CLU.TroubleshootLog(" [ExtraActionButton] Time to get Lazy!")),
+                           new Action(a => CLULogger.TroubleshootLog(" [ExtraActionButton] Time to get Lazy!")),
                            Item.RunMacroText("/click ExtraActionButton1", ret => true, "[Push Button] ExtraActionButton1"),
                            new ActionAlwaysFail())); // continue down the tree
         }

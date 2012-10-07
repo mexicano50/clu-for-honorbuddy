@@ -16,6 +16,7 @@ using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
 using System.Collections.Generic;
+using CLU.Helpers;
 using Styx.TreeSharp;
 using CLU.Base;
 using CLU.Classes;
@@ -93,7 +94,7 @@ namespace CLU.GUI
                         if (ctrl.Name != cmbobox.Name) {
                             bool matchs = ((ComboBox)ctrl).SelectedValue.ToString() == cmbobox.SelectedValue.ToString();
                             if (matchs && ((ComboBox)ctrl).SelectedValue.ToString() != "Nothing") {
-                                CLU.TroubleshootLog(" [Keybind Match] {0} == {1}. Please Make another selection", ctrl.Name, cmbobox.Name);
+                                CLULogger.TroubleshootLog(" [Keybind Match] {0} == {1}. Please Make another selection", ctrl.Name, cmbobox.Name);
                                 cmbobox.SelectedIndex = cmbobox.FindStringExact("Nothing");
                             }
                         }

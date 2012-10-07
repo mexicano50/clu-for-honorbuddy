@@ -204,8 +204,8 @@ namespace CLU.Classes.Priest
                                                              Spell.CastSpell("Inner Focus", a => true, "Inner Focus"),
                                                              Spell.CastHeal("Greater Heal", a => Buff.PlayerHasActiveBuff("Inner Focus"), "Greater heal")
                                                      )),
-                                                 //Spell.CastSpellOnCurrentTargetsTarget("Holy Fire", u => HealTarget, ret => HealTarget != null && IsAtonementSpec && StyxWoW.Me.Combat, "Holy Fire. Using " + CLU.SafeName(HealTarget) + "'s Target", true),
-                                                 //Spell.CastSpellOnCurrentTargetsTarget("Smite", u => HealTarget, ret => HealTarget != null && IsAtonementSpec && StyxWoW.Me.Combat, "Smite. Using " + CLU.SafeName(HealTarget) + "'s Target", true),
+                                                 //Spell.CastSpellOnCurrentTargetsTarget("Holy Fire", u => HealTarget, ret => HealTarget != null && IsAtonementSpec && StyxWoW.Me.Combat, "Holy Fire. Using " + SysLog.SafeName(HealTarget) + "'s Target", true),
+                                                 //Spell.CastSpellOnCurrentTargetsTarget("Smite", u => HealTarget, ret => HealTarget != null && IsAtonementSpec && StyxWoW.Me.Combat, "Smite. Using " + SysLog.SafeName(HealTarget) + "'s Target", true),
                                                  Spell.CastHeal("Greater Heal", a => HealTarget != null && HealTarget.HealthPercent < CLUSettings.Instance.Priest.GreaterHealParty, "Greater heal"),
                                                  Spell.CastHeal("Heal", a => true, "heal")
                                                 ),

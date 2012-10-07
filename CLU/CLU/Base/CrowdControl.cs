@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using CLU.Helpers;
 using Styx.TreeSharp;
 using Styx.WoWInternals;
 using Styx;
@@ -23,7 +24,7 @@ namespace CLU.Base
                     {
                         foreach (WoWSpell s in freeMeSpellList.Where(spell => Spell.CanCast(spell.Name, StyxWoW.Me) && freeMeSpellUsage(spell)))
                         {
-                            CLU.Log(" [Freeing you via] {0} ", s.Name);
+                            CLULogger.Log(" [Freeing you via] {0} ", s.Name);
                             SpellManager.Cast(s.Name);
                         }
                         return RunStatus.Success;

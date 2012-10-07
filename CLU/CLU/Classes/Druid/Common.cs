@@ -12,6 +12,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using CLU.Helpers;
 using CLU.Managers;
 using CLU.Settings;
 using Styx;
@@ -54,7 +55,7 @@ namespace CLU.Classes.Druid
                  }
                  catch
                  {
-                     CLU.DiagnosticLog(" Lua Failed in PlayerEnergy");
+                     CLULogger.DiagnosticLog(" Lua Failed in PlayerEnergy");
                      return 0;
                  }
              }
@@ -74,7 +75,7 @@ namespace CLU.Classes.Druid
                  }
                  catch
                  {
-                     CLU.DiagnosticLog(" Lua Failed in EnergyRegen");
+                     CLULogger.DiagnosticLog(" Lua Failed in EnergyRegen");
                      return 0;
                  }
              }
@@ -140,7 +141,7 @@ namespace CLU.Classes.Druid
                  }
                  catch
                  {
-                     CLU.DiagnosticLog(" Calculation Failed in TimetoEnergyCap");
+                     CLULogger.DiagnosticLog(" Calculation Failed in TimetoEnergyCap");
                      return 999999;
                  }
              }

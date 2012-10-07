@@ -48,21 +48,21 @@ namespace CLU.CombatLog
         {
             try
             {
-                CLU.TroubleshootLog("CombatLogEvents: Connected to the Grid");
+                CLULogger.TroubleshootLog("CombatLogEvents: Connected to the Grid");
                 // means spell was cast (did not hit target yet)
-                CLU.TroubleshootLog("CombatLogEvents: Connect UNIT_SPELLCAST_SUCCEEDED");
+                CLULogger.TroubleshootLog("CombatLogEvents: Connect UNIT_SPELLCAST_SUCCEEDED");
                 Lua.Events.AttachEvent("UNIT_SPELLCAST_SUCCEEDED", this.OnSpellFired_ACK);
                 // user got stunned, silenced, kicked...
-                CLU.TroubleshootLog("CombatLogEvents: Connect UNIT_SPELLCAST_INTERRUPTED");
+                CLULogger.TroubleshootLog("CombatLogEvents: Connect UNIT_SPELLCAST_INTERRUPTED");
                 Lua.Events.AttachEvent("UNIT_SPELLCAST_INTERRUPTED", this.OnSpellFired_NACK);
                 // misc fails, due to stopcast, spell spam, etc.
-                CLU.TroubleshootLog("CombatLogEvents: Connect UNIT_SPELLCAST_FAILED");
+                CLULogger.TroubleshootLog("CombatLogEvents: Connect UNIT_SPELLCAST_FAILED");
                 Lua.Events.AttachEvent("UNIT_SPELLCAST_FAILED", this.OnSpellFired_FAIL);
-                CLU.TroubleshootLog("CombatLogEvents: Connect UNIT_SPELLCAST_FAILED_QUIET");
+                CLULogger.TroubleshootLog("CombatLogEvents: Connect UNIT_SPELLCAST_FAILED_QUIET");
                 Lua.Events.AttachEvent("UNIT_SPELLCAST_FAILED_QUIET", this.OnSpellFired_FAIL);
-                CLU.TroubleshootLog("CombatLogEvents: Connect UNIT_SPELLCAST_STOP");
+                CLULogger.TroubleshootLog("CombatLogEvents: Connect UNIT_SPELLCAST_STOP");
                 Lua.Events.AttachEvent("UNIT_SPELLCAST_STOP", this.OnSpellFired_FAIL);
-                CLU.TroubleshootLog("CombatLogEvents: Connect PARTY_MEMBERS_CHANGED");
+                CLULogger.TroubleshootLog("CombatLogEvents: Connect PARTY_MEMBERS_CHANGED");
                 Lua.Events.AttachEvent("PARTY_MEMBERS_CHANGED", this.HandlePartyMembersChanged);
 
                 if ((CLU.LocationContext != GroupLogic.Battleground && CLU.LocationContext != GroupLogic.PVE) || TalentManager.CurrentSpec == WoWSpec.DruidFeral)
@@ -70,7 +70,7 @@ namespace CLU.CombatLog
             }
             catch (Exception ex)
             { 
-                CLU.DiagnosticLog("HandlePartyMembersChanged : {0}", ex);
+                CLULogger.DiagnosticLog("HandlePartyMembersChanged : {0}", ex);
             }
         }
 
@@ -102,11 +102,11 @@ namespace CLU.CombatLog
                     "COMBAT_LOG_EVENT_UNFILTERED",
                     "return args[2] == 'SPELL_CAST_SUCCESS' or args[2] == 'SPELL_AURA_APPLIED' or args[2] == 'SPELL_DAMAGE' or args[2] == 'SPELL_AURA_REFRESH' or args[2] == 'SPELL_AURA_REMOVED'or args[2] == 'SPELL_MISSED' or args[2] == 'RANGE_MISSED' or args[2] =='SWING_MISSED'"))
             {
-                CLU.TroubleshootLog(
+                CLULogger.TroubleshootLog(
                     "ERROR: Could not add combat log event filter! - Performance may be horrible, and things may not work properly!");
             }
 
-            CLU.TroubleshootLog("Attached combat log");
+            CLULogger.TroubleshootLog("Attached combat log");
             _combatLogAttached = true;
         }
 
@@ -115,7 +115,7 @@ namespace CLU.CombatLog
             if (!_combatLogAttached)
                 return;
 
-            CLU.TroubleshootLog("Detached combat log");
+            CLULogger.TroubleshootLog("Detached combat log");
             Lua.Events.DetachEvent("COMBAT_LOG_EVENT_UNFILTERED", HandleCombatLog);
             _combatLogAttached = false;
         }
@@ -124,7 +124,7 @@ namespace CLU.CombatLog
         {
             try {
                 if (CLU.IsHealerRotationActive && StyxWoW.IsInGame) {
-                    CLU.TroubleshootLog( "CombatLogEvents: Party Members Changed - Re-Initialize list Of HealableUnits");
+                    CLULogger.TroubleshootLog( "CombatLogEvents: Party Members Changed - Re-Initialize list Of HealableUnits");
                     switch (CLUSettings.Instance.SelectedHealingAquisition) {
                     case HealingAquisitionMethod.Proximity:
                         HealableUnit.HealableUnitsByProximity();
@@ -135,7 +135,7 @@ namespace CLU.CombatLog
                     }
                 }
             } catch (Exception ex) {
-                CLU.DiagnosticLog("HandlePartyMembersChanged : {0}", ex);
+                CLULogger.DiagnosticLog("HandlePartyMembersChanged : {0}", ex);
             }
 
         }
@@ -155,11 +155,11 @@ namespace CLU.CombatLog
                     return;
                 }
 
-                CLU.TroubleshootLog("Context changed. New context: " + CLU.LocationContext + ". Rebuilding behaviors.");
+                CLULogger.TroubleshootLog("Context changed. New context: " + CLU.LocationContext + ". Rebuilding behaviors.");
                 CLU.Instance.CreateBehaviors();
 
                 if (CLU.IsHealerRotationActive && StyxWoW.IsInGame) {
-                    CLU.TroubleshootLog( "CombatLogEvents: Party Members Changed - Re-Initialize list Of HealableUnits");
+                    CLULogger.TroubleshootLog( "CombatLogEvents: Party Members Changed - Re-Initialize list Of HealableUnits");
                     switch (CLUSettings.Instance.SelectedHealingAquisition) {
                     case HealingAquisitionMethod.Proximity:
                         HealableUnit.HealableUnitsByProximity();
@@ -170,7 +170,7 @@ namespace CLU.CombatLog
                     }
                 }
             } catch (Exception ex) {
-                CLU.DiagnosticLog("Player_OnMapChanged : {0}", ex);
+                CLULogger.DiagnosticLog("Player_OnMapChanged : {0}", ex);
             }
         }
 
@@ -205,7 +205,7 @@ namespace CLU.CombatLog
             var sourceGuid = ulong.Parse(args[3].ToString().Replace("0x", string.Empty), NumberStyles.HexNumber);
 
             if (!success && spellCast) {
-                CLU.DiagnosticLog("Woops, '{0}' cast failed: {1}", spellName, raw.EventName);
+                CLULogger.DiagnosticLog("Woops, '{0}' cast failed: {1}", spellName, raw.EventName);
             }
 
             // if the spell is locked, let's extend it (spell travel time + client lag) / or reset it...
@@ -244,11 +244,11 @@ namespace CLU.CombatLog
                 case "Holy Radiance":
                 case "Divine Light":
                 case "Holy Shock":
-                    CLU.DiagnosticLog("Sleeping for heal success. ({0})", spellName);
+                    CLULogger.DiagnosticLog("Sleeping for heal success. ({0})", spellName);
                     StyxWoW.SleepForLagDuration();
                     break;
                 case "Nature's Swiftness":
-                    CLU.DiagnosticLog("PrevNaturesSwiftness. ({0})", spellName);
+                    CLULogger.DiagnosticLog("PrevNaturesSwiftness. ({0})", spellName);
                     if (sourceGuid == StyxWoW.Me.Guid)
                     {
                         Classes.Druid.Common.PrevNaturesSwiftness = spellId == 132158;
@@ -268,7 +268,7 @@ namespace CLU.CombatLog
                 case "SWING_MISSED":
                     if (e.Args[11].ToString() == "EVADE")
                     {
-                        CLU.TroubleshootLog("Mob is evading swing. Blacklisting it!");
+                        CLULogger.TroubleshootLog("Mob is evading swing. Blacklisting it!");
                         Blacklist.Add(e.DestGuid, TimeSpan.FromMinutes(30));
                         if (StyxWoW.Me.CurrentTargetGuid == e.DestGuid)
                         {
@@ -283,7 +283,7 @@ namespace CLU.CombatLog
                         WoWUnit unit = e.DestUnit;
                         if (unit != null && !unit.IsPlayer)
                         {
-                            CLU.TroubleshootLog("{0} is immune to {1} spell school", unit.Name, e.SpellSchool);
+                            CLULogger.TroubleshootLog("{0} is immune to {1} spell school", unit.Name, e.SpellSchool);
                             SpellImmunityManager.Add(unit.Entry, e.SpellSchool);
                         }
                     }
@@ -293,7 +293,7 @@ namespace CLU.CombatLog
                 case "RANGE_MISSED":
                     if (e.Args[14].ToString() == "EVADE")
                     {
-                        CLU.TroubleshootLog("Mob is evading ranged attack. Blacklisting it!");
+                        CLULogger.TroubleshootLog("Mob is evading ranged attack. Blacklisting it!");
                         Blacklist.Add(e.DestGuid, TimeSpan.FromMinutes(30));
                         if (StyxWoW.Me.CurrentTargetGuid == e.DestGuid)
                         {
@@ -308,7 +308,7 @@ namespace CLU.CombatLog
                         WoWUnit unit = e.DestUnit;
                         if (unit != null && !unit.IsPlayer)
                         {
-                            CLU.TroubleshootLog("{0} is immune to {1} spell school", unit.Name, e.SpellSchool);
+                            CLULogger.TroubleshootLog("{0} is immune to {1} spell school", unit.Name, e.SpellSchool);
                             SpellImmunityManager.Add(unit.Entry, e.SpellSchool);
                         }
                     }

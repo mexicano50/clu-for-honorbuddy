@@ -10,6 +10,8 @@
  */
 #endregion
 
+using CLU.Helpers;
+
 namespace CLU.Classes.DeathKnight
 {
     using System;
@@ -88,7 +90,7 @@ namespace CLU.Classes.DeathKnight
             }
             catch (Exception ex)
             {
-                CLU.DiagnosticLog("IsWieldingBigWeapon : {0}", ex);
+                CLULogger.DiagnosticLog("IsWieldingBigWeapon : {0}", ex);
             }
 
             return false;
@@ -113,7 +115,7 @@ namespace CLU.Classes.DeathKnight
             }
             catch (Exception ex)
             {
-                CLU.TroubleshootLog( "CanPlagueLeech : {0}", ex);
+                CLULogger.TroubleshootLog( "CanPlagueLeech : {0}", ex);
             }
 
             return false;

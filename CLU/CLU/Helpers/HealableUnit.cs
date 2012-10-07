@@ -117,7 +117,7 @@ namespace CLU.Helpers
                     Remove();
                 }
             } catch (Exception ex) {
-                CLU.DiagnosticLog("HealableUnit Pulse : {0}", ex);
+                CLULogger.DiagnosticLog("HealableUnit Pulse : {0}", ex);
             }
         }
 
@@ -327,7 +327,7 @@ namespace CLU.Helpers
                 try {
                     return this.UnitObject.Location;
                 } catch (Exception ex) {
-                    CLU.DiagnosticLog("Error with Healable Unit Location : {0}", ex);
+                    CLULogger.DiagnosticLog("Error with Healable Unit Location : {0}", ex);
                 }
                 return new WoWPoint();
             }
@@ -402,15 +402,15 @@ namespace CLU.Helpers
                     var list = new List<HealableUnit>();
 
                     if (!HealableUnit.Contains(Me)) {
-                        CLU.TroubleshootLog( "Adding: {0} to list of Healable Units", CLU.SafeName(Me.ToPlayer()));
+                        CLULogger.TroubleshootLog( "Adding: {0} to list of Healable Units", CLULogger.SafeName(Me.ToPlayer()));
                         list.Add(new HealableUnit(Me));
                     }
 
-                    // CLU.TroubleshootLog("Units Count = {0}", grps.Count());
+                    // SysLog.TroubleshootLog("Units Count = {0}", grps.Count());
 
                     foreach (WoWPartyMember p in grps)
                     {
-                        CLU.TroubleshootLog( "Adding Group Member: {0} to list of Healable Units", CLU.SafeName(p.ToPlayer()));
+                        CLULogger.TroubleshootLog( "Adding Group Member: {0} to list of Healable Units", CLULogger.SafeName(p.ToPlayer()));
                         var role = p.Role;
                         bool tank = false;
                         bool healer = ((role & WoWPartyMember.GroupRole.Healer) != 0);
@@ -419,21 +419,21 @@ namespace CLU.Helpers
 
                         // Set tank by role
                         if ((role & WoWPartyMember.GroupRole.Tank) != 0) {
-                            CLU.TroubleshootLog( " Setting {0} as tank based on Raid Role.", CLU.SafeName(p.ToPlayer()) + " " + p.ToPlayer().Level);
+                            CLULogger.TroubleshootLog( " Setting {0} as tank based on Raid Role.", CLULogger.SafeName(p.ToPlayer()) + " " + p.ToPlayer().Level);
                             tank = true;
                         }
 
                         // If the user has a focus target set, use it instead.
                         if (StyxWoW.Me.FocusedUnitGuid != 0 && StyxWoW.Me.FocusedUnit.Guid == p.ToPlayer().Guid)
                         {
-                            CLU.TroubleshootLog( "Setting {0} as tank based on FocusedUnit.", CLU.SafeName(p.ToPlayer()) + " " + p.ToPlayer().Level);
+                            CLULogger.TroubleshootLog( "Setting {0} as tank based on FocusedUnit.", CLULogger.SafeName(p.ToPlayer()) + " " + p.ToPlayer().Level);
                             tank = true;
                         }
 
                         // RaF
                         if (RaFHelper.Leader != null && RaFHelper.Leader.CurrentHealth > 1 && RaFHelper.Leader != Me && RaFHelper.Leader.Guid == p.ToPlayer().Guid)
                         {
-                            CLU.TroubleshootLog( "Setting {0} as tank based on RaFHelper.Leader.", CLU.SafeName(Me) + " " + p.ToPlayer().Level);
+                            CLULogger.TroubleshootLog( "Setting {0} as tank based on RaFHelper.Leader.", CLULogger.SafeName(Me) + " " + p.ToPlayer().Level);
                             tank = true;
                         }
 
@@ -446,7 +446,7 @@ namespace CLU.Helpers
 
                     result = list;
                 } catch (Exception ex) {
-                    CLU.DiagnosticLog("HealableUnits : {0}", ex);
+                    CLULogger.DiagnosticLog("HealableUnits : {0}", ex);
                 }
 
                 return result;
@@ -465,23 +465,23 @@ namespace CLU.Helpers
                     var proximitylist = Unit.HealList.Where(p => !HealableUnit.Contains(p.ToPlayer()) && HealableUnit.Filter(p.ToPlayer()));
 
                     if (!HealableUnit.Contains(Me)) {
-                        CLU.TroubleshootLog( "Adding: {0} to list of Healable Units", CLU.SafeName(Me.ToPlayer()));
+                        CLULogger.TroubleshootLog( "Adding: {0} to list of Healable Units", CLULogger.SafeName(Me.ToPlayer()));
                         list.Add(new HealableUnit(Me));
                     }
 
                     foreach (WoWUnit p in proximitylist) {
-                        CLU.TroubleshootLog( "Adding Unit by Proximity: {0} to list of Healable Units", CLU.SafeName(p.ToPlayer()));
+                        CLULogger.TroubleshootLog( "Adding Unit by Proximity: {0} to list of Healable Units", CLULogger.SafeName(p.ToPlayer()));
                         bool tank = false;
 
                         // If the user has a focus target set, use it instead.
                         if (StyxWoW.Me.FocusedUnitGuid != 0 && StyxWoW.Me.FocusedUnit.Guid == p.ToPlayer().Guid) {
-                            CLU.TroubleshootLog( "Setting {0} as tank based on FocusedUnit.", CLU.SafeName(p.ToPlayer()) + " " + p.ToPlayer().Level);
+                            CLULogger.TroubleshootLog( "Setting {0} as tank based on FocusedUnit.", CLULogger.SafeName(p.ToPlayer()) + " " + p.ToPlayer().Level);
                             tank = true;
                         }
 
                         // RaF
                         if (RaFHelper.Leader != null && RaFHelper.Leader.CurrentHealth > 1 && RaFHelper.Leader != Me && RaFHelper.Leader.Guid == p.ToPlayer().Guid) {
-                            CLU.TroubleshootLog( "Setting {0} as tank based on RaFHelper.Leader.", CLU.SafeName(Me) + " " + p.ToPlayer().Level);
+                            CLULogger.TroubleshootLog( "Setting {0} as tank based on RaFHelper.Leader.", CLULogger.SafeName(Me) + " " + p.ToPlayer().Level);
                             tank = true;
                         }
 
@@ -489,7 +489,7 @@ namespace CLU.Helpers
                     }
                     result = list;
                 } catch (Exception ex) {
-                    CLU.DiagnosticLog("HealableUnitsByProximity : {0}", ex);
+                    CLULogger.DiagnosticLog("HealableUnitsByProximity : {0}", ex);
                 }
                 return result;
             }
@@ -516,7 +516,7 @@ namespace CLU.Helpers
                 
                 Adding = false;
             } catch (Exception ex) {
-                CLU.DiagnosticLog("AddHealableUnits : {0}", ex);
+                CLULogger.DiagnosticLog("AddHealableUnits : {0}", ex);
             }
         }
         
@@ -534,12 +534,12 @@ namespace CLU.Helpers
                 var grp = ListofHealableUnits.Where(n => !HealableUnit.Filter(n.ToUnit())).ToList();
                 foreach (var unit in grp.Where(unit => ListofHealableUnits.IndexOf(unit) != -1)) {
                     ListofHealableUnits.RemoveAt(ListofHealableUnits.IndexOf(unit)); // remove
-                    CLU.TroubleshootLog(" Success Removed: {0} no longer a valid healableunit.", CLU.SafeName(unit.ToUnit()));
+                    CLULogger.TroubleshootLog(" Success Removed: {0} no longer a valid healableunit.", CLULogger.SafeName(unit.ToUnit()));
                 }
                 
                 Removing = false;
             } catch (Exception ex) {
-                CLU.DiagnosticLog("Remove : {0}", ex);
+                CLULogger.DiagnosticLog("Remove : {0}", ex);
             }
         }
 
@@ -555,7 +555,7 @@ namespace CLU.Helpers
                 listofHealableUnits.AddRange(result.Where(t => t != null).Select(t => t));
 
             } catch (Exception ex) {
-                CLU.DiagnosticLog("Initialize HealableUnitsByProximity : {0}", ex);
+                CLULogger.DiagnosticLog("Initialize HealableUnitsByProximity : {0}", ex);
             }
         }
 
@@ -569,7 +569,7 @@ namespace CLU.Helpers
                 listofHealableUnits.AddRange(result.Where(t => t != null).Select(t => t));
 
             } catch (Exception ex) {
-                CLU.DiagnosticLog("InitializeHealing HealableUnitsByPartyorRaid : {0}", ex);
+                CLULogger.DiagnosticLog("InitializeHealing HealableUnitsByPartyorRaid : {0}", ex);
             }
         }
 
@@ -583,7 +583,7 @@ namespace CLU.Helpers
                 var grp = ListofHealableUnits.ToList();
                 return grp.Any(n => n != null && (unit != null && n.ToUnit().Guid == unit.Guid));
             } catch (Exception ex) {
-                CLU.DiagnosticLog("Contains : {0}", ex);
+                CLULogger.DiagnosticLog("Contains : {0}", ex);
             }
             return false;
         }
@@ -606,7 +606,7 @@ namespace CLU.Helpers
                                         !unit.ToPlayer().OnTaxi &&
                                         unit.Distance2DSqr < 40 * 40);
             } catch (Exception ex) {
-                CLU.DiagnosticLog("Filter : {0}", ex);
+                CLULogger.DiagnosticLog("Filter : {0}", ex);
             }
             return false;
         }
@@ -616,9 +616,9 @@ namespace CLU.Helpers
         /// </summary>
         private static void Print()
         {
-            CLU.TroubleshootLog("HealableUnit List has {0} elements.", ListofHealableUnits.Count);
+            CLULogger.TroubleshootLog("HealableUnit List has {0} elements.", ListofHealableUnits.Count);
             for (int i = 0; i < ListofHealableUnits.Count; i++) {
-                CLU.TroubleshootLog(" {0} : {1} Tank: {2}", ListofHealableUnits[i].Name, i, ListofHealableUnits[i].Tank);
+                CLULogger.TroubleshootLog(" {0} : {1} Tank: {2}", ListofHealableUnits[i].Name, i, ListofHealableUnits[i].Tank);
             }
         }
         
@@ -640,7 +640,7 @@ namespace CLU.Helpers
                         var result = Tanks.Aggregate((t1, t2) => t1.MaxHealth > t2.MaxHealth ? t1 : t2);
                         if (result != null)
                         {
-                            CLU.DiagnosticLog("Selecting {0} as Main Tank based on max health...dont like it? Change it yourself via the UI settings!", CLU.SafeName(result.ToUnit()));
+                            CLULogger.DiagnosticLog("Selecting {0} as Main Tank based on max health...dont like it? Change it yourself via the UI settings!", CLULogger.SafeName(result.ToUnit()));
                             return result;
                         }
                     }
@@ -648,7 +648,7 @@ namespace CLU.Helpers
                 }
                 catch (Exception ex)
                 {
-                    CLU.DiagnosticLog("GetMaintank : {0}", ex);
+                    CLULogger.DiagnosticLog("GetMaintank : {0}", ex);
                 }
                 return null;
             }
@@ -675,7 +675,7 @@ namespace CLU.Helpers
                 }
                 catch (Exception ex)
                 {
-                    CLU.DiagnosticLog("Tanks : {0}", ex);
+                    CLULogger.DiagnosticLog("Tanks : {0}", ex);
                 }
 
                 return result;

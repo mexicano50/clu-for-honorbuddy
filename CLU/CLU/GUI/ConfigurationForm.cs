@@ -157,7 +157,7 @@ namespace CLU.GUI
             pgGeneral.CollapseAllGridItems();
             pgClass.CollapseAllGridItems();
 
-           // CLU.Log(Utilities.AssemblyDirectory); //todo: fix me
+           // SysLog.Log(Utilities.AssemblyDirectory); //todo: fix me
 
             if (File.Exists(Utilities.AssemblyDirectory + @"\Routines\CLU\GUI\Resources\CLU.png"))
             {
@@ -266,7 +266,7 @@ namespace CLU.GUI
                 HealingGrid.CurrentCellDirtyStateChanged += this.HealingGrid_CurrentCellDirtyStateChanged;
                 //HealingGrid.CellMouseClick += this.HealingGrid_OnCellMouseUp;
             } catch (Exception ex) {
-                CLU.DiagnosticLog("InitializeHealingGrid : {0}", ex);
+                CLULogger.DiagnosticLog("InitializeHealingGrid : {0}", ex);
             }
         }
 
@@ -283,7 +283,7 @@ namespace CLU.GUI
                 // Add a couple of HealableUnits to the list.
                 if (Me.CurrentTarget != null && HealableUnit.Filter(Me.CurrentTarget)) {
                     if (!HealableUnit.Contains(Me.CurrentTarget)) {
-                        CLU.TroubleshootLog( " Adding: {0} because of user request.", CLU.SafeName(Me.CurrentTarget));
+                        CLULogger.TroubleshootLog( " Adding: {0} because of user request.", CLULogger.SafeName(Me.CurrentTarget));
                         HealableUnit.ListofHealableUnits.Add(new HealableUnit(Me.CurrentTarget));
                     }
                 } else {
@@ -296,7 +296,7 @@ namespace CLU.GUI
                 }
                 this.RefreshDataGridView();
             } catch (Exception ex) {
-                CLU.DiagnosticLog("addHealableUnit_Click : {0}", ex);
+                CLULogger.DiagnosticLog("addHealableUnit_Click : {0}", ex);
             }
         }
 
@@ -310,7 +310,7 @@ namespace CLU.GUI
             try {
 
                 if (this.HealingGrid.SelectedRows.Count > 0) {
-                    CLU.TroubleshootLog( " Removing: {0} because of user request.", this.HealingGrid.SelectedRows[0].Cells[6].Value);
+                    CLULogger.TroubleshootLog( " Removing: {0} because of user request.", this.HealingGrid.SelectedRows[0].Cells[6].Value);
                     HealableUnit.ListofHealableUnits.RemoveAt(this.HealingGrid.SelectedRows[0].Index);
                 } else {
                     MessageBox.Show(
@@ -323,7 +323,7 @@ namespace CLU.GUI
                 this.RefreshDataGridView(); // update
             } catch (Exception ex) {
                 this.RefreshDataGridView(); // update
-                CLU.DiagnosticLog("removeUnitHealingGrid_Click : {0}", ex);
+                CLULogger.DiagnosticLog("removeUnitHealingGrid_Click : {0}", ex);
             }
         }
 
@@ -380,7 +380,7 @@ namespace CLU.GUI
         /// </summary>
         private void updateListofHealableUnitsGrid_Click(object sender, EventArgs e)
         {
-            CLU.TroubleshootLog( "User clicked update - Re-Initialize list Of HealableUnits");
+            CLULogger.TroubleshootLog( "User clicked update - Re-Initialize list Of HealableUnits");
             HealableUnit.ListofHealableUnits.Clear();
             switch (CLUSettings.Instance.SelectedHealingAquisition) {
             case HealingAquisitionMethod.Proximity:
@@ -504,7 +504,7 @@ namespace CLU.GUI
                 }
                 this.Close();
             } catch (Exception ex) {
-                CLU.DiagnosticLog("ERROR saving settings: {0}", ex);
+                CLULogger.DiagnosticLog("ERROR saving settings: {0}", ex);
             }
         }
 
@@ -727,7 +727,7 @@ namespace CLU.GUI
                         MessageBoxDefaultButton.Button1);
                 }
             } catch (Exception ex) {
-                CLU.DiagnosticLog("Checker_Click : {0}", ex);
+                CLULogger.DiagnosticLog("Checker_Click : {0}", ex);
             }
         }
 
@@ -790,7 +790,7 @@ namespace CLU.GUI
                 }
                 textBox2.Text += output + Environment.NewLine;
             } catch (Exception ex) {
-                CLU.DiagnosticLog("Current Target Information : {0}", ex);
+                CLULogger.DiagnosticLog("Current Target Information : {0}", ex);
             }
         }
 

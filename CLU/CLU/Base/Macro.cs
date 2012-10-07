@@ -11,6 +11,7 @@
 #endregion
 
 using System;
+using CLU.Helpers;
 using Styx.WoWInternals;
 using Styx;
 using Styx.CommonBot;
@@ -47,7 +48,7 @@ namespace CLU.Base
                 }
                 catch
                 {
-                    CLU.DiagnosticLog("Lua failed in Macro.Manual");
+                    CLULogger.DiagnosticLog("Lua failed in Macro.Manual");
                     return false;
                 } 
             }
@@ -66,7 +67,7 @@ namespace CLU.Base
                 }
                 catch
                 {
-                    CLU.DiagnosticLog("Lua failed in Macro.Burst");
+                    CLULogger.DiagnosticLog("Lua failed in Macro.Burst");
                     return false;
                 }  
             }
@@ -85,7 +86,7 @@ namespace CLU.Base
                 }
                 catch
                 {
-                    CLU.DiagnosticLog("Lua failed in Macro.rotationSwap");
+                    CLULogger.DiagnosticLog("Lua failed in Macro.rotationSwap");
                     return false;
                 }                
             }
@@ -104,7 +105,7 @@ namespace CLU.Base
                 }
                 catch
                 {
-                    CLU.DiagnosticLog("Lua failed in Macro.weaponSwap");
+                    CLULogger.DiagnosticLog("Lua failed in Macro.weaponSwap");
                     return false;
                 } 
                 
@@ -123,7 +124,7 @@ namespace CLU.Base
             }
             catch
             {
-                CLU.DiagnosticLog("Lua failed in Macro.resetMacro");
+                CLULogger.DiagnosticLog("Lua failed in Macro.resetMacro");
             } 
             
         }
@@ -162,7 +163,7 @@ namespace CLU.Base
                 }
                 catch
                 {
-                    CLU.DiagnosticLog("Lua failed in Macro.isMultiCastMacroInUse");
+                    CLULogger.DiagnosticLog("Lua failed in Macro.isMultiCastMacroInUse");
                 }
              
             }
@@ -170,7 +171,7 @@ namespace CLU.Base
             {
                 if (whatSpell == null)
                 {
-                    CLU.Log("Please enter a spell!");
+                    CLULogger.Log("Please enter a spell!");
                     resetAllMacros();
                 }
                 else
@@ -178,12 +179,12 @@ namespace CLU.Base
                     SpellManager.Spells.TryGetValue(whatSpell, out _Spell);
                     if (!_Spell.IsValid)
                     {
-                        CLU.Log("Can't Cast Spell, invalid!");
+                        CLULogger.Log("Can't Cast Spell, invalid!");
                         resetAllMacros();
                     }
                     if (_Spell.CooldownTimeLeft > SpellManager.GlobalCooldownLeft)
                     {
-                        CLU.Log("Can't Cast Spell, on CD!");
+                        CLULogger.Log("Can't Cast Spell, on CD!");
                         resetAllMacros();
                     }
                 }
@@ -202,11 +203,11 @@ namespace CLU.Base
                         }
                         catch
                         {
-                            CLU.DiagnosticLog("Lua failed in Macro.isMultiCastMacroInUse");
+                            CLULogger.DiagnosticLog("Lua failed in Macro.isMultiCastMacroInUse");
                         }
                         
                         SpellManager.ClickRemoteLocation(Me.CurrentTarget.Location);
-                        CLU.Log("Casting " + whatSpell);
+                        CLULogger.Log("Casting " + whatSpell);
                         resetMacro("MultiCastMT");
                     }
                 }
@@ -229,11 +230,11 @@ namespace CLU.Base
                         }
                         catch
                         {
-                            CLU.DiagnosticLog("Lua failed in Macro.isMultiCastMacroInUse");
+                            CLULogger.DiagnosticLog("Lua failed in Macro.isMultiCastMacroInUse");
                         }
                         
                         SpellManager.ClickRemoteLocation(Me.FocusedUnit.Location);
-                        CLU.Log("Casting " + whatSpell);
+                        CLULogger.Log("Casting " + whatSpell);
                         resetMacro("MultiCastFT");
                     }
                 }

@@ -139,6 +139,7 @@
     <Compile Include="Base\Movement.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
+    <Compile Include="Helpers\CLULogger.cs" />
     <Compile Include="Managers\PetManager.cs" />
     <Compile Include="Classes\Rogue\Poisons.cs" />
     <Compile Include="Base\Rest.cs">

@@ -10,6 +10,7 @@
  */
 #endregion
 
+using CLU.Helpers;
 
 namespace CLU.Classes.Rogue
 {
@@ -75,7 +76,7 @@ namespace CLU.Classes.Rogue
                        new Decorator(
                            ret => NeedsPoison && !StyxWoW.Me.HasAura(MainHandPoison) && SpellManager.HasSpell(MainHandPoison),
                            new Sequence(
-                               new Action(ret => CLU.TroubleshootLog("Applying {0} to main hand", CLUSettings.Instance.Rogue.MainHandPoison)),
+                               new Action(ret => CLULogger.TroubleshootLog("Applying {0} to main hand", CLUSettings.Instance.Rogue.MainHandPoison)),
                                new Action(ret => Navigator.PlayerMover.MoveStop()),
                                Spell.CreateWaitForLagDuration(),
                                new Action(ret => SpellManager.CastSpellById(MainHandPoison)),
@@ -87,7 +88,7 @@ namespace CLU.Classes.Rogue
                           new Decorator(
                            ret => NeedsPoison && !StyxWoW.Me.HasAura(OffHandHandPoison) && SpellManager.HasSpell(OffHandHandPoison),
                            new Sequence(
-                               new Action(ret => CLU.TroubleshootLog("Applying {0} to off hand", CLUSettings.Instance.Rogue.OffHandPoison)),
+                               new Action(ret => CLULogger.TroubleshootLog("Applying {0} to off hand", CLUSettings.Instance.Rogue.OffHandPoison)),
                                new Action(ret => Navigator.PlayerMover.MoveStop()),
                                Spell.CreateWaitForLagDuration(),
                                new Action(ret => SpellManager.CastSpellById(OffHandHandPoison)),

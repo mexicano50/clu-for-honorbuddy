@@ -176,7 +176,7 @@ namespace CLU.Classes.Shaman
             {
                 return (
                     new PrioritySelector(
-                    //new Action(a => { CLU.Log("I am the start of public Composite baseRotation"); return RunStatus.Failure; }),
+                    //new Action(a => { SysLog.Log("I am the start of public Composite baseRotation"); return RunStatus.Failure; }),
                     //PvP Utilities
 
                         //Rotation
@@ -295,7 +295,7 @@ namespace CLU.Classes.Shaman
             {
                 return (
                     new PrioritySelector(
-                    //new Action(a => { CLU.Log("I am the start of public override Composite PVPRotation"); return RunStatus.Failure; }),
+                    //new Action(a => { SysLog.Log("I am the start of public override Composite PVPRotation"); return RunStatus.Failure; }),
                         CrowdControl.freeMe(),
                         new Decorator(ret => Macro.Manual || BotChecker.BotBaseInUse("BGBuddy"),
                             new Decorator(ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget),
@@ -333,7 +333,7 @@ namespace CLU.Classes.Shaman
                     new Decorator(ret => Me.Inventory.Equipped.OffHand.Name != CLUSettings.Instance.Shaman.PvPShieldItemName && !string.IsNullOrEmpty(CLUSettings.Instance.Shaman.PvPMainHandItemName) && !string.IsNullOrEmpty(CLUSettings.Instance.Shaman.PvPShieldItemName) && CLUSettings.Instance.Shaman.PvPMainHandItemName != "Input the name of your Main-Hand weapon here" && CLUSettings.Instance.Shaman.PvPShieldItemName != "Input the name of your Shield here",
                         new Action(delegate
                         {
-                            CLU.Log("Switching to Defensive Mode. Using Main-Hand: [{0}] Using Off-Hand: [{1}]", CLUSettings.Instance.Shaman.PvPMainHandItemName, CLUSettings.Instance.Shaman.PvPShieldItemName);
+                            CLULogger.Log("Switching to Defensive Mode. Using Main-Hand: [{0}] Using Off-Hand: [{1}]", CLUSettings.Instance.Shaman.PvPMainHandItemName, CLUSettings.Instance.Shaman.PvPShieldItemName);
                             Lua.DoString("RunMacroText(\"/equipslot 16 " + CLUSettings.Instance.Shaman.PvPMainHandItemName + "\")");
                             Lua.DoString("RunMacroText(\"/equipslot 17 " + CLUSettings.Instance.Shaman.PvPShieldItemName + "\")");
                             return RunStatus.Failure;
@@ -350,7 +350,7 @@ namespace CLU.Classes.Shaman
                     new Decorator(ret => Me.Inventory.Equipped.OffHand.Name != CLUSettings.Instance.Shaman.PvPOffHandItemName && !string.IsNullOrEmpty(CLUSettings.Instance.Shaman.PvPMainHandItemName) && !string.IsNullOrEmpty(CLUSettings.Instance.Shaman.PvPOffHandItemName) && CLUSettings.Instance.Shaman.PvPMainHandItemName != "Input the name of your Main-Hand weapon here" && CLUSettings.Instance.Shaman.PvPOffHandItemName != "Input the name of your Off-Hand weapon here",
                         new Action(delegate
                         {
-                            CLU.Log("Switching to Offensive Mode. Using Main-Hand: [{0}] Using Off-Hand: [{1}]", CLUSettings.Instance.Shaman.PvPMainHandItemName, CLUSettings.Instance.Shaman.PvPOffHandItemName);
+                            CLULogger.Log("Switching to Offensive Mode. Using Main-Hand: [{0}] Using Off-Hand: [{1}]", CLUSettings.Instance.Shaman.PvPMainHandItemName, CLUSettings.Instance.Shaman.PvPOffHandItemName);
                             Lua.DoString("RunMacroText(\"/equipslot 16 " + CLUSettings.Instance.Shaman.PvPMainHandItemName + "\")");
                             Lua.DoString("RunMacroText(\"/equipslot 17 " + CLUSettings.Instance.Shaman.PvPOffHandItemName + "\")");
                             return RunStatus.Failure;

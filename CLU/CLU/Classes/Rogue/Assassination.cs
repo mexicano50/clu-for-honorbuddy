@@ -494,22 +494,22 @@ namespace CLU.Classes.Rogue
             if (SpellManager.HasSpell("Shadowstep") && !StyxWoW.Me.IsBehind(Me.CurrentTarget) &&
                       Spell.CanCast("Shadowstep", Me.CurrentTarget))
             {
-                CLU.Log(" [Casting] Shadowstep on {0} @ StealthedCombat", CLU.SafeName(Me.CurrentTarget));
+                CLULogger.Log(" [Casting] Shadowstep on {0} @ StealthedCombat", CLULogger.SafeName(Me.CurrentTarget));
                 SpellManager.Cast("Shadowstep");
             }
             else if (Me.Behind(Me.CurrentTarget) && (Me.CurrentEnergy >= 60 || HasShadowFocus))
             {
-                CLU.Log(" [Casting] Mutilate on {0} @ StealthCombat", CLU.SafeName(Me.CurrentTarget));
+                CLULogger.Log(" [Casting] Mutilate on {0} @ StealthCombat", CLULogger.SafeName(Me.CurrentTarget));
                 SpellManager.Cast("Mutilate");
             }
             else if (Me.CurrentTarget.HealthPercent < 35 || Buff.PlayerHasBuff("Blindside"))
             {
-                CLU.Log(" [Casting] Dispatch on {0} @ StealthedCombat", CLU.SafeName(Me.CurrentTarget));
+                CLULogger.Log(" [Casting] Dispatch on {0} @ StealthedCombat", CLULogger.SafeName(Me.CurrentTarget));
                 SpellManager.Cast(DispatchOverride);
             }
             else
             {
-                CLU.Log(" [Casting] Mutilate on {0} @ StealthedCombat", CLU.SafeName(Me.CurrentTarget));
+                CLULogger.Log(" [Casting] Mutilate on {0} @ StealthedCombat", CLULogger.SafeName(Me.CurrentTarget));
                 SpellManager.Cast("Mutilate");
             }
         }

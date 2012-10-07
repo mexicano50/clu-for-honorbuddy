@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using CLU.Base;
+using CLU.Helpers;
 using CLU.Settings;
 using Styx;
 
@@ -167,7 +168,7 @@ namespace CLU.Classes.Shaman
         /// </remarks>
         public static void RecallTotems()
         {
-            CLU.TroubleshootLog("Recalling totems!");
+            CLULogger.TroubleshootLog("Recalling totems!");
             if (SpellManager.HasSpell("Totemic Recall"))
             {
                 SpellManager.Cast("Totemic Recall");
@@ -204,7 +205,7 @@ namespace CLU.Classes.Shaman
             }
             catch
             {
-                CLU.DiagnosticLog("Lua failed in DestroyTotem");
+                CLULogger.DiagnosticLog("Lua failed in DestroyTotem");
             } 
             
         }

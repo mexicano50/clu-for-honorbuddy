@@ -13,6 +13,8 @@
 // This class was directly taken from Singular and full credit goes to the developers...lets not re-invent the wheel.
 
 
+using CLU.Helpers;
+
 namespace CLU.Base
 {
 
@@ -64,7 +66,7 @@ namespace CLU.Base
                             ret => StyxWoW.Me.CastingSpell != null && StyxWoW.Me.CastingSpell.Name == "Cannibalize" &&
                             (StyxWoW.Me.HealthPercent < 95 || (StyxWoW.Me.PowerType == WoWPowerType.Mana && StyxWoW.Me.ManaPercent < 95)),
                             new Sequence(
-                                new Action(ret => CLU.Log("Waiting for Cannibalize")),
+                                new Action(ret => CLULogger.Log("Waiting for Cannibalize")),
                                 new ActionAlwaysSucceed())),
                         // Cannibalize support goes before drinking/eating
                         new Decorator(
@@ -118,7 +120,7 @@ namespace CLU.Base
                             ret =>
                             ((StyxWoW.Me.PowerType == WoWPowerType.Mana && StyxWoW.Me.ManaPercent <= CLUSettings.Instance.MinMana) ||
                              StyxWoW.Me.HealthPercent <= CLUSettings.Instance.MinHealth) && !StyxWoW.Me.CurrentMap.IsBattleground,
-                            new Action(ret => CLU.Log("We have no food/drink. Waiting to recover our health/mana back")))
+                            new Action(ret => CLULogger.Log("We have no food/drink. Waiting to recover our health/mana back")))
                     ));
         }
 

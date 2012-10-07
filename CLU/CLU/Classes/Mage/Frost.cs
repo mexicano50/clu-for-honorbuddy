@@ -119,7 +119,7 @@ namespace CLU.Classes.Mage
 
                            // Comment: Dont break Invinsibility!!
                            new Decorator(
-                               x => Buff.PlayerHasBuff("Invisibility"), new Action(a => CLU.TroubleshootLog("Invisibility active"))),
+                               x => Buff.PlayerHasBuff("Invisibility"), new Action(a => CLULogger.TroubleshootLog("Invisibility active"))),
                             // Interupts & Steal Buffs
                            Spell.CastSpell("Spellsteal", ret => Spell.TargetHasStealableBuff() && !Me.IsMoving, "[Steal] Spellsteal"),
                             // Rotation based on SimCraft - Build 15211

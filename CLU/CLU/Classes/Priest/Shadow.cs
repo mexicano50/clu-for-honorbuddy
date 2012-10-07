@@ -172,7 +172,7 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
             {
                 return (
                     new PrioritySelector(
-                        //new Action(a => { CLU.Log("I am the start of public Composite baseRotation"); return RunStatus.Failure; }),
+                        //new Action(a => { SysLog.Log("I am the start of public Composite baseRotation"); return RunStatus.Failure; }),
                         //PvP Utilities
 
                         //Rotation
@@ -269,7 +269,7 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
             {
                 return (
                     new PrioritySelector(
-                    //new Action(a => { CLU.Log("I am the start of public override Composite PVPRotation"); return RunStatus.Failure; }),
+                    //new Action(a => { SysLog.Log("I am the start of public override Composite PVPRotation"); return RunStatus.Failure; }),
                         CrowdControl.freeMe(),
                         new Decorator(ret => Macro.Manual || BotChecker.BotBaseInUse("BGBuddy"),
                             new Decorator(ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget),

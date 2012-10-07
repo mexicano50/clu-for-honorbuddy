@@ -297,20 +297,20 @@ namespace CLU.Base
         public static void DumpAuras()
         {
             if (Me.CurrentTarget == null) return;
-            CLU.TroubleshootLog("===============Me.CurrentTarget.Auras===================");
+            CLULogger.TroubleshootLog("===============Me.CurrentTarget.Auras===================");
             foreach (KeyValuePair<string, WoWAura> au in Me.CurrentTarget.Auras)
             {
                 WoWAura aura;
                 if (Me.Auras.TryGetValue(au.Key, out aura))
                 {
-                    CLU.TroubleshootLog("Name: " + aura.Name + " ID: " + aura.SpellId);
+                    CLULogger.TroubleshootLog("Name: " + aura.Name + " ID: " + aura.SpellId);
                 }
                 else
                 {
-                    CLU.TroubleshootLog(au.Key);
+                    CLULogger.TroubleshootLog(au.Key);
                 }
             }
-            CLU.TroubleshootLog("=======================================================");
+            CLULogger.TroubleshootLog("=======================================================");
         }
 
         /// <summary>Used to  provide the time at which to attempt to refresh our debuff</summary>
@@ -319,7 +319,7 @@ namespace CLU.Base
         public static double DotDelta(string name)
         {
             // TODO: Decide if we need to individually supply seconds left to refresh the spell (for instance we could supply 2.5 seconds to refresh Vampiric Touch).
-            //CLU.TroubleshootLog("DotDelta {0}", Spell.GCD);
+            //SysLog.TroubleshootLog("DotDelta {0}", Spell.GCD);
             return (Spell.CastTime(name) == 0 ? 1 : Spell.CastTime(name) + Spell.GCD) + CombatLogEvents.ClientLag;
         }
 
@@ -487,14 +487,14 @@ namespace CLU.Base
                 WoWAura aura;
                 if (unit.Auras.TryGetValue(auraName, out aura))
                 {
-                    //CLU.TroubleshootLog(" [GetAuraTimeLeft] auraName: {0} Aura: {1} AuraTimeLeft: {2}", auraName, aura, aura.TimeLeft);
+                    //SysLog.TroubleshootLog(" [GetAuraTimeLeft] auraName: {0} Aura: {1} AuraTimeLeft: {2}", auraName, aura, aura.TimeLeft);
                     var returnvalue = (!fromMyAura || aura.CreatorGuid == Me.Guid);
                     return returnvalue ? aura.TimeLeft : TimeSpan.Zero;
                 }
                 return TimeSpan.Zero;
             }
 
-            CLU.DiagnosticLog(" [GetAuraTimeLeft] Unit is null ");
+            CLULogger.DiagnosticLog(" [GetAuraTimeLeft] Unit is null ");
             return TimeSpan.Zero;
         }
 
@@ -516,7 +516,7 @@ namespace CLU.Base
                 return 0;
             }
 
-            CLU.DiagnosticLog(" [GetAuraStack] Unit is null ");
+            CLULogger.DiagnosticLog(" [GetAuraStack] Unit is null ");
             return 0;
         }
 
@@ -557,7 +557,7 @@ namespace CLU.Base
                     return lockstatus;
                 },
             new Sequence(
-                new Action(a => CLU.Log(" [Casting Debuff] {0} : (RefreshTime={1}) had {2} second(s) left : {0} cast time = {3}", label, DotDelta(name), TargetDebuffTimeLeft(name).TotalSeconds, Spell.CastTime(name))),
+                new Action(a => CLULogger.Log(" [Casting Debuff] {0} : (RefreshTime={1}) had {2} second(s) left : {0} cast time = {3}", label, DotDelta(name), TargetDebuffTimeLeft(name).TotalSeconds, Spell.CastTime(name))),
                 new Action(a => SpellManager.Cast(name)),
                 new Action(a => CombatLogEvents.Locks[name] = DateTime.Now.AddSeconds(Spell.CastTime(name) * 1.5 + CombatLogEvents.ClientLag))));
         }
@@ -600,7 +600,7 @@ namespace CLU.Base
                     return lockstatus;
                 },
             new Sequence(
-                new Action(a => CLU.Log(" [Casting Debuff] {0} : (RefreshTime={1}) {4} had {2} second(s) left : {0} cast time = {3}", label, DotDelta(name), TargetDebuffTimeLeft(name).TotalSeconds, Spell.CastTime(name), buffoveride)),
+                new Action(a => CLULogger.Log(" [Casting Debuff] {0} : (RefreshTime={1}) {4} had {2} second(s) left : {0} cast time = {3}", label, DotDelta(name), TargetDebuffTimeLeft(name).TotalSeconds, Spell.CastTime(name), buffoveride)),
                 new Action(a => SpellManager.Cast(name)),
                 new Action(a => CombatLogEvents.Locks[name] = DateTime.Now.AddSeconds(Spell.CastTime(name) * 1.5 + CombatLogEvents.ClientLag))));
         }
@@ -642,7 +642,7 @@ namespace CLU.Base
                     return lockstatus;
                 },
             new Sequence(
-                new Action(a => CLU.Log(" [Casting TargetBuff] {0} : (RefreshTime={1}) had {2} second(s) left", label, DotDelta(name), TargetDebuffTimeLeft(name, HealableUnit.HealTarget.ToUnit()).TotalSeconds)),
+                new Action(a => CLULogger.Log(" [Casting TargetBuff] {0} : (RefreshTime={1}) had {2} second(s) left", label, DotDelta(name), TargetDebuffTimeLeft(name, HealableUnit.HealTarget.ToUnit()).TotalSeconds)),
                 new Action(a => SpellManager.Cast(name, HealableUnit.HealTarget.ToUnit())),
                 new Action(a => CombatLogEvents.Locks[name] = DateTime.Now.AddSeconds(Spell.CastTime(name) * 1.5 + CombatLogEvents.ClientLag))));
         }
@@ -676,7 +676,7 @@ namespace CLU.Base
                     return lockstatus;
                 },
             new Sequence(
-                new Action(a => CLU.Log(" [Casting TargetBuff] {0} : (RefreshTime={1}) had {2} second(s) left", label, DotDelta(name), TargetDebuffTimeLeft(name).TotalSeconds)),
+                new Action(a => CLULogger.Log(" [Casting TargetBuff] {0} : (RefreshTime={1}) had {2} second(s) left", label, DotDelta(name), TargetDebuffTimeLeft(name).TotalSeconds)),
                 new Action(a => SpellManager.Cast(name)),
                 new Action(a => CombatLogEvents.Locks[name] = DateTime.Now.AddSeconds(Spell.CastTime(name) * 1.5 + CombatLogEvents.ClientLag))));
         }
@@ -717,7 +717,7 @@ namespace CLU.Base
                 },
             new Sequence(
                 new Action(
-                    a => CLU.Log(
+                    a => CLULogger.Log(
                         label == null ? null : " [Offensive Buff] {0} ({1} time left={2})",
                         label,
                         buff,
@@ -834,7 +834,7 @@ namespace CLU.Base
                     return players.Any(x => x.Distance2DSqr < 40 * 40 && !x.HasAnyAura(ProvidablePlayerBuffs) && !x.IsDead && !x.IsGhost && x.IsAlive);
                 },
             new Sequence(
-                new Action(a => CLU.Log(" [Raid Buff] {0} ", label)),
+                new Action(a => CLULogger.Log(" [Raid Buff] {0} ", label)),
                 new Action(a => SpellManager.Cast(name))));
         }
 
@@ -862,7 +862,7 @@ namespace CLU.Base
                     return true;
                 },
             new Sequence(
-                new Action(a => CLU.Log(" [Buff] {0} ", label)),
+                new Action(a => CLULogger.Log(" [Buff] {0} ", label)),
                 new Action(a => SpellManager.Cast(name))));
         }
 
@@ -891,7 +891,7 @@ namespace CLU.Base
                     return true;
                 },
             new Sequence(
-                new Action(a => CLU.Log(" [Buff] {0} -> Overide Spell Name: [{1}]", label, spelloveride)),
+                new Action(a => CLULogger.Log(" [Buff] {0} -> Overide Spell Name: [{1}]", label, spelloveride)),
                 new Action(a => SpellManager.Cast(name))));
         }
 
@@ -918,7 +918,7 @@ namespace CLU.Base
                     return onUnit(a) != null;
                 },
             new Sequence(
-                new Action(a => CLU.Log(" [Casting] {0} on {1}", label, CLU.SafeName(onUnit(a)))),
+                new Action(a => CLULogger.Log(" [Casting] {0} on {1}", label, CLULogger.SafeName(onUnit(a)))),
                 new Action(a => SpellManager.Cast(name, onUnit(a)))));
         }
 
@@ -948,7 +948,7 @@ namespace CLU.Base
                 }
                 catch
                 {
-                    CLU.DiagnosticLog("Lua failed in PlayerBuffTimeLeft");
+                    CLULogger.DiagnosticLog("Lua failed in PlayerBuffTimeLeft");
                     return 999999;
                 }
             }

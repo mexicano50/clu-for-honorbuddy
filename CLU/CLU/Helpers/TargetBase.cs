@@ -64,17 +64,17 @@ namespace CLU.Helpers
 
         private static void Log(string s, params object[] a)
         {
-            CLU.DiagnosticLog(s, a);
+            CLULogger.DiagnosticLog(s, a);
         }
 
         private static void Logparty(string s, params object[] a)
         {
-            CLU.DiagnosticLog(s, a);
+            CLULogger.DiagnosticLog(s, a);
         }
 
         private static void Logpartymatchs(string s, params object[] a)
         {
-            CLU.DiagnosticLog(s, a);
+            CLULogger.DiagnosticLog(s, a);
         }
 
         private static IEnumerable<HealableUnit> UnitsFilter(TargetFilter filter)
@@ -178,7 +178,7 @@ namespace CLU.Helpers
                                 {
                                     Log(
                                         label,
-                                        CLU.SafeName(target.ToUnit()),
+                                        CLULogger.SafeName(target.ToUnit()),
                                         target.MaxHealth,
                                         target.CurrentHealth,
                                         target.MaxHealth - target.CurrentHealth,
@@ -359,7 +359,7 @@ namespace CLU.Helpers
 
                 if (best != null)
                 {
-                    Logparty(label + " Time Taken: " + targetPartyPerformanceTimer.ElapsedMilliseconds + " ms", CLU.SafeName(best.ToUnit()));
+                    Logparty(label + " Time Taken: " + targetPartyPerformanceTimer.ElapsedMilliseconds + " ms", CLULogger.SafeName(best.ToUnit()));
                     //best.ToUnit().Target();
                     HealableUnit.HealTarget = best;
                     return RunStatus.Success;
@@ -431,7 +431,7 @@ namespace CLU.Helpers
 
                 if (best != null)
                 {
-                    Logparty(label + " Time Taken: " + targetAreaPerformanceTimer.ElapsedMilliseconds + " ms", CLU.SafeName(best.ToUnit()));
+                    Logparty(label + " Time Taken: " + targetAreaPerformanceTimer.ElapsedMilliseconds + " ms", CLULogger.SafeName(best.ToUnit()));
                     //best.ToUnit().Target();
                     HealableUnit.HealTarget = best;
                     return RunStatus.Success;
@@ -449,7 +449,7 @@ namespace CLU.Helpers
             return new Decorator(
                        cond,
                        new Sequence(
-                           new Action(a => CLU.TroubleshootLog("[CLU] " + CLU.Version + ": CLU targeting activated. I dont have a target, someone must have died. Targeting myself")),
+                           new Action(a => CLULogger.TroubleshootLog("[CLU] " + CLU.Version + ": CLU targeting activated. I dont have a target, someone must have died. Targeting myself")),
                            new Action(a => Me.Target())));
         }
     }

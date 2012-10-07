@@ -10,6 +10,8 @@
  */
 #endregion
 
+using CLU.Helpers;
+
 namespace CLU.Managers
 {
     using System;
@@ -87,7 +89,7 @@ namespace CLU.Managers
                 return TimeSpan.Zero;
             }
 
-            CLU.DiagnosticLog(" [PetSpellCooldown] {0} : {1}", name, petAction.Spell.CooldownTimeLeft);
+            CLULogger.DiagnosticLog(" [PetSpellCooldown] {0} : {1}", name, petAction.Spell.CooldownTimeLeft);
             return petAction.Spell.CooldownTimeLeft;
         }
 
@@ -119,7 +121,7 @@ namespace CLU.Managers
                     },
                 new Decorator(ret => !Me.GotAlivePet && PetTimer.IsFinished,
                                new Sequence(
-                                   new Action(a => CLU.Log(" {0}", label)),
+                                   new Action(a => CLULogger.Log(" {0}", label)),
                                    new Action(a => SpellManager.Cast(name)),
                                    Spell.CreateWaitForLagDuration(),
                                    new Wait(5, a => Me.GotAlivePet || !Me.IsCasting,
@@ -129,7 +131,7 @@ namespace CLU.Managers
             }
             catch
             {
-                CLU.DiagnosticLog("Summon Spell {0} not supported for your Class / Specc ({1}/{2})",name,Me.Class,Me.Specialization);
+                CLULogger.DiagnosticLog("Summon Spell {0} not supported for your Class / Specc ({1}/{2})",name,Me.Class,Me.Specialization);
                 return null;
             } 
 
@@ -161,7 +163,7 @@ namespace CLU.Managers
                 },
             new Decorator(ret => !Me.GotAlivePet && PetTimer.IsFinished,
                            new Sequence(
-                               new Action(a => CLU.Log(" {0}", label)),
+                               new Action(a => CLULogger.Log(" {0}", label)),
                                new Action(a => SpellManager.Cast(summonPet)),
                                Spell.CreateWaitForLagDuration(),
                                new Wait(5, a => Me.GotAlivePet || !Me.IsCasting,
@@ -190,7 +192,7 @@ namespace CLU.Managers
                 case WoWClass.Warlock:
                     if (SpellManager.CanCast("Summon " + petName))
                     {
-                        CLU.DiagnosticLog(string.Format("[Pet] Calling out my {0}", petName));
+                        CLULogger.DiagnosticLog(string.Format("[Pet] Calling out my {0}", petName));
                         bool result = SpellManager.Cast("Summon " + petName);
                         //if (result)
                         //    StyxWoW.SleepForLagDuration();
@@ -201,7 +203,7 @@ namespace CLU.Managers
                 case WoWClass.Mage:
                     if (SpellManager.CanCast("Summon Water Elemental"))
                     {
-                        CLU.DiagnosticLog("[Pet] Calling out Water Elemental");
+                        CLULogger.DiagnosticLog("[Pet] Calling out Water Elemental");
                         bool result = SpellManager.Cast("Summon Water Elemental");
                         //if (result)   - All calls to this method are now placed in a sequence that uses WaitContinue 
                         //    StyxWoW.SleepForLagDuration();
@@ -214,7 +216,7 @@ namespace CLU.Managers
                     {
                         if (!StyxWoW.Me.GotAlivePet)
                         {
-                            CLU.DiagnosticLog(string.Format("[Pet] Calling out pet #{0}", petName));
+                            CLULogger.DiagnosticLog(string.Format("[Pet] Calling out pet #{0}", petName));
                             bool result = SpellManager.Cast("Call Pet " + petName);
                             //if (result)
                             //    StyxWoW.SleepForLagDuration();
@@ -236,7 +238,7 @@ namespace CLU.Managers
             return new Decorator(
                        a => cond(a) && CanCastPetSpell(name),
                        new Sequence(
-                           new Action(a => CLU.Log(" [Pet Spell] {0} ", label)), new Action(a => CastMyPetSpell(name))));
+                           new Action(a => CLULogger.Log(" [Pet Spell] {0} ", label)), new Action(a => CastMyPetSpell(name))));
         }
 
         /// <summary>Returns true if the pet spell can be cast</summary>
@@ -246,10 +248,10 @@ namespace CLU.Managers
         {
             WoWPetSpell petAction = Me.PetSpells.FirstOrDefault(p => p.ToString() == name);
             if (petAction == null || petAction.Spell == null) {
-                CLU.TroubleshootLog( String.Format("[PetManager] Pet does not have the spell {0}", name));
+                CLULogger.TroubleshootLog( String.Format("[PetManager] Pet does not have the spell {0}", name));
                 return false;
             }
-            CLU.TroubleshootLog( String.Format("[PetManager] Spell {0}, Cooldown left {1}", petAction.Spell.Name, petAction.Spell.CooldownTimeLeft));
+            CLULogger.TroubleshootLog( String.Format("[PetManager] Spell {0}, Cooldown left {1}", petAction.Spell.Name, petAction.Spell.CooldownTimeLeft));
             return !petAction.Spell.Cooldown;
         }
 
@@ -262,7 +264,7 @@ namespace CLU.Managers
         {
             WoWPetSpell petAction = Me.PetSpells.FirstOrDefault(p => p.ToString() == name);
             if (petAction == null || petAction.Spell == null) {
-                CLU.TroubleshootLog( String.Format("[PetManager] Pet does not have the spell {0}", name));
+                CLULogger.TroubleshootLog( String.Format("[PetManager] Pet does not have the spell {0}", name));
                 return false;
             }
             return true;
@@ -283,7 +285,7 @@ namespace CLU.Managers
             }
             catch
             {
-                CLU.DiagnosticLog("Lua failed in CastMyPetSpell");
+                CLULogger.DiagnosticLog("Lua failed in CastMyPetSpell");
             } 
             
         }
@@ -296,7 +298,7 @@ namespace CLU.Managers
         /// <returns>The cast spell at location.</returns>
         public static Composite CastPetSpellAtLocation(string name, CLU.UnitSelection onUnit, CanRunDecoratorDelegate cond, string label)
         {
-            // CLU.DebugLog(" [CastSpellAtLocation] name = {0} location = {1} and can we cast it? {2}", name, CLU.SafeName(unit), CanCast(name));
+            // CLU.DebugLog(" [CastSpellAtLocation] name = {0} location = {1} and can we cast it? {2}", name, SysLog.SafeName(unit), CanCast(name));
             return new Decorator(
             	delegate(object a) {
             		if (!CLUSettings.Instance.UseAoEAbilities)
@@ -318,7 +320,7 @@ namespace CLU.Managers
             		return onUnit != null;
             },
             new Sequence(
-                new Action(a => CLU.Log(" [Pet Casting at location] {0} ", label)),
+                new Action(a => CLULogger.Log(" [Pet Casting at location] {0} ", label)),
                 new Action(a => CastMyPetSpell(name)),
                 // new WaitContinue(
                 //    0,

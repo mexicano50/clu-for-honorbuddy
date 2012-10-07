@@ -99,7 +99,7 @@ namespace CLU.Base
             }
             catch
             {
-                CLU.DiagnosticLog("[ERROR] in CastTime: {0} ", name);
+                CLULogger.DiagnosticLog("[ERROR] in CastTime: {0} ", name);
                 return 999999.9;
             }
         }
@@ -207,7 +207,7 @@ namespace CLU.Base
                 {
                     if (Me.IsCasting && HealableUnit.HealTarget != null && HealableUnit.HealTarget.HealthPercent > 80 && HealableUnit.HealTarget.ToUnit().HasMyAura("Soothing Mist"))
                     {
-                        CLU.Log(HealableUnit.HealTarget.Name + " has my Soothing Mist and HP is " + HealableUnit.HealTarget.HealthPercent);
+                        CLULogger.Log(HealableUnit.HealTarget.Name + " has my Soothing Mist and HP is " + HealableUnit.HealTarget.HealthPercent);
                         SpellManager.StopCasting();
                     }
 
@@ -226,7 +226,7 @@ namespace CLU.Base
                     return true;
                 },
             new Sequence(
-                new Action(a => CLU.Log(" [Casting] {0} ", label)), new Action(a => SpellManager.Cast(name, HealableUnit.HealTarget.ToUnit()))));
+                new Action(a => CLULogger.Log(" [Casting] {0} ", label)), new Action(a => SpellManager.Cast(name, HealableUnit.HealTarget.ToUnit()))));
         }
        
         
@@ -284,13 +284,13 @@ namespace CLU.Base
         {
             if (target == null)
             {
-                CLU.DiagnosticLog("{0}({1},{2}): Target is null.", MethodBase.GetCurrentMethod().Name, spell.Name, target.Name);
+                CLULogger.DiagnosticLog("{0}({1},{2}): Target is null.", MethodBase.GetCurrentMethod().Name, spell.Name, target.Name);
                 return false;
             }
 
             if (!spell.CanCast)
             {
-                CLU.DiagnosticLog("{0}({1},{2}): CanCast failed.", MethodBase.GetCurrentMethod().Name, spell.Name, target.Name);
+                CLULogger.DiagnosticLog("{0}({1},{2}): CanCast failed.", MethodBase.GetCurrentMethod().Name, spell.Name, target.Name);
                 return false;
             }
 
@@ -313,7 +313,7 @@ namespace CLU.Base
 
             if (!inRange)
             {
-                CLU.DiagnosticLog("{0}({1},{2}): Not in range.", MethodBase.GetCurrentMethod().Name, spell.Name, target.Name);
+                CLULogger.DiagnosticLog("{0}({1},{2}): Not in range.", MethodBase.GetCurrentMethod().Name, spell.Name, target.Name);
                 return false;
             }
 
@@ -354,7 +354,7 @@ namespace CLU.Base
                     }
                     if (spell == null)
                     {
-                        CLU.TroubleshootLog("SpellID not found: {0}", spellid);
+                        CLULogger.TroubleshootLog("SpellID not found: {0}", spellid);
                         return false;
                     }
 
@@ -362,7 +362,7 @@ namespace CLU.Base
 
                     if (target == null)
                     {
-                        CLU.TroubleshootLog("Target not found.");
+                        CLULogger.TroubleshootLog("Target not found.");
                         return false;
                     }
 
@@ -376,7 +376,7 @@ namespace CLU.Base
                     return true;
                 },
                  new Sequence
-                     (new Action(a => CLU.Log(" [Casting] {0} on {1}", label, CLU.SafeName(onUnit(a)))),
+                     (new Action(a => CLULogger.Log(" [Casting] {0} on {1}", label, CLULogger.SafeName(onUnit(a)))),
                       new Action(a => SpellManager.Cast(spell, onUnit(a)))));
         }
 
@@ -422,14 +422,14 @@ namespace CLU.Base
                 {
                     if (!cond(a))
                         return false;
-                    //CLU.TroubleshootLog("Cancast: {0} = {1}", name, CanCast(name, onUnit(a)));
+                    //SysLog.TroubleshootLog("Cancast: {0} = {1}", name, CanCast(name, onUnit(a)));
                     if (!CanCast(name, onUnit(a)))
                         return false;
 
                     return onUnit(a) != null;
                 },
             new Sequence(
-                new Action(a => CLU.Log(" [Casting] {0} on {1}", label, CLU.SafeName(onUnit(a)))),
+                new Action(a => CLULogger.Log(" [Casting] {0} on {1}", label, CLULogger.SafeName(onUnit(a)))),
                 new Action(a => SpellManager.Cast(name, onUnit(a)))));
         }
 
@@ -446,14 +446,14 @@ namespace CLU.Base
                 {
                     if (!cond(a))
                         return false;
-                    //CLU.TroubleshootLog("Cancast: {0} = {1}", name, CanCast(name, onUnit(a)));
+                    //SysLog.TroubleshootLog("Cancast: {0} = {1}", name, CanCast(name, onUnit(a)));
                     if (!CanCast(spell, onUnit(a)))
                         return false;
 
                     return onUnit(a) != null;
                 },
             new Sequence(
-                new Action(a => CLU.Log(" [Casting] {0} on {1}", label, CLU.SafeName(onUnit(a)))),
+                new Action(a => CLULogger.Log(" [Casting] {0} on {1}", label, CLULogger.SafeName(onUnit(a)))),
                 new Action(a => SpellManager.Cast(spell, onUnit(a)))));
         }
 
@@ -486,7 +486,7 @@ namespace CLU.Base
                     return true;
                 },
             new Sequence(
-                new Action(a => CLU.Log(" [Casting] {0} ", label)), new Action(a => SpellManager.Cast(name))));
+                new Action(a => CLULogger.Log(" [Casting] {0} ", label)), new Action(a => SpellManager.Cast(name))));
         }
 
         /// <summary>Casts a spell on a specified unit (used primarily for healing)</summary>
@@ -570,7 +570,7 @@ namespace CLU.Base
                     return onUnit(a) != null;
                 },
             new Sequence(
-                new Action(a => CLU.Log(" [Casting] {0} on {1}", label, CLU.SafeName(onUnit(a)))),
+                new Action(a => CLULogger.Log(" [Casting] {0} on {1}", label, CLULogger.SafeName(onUnit(a)))),
                 new Decorator(x => faceTarget && !StyxWoW.Me.IsSafelyFacing(onUnit(x), 45f), new Action(a => WoWMovement.Face(onUnit(a).Guid))),
                 new Action(a => SpellManager.Cast(name, onUnit(a)))));
         }
@@ -608,7 +608,7 @@ namespace CLU.Base
                     return (Unit.NearbyNonControlledUnits(onUnit(a).Location, 15, false).Any() || BossList.IgnoreRangeCheck.Contains(onUnit(a).CurrentTarget.Entry));
                 },
             new Sequence(
-                new Action(a => CLU.Log(" [Casting] {0} on {1}", label, CLU.SafeName(onUnit(a).CurrentTarget))),
+                new Action(a => CLULogger.Log(" [Casting] {0} on {1}", label, CLULogger.SafeName(onUnit(a).CurrentTarget))),
                 new DecoratorContinue(x => faceTarget, new Action(a => WoWMovement.Face(onUnit(a).CurrentTarget.Guid))),
                 new Action(a => SpellManager.Cast(name, onUnit(a).CurrentTarget))));
         }
@@ -640,7 +640,7 @@ namespace CLU.Base
                     return (Unit.NearbyNonControlledUnits(onUnit(a).Location, 15, false).Any() || BossList.IgnoreRangeCheck.Contains(onUnit(a).CurrentTarget.Entry));
                 },
             new Sequence(
-                new Action(a => CLU.Log(" [Casting] {0} on {1}", label, CLU.SafeName(onUnit(a)))),
+                new Action(a => CLULogger.Log(" [Casting] {0} on {1}", label, CLULogger.SafeName(onUnit(a)))),
                 new DecoratorContinue(x => faceTarget, new Action(a => WoWMovement.Face(onUnit(a).Guid))),
                 new Action(a => SpellManager.Cast(name, onUnit(a)))));
         }
@@ -667,7 +667,7 @@ namespace CLU.Base
                     return true;
                 },
             new Sequence(
-                new Action(a => CLU.Log(" [Totem] {0} ", label)),
+                new Action(a => CLULogger.Log(" [Totem] {0} ", label)),
                 new Action(a => SpellManager.Cast(name))));
         }
 
@@ -686,7 +686,7 @@ namespace CLU.Base
                        Unit.DistanceToTargetBoundingBox() <= maxDistance &&
                        Unit.FacingTowardsUnitDegrees(Me.Location, Me.CurrentTarget.Location) <= maxAngleDeltaDegrees,
                        new Sequence(
-                           new Action(a => CLU.Log(" [Casting Conic] {0} ", label)),
+                           new Action(a => CLULogger.Log(" [Casting Conic] {0} ", label)),
                            new Action(a => SpellManager.Cast(name))));
         }
 
@@ -719,7 +719,7 @@ namespace CLU.Base
                     return true;
                 },
             new Sequence(
-                new Action(a => CLU.Log(" [Interupt] {0} on {1}", label, CLU.SafeName(onUnit(a)))),
+                new Action(a => CLULogger.Log(" [Interupt] {0} on {1}", label, CLULogger.SafeName(onUnit(a)))),
                 new Action(a => SpellManager.Cast(name, onUnit(a)))));
         }
 
@@ -748,7 +748,7 @@ namespace CLU.Base
                     return true;
                 },
             new Sequence(
-                new Action(a => CLU.Log(" [Interupt] {0} on {1}", label, CLU.SafeName(Me.CurrentTarget))),
+                new Action(a => CLULogger.Log(" [Interupt] {0} on {1}", label, CLULogger.SafeName(Me.CurrentTarget))),
                 new Action(a => SpellManager.Cast(name))));
         }
 
@@ -776,7 +776,7 @@ namespace CLU.Base
             return
                 new PrioritySelector(
                     new Decorator(x => PlayerIsChanneling && Me.ChanneledCastingSpellId == spell.Id, 
-                            new Action(a => CLU.Log(" [Channeling] {0}", spell.Name))),
+                            new Action(a => CLULogger.Log(" [Channeling] {0}", spell.Name))),
                     CastSpell(name, cond, label));
         }
 
@@ -793,7 +793,7 @@ namespace CLU.Base
                 new PrioritySelector(
                     new Decorator(
                         x => PlayerIsChanneling && Me.ChanneledCastingSpellId == spell.Id, 
-                        new Action(a => CLU.Log(" [Channeling] {0}", spell.Name))),
+                        new Action(a => CLULogger.Log(" [Channeling] {0}", spell.Name))),
                     CastSpell(spell, cond, label));
         }
 
@@ -809,7 +809,7 @@ namespace CLU.Base
                 new PrioritySelector(
                     new Decorator(
                         x => PlayerIsChanneling && KnownChanneledSpells.Contains(name),
-                        new Action(a => CLU.Log(" [Channeling] {0} ", name))),
+                        new Action(a => CLULogger.Log(" [Channeling] {0} ", name))),
                     CastSelfSpell(name, cond, label));
         }
         #endregion
@@ -886,7 +886,7 @@ namespace CLU.Base
                     (StyxWoW.Me.Location.Distance(onLocation(ret)) <= SpellManager.Spells[spell].MaxRange ||
                      SpellManager.Spells[spell].MaxRange == 0),
                     new Sequence(
-                        new Action(ret => CLU.Log("Casting {0} at location {1}", spell, onLocation(ret))),
+                        new Action(ret => CLULogger.Log("Casting {0} at location {1}", spell, onLocation(ret))),
                         new Action(ret => SpellManager.Cast(spell)),
 
                         new DecoratorContinue(ctx => waitForSpell,
@@ -917,7 +917,7 @@ namespace CLU.Base
                     ret =>
                     requirements(ret) && onLocation != null && CLUSettings.Instance.UseAoEAbilities,
                     new Sequence(
-                        new Action(ret => CLU.Log("Casting {0} at location {1}", spellid, onLocation(ret))),
+                        new Action(ret => CLULogger.Log("Casting {0} at location {1}", spellid, onLocation(ret))),
                         new Action(ret => SpellManager.Cast(spellid)),
 
                         new DecoratorContinue(ctx => waitForSpell,
@@ -949,7 +949,7 @@ namespace CLU.Base
                     return onUnit != null && CanCast(name, onUnit(a));
                 },
             new Sequence(
-                new Action(a => CLU.Log(" [Casting at Location] {0} ", label)),
+                new Action(a => CLULogger.Log(" [Casting at Location] {0} ", label)),
                 new Action(a => SpellManager.Cast(name)),
                 //new WaitContinue(
                 //   1,
@@ -977,7 +977,7 @@ namespace CLU.Base
                     return onUnit(a) != null && !WoWSpell.FromId(88685).Cooldown;
                 },
             new Sequence(
-                new Action(a => CLU.Log(" [Casting at Location] {0} ", label)),
+                new Action(a => CLULogger.Log(" [Casting at Location] {0} ", label)),
                 Item.RunMacroText("/cast Holy Word: Sanctuary", cond, label),
                 new Action(a => SpellManager.ClickRemoteLocation(onUnit(a).Location))));
         }
@@ -1070,7 +1070,7 @@ namespace CLU.Base
                     return true;
                 },
             new Sequence(
-                new Action(a => CLU.Log(" [AoE] {0} ", label)),
+                new Action(a => CLULogger.Log(" [AoE] {0} ", label)),
                 new Action(a => SpellManager.Cast(name)),
                 new DecoratorContinue(x => requiresTerrainClick, new Action(a => SpellManager.ClickRemoteLocation(bestLocation)))));
         }
@@ -1117,10 +1117,10 @@ namespace CLU.Base
                 // dont break it if already casting it
                 new Decorator(
                     x => PlayerIsChanneling && Me.ChanneledCastingSpellId == SpellManager.Spells[name].Id,
-                    new Action(a => CLU.TroubleshootLog(name))),
+                    new Action(a => CLULogger.TroubleshootLog(name))),
                 // casting logic
                 new Sequence(
-                    new Action(a => CLU.Log(" [AoE Channel] {0} ", label)),
+                    new Action(a => CLULogger.Log(" [AoE Channel] {0} ", label)),
                     new Action(a => SpellManager.Cast(name)),
                     new DecoratorContinue(
                         x => requiresTerrainClick,
@@ -1139,7 +1139,7 @@ namespace CLU.Base
             return new Decorator(
                        x => (Me.IsCasting || Me.ChanneledCastingSpellId > 0 || PlayerIsChanneling) && cond(x),
                        new Sequence(
-                           new Action(a => CLU.Log(" [Stop Casting] {0} ", label)),
+                           new Action(a => CLULogger.Log(" [Stop Casting] {0} ", label)),
                            new Action(a => SpellManager.StopCasting())));
         }
 
@@ -1184,12 +1184,12 @@ namespace CLU.Base
             }
             catch
             {
-                CLU.DiagnosticLog("Lua failed in LocalizeSpellName");
+                CLULogger.DiagnosticLog("Lua failed in LocalizeSpellName");
                 return name;
             } 
             
             LocalizedSpellNames[name] = loc;
-            CLU.TroubleshootLog("Localized spell: '" + name + "' is '" + loc + "'.");
+            CLULogger.TroubleshootLog("Localized spell: '" + name + "' is '" + loc + "'.");
             return loc;
         }
 
@@ -1225,7 +1225,7 @@ namespace CLU.Base
                 if (TreePerformanceTimer.ElapsedMilliseconds > 0)
                 {
                     // NOTE: This dosnt account for Spell casts (meaning the total time is not the time to traverse the tree plus the current cast time of the spell)..this is actual time to traverse the tree.
-                    CLU.TroubleshootLog("[CLU] " + CLU.Version + ": " + " [CLU TreePerformance] Elapsed Time to traverse the tree: {0} ms", TreePerformanceTimer.ElapsedMilliseconds);
+                    CLULogger.TroubleshootLog("[CLU] " + CLU.Version + ": " + " [CLU TreePerformance] Elapsed Time to traverse the tree: {0} ms", TreePerformanceTimer.ElapsedMilliseconds);
                     TreePerformanceTimer.Stop();
                     TreePerformanceTimer.Reset();
                 }
@@ -1241,21 +1241,21 @@ namespace CLU.Base
         /// </summary>
         public static void DumpSpells()
         {
-            CLU.TroubleshootLog("Dumping List of Known Spell Information");
+            CLULogger.TroubleshootLog("Dumping List of Known Spell Information");
             foreach (var sp in SpellManager.Spells)
             {
                 WoWSpell spell;
                 if (SpellManager.Spells.TryGetValue(sp.Value.Name, out spell))
                 {
-                    CLU.TroubleshootLog("Spell ID:" + sp.Value.Id + " MaxRange:" + sp.Value.MaxRange + " MinRange:" + sp.Value.MinRange + " PowerCost:" + sp.Value.PowerCost + " HasRange:" + sp.Value.HasRange + " IsMeleeSpell:" + sp.Value.IsMeleeSpell + " IsSelfOnlySpell:" + sp.Value.IsSelfOnlySpell + " Cooldown:" + spell.Cooldown + " CooldownTimeLeft.TotalMilliseconds:" + spell.CooldownTimeLeft.TotalMilliseconds + " " + spell);
+                    CLULogger.TroubleshootLog("Spell ID:" + sp.Value.Id + " MaxRange:" + sp.Value.MaxRange + " MinRange:" + sp.Value.MinRange + " PowerCost:" + sp.Value.PowerCost + " HasRange:" + sp.Value.HasRange + " IsMeleeSpell:" + sp.Value.IsMeleeSpell + " IsSelfOnlySpell:" + sp.Value.IsSelfOnlySpell + " Cooldown:" + spell.Cooldown + " CooldownTimeLeft.TotalMilliseconds:" + spell.CooldownTimeLeft.TotalMilliseconds + " " + spell);
                 }
                 else
                 {
-                    CLU.TroubleshootLog(sp.Value.Name);
+                    CLULogger.TroubleshootLog(sp.Value.Name);
                 }
 
             }
-            CLU.TroubleshootLog("End Spell Information");
+            CLULogger.TroubleshootLog("End Spell Information");
         }
 
         // ===================================== Lua ==================================================================
@@ -1288,7 +1288,7 @@ namespace CLU.Base
             }
             catch
             {
-                CLU.DiagnosticLog("Lua failed in IsRuneCooldown: " + lua);
+                CLULogger.DiagnosticLog("Lua failed in IsRuneCooldown: " + lua);
                 return false;
             }
             //}
@@ -1312,7 +1312,7 @@ namespace CLU.Base
                             var purgableSpell = luaRet[0] == "Magic";
                             if (purgableSpell)
                             {
-                                CLU.DiagnosticLog("Buff Name: {0} is Dispelable!", luaRet[1]);
+                                CLULogger.DiagnosticLog("Buff Name: {0} is Dispelable!", luaRet[1]);
                             }
 
                             return purgableSpell;
@@ -1320,7 +1320,7 @@ namespace CLU.Base
                     }
                     catch
                     {
-                        CLU.DiagnosticLog("Lua failed in TargetHasDispelableBuff");
+                        CLULogger.DiagnosticLog("Lua failed in TargetHasDispelableBuff");
                         return false;
                     }
                 }
@@ -1351,7 +1351,7 @@ namespace CLU.Base
                             var stealableSpell = !Buff.PlayerHasActiveBuff(luaRet[1]) && (luaRet[1] != "Arcane Brilliance" && luaRet[1] != "Dalaran Brilliance");
                             if (stealableSpell)
                             {
-                                CLU.DiagnosticLog("Buff Name: {0} isStealable", luaRet[1]);
+                                CLULogger.DiagnosticLog("Buff Name: {0} isStealable", luaRet[1]);
                             }
 
                             return stealableSpell;
@@ -1359,7 +1359,7 @@ namespace CLU.Base
                     }
                     catch
                     {
-                        CLU.DiagnosticLog("Lua failed in TargetHasStealableBuff");
+                        CLULogger.DiagnosticLog("Lua failed in TargetHasStealableBuff");
                         return false;
                     }
                 }
@@ -1376,7 +1376,7 @@ namespace CLU.Base
             return new Decorator(
                 delegate(object a)
                 {
-                    //CLU.TroubleshootLog("LocalizeSpellName: {0} .... macro: {1}", name, macro);
+                    //SysLog.TroubleshootLog("LocalizeSpellName: {0} .... macro: {1}", name, macro);
                     if (name.Length == 0)
                         return false;
                     if (!cond(a))
@@ -1384,7 +1384,7 @@ namespace CLU.Base
                     return true;
                 },
             new Sequence(
-                new Action(a => CLU.Log(" [CancelAura] {0}", name)),
+                new Action(a => CLULogger.Log(" [CancelAura] {0}", name)),
                 new Action(a => Lua.DoString("RunMacroText(\"" + RealLuaEscape(macro) + "\")"))));
         }
     }

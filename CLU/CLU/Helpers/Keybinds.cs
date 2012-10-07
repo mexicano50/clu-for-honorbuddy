@@ -32,7 +32,7 @@ namespace CLU.Helpers
                 switch (CLUSettings.Instance.UseCooldowns) {
                 case true:
                     CLUSettings.Instance.UseCooldowns = !CLUSettings.Instance.UseCooldowns;
-                    CLU.Log(" UseCooldowns= {0}", CLUSettings.Instance.UseCooldowns);
+                    CLULogger.Log(" UseCooldowns= {0}", CLUSettings.Instance.UseCooldowns);
                     if (CLUSettings.Instance.EnableKeybindSounds) {
                         try {
                             SoundManager.LoadSoundFilePath(@"\Routines\CLU\Sound\cooldownsdisabled.wav");
@@ -42,7 +42,7 @@ namespace CLU.Helpers
                     break;
                 case false:
                     CLUSettings.Instance.UseCooldowns = !CLUSettings.Instance.UseCooldowns;
-                    CLU.Log(" UseCooldowns= {0}", CLUSettings.Instance.UseCooldowns);
+                    CLULogger.Log(" UseCooldowns= {0}", CLUSettings.Instance.UseCooldowns);
                     if (CLUSettings.Instance.EnableKeybindSounds) {
                         try {
                             SoundManager.LoadSoundFilePath(@"\Routines\CLU\Sound\cooldownsenabled.wav");
@@ -60,7 +60,7 @@ namespace CLU.Helpers
                 switch (CLUSettings.Instance.ClickExtraActionButton) {
                 case true:
                     CLUSettings.Instance.ClickExtraActionButton = !CLUSettings.Instance.ClickExtraActionButton;
-                    CLU.Log(" ClickExtraActionButton= {0}", CLUSettings.Instance.ClickExtraActionButton);
+                    CLULogger.Log(" ClickExtraActionButton= {0}", CLUSettings.Instance.ClickExtraActionButton);
                     if (CLUSettings.Instance.EnableKeybindSounds) {
                         try {
                             SoundManager.LoadSoundFilePath(@"\Routines\CLU\Sound\dsextraactionbuttondisabled.wav");
@@ -70,7 +70,7 @@ namespace CLU.Helpers
                     break;
                 case false:
                     CLUSettings.Instance.ClickExtraActionButton = !CLUSettings.Instance.ClickExtraActionButton;
-                    CLU.Log(" ClickExtraActionButton= {0}", CLUSettings.Instance.ClickExtraActionButton);
+                    CLULogger.Log(" ClickExtraActionButton= {0}", CLUSettings.Instance.ClickExtraActionButton);
                     if (CLUSettings.Instance.EnableKeybindSounds) {
                         try {
                             SoundManager.LoadSoundFilePath(@"\Routines\CLU\Sound\dsextraactionbuttonenabled.wav");
@@ -88,7 +88,7 @@ namespace CLU.Helpers
                 switch (CLUSettings.Instance.UseAoEAbilities) {
                 case true:
                     CLUSettings.Instance.UseAoEAbilities = !CLUSettings.Instance.UseAoEAbilities;
-                    CLU.Log(" UseAoEAbilities= {0}", CLUSettings.Instance.UseAoEAbilities);
+                    CLULogger.Log(" UseAoEAbilities= {0}", CLUSettings.Instance.UseAoEAbilities);
                     if (CLUSettings.Instance.EnableKeybindSounds) {
                         try {
                             SoundManager.LoadSoundFilePath(@"\Routines\CLU\Sound\aoeabilitiesdisabled.wav");
@@ -98,7 +98,7 @@ namespace CLU.Helpers
                     break;
                 case false:
                     CLUSettings.Instance.UseAoEAbilities = !CLUSettings.Instance.UseAoEAbilities;
-                    CLU.Log(" UseAoEAbilities= {0}", CLUSettings.Instance.UseAoEAbilities);
+                    CLULogger.Log(" UseAoEAbilities= {0}", CLUSettings.Instance.UseAoEAbilities);
                     if (CLUSettings.Instance.EnableKeybindSounds) {
                         try {
                             SoundManager.LoadSoundFilePath(@"\Routines\CLU\Sound\aoeabilitiesenabled.wav");
@@ -116,7 +116,7 @@ namespace CLU.Helpers
                 switch (CLUSettings.Instance.EnableRaidPartyBuffing) {
                 case true:
                     CLUSettings.Instance.EnableRaidPartyBuffing = !CLUSettings.Instance.EnableRaidPartyBuffing;
-                    CLU.Log(" EnableRaidPartyBuffing= {0}", CLUSettings.Instance.EnableRaidPartyBuffing);
+                    CLULogger.Log(" EnableRaidPartyBuffing= {0}", CLUSettings.Instance.EnableRaidPartyBuffing);
                     if (CLUSettings.Instance.EnableKeybindSounds) {
                         try {
                             SoundManager.LoadSoundFilePath(@"\Routines\CLU\Sound\raidandpartybuffingdisabled.wav");
@@ -126,7 +126,7 @@ namespace CLU.Helpers
                     break;
                 case false:
                     CLUSettings.Instance.EnableRaidPartyBuffing = !CLUSettings.Instance.EnableRaidPartyBuffing;
-                    CLU.Log(" EnableRaidPartyBuffing= {0}", CLUSettings.Instance.EnableRaidPartyBuffing);
+                    CLULogger.Log(" EnableRaidPartyBuffing= {0}", CLUSettings.Instance.EnableRaidPartyBuffing);
                     if (CLUSettings.Instance.EnableKeybindSounds) {
                         try {
                             SoundManager.LoadSoundFilePath(@"\Routines\CLU\Sound\raidandpartybuffingenabled.wav");
@@ -144,7 +144,7 @@ namespace CLU.Helpers
                 switch (CLUSettings.Instance.EnableInterupts) {
                 case true:
                     CLUSettings.Instance.EnableInterupts = !CLUSettings.Instance.EnableInterupts;
-                    CLU.Log(" EnableInterupts= {0}", CLUSettings.Instance.EnableInterupts);
+                    CLULogger.Log(" EnableInterupts= {0}", CLUSettings.Instance.EnableInterupts);
                     if (CLUSettings.Instance.EnableKeybindSounds) {
                         try {
                             SoundManager.LoadSoundFilePath(@"\Routines\CLU\Sound\interuptsdisabled.wav");
@@ -154,7 +154,7 @@ namespace CLU.Helpers
                     break;
                 case false:
                     CLUSettings.Instance.EnableInterupts = !CLUSettings.Instance.EnableInterupts;
-                    CLU.Log(" EnableInterupts= {0}", CLUSettings.Instance.EnableInterupts);
+                    CLULogger.Log(" EnableInterupts= {0}", CLUSettings.Instance.EnableInterupts);
                     if (CLUSettings.Instance.EnableKeybindSounds) {
                         try {
                             SoundManager.LoadSoundFilePath(@"\Routines\CLU\Sound\interuptsenabled.wav");
@@ -172,7 +172,7 @@ namespace CLU.Helpers
                 switch (CLUSettings.Instance.EnableSelfHealing) {
                 case true:
                     CLUSettings.Instance.EnableSelfHealing = !CLUSettings.Instance.EnableSelfHealing;
-                    CLU.Log(" EnableSelfHealing= {0}", CLUSettings.Instance.EnableSelfHealing);
+                    CLULogger.Log(" EnableSelfHealing= {0}", CLUSettings.Instance.EnableSelfHealing);
                     if (CLUSettings.Instance.EnableKeybindSounds) {
                         try {
                             SoundManager.LoadSoundFilePath(@"\Routines\CLU\Sound\selfhealingdisabled.wav");
@@ -182,7 +182,7 @@ namespace CLU.Helpers
                     break;
                 case false:
                     CLUSettings.Instance.EnableSelfHealing = !CLUSettings.Instance.EnableSelfHealing;
-                    CLU.Log(" EnableSelfHealing= {0}", CLUSettings.Instance.EnableSelfHealing);
+                    CLULogger.Log(" EnableSelfHealing= {0}", CLUSettings.Instance.EnableSelfHealing);
                     if (CLUSettings.Instance.EnableKeybindSounds) {
                         try {
                             SoundManager.LoadSoundFilePath(@"\Routines\CLU\Sound\selfhealingenabled.wav");
@@ -200,7 +200,7 @@ namespace CLU.Helpers
                 switch (CLUSettings.Instance.EnableMultiDotting) {
                 case true:
                     CLUSettings.Instance.EnableMultiDotting = !CLUSettings.Instance.EnableMultiDotting;
-                    CLU.Log(" EnableMultiDotting= {0}", CLUSettings.Instance.EnableMultiDotting);
+                    CLULogger.Log(" EnableMultiDotting= {0}", CLUSettings.Instance.EnableMultiDotting);
                     if (CLUSettings.Instance.EnableKeybindSounds) {
                         try {
                             SoundManager.LoadSoundFilePath(@"\Routines\CLU\Sound\multidottingdisabled.wav");
@@ -210,7 +210,7 @@ namespace CLU.Helpers
                     break;
                 case false:
                     CLUSettings.Instance.EnableMultiDotting = !CLUSettings.Instance.EnableMultiDotting;
-                    CLU.Log(" EnableMultiDotting= {0}", CLUSettings.Instance.EnableMultiDotting);
+                    CLULogger.Log(" EnableMultiDotting= {0}", CLUSettings.Instance.EnableMultiDotting);
                     if (CLUSettings.Instance.EnableKeybindSounds) {
                         try {
                             SoundManager.LoadSoundFilePath(@"\Routines\CLU\Sound\multidottingenabled.wav");
@@ -228,7 +228,7 @@ namespace CLU.Helpers
                 switch (CLUSettings.Instance.PauseRotation) {
                 case true:
                     CLUSettings.Instance.PauseRotation = !CLUSettings.Instance.PauseRotation;
-                    CLU.Log(" PauseRotation= {0}", CLUSettings.Instance.PauseRotation);
+                    CLULogger.Log(" PauseRotation= {0}", CLUSettings.Instance.PauseRotation);
                     if (CLUSettings.Instance.EnableKeybindSounds) {
                         try {
                             SoundManager.LoadSoundFilePath(@"\Routines\CLU\Sound\rotationenabled.wav");
@@ -239,7 +239,7 @@ namespace CLU.Helpers
                     break;
                 case false:
                     CLUSettings.Instance.PauseRotation = !CLUSettings.Instance.PauseRotation;
-                    CLU.Log(" PauseRotation= {0}", CLUSettings.Instance.PauseRotation);
+                    CLULogger.Log(" PauseRotation= {0}", CLUSettings.Instance.PauseRotation);
                     if (CLUSettings.Instance.EnableKeybindSounds) {
                         try {
                             SoundManager.LoadSoundFilePath(@"\Routines\CLU\Sound\rotationpaused.wav");
@@ -257,7 +257,7 @@ namespace CLU.Helpers
                 switch (CLUSettings.Instance.Priest.ChakraStanceSelection) {
                 case ChakraStance.Sanctuary:
                     CLUSettings.Instance.Priest.ChakraStanceSelection = ChakraStance.Serenity;
-                    CLU.Log(" ChakraStanceSelection= {0}", CLUSettings.Instance.Priest.ChakraStanceSelection);
+                    CLULogger.Log(" ChakraStanceSelection= {0}", CLUSettings.Instance.Priest.ChakraStanceSelection);
                     if (CLUSettings.Instance.EnableKeybindSounds) {
                         try {
                             SoundManager.LoadSoundFilePath(@"\Routines\CLU\Sound\chakraserenity.wav");
@@ -267,7 +267,7 @@ namespace CLU.Helpers
                     break;
                 case ChakraStance.Serenity:
                     CLUSettings.Instance.Priest.ChakraStanceSelection = ChakraStance.Sanctuary;
-                    CLU.Log(" ChakraStanceSelection= {0}", CLUSettings.Instance.Priest.ChakraStanceSelection);
+                    CLULogger.Log(" ChakraStanceSelection= {0}", CLUSettings.Instance.Priest.ChakraStanceSelection);
                     if (CLUSettings.Instance.EnableKeybindSounds) {
                         try {
                             SoundManager.LoadSoundFilePath(@"\Routines\CLU\Sound\chakrasanctuary.wav");
@@ -291,7 +291,7 @@ namespace CLU.Helpers
                 {
                     case true:
                         CLUSettings.Instance.EnableMovement = !CLUSettings.Instance.EnableMovement;
-                        CLU.Log(" EnableMovement= {0}", CLUSettings.Instance.EnableMovement);
+                        CLULogger.Log(" EnableMovement= {0}", CLUSettings.Instance.EnableMovement);
                         if (CLUSettings.Instance.EnableKeybindSounds)
                         {
                             try
@@ -305,7 +305,7 @@ namespace CLU.Helpers
                         break;
                     case false:
                         CLUSettings.Instance.EnableMovement = !CLUSettings.Instance.EnableMovement;
-                        CLU.Log(" EnableMovement= {0}", CLUSettings.Instance.EnableMovement);
+                        CLULogger.Log(" EnableMovement= {0}", CLUSettings.Instance.EnableMovement);
                         if (CLUSettings.Instance.EnableKeybindSounds)
                         {
                             try
@@ -334,7 +334,7 @@ namespace CLU.Helpers
                 var raw = Lua.GetReturnValues("if " + key.ToString("g") + "() then return 1 else return 0 end");
                 return raw[0] == "1";
             } catch {
-                CLU.DiagnosticLog("Lua failed in IsKeyDown" + key.ToString("g"));
+                CLULogger.DiagnosticLog("Lua failed in IsKeyDown" + key.ToString("g"));
                 return false;
             }
         }
