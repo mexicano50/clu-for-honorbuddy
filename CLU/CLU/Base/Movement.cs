@@ -60,7 +60,7 @@ namespace CLU.Base
                                              new PrioritySelector(
                                              	ctx => {
                                                     // Clear our current target if its Dead.
-                                                    if (onUnit(ctx).IsDead)
+                                                    if (ctx != null && onUnit(ctx).IsDead)
                                                     {
                                                         CLULogger.TroubleshootLog(" Target Appears to be dead. Clearing Current Target [" + CLULogger.SafeName((WoWUnit)ctx) + "]");
                                                         StyxWoW.Me.ClearTarget();
