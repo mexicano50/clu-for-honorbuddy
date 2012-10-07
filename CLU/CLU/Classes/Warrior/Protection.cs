@@ -128,8 +128,8 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
                      Spell.CastSelfSpell("Berserker Rage", ret => Me.CurrentTarget != null && (CLUSettings.Instance.Warrior.UseBerserkerRage && CLUSettings.Instance.UseCooldowns && Me.CurrentTarget.IsWithinMeleeRange), "Berserker Rage"),
                      Spell.CastAreaSpell("Thunder Clap", 8, false, 1, 0.0, 0.0, ret => !Buff.UnitHasWeakenedBlows(Me.CurrentTarget) && Me.CurrentTarget != null && Me.CurrentTarget.IsWithinMeleeRange, "Thunder Clap for Weakened Blows"),
                      Buff.CastDebuff("Demoralizing Shout",  ret => Me.CurrentTarget != null && !Buff.UnitHasWeakenedBlows(Me.CurrentTarget) && CLUSettings.Instance.Warrior.UseDemoralizingShout, "Demoralizing Shout"),
-                     Spell.CastSpell("Commanding Shout",    ret => Me.RagePercent < 40 && CLUSettings.Instance.Warrior.ShoutSelection == WarriorShout.Commanding, "Commanding Shout for Rage"),
-                     Spell.CastSpell("Battle Shout",        ret => Me.RagePercent < 40 && CLUSettings.Instance.Warrior.ShoutSelection == WarriorShout.Battle, "Battle Shout for Rage"),
+                     Spell.CastSpell("Commanding Shout", ret => Me.RagePercent < 40 && !WoWSpell.FromId(469).Cooldown && CLUSettings.Instance.Warrior.ShoutSelection == WarriorShout.Commanding, "Commanding Shout for Rage"),
+                     Spell.CastSpell("Battle Shout", ret => Me.RagePercent < 40 && !WoWSpell.FromId(6673).Cooldown && CLUSettings.Instance.Warrior.ShoutSelection == WarriorShout.Battle, "Battle Shout for Rage"),
                      Spell.CastSpell("Sunder Armor", ret => true, "Devastate if SS and Rev on CD")
 
                      );
