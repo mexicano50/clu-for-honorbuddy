@@ -126,7 +126,17 @@ namespace CLU.Classes.Monk
 
         public override Composite Pull
         {
-             get { return this.SingleRotation; }
+            get
+            {
+                return new PrioritySelector(
+                    new Decorator(ret => CLUSettings.Instance.EnableMovement,
+                        new PrioritySelector(
+                            Spell.CastSpell("Flying Serpent Kick", ret => !CLU.IsMounted && (Me.CurrentTarget != null && Me.CurrentTarget.DistanceSqr >= 8 * 8), "Flying Serpent Kick"),
+                            Spell.CastSpell("Roll", ret => !CLU.IsMounted && (Me.CurrentTarget != null && Me.CurrentTarget.DistanceSqr >= 10 * 10), "Roll"),
+                            this.SingleRotation)),
+                    this.SingleRotation
+                    );
+            }
         }
 
         public override Composite Medic
