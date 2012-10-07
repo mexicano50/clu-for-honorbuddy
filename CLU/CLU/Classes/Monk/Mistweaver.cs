@@ -151,23 +151,23 @@ namespace CLU.Classes.Monk
                                            Spell.CastHeal("Renewing Mist", a => true, "Renewing Mist on tank")
                            ),
                     
-                           Healer.FindAreaHeal(a => true, 10, 75, 30f, (Me.GroupInfo.IsInRaid ? 3 : 2), "AOE Thunder Focus Tea: Avg: 10-75, 30yrds, count: 3 or 2",
+                           Healer.FindAreaHeal(a => true, 10, 80, 30f, (Me.GroupInfo.IsInRaid ? 3 : 2), "AOE Thunder Focus Tea: Avg: 10-75, 30yrds, count: 3 or 2",
                                     Spell.CastSpell("Thunder Focus Tea", ret => Me, ret => Chi >= 1, "Tea Popped"),
                                     Spell.CastSpell("Rushing Jade Wind", ret => Me, ret => Chi >= 1, "Rushing Jade Wind"),
                                     Spell.CastSpell("Uplift", ret => Me, ret => Buff.GroupCountBuff("Renewing Mist") >= 2 && Chi >= 2 || TalentManager.HasGlyph("Uplift"), "Uplift"),
-                                    Spell.CastSpell("Spinning Crane Kick", ret => Me.CurrentTarget, ret => Chi >= 2 && Unit.EnemyUnits.Count() > 2, "Spinning Crane Kick")
+                                    Spell.CastSpell("Spinning Crane Kick", ret => Me.CurrentTarget, ret => Unit.EnemyUnits.Count() > 2, "Spinning Crane Kick")
                            ),
 
                            //Regular Healing
-                           Healer.FindTank(a => true, x => x.ToUnit().InLineOfSight && !x.ToUnit().IsDead && x.HealthPercent < 70, (a, b) => (int)(a.CurrentHealth - b.CurrentHealth), "Single target Tank healing",
+                           Healer.FindTank(a => true, x => x.ToUnit().InLineOfSight && !x.ToUnit().IsDead && x.HealthPercent < 80, (a, b) => (int)(a.CurrentHealth - b.CurrentHealth), "Single target Tank healing",
                                     new Sequence(
                                         Spell.CastOnUnitLocation("Healing Sphere", ret => HealTarget, ret => HealthCheck(80), "Healing Sphere"),
                                         new ActionAlwaysSucceed()),
                                     Buff.CastHealBuff("Soothing Mist", a => true, "Soothing Mist")                                   
                            ),
                            
-                           Healer.FindRaidMember(a => true, x => x.ToUnit().InLineOfSight && !x.ToUnit().IsDead && x.HealthPercent < 70, (a, b) => (int)(a.CurrentHealth - b.CurrentHealth), "Single target healing",
-                                    Buff.CastHealBuff("Renewing Mist", a => HealthCheck(75), "Renewing Mist"),
+                           Healer.FindRaidMember(a => true, x => x.ToUnit().InLineOfSight && !x.ToUnit().IsDead && x.HealthPercent < 80, (a, b) => (int)(a.CurrentHealth - b.CurrentHealth), "Single target healing",
+                                    Buff.CastHealBuff("Renewing Mist", a => HealthCheck(80), "Renewing Mist"),
                                     new Sequence(
                                         Spell.CastOnUnitLocation("Healing Sphere", ret => HealTarget, ret => HealthCheck(80), "Healing Sphere"),
                                         new ActionAlwaysSucceed()),
