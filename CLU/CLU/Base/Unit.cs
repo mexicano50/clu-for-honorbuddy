@@ -174,8 +174,8 @@ namespace CLU.Base
                               .Where(unit =>
                                      !unit.IsFriendly
                                      && (unit.IsTargetingMeOrPet
-                                         //|| unit.IsTargetingMyPartyMember
-                                         //|| unit.IsTargetingMyRaidMember
+                                         || unit.IsTargetingMyPartyMember
+                                         || unit.IsTargetingMyRaidMember
                                          || unit.IsPlayer)
                                      && !unit.IsNonCombatPet
                                      && !unit.IsCritter
@@ -205,8 +205,8 @@ namespace CLU.Base
                               .Where(unit =>
                                      !unit.IsFriendly
                                      && (unit.IsTargetingMeOrPet
-                                         //|| unit.IsTargetingMyPartyMember
-                                         //|| unit.IsTargetingMyRaidMember
+                                         || unit.IsTargetingMyPartyMember
+                                         || unit.IsTargetingMyRaidMember
                                          || unit.IsPlayer)
                                      && !unit.IsNonCombatPet
                                      && !unit.IsCritter
@@ -236,8 +236,8 @@ namespace CLU.Base
                               .Where(unit =>
                                      !unit.IsFriendly
                                      && (unit.IsTargetingMeOrPet
-                                         //|| unit.IsTargetingMyPartyMember
-                                         //|| unit.IsTargetingMyRaidMember
+                                         || unit.IsTargetingMyPartyMember
+                                         || unit.IsTargetingMyRaidMember
                                          || unit.IsPlayer
                                          || unit.MaxHealth == 1)
                                      && !unit.IsNonCombatPet
@@ -268,8 +268,8 @@ namespace CLU.Base
                               .Where(unit =>
                                      !unit.IsFriendly
                                      && (unit.IsTargetingMeOrPet
-                                         //|| unit.IsTargetingMyPartyMember
-                                         //|| unit.IsTargetingMyRaidMember
+                                         || unit.IsTargetingMyPartyMember
+                                         || unit.IsTargetingMyRaidMember
                                          || unit.MaxHealth == 1
                                          || BossList.BossIds.Contains(unit.Entry))
                                      && !unit.IsNonCombatPet
