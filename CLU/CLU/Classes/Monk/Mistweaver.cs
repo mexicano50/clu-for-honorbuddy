@@ -19,6 +19,7 @@ using CLU.Base;
 using Styx.CommonBot;
 using Rest = CLU.Base.Rest;
 using System.Linq;
+using CLU.Managers;
 
 
 namespace CLU.Classes.Monk
@@ -153,12 +154,13 @@ namespace CLU.Classes.Monk
                            Healer.FindAreaHeal(a => true, 10, 77, 30f, (Me.GroupInfo.IsInRaid ? 3 : 2), "AOE Thunder Focus Tea: Avg: 10-75, 30yrds, count: 3 or 2",
                                     Spell.CastSpell("Thunder Focus Tea", ret => Me, ret => Chi >= 1, "Tea Popped"),
                                     Spell.CastSpell("Rushing Jade Wind", ret => Me, ret => Chi >= 1, "Rushing Jade Wind"),
-                                    Spell.CastSpell("Uplift", ret => Me, ret => Chi >= 2, "Uplift"),
+                                    Spell.CastSpell("Uplift", ret => Me, ret => Buff.GroupCountBuff("Renewing Mist") >= 2 && Chi >= 2 || TalentManager.HasGlyph("Uplift"), "Uplift"),
                                     Spell.CastSpell("Spinning Crane Kick", ret => Me.CurrentTarget, ret => Chi >= 2 && Unit.EnemyUnits.Count() > 2, "Spinning Crane Kick")
                            ),
 
                            //Regular Healing
                            Healer.FindTank(a => true, x => x.ToUnit().InLineOfSight && !x.ToUnit().IsDead && x.HealthPercent < 70, (a, b) => (int)(a.CurrentHealth - b.CurrentHealth), "Single target Tank healing",
+                                    Buff.CastHealBuff("Renewing Mist", a => HealthCheck(65), "Renewing Mist"),
                                     new Sequence(
                                         Spell.CastOnUnitLocation("Healing Sphere", ret => HealTarget, ret => HealthCheck(80), "Healing Sphere"),
                                         new ActionAlwaysSucceed()),
@@ -166,6 +168,7 @@ namespace CLU.Classes.Monk
                            ),
                            
                            Healer.FindRaidMember(a => true, x => x.ToUnit().InLineOfSight && !x.ToUnit().IsDead && x.HealthPercent < 70, (a, b) => (int)(a.CurrentHealth - b.CurrentHealth), "Single target healing",
+                                    Buff.CastHealBuff("Renewing Mist", a => HealthCheck(65), "Renewing Mist"),
                                     new Sequence(
                                         Spell.CastOnUnitLocation("Healing Sphere", ret => HealTarget, ret => HealthCheck(80), "Healing Sphere"),
                                         new ActionAlwaysSucceed()),
