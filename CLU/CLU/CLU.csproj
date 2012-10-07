@@ -202,6 +202,8 @@
     <Content Include="Sound\cooldownsenabled.wav" />
     <Content Include="Sound\dsextraactionbuttondisabled.wav" />
     <Content Include="Sound\dsextraactionbuttonenabled.wav" />
+    <Content Include="Sound\fistsoffurydisabled.wav" />
+    <Content Include="Sound\fistsoffuryenabled.wav" />
     <Content Include="Sound\interuptsdisabled.wav" />
     <Content Include="Sound\interuptsenabled.wav" />
     <Content Include="Sound\movementdisabled.wav" />

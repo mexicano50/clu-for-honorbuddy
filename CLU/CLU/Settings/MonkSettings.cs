@@ -41,6 +41,17 @@ namespace CLU.Settings
             set;
         }
 
+        [Setting]
+        [DefaultValue(true)]
+        [Category("WindWalker Spec")]
+        [DisplayName("Fists Of Fury Enable/Disable")]
+        [Description("This setting should be used in conjunction with the FistsKeybind to enable disable FoF during movement Phases.")]
+        public bool EnableFists
+        {
+            get;
+            set;
+        }
+
         #endregion
     }
 }

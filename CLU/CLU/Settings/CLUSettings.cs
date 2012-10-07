@@ -21,10 +21,7 @@ using DefaultValue = Styx.Helpers.DefaultValueAttribute;
 
 namespace CLU.Settings
 {
-    using System;
-
     using Styx.Common;
-    using Styx.TreeSharp;
 
     internal class CLUSettings : Styx.Helpers.Settings
     {
@@ -294,6 +291,7 @@ namespace CLU.Settings
             set;
         }
 
+
         [Setting]
         [DefaultValue(true)]
         [Category("Keybinds")]
@@ -311,6 +309,17 @@ namespace CLU.Settings
         [DisplayName("Toggle Pause Rotation")]
         [Description("Select the Keybind for [PauseRotation]  DO NOT SET THE SAME KEYBIND MORE THAN ONCE!!!")]
         public Keyboardfunctions KeybindPauseRotation
+        {
+            get;
+            set;
+        }
+
+        [Setting]
+        [DefaultValue(Keyboardfunctions.Nothing)]
+        [Category("Keybinds")]
+        [DisplayName("Toggle Enable Fists of Fury")]
+        [Description("Select the Keybind for [EnabelFists]  DO NOT SET THE SAME KEYBIND MORE THAN ONCE!!!")]
+        public Keyboardfunctions KeybindEnableFists
         {
             get;
             set;
