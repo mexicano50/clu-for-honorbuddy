@@ -91,6 +91,8 @@ namespace CLU.Classes.Monk
                            // For DS Encounters.
                            EncounterSpecific.ExtraActionButton(),
 
+                           Spell.CastSelfSpell("Arcane Torrent", ret => Me.ManaPercent < 80, "Arcane Torrent"),
+
                            //Trinkets, Racials, whatever.. I dont really care
                            new Decorator(
                                ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget),
@@ -125,11 +127,17 @@ namespace CLU.Classes.Monk
                            //Save Tank's life
                            Healer.FindTank(a => true, x => x.ToUnit().InLineOfSight && !x.ToUnit().IsDead && x.HealthPercent < 60, (a, b) => (int)(a.CurrentHealth - b.CurrentHealth), "emergency heals on most injured tank",
                                     Spell.CastHeal("Life Cocoon", a => HealthCheck(25), "Life Cocoon"),
+                                    new Sequence(
+                                        Spell.CastOnUnitLocation("Healing Sphere", ret => HealTarget, ret => HealthCheck(80), "Healing Sphere"), 
+                                        new ActionAlwaysSucceed()),
                                     Buff.CastHealBuff("Soothing Mist", a => true, "Soothing Mist (emergency)")
                            ),
 
                            //Save any other lives that need saving
                            Healer.FindRaidMember(a => true, x => x.ToUnit().InLineOfSight && !x.ToUnit().IsDead && x.HealthPercent < 55, (a, b) => (int)(a.CurrentHealth - b.CurrentHealth), "I'm fine and tanks are not dying => ensure nobody is REALLY low life",
+                                    new Sequence(
+                                        Spell.CastOnUnitLocation("Healing Sphere", ret => HealTarget, ret => HealthCheck(80), "Healing Sphere"),
+                                        new ActionAlwaysSucceed()),
                                     Buff.CastHealBuff("Soothing Mist", a => true, "Soothing Mist")
                            ),
 
@@ -151,10 +159,16 @@ namespace CLU.Classes.Monk
 
                            //Regular Healing
                            Healer.FindTank(a => true, x => x.ToUnit().InLineOfSight && !x.ToUnit().IsDead && x.HealthPercent < 70, (a, b) => (int)(a.CurrentHealth - b.CurrentHealth), "Single target Tank healing",
+                                    new Sequence(
+                                        Spell.CastOnUnitLocation("Healing Sphere", ret => HealTarget, ret => HealthCheck(80), "Healing Sphere"),
+                                        new ActionAlwaysSucceed()),
                                     Buff.CastHealBuff("Soothing Mist", a => true, "Soothing Mist")                                   
                            ),
                            
                            Healer.FindRaidMember(a => true, x => x.ToUnit().InLineOfSight && !x.ToUnit().IsDead && x.HealthPercent < 70, (a, b) => (int)(a.CurrentHealth - b.CurrentHealth), "Single target healing",
+                                    new Sequence(
+                                        Spell.CastOnUnitLocation("Healing Sphere", ret => HealTarget, ret => HealthCheck(80), "Healing Sphere"),
+                                        new ActionAlwaysSucceed()),
                                     Buff.CastHealBuff("Soothing Mist", a => true, "Soothing Mist")
                            ),
 
