@@ -13,6 +13,7 @@
 #endregion
 
 using System.Linq;
+using Styx;
 using Styx.TreeSharp;
 using CommonBehaviors.Actions;
 using CLU.Helpers;
@@ -67,6 +68,18 @@ namespace CLU.Classes.Monk
                 return Me.CurrentChi; // StyxWoW.Me.GetCurrentPower(WoWPowerType.LightForce);
             }
         }
+        
+        public static Composite HandleFlyingUnits
+        {
+            get
+            {
+                //Shoot flying targets
+                return new Decorator(
+                    ret => StyxWoW.Me.CurrentTarget.IsFlying && CLUSettings.Instance.EnableMovement,
+                    new PrioritySelector(
+                        Spell.ChannelSpell("Crackling Jade Lightning", ret => true, "Crackling Jade Lightning")));
+            }
+        }
 
         // TODO: CHECK COMBO BREAKER NAMES.
         // TODO: CHECK CHI
@@ -91,6 +104,8 @@ namespace CLU.Classes.Monk
                             Racials.UseRacials(),
                             Buff.CastBuff("Lifeblood", ret => true, "Lifeblood"),
                             Item.UseEngineerGloves())),
+
+                    HandleFlyingUnits,
 
                     // Interupt
                     Spell.CastInterupt("Spear Hand Strike", ret => true, "Spear Hand Strike"),

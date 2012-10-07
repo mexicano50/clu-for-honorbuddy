@@ -98,6 +98,17 @@ Credits: alxaw , Kbrebel04
         // TODO: CHECK ALL AURAS
         // TODO: CHECK JAB IS NOT AFFECTED BY THE WEAPON YOU ARE CARRYING AND WE ONLY NEED TO USE JAB AND THE SPELLID AND ICON WILL CHANGE.
 
+        public static Composite HandleFlyingUnits
+        {
+            get
+            {
+                //Shoot flying targets
+                return new Decorator(
+                    ret => StyxWoW.Me.CurrentTarget.IsFlying && CLUSettings.Instance.EnableMovement,
+                    new PrioritySelector(
+                        Spell.ChannelSpell("Crackling Jade Lightning", ret => true, "Crackling Jade Lightning")));
+            }
+        }
 
         private static readonly List<string> JabSpellList = new List<string> { "Jab", "Club", "Slice", "Sever", "Pike", "Clobber" };
 
@@ -121,6 +132,8 @@ Credits: alxaw , Kbrebel04
                         new PrioritySelector(
                             Spell.CastSpell("Disable", ret => Me.CurrentEnergy >= 15 && (Me.CurrentTarget.IsPlayer || Me.CurrentTarget.Fleeing) && Me.CurrentTarget.MovementInfo.RunSpeed > 3.5, "Disable")
                             )),
+
+                    HandleFlyingUnits,
 
                     //Cooldowns
                     new Decorator(
