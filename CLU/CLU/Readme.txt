@@ -13,7 +13,7 @@
 
 CLU (Codified Likeness Utility) the Rotation CC for Combat/Raid/Lazyraider bots Powered by Felmaster technology
 
-Current Issues Updated: 29/September/2012
+Current Issues Updated: 7/October/2012
 =================================
 None. - well maybe a few :P
 
@@ -238,7 +238,8 @@ Movement
 CLU will take over movement when the botbase (questing, bgbuddy,gatherbuddy,etc) gives control to CLU.
 
  * Overview:
-- Blacklist EVADE/IMMUNE units.	
+- Blacklist EVADE/IMMUNE units.
+- clear Target if its dead
 - Acquire Target
 - Face Target
 - Move to Location (LoS)
@@ -293,6 +294,8 @@ Keybinds
 - EnableMultiDotting
 - EnableInterupts
 - ChakraStanceSelection
+- EnableFistsofFury
+- EnableMovement
 
 Statistics
 ------------------
@@ -389,6 +392,7 @@ Development Team
 - handnavi
 - TuanHA
 - alxaw
+- kbrebel04
 
 
 
