@@ -261,7 +261,10 @@ namespace CLU.Base
                         {
                             float minRange = spell.ActualMinRange(target);
                             float maxRange = spell.ActualMaxRange(target);
+                            if (!target.IsPlayer && target.CombatReach > 20) // thanks to Ama for this..nice! --wulf
+                                maxRange += 20;
                             var targetDistance = Unit.DistanceToTargetBoundingBox(target);
+
 
                             // RangeId 1 is "Self Only". This should make life easier for people to use self-buffs, or stuff like Starfall where you cast it as a pseudo-buff.
                             if (spell.IsSelfOnlySpell)
