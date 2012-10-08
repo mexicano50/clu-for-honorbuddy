@@ -127,6 +127,7 @@ namespace CLU.Classes.Monk
 
                            //Save Tank's life
                            Healer.FindTank(a => true, x => x.ToUnit().InLineOfSight && !x.ToUnit().IsDead && x.HealthPercent < 60, (a, b) => (int)(a.CurrentHealth - b.CurrentHealth), "emergency heals on most injured tank",
+                                    Spell.CastHeal("Surging Mist", a => Buff.PlayerCountBuff("Vital Mist") == 5 && HealthCheck(50), "Surging Mist"),
                                     Spell.CastHeal("Life Cocoon", a => HealthCheck(25), "Life Cocoon"),
                                     new Sequence(
                                         Spell.CastOnUnitLocation("Healing Sphere", ret => HealTarget, ret => HealthCheck(80), "Healing Sphere"), 
@@ -136,6 +137,7 @@ namespace CLU.Classes.Monk
 
                            //Save any other lives that need saving
                            Healer.FindRaidMember(a => true, x => x.ToUnit().InLineOfSight && !x.ToUnit().IsDead && x.HealthPercent < 55, (a, b) => (int)(a.CurrentHealth - b.CurrentHealth), "I'm fine and tanks are not dying => ensure nobody is REALLY low life",
+                                    Spell.CastHeal("Surging Mist", a => Buff.PlayerCountBuff("Vital Mist") == 5 && HealthCheck(50), "Surging Mist"),
                                     new Sequence(
                                         Spell.CastOnUnitLocation("Healing Sphere", ret => HealTarget, ret => HealthCheck(80), "Healing Sphere"),
                                         new ActionAlwaysSucceed()),
