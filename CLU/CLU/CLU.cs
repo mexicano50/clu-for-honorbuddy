@@ -193,12 +193,14 @@ namespace CLU
         /// <summary>
         /// CLU Pulling Behavior
         /// </summary>
-        private Composite Pulling { get
+        private Composite Pulling
         {
-            return new Sequence
-                    (new DecoratorContinue(x => CLUSettings.Instance.EnableMovement && (!Me.IsCasting || !Spell.PlayerIsChanneling), Movement.MovingFacingBehavior()),
-                     new DecoratorContinue(x => true, this.ActiveRotation.Pull));
-            } 
+            get
+            {
+                return new Sequence(
+                    new DecoratorContinue(x => CLUSettings.Instance.EnableMovement, Movement.MovingFacingBehavior()),
+                    new DecoratorContinue(x => true, ActiveRotation.Pull));
+            }
         }
 
 
@@ -473,6 +475,12 @@ namespace CLU
             {
                 HealableUnit.Pulse(); //
             }
+
+            if (CLUSettings.Instance.EnableMovement)
+            {
+                Unit.RefreshMostFocusedUnits(); //
+            }
+
             //ManageOracle();
         }
 

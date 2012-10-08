@@ -779,7 +779,7 @@ namespace CLU.Base
         /// <summary>
         /// Refreshes the most focused unit depending on the context
         /// </summary>
-        private static void RefreshMostFocusedUnits()
+        public static void RefreshMostFocusedUnits()
         {
             var hostile = ObjectManager.GetObjectsOfType<WoWUnit>(true, false).Where(
                               x => IsAttackable(x) &&
@@ -788,7 +788,7 @@ namespace CLU.Base
 
             if (CLU.GroupType == GroupType.Solo)
             {
-                hostile = hostile.Where(x => x.IsHostile && x.DistanceSqr <= 70 * 70);
+                hostile = hostile.Where(x => x.DistanceSqr <= 70 * 70 && !x.IsPlayer); //&& x.Combat x.IsHostile && 
                 var ret = hostile.Select(h => new FocusedUnit { Unit = h }).ToList();
                 mostFocusedUnits = ret.OrderBy(x => x.Unit.DistanceSqr).ToList();
             }

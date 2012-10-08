@@ -9,6 +9,9 @@
  * $ChangesMade$
  */
 #endregion
+
+using System;
+
 namespace CLU.Classes.Warrior
 {
     using Styx;
@@ -27,7 +30,7 @@ namespace CLU.Classes.Warrior
             {
                 //Shoot flying targets
                 return new Decorator(
-                      ret => StyxWoW.Me.CurrentTarget.IsFlying,
+                      ret => StyxWoW.Me.CurrentTarget.IsFlying || StyxWoW.Me.CurrentTarget.Distance2DSqr < 5 * 5 && Math.Abs(StyxWoW.Me.Z - StyxWoW.Me.CurrentTarget.Z) >= 5,
                       new PrioritySelector(
                           Spell.CastSpell("Heroic Throw", ret => true, "Heroic Throw"),
                           Spell.CastSpell("Throw", ret => true, "Throw")));

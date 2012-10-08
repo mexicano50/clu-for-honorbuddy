@@ -12,6 +12,7 @@
 
 #endregion
 
+using System;
 using Styx.TreeSharp;
 using CommonBehaviors.Actions;
 using CLU.Helpers;
@@ -104,7 +105,7 @@ Credits: alxaw , Kbrebel04
             {
                 //Shoot flying targets
                 return new Decorator(
-                    ret => StyxWoW.Me.CurrentTarget.IsFlying && CLUSettings.Instance.EnableMovement,
+                    ret => (StyxWoW.Me.CurrentTarget.IsFlying || StyxWoW.Me.CurrentTarget.Distance2DSqr < 5 * 5 && Math.Abs(StyxWoW.Me.Z - StyxWoW.Me.CurrentTarget.Z) >= 5) && CLUSettings.Instance.EnableMovement,
                     new PrioritySelector(
                         Spell.ChannelSpell("Crackling Jade Lightning", ret => true, "Crackling Jade Lightning")));
             }

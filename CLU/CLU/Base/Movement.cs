@@ -69,7 +69,8 @@ namespace CLU.Base
                                              		if (Unit.EnsureUnitTargeted != null)
                                              		{
                                              			// Clear our current target if its blacklisted.
-                                             			if (Blacklist.Contains(Unit.EnsureUnitTargeted.Guid)) {
+                                                        if (Blacklist.Contains(Unit.EnsureUnitTargeted.Guid) || Unit.EnsureUnitTargeted.IsDead)
+                                                        {
                                              				StyxWoW.Me.ClearTarget();
                                              			}
                                              			return Unit.EnsureUnitTargeted;
@@ -81,6 +82,9 @@ namespace CLU.Base
                                              		ret => ret != null, //checks that the above ctx returned a valid target.
                                              		new Sequence(
                                                         //new Action(ret => SysLog.DiagnosticLog(" CLU targeting activated. Targeting " + SysLog.SafeName((WoWUnit)ret))),
+                                                        // pending spells like mage blizard cause targeting to fail.
+                                                        //new DecoratorContinue(ctx => StyxWoW.Me.CurrentPendingCursorSpell != null,
+                                                        //        new Action(ctx => Lua.DoString("SpellStopTargeting()"))),
                                              			new Action(ret => ((WoWUnit)ret).Target()),
                                              			new WaitContinue(2, ret => onUnit(ret) != null && onUnit(ret) == (WoWUnit)ret, new ActionAlwaysSucceed()))))),
 

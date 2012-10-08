@@ -12,6 +12,7 @@
 
 using System;
 using System.Windows.Forms;
+using CLU.Helpers;
 using Styx.WoWInternals;
 
 namespace CLU.GUI
@@ -58,7 +59,7 @@ namespace CLU.GUI
             issafelybehindtarget.ForeColor = color;
             issafelybehindtarget.Text = (target != null && StyxWoW.Me.IsBehind(target)).ToString(CultureInfo.InvariantCulture);
             IsWithinMeleeRange_lbl.Text = (target != null && MeleeRangeCheck(target)).ToString(CultureInfo.InvariantCulture);
-            // ttl_label.Text = new HealableUnit(StyxWoW.Me.CurrentTarget).TimeToLive(4).ToString(CultureInfo.InvariantCulture);
+            label7.Text = Unit.MostFocusedUnit.Unit == null ? string.Empty : CLULogger.SafeName(Unit.MostFocusedUnit.Unit);
 
 
             if (target != null) {

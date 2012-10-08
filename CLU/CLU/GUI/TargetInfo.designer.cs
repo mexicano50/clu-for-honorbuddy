@@ -68,6 +68,8 @@ namespace CLU.GUI
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.label3 = new System.Windows.Forms.Label();
             this.IsWithinMeleeRange_lbl = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
@@ -332,17 +334,39 @@ namespace CLU.GUI
             // 
             this.IsWithinMeleeRange_lbl.AutoSize = true;
             this.IsWithinMeleeRange_lbl.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.IsWithinMeleeRange_lbl.Location = new System.Drawing.Point(146, 267);
+            this.IsWithinMeleeRange_lbl.Location = new System.Drawing.Point(143, 267);
             this.IsWithinMeleeRange_lbl.Name = "IsWithinMeleeRange_lbl";
             this.IsWithinMeleeRange_lbl.Size = new System.Drawing.Size(26, 16);
             this.IsWithinMeleeRange_lbl.TabIndex = 24;
             this.IsWithinMeleeRange_lbl.Text = "xxx";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label5.Location = new System.Drawing.Point(14, 304);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(90, 13);
+            this.label5.TabIndex = 25;
+            this.label5.Text = "MostFocusedUnit";
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label7.Location = new System.Drawing.Point(143, 301);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(26, 16);
+            this.label7.TabIndex = 26;
+            this.label7.Text = "xxx";
             // 
             // TargetInfo
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1010, 416);
+            this.Controls.Add(this.label7);
+            this.Controls.Add(this.label5);
             this.Controls.Add(this.IsWithinMeleeRange_lbl);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.groupBox2);
@@ -399,5 +423,7 @@ namespace CLU.GUI
         private System.Windows.Forms.CheckBox checkmybuffs;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label IsWithinMeleeRange_lbl;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label label7;
     }
 }
