@@ -127,19 +127,21 @@ namespace CLU.Classes.Monk
 
                            //Save Tank's life
                            Healer.FindTank(a => true, x => x.ToUnit().InLineOfSight && !x.ToUnit().IsDead && x.HealthPercent < 60, (a, b) => (int)(a.CurrentHealth - b.CurrentHealth), "emergency heals on most injured tank",
-                                    Spell.CastHeal("Surging Mist", a => Buff.PlayerCountBuff("Vital Mist") == 5 && HealthCheck(50), "Surging Mist"),
+                                    Spell.CastSpell("Thunder Focus Tea", ret => Me, ret => HealthCheck(55) && Chi >= 1, "Tea Popped"),
+                                    Spell.CastHeal("Surging Mist", a => Buff.PlayerCountBuff("Vital Mist") == 5 && HealthCheck(55), "Surging Mist"),
                                     Spell.CastHeal("Life Cocoon", a => HealthCheck(25), "Life Cocoon"),
                                     new Sequence(
-                                        Spell.CastOnUnitLocation("Healing Sphere", ret => HealTarget, ret => HealthCheck(80), "Healing Sphere"), 
+                                        Spell.CastOnUnitLocation("Healing Sphere", ret => HealTarget, ret => !MaxSpheres && HealthCheck(80), "Healing Sphere"), 
                                         new ActionAlwaysSucceed()),
                                     Buff.CastHealBuff("Soothing Mist", a => HealthCheck(55), "Soothing Mist (emergency)")
                            ),
 
                            //Save any other lives that need saving
                            Healer.FindRaidMember(a => true, x => x.ToUnit().InLineOfSight && !x.ToUnit().IsDead && x.HealthPercent < 55, (a, b) => (int)(a.CurrentHealth - b.CurrentHealth), "I'm fine and tanks are not dying => ensure nobody is REALLY low life",
-                                    Spell.CastHeal("Surging Mist", a => Buff.PlayerCountBuff("Vital Mist") == 5 && HealthCheck(50), "Surging Mist"),
+                                    Spell.CastSpell("Thunder Focus Tea", ret => Me, ret => HealthCheck(55) && Chi >= 1, "Tea Popped"),
+                                    Spell.CastHeal("Surging Mist", a => Buff.PlayerCountBuff("Vital Mist") == 5 && HealthCheck(55), "Surging Mist"),
                                     new Sequence(
-                                        Spell.CastOnUnitLocation("Healing Sphere", ret => HealTarget, ret => HealthCheck(80), "Healing Sphere"),
+                                        Spell.CastOnUnitLocation("Healing Sphere", ret => HealTarget, ret => !MaxSpheres && HealthCheck(80), "Healing Sphere"),
                                         new ActionAlwaysSucceed()),
                                     Buff.CastHealBuff("Soothing Mist", a => HealthCheck(55), "Soothing Mist")
                            ),
@@ -153,17 +155,17 @@ namespace CLU.Classes.Monk
                                            Spell.CastHeal("Renewing Mist", a => true, "Renewing Mist on tank")
                            ),
                     
-                           Healer.FindAreaHeal(a => true, 10, 80, 30f, (Me.GroupInfo.IsInRaid ? 3 : 2), "AOE Thunder Focus Tea: Avg: 10-75, 30yrds, count: 3 or 2",
-                                    Spell.CastSpell("Thunder Focus Tea", ret => Me, ret => Chi >= 1, "Tea Popped"),
+                           Healer.FindAreaHeal(a => true, 10, 70, 30f, (Me.GroupInfo.IsInRaid ? 3 : 2), "AOE Thunder Focus Tea: Avg: 10-75, 30yrds, count: 3 or 2",
+                                    Spell.CastSpell("Thunder Focus Tea", ret => Me, ret => Buff.GroupCountBuff("Renewing Mist") >= 3 && Chi >= 1, "Tea Popped"),
                                     Spell.CastSpell("Rushing Jade Wind", ret => Me, ret => Chi >= 1, "Rushing Jade Wind"),
-                                    Spell.CastSpell("Uplift", ret => Me, ret => Buff.GroupCountBuff("Renewing Mist") >= 2 && Chi >= 2 || TalentManager.HasGlyph("Uplift"), "Uplift"),
+                                    Spell.CastSpell("Uplift", ret => Me, ret => Buff.GroupCountBuff("Renewing Mist") >= 3 && Chi >= 2 || TalentManager.HasGlyph("Uplift"), "Uplift"),
                                     Spell.CastSpell("Spinning Crane Kick", ret => Me.CurrentTarget, ret => Unit.EnemyUnits.Count() > 2, "Spinning Crane Kick")
                            ),
 
                            //Regular Healing
                            Healer.FindTank(a => true, x => x.ToUnit().InLineOfSight && !x.ToUnit().IsDead && x.HealthPercent < 80, (a, b) => (int)(a.CurrentHealth - b.CurrentHealth), "Single target Tank healing",
                                     new Sequence(
-                                        Spell.CastOnUnitLocation("Healing Sphere", ret => HealTarget, ret => HealthCheck(80), "Healing Sphere"),
+                                        Spell.CastOnUnitLocation("Healing Sphere", ret => HealTarget, ret => !MaxSpheres && HealthCheck(80), "Healing Sphere"),
                                         new ActionAlwaysSucceed()),
                                     Buff.CastHealBuff("Soothing Mist", a => true, "Soothing Mist")                                   
                            ),
@@ -171,7 +173,7 @@ namespace CLU.Classes.Monk
                            Healer.FindRaidMember(a => true, x => x.ToUnit().InLineOfSight && !x.ToUnit().IsDead && x.HealthPercent < 80, (a, b) => (int)(a.CurrentHealth - b.CurrentHealth), "Single target healing",
                                     Buff.CastHealBuff("Renewing Mist", a => HealthCheck(80), "Renewing Mist"),
                                     new Sequence(
-                                        Spell.CastOnUnitLocation("Healing Sphere", ret => HealTarget, ret => HealthCheck(80), "Healing Sphere"),
+                                        Spell.CastOnUnitLocation("Healing Sphere", ret => HealTarget, ret => !MaxSpheres && HealthCheck(80), "Healing Sphere"),
                                         new ActionAlwaysSucceed()),
                                     Buff.CastHealBuff("Soothing Mist", a => true, "Soothing Mist")
                            ),
