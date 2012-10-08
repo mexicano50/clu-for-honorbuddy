@@ -69,7 +69,7 @@ namespace CLU
     {
         #region Constants and Fields
 
-        public static readonly Version Version = new Version(3, 3, 4);
+        public static readonly Version Version = new Version(3, 3, 5);
         private readonly Timer _clupulsetimer = new Timer(10000); // A timer for keybinds
         private RotationBase _rotationBase;
         private List<RotationBase> _rotations; // list of Rotations
