@@ -488,7 +488,7 @@ namespace CLU.Classes.Rogue
 
             // If we're not behind, attempt to shadowstep and wait for next pulse.
             if (SpellManager.HasSpell("Shadowstep") && !StyxWoW.Me.IsBehind(Me.CurrentTarget) &&
-                      Spell.CanCast("Shadowstep", Me.CurrentTarget))
+                      SpellManager.CanCast("Shadowstep", Me.CurrentTarget))
             {
                 CLULogger.Log(" [Casting] Shadowstep on {0} @ StealthedCombat", CLULogger.SafeName(Me.CurrentTarget));
                 SpellManager.Cast("Shadowstep");

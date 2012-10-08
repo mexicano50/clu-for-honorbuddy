@@ -156,7 +156,7 @@ namespace CLU.Classes.Druid
 
                            // emergency heals on most injured tank
                            Healer.FindTank(a => true, x => x.ToUnit().InLineOfSight && !x.ToUnit().IsDead && x.HealthPercent < 50, (a, b) => (int)(a.CurrentHealth - b.CurrentHealth), "emergency heals on most injured tank",
-                                           new Sequence(ret => Spell.CanCast("Nature's Swiftness", Me),
+                                           new Sequence(ret => SpellManager.CanCast("Nature's Swiftness", Me),
                                                         Spell.CastSelfSpell("Nature's Swiftness", ret => true, "Nature's Swiftness"),
                                                         Spell.CastHeal("Healing Touch", a => true, "Healing Touch")),
                                            Spell.CastHeal("Swiftmend", a => (Buff.TargetHasBuff("Regrowth", HealTarget) || Buff.TargetHasBuff("Rejuvenation", HealTarget)), "Swiftmend (emergency)"),
@@ -168,7 +168,7 @@ namespace CLU.Classes.Druid
                            Healer.FindRaidMember(a => true, x => x.ToUnit().InLineOfSight && !x.ToUnit().IsDead && x.HealthPercent < 45, (a, b) => (int)(a.CurrentHealth - b.CurrentHealth), "I'm fine and tanks are not dying => ensure nobody is REALLY low life",
                                                  Spell.CastHeal("Swiftmend", a => (Buff.TargetHasBuff("Regrowth", HealTarget) || Buff.TargetHasBuff("Rejuvenation", HealTarget)), "Swiftmend (emergency)"),
                                                  Spell.CastHeal("Rejuvenation", a => !Buff.TargetHasBuff("Rejuvenation", HealTarget), "Rejuvenation (emergency)"),
-                                                 new Sequence(ret => Spell.CanCast("Nature's Swiftness", Me),
+                                                 new Sequence(ret => SpellManager.CanCast("Nature's Swiftness", Me),
                                                          Spell.CastSelfSpell("Nature's Swiftness", ret => true, "Nature's Swiftness"),
                                                          Spell.CastHeal("Healing Touch", a => true, "Healing Touch")),
                                                  Spell.CastHeal("Regrowth", a => true, "Regrowth (emergency)")

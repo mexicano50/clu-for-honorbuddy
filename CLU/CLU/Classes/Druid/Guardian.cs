@@ -184,7 +184,7 @@ NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagr
                                   new PrioritySelector(
                                            Item.UseTrinkets(),
                                            Racials.UseRacials(),
-                                           Spell.CastSelfSpell("Enrage", ret => !Spell.CanCast("Berserk", Me) && Me.CurrentRage < 80, "Enrage"),
+                                           Spell.CastSelfSpell("Enrage", ret => !SpellManager.CanCast("Berserk", Me) && Me.CurrentRage < 80, "Enrage"),
                                            Spell.CastSelfSpell("Berserk", ret => true, "Berserk"),
                                            Item.UseEngineerGloves(),
                                            Buff.CastBuff("Lifeblood", ret => true, "Lifeblood"))),

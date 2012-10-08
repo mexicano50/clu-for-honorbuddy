@@ -11,6 +11,7 @@
 #endregion
 
 using CLU.Helpers;
+using CLU.Managers;
 
 namespace CLU.Base
 {
@@ -283,7 +284,7 @@ namespace CLU.Base
                 case "Moonwell Phial":
                     return Me.CurrentTarget != null && !Me.CurrentTarget.IsMoving && !Me.IsMoving && Me.HealthPercent <= 90;
                 case "Rotting Skull":
-                    if (Me.Class == WoWClass.Warrior) return Buff.PlayerCountBuff("Slaughter") == 3;
+                    if (TalentManager.CurrentSpec == WoWSpec.WarriorArms) return Buff.PlayerCountBuff("Slaughter") == 3;
                     return true;
                 case "Eye of Unmaking":
                     if (Me.Class == WoWClass.DeathKnight) return Buff.PlayerCountBuff("Titanic Strength") == 10;

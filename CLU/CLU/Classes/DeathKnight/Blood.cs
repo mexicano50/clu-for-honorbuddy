@@ -16,6 +16,7 @@ using CLU.Lists;
 using CLU.Settings;
 using CommonBehaviors.Actions;
 using Styx;
+using Styx.CommonBot;
 using Styx.TreeSharp;
 using CLU.Classes.DeathKnight;
 using CLU.Base;
@@ -134,7 +135,7 @@ Credits to Weischbier, because he owns the buisness and I want him to have my ba
                            Spell.CastAreaSpell("Blood Boil", 10, false, CLUSettings.Instance.DeathKnight.BloodBloodBoilCount, 0.0, 0.0, ret => Me.BloodRuneCount >= 1 || Buff.PlayerHasActiveBuff("Crimson Scourge"), "Blood Boil"),
                            Spell.CastSpell("Soul Reaper",                 ret => Me.BloodRuneCount > 0 && Me.CurrentTarget != null && Me.CurrentTarget.HealthPercent < 35, "Soul Reaping"), // Never use Soul Reaping if you have no Blood runes, as this will cause Heart Strike to consume a Death rune, which should be saved for Death Strike.
                            Spell.CastSpell("Blood Strike",                ret => Me.BloodRuneCount > 0, "Heart Strike"), // Never use Heart Strike if you have no Blood runes, as this will cause Heart Strike to consume a Death rune, which should be saved for Death Strike.
-                           Spell.CastSpell("Death Coil",                  ret => Me.CurrentTarget != null && !Spell.CanCast("Rune Strike", Me.CurrentTarget) && Me.CurrentRunicPower >= 90, "Death Coil"),
+                           Spell.CastSpell("Death Coil", ret => Me.CurrentTarget != null && !SpellManager.CanCast("Rune Strike", Me.CurrentTarget) && Me.CurrentRunicPower >= 90, "Death Coil"),
                            Spell.CastSpell("Horn of Winter", ret => (Me.CurrentRunicPower < 34 || !Buff.UnitHasStrAgiBuff(Me)) && CLUSettings.Instance.DeathKnight.UseHornofWinter, "Horn of Winter for RP"));
             }
         }

@@ -549,7 +549,7 @@ namespace CLU.Base
                     }
                     catch { }
 
-                    if (!Spell.CanCast(name, Me.CurrentTarget))
+                    if (!SpellManager.CanCast(name, Me.CurrentTarget))
                     {
                         return false;
                     }
@@ -592,7 +592,7 @@ namespace CLU.Base
                     }
                     catch { }
 
-                    if (!Spell.CanCast(name, Me.CurrentTarget))
+                    if (!SpellManager.CanCast(name, Me.CurrentTarget))
                     {
                         return false;
                     }
@@ -634,7 +634,7 @@ namespace CLU.Base
                     }
                     catch { }
 
-                    if (!Spell.CanCast(name, HealableUnit.HealTarget.ToUnit()))
+                    if (!SpellManager.CanCast(name, HealableUnit.HealTarget.ToUnit()))
                     {
                         return false;
                     }
@@ -668,7 +668,7 @@ namespace CLU.Base
                     }
                     catch { }
 
-                    if (!Spell.CanCast(name, Me.CurrentTarget))
+                    if (!SpellManager.CanCast(name, Me.CurrentTarget))
                     {
                         return false;
                     }
@@ -708,7 +708,7 @@ namespace CLU.Base
                         return false;
                     }
 
-                    if (!Spell.CanCast(spell, Me.CurrentTarget))
+                    if (!SpellManager.CanCast(spell, Me.CurrentTarget))
                     {
                         return false;
                     }
@@ -745,7 +745,7 @@ namespace CLU.Base
                     if (!cond(a))
                         return false;
 
-                    if (!Spell.CanCast(name, Me))
+                    if (!SpellManager.CanCast(name, Me))
                     {
                         return false;
                     }
@@ -885,7 +885,7 @@ namespace CLU.Base
                     if (!cond(a))
                         return false;
 
-                    if (!Spell.CanCast(name, Me))
+                    if (!SpellManager.CanCast(name, Me))
                         return false;
 
                     return true;

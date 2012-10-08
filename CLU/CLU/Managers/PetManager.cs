@@ -114,7 +114,7 @@ namespace CLU.Managers
                         if (!cond(a))
                             return false;
 
-                        if (!Spell.CanCast(name, Me))
+                        if (!SpellManager.CanCast(name, Me))
                             return false;
 
                         return true;

@@ -182,7 +182,7 @@ CREDITS TO: HandNavi - because he owns the business.
                         new PrioritySelector(
                             Item.UseTrinkets(),
                             Racials.UseRacials(),
-                            Spell.CastSelfSpell("Enrage", ret => !Spell.CanCast("Berserk", Me) && Me.CurrentRage < 80,
+                            Spell.CastSelfSpell("Enrage", ret => !SpellManager.CanCast("Berserk", Me) && Me.CurrentRage < 80,
                                                 "Enrage"),
                             Spell.CastSelfSpell("Berserk", ret => true, "Berserk"),
                             Item.UseEngineerGloves(),

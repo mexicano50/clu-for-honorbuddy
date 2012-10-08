@@ -22,7 +22,7 @@ namespace CLU.Base
             return(
                 new PrioritySelector(delegate
                     {
-                        foreach (WoWSpell s in freeMeSpellList.Where(spell => Spell.CanCast(spell.Name, StyxWoW.Me) && freeMeSpellUsage(spell)))
+                        foreach (WoWSpell s in freeMeSpellList.Where(spell => SpellManager.CanCast(spell.Name, StyxWoW.Me) && freeMeSpellUsage(spell)))
                         {
                             CLULogger.Log(" [Freeing you via] {0} ", s.Name);
                             SpellManager.Cast(s.Name);
