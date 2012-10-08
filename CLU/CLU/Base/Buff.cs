@@ -484,14 +484,8 @@ namespace CLU.Base
         {
             if (unit != null)
             {
-                WoWAura aura;
-                if (unit.Auras.TryGetValue(auraName, out aura))
-                {
-                    //SysLog.TroubleshootLog(" [GetAuraTimeLeft] auraName: {0} Aura: {1} AuraTimeLeft: {2}", auraName, aura, aura.TimeLeft);
-                    var returnvalue = (!fromMyAura || aura.CreatorGuid == Me.Guid);
-                    return returnvalue ? aura.TimeLeft : TimeSpan.Zero;
-                }
-                return TimeSpan.Zero;
+                var wantedAura = unit.GetAllAuras().FirstOrDefault(a => a.Name == auraName && (!fromMyAura || a.CreatorGuid == StyxWoW.Me.Guid));
+                return wantedAura != null ? wantedAura.TimeLeft : TimeSpan.Zero;
             }
 
             CLULogger.DiagnosticLog(" [GetAuraTimeLeft] Unit is null ");
@@ -507,13 +501,8 @@ namespace CLU.Base
         {
             if (unit != null)
             {
-                WoWAura aura;
-                if (unit.Auras.TryGetValue(auraName, out aura))
-                {
-                    var returnvalue = (!fromMyAura || aura.CreatorGuid == Me.Guid) && aura.StackCount > 0;
-                    return returnvalue ? aura.StackCount : 0;
-                }
-                return 0;
+                var wantedAura = unit.GetAllAuras().FirstOrDefault(a => a.Name == auraName && a.StackCount > 0 && (!fromMyAura || a.CreatorGuid == Me.Guid));
+                return wantedAura != null ? wantedAura.StackCount : 0;
             }
 
             CLULogger.DiagnosticLog(" [GetAuraStack] Unit is null ");
