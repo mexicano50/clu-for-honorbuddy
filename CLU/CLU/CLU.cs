@@ -476,11 +476,6 @@ namespace CLU
                 HealableUnit.Pulse(); //
             }
 
-            if (CLUSettings.Instance.EnableMovement)
-            {
-                Unit.RefreshMostFocusedUnits(); //
-            }
-
             //ManageOracle();
         }
 
