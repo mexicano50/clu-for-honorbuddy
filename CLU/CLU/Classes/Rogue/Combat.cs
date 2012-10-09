@@ -1,4 +1,4 @@
-﻿#region Revision info
+﻿ #region Revision info
 /*
  * $Author$
  * $Date$
@@ -17,6 +17,8 @@ using CLU.Helpers;
 using Styx.WoWInternals.WoWObjects;
 using CLU.Settings;
 using CLU.Base;
+using CLU.Managers;
+using Styx;
 using Styx.CommonBot;
 using Rest = CLU.Base.Rest;
 
@@ -135,24 +137,26 @@ namespace CLU.Classes.Rogue
                             //Spell.CastSpell("Feint", ret => Me.CurrentTarget != null && (Me.CurrentTarget.ThreatInfo.RawPercent > 80 || Encounte  rSpecific.IsMorchokStomp()) && CLUSettings.Instance.EnableSelfHealing, "Feint"),
                            Spell.CastInterupt("Kick",           ret => true, "Kick"),
                            Spell.CastSpell("Redirect",          ret => Me.RawComboPoints > 0 && Me.ComboPoints < 1, "Redirect"),
-                           Spell.CancelMyAura("Blade Flurry",   ret => Buff.PlayerHasBuff("Blade Flurry") && (Unit.EnemyUnits.Count() < 2 || Unit.EnemyUnits.Count() > 6), "Blade Flurry"),
-                           Spell.CastSpell("Crimson Tempest",   ret => Unit.EnemyUnits.Count() >= 7 && Me.ComboPoints == 5, "Crimson Tempest"),
-                           Spell.CastSelfSpell("Blade Flurry",  ret => Unit.EnemyUnits.Count() > 1 && Unit.EnemyUnits.Count() < 7 && !Buff.PlayerHasBuff("Blade Flurry"), "Blade Flurry"),
+                           Spell.CancelMyAura("Blade Flurry",   ret => CLUSettings.Instance.UseAoEAbilities && Buff.PlayerHasBuff("Blade Flurry") && (Unit.EnemyUnits.Count() < 2 || Unit.EnemyUnits.Count() > 6) || !CLUSettings.Instance.UseAoEAbilities && Buff.PlayerHasBuff("Blade Flurry"), "Blade Flurry"),
+                           Spell.CastSpell("Crimson Tempest",   ret => Unit.EnemyUnits.Count() >= 7 && Me.ComboPoints == 5 && CLUSettings.Instance.UseAoEAbilities, "Crimson Tempest"),
+                           Spell.CastSelfSpell("Blade Flurry",  ret => CLUSettings.Instance.UseAoEAbilities && Unit.EnemyUnits.Count() > 1 && Unit.EnemyUnits.Count() < 7 && !Buff.PlayerHasBuff("Blade Flurry"), "Blade Flurry"),
                            Spell.CastSpell("Ambush",            ret => Me.IsBehind(Me.CurrentTarget), "Ambush"),
-                           Spell.CastAreaSpell("Fan of Knives", 8, false, CLUSettings.Instance.Rogue.CombatFanOfKnivesCount, 0.0, 0.0, ret => true, "Fan of Knives"),
+                           Spell.CastAreaSpell("Fan of Knives", 8, false, CLUSettings.Instance.Rogue.CombatFanOfKnivesCount, 0.0, 0.0, ret => CLUSettings.Instance.UseAoEAbilities, "Fan of Knives"),
                            Spell.CastSpell("Tricks of the Trade", u => Unit.BestTricksTarget, ret => CLUSettings.Instance.Rogue.UseTricksOfTheTrade, "Tricks of the Trade"),
                             //Spell.CastSpell("Expose Armor", ret => Me.CurrentTarget != null && Me.ComboPoints == 5 && Unit.IsTargetWorthy(Me.CurrentTarget) && !Buff.UnitHasWeakenedArmor(Me.CurrentTarget), "Expose Armor"),
                            Spell.CastSelfSpell("Slice and Dice",    ret => Me.ComboPoints >= 1 && Buff.PlayerBuffTimeLeft("Slice and Dice") < 2, "Slice and Dice"),
+                           Vanish,
                            Spell.CastSelfSpell("Killing Spree",     ret => Me.CurrentEnergy < 35 && Buff.PlayerBuffTimeLeft("Slice and Dice") > 4 && !Buff.PlayerHasActiveBuff("Adrenaline Rush") && CLUSettings.Instance.UseCooldowns, "Killing Spree"),
                            Spell.CastSelfSpell("Adrenaline Rush",   ret => Me.CurrentTarget != null && Me.CurrentEnergy < 35 && Spell.SpellCooldown("Killing Spree").TotalSeconds > 10 && CLUSettings.Instance.UseCooldowns, "Adrenaline Rush"),
                            Spell.CastSelfSpell("Shadow Blades",     ret => Me.CurrentTarget != null && Buff.PlayerHasBuff("Adrenaline Rush") && CLUSettings.Instance.UseCooldowns, "Shadow Blades"),
-                           Spell.CastSpell("Revealing Strike",      ret => SpellManager.HasSpell(114015) && Buff.TargetDebuffTimeLeft("Revealing Strike").TotalSeconds < 2 && Buff.PlayerCountBuff("Anticipation") < 5, "Revealing Strike"),
+                           Spell.CastSpell("Revealing Strike",      ret => SpellManager.HasSpell(114015) && Buff.TargetDebuffTimeLeft("Revealing Strike").TotalSeconds < 2 && (Buff.PlayerCountBuff("Anticipation") < 5 || Me.ComboPoints < 5), "Revealing Strike"),
                            Spell.CastSpell("Revealing Strike",      ret => !SpellManager.HasSpell(114015) && Buff.TargetDebuffTimeLeft("Revealing Strike").TotalSeconds < 2 && Me.ComboPoints < 5, "Revealing Strike"),
-                           Spell.CastSpell("Rupture",               ret => Unit.EnemyUnits.Count() < 2 && (Me.ComboPoints == 5 && Buff.TargetDebuffTimeLeft("Rupture").TotalSeconds < 3 && Unit.TimeToDeath(Me.CurrentTarget) > 10 || Me.ComboPoints == 5 && Buff.TargetDebuffTimeLeft("Rupture").TotalSeconds < 2 && Buff.PlayerHasBuff("Deep Insight") && Unit.TimeToDeath(Me.CurrentTarget) > 10 || Me.ComboPoints >= 1 && Buff.TargetDebuffTimeLeft("Rupture").TotalSeconds < 2 && Unit.TimeToDeath(Me.CurrentTarget) > 10), "Rupture @ Low"),
-                           Spell.CastSpell("Eviscerate",            ret => SpellManager.HasSpell(114015) && (Me.ComboPoints == 5 && Buff.PlayerHasBuff("Deep Insight") || Buff.PlayerCountBuff("Anticipation") > 4 && Me.CurrentEnergy >= 65), "Eviscerate"),
-                           Spell.CastSpell("Eviscerate",            ret => !SpellManager.HasSpell(114015) && (Me.ComboPoints > 4 && Me.CurrentEnergy >= 65 || Me.ComboPoints > 4 && Buff.TargetDebuffTimeLeft("Revealing Strike").TotalSeconds <= 2 || Me.ComboPoints >= 1 && Buff.PlayerHasBuff("Fury of the Destroyer") || Me.ComboPoints == 5 && Buff.PlayerHasBuff("Shadow Blades")), "Eviscerate Pre-90"),
+                           Spell.CastSpell("Rupture",               ret => Unit.EnemyUnits.Count() < 2 && (Me.ComboPoints == 5 && Buff.TargetDebuffTimeLeft("Rupture").TotalSeconds < 3 && Unit.TimeToDeath(Me.CurrentTarget) > 10 || Me.ComboPoints == 5 && Buff.TargetDebuffTimeLeft("Rupture").TotalSeconds < 2 && Buff.PlayerHasBuff("Deep Insight") && Unit.TimeToDeath(Me.CurrentTarget) > 10 || Me.ComboPoints <= 3 && !Buff.TargetHasDebuff("Rupture") && Unit.TimeToDeath(Me.CurrentTarget) > 10 && Me.CurrentEnergy > 30), "Rupture"),
+						   Spell.CastSpell("Rupture",               ret => Unit.EnemyUnits.Count() > 1 && !CLUSettings.Instance.UseAoEAbilities && (Me.ComboPoints == 5 && Buff.TargetDebuffTimeLeft("Rupture").TotalSeconds < 3 && Unit.TimeToDeath(Me.CurrentTarget) > 10 || Me.ComboPoints == 5 && Buff.TargetDebuffTimeLeft("Rupture").TotalSeconds < 2 && Buff.PlayerHasBuff("Deep Insight") && Unit.TimeToDeath(Me.CurrentTarget) > 10 || Me.ComboPoints <= 3 && !Buff.TargetHasDebuff("Rupture") && Unit.TimeToDeath(Me.CurrentTarget) > 10 && Me.CurrentEnergy > 30), "Rupture No AoE"),
+                           Spell.CastSpell("Eviscerate",            ret => SpellManager.HasSpell(114015) && (Me.ComboPoints == 5 && Buff.PlayerHasBuff("Deep Insight") || Me.ComboPoints > 4 && Buff.PlayerCountBuff("Anticipation") > 4 && Me.CurrentEnergy >= 50), "Eviscerate"),
+                           Spell.CastSpell("Eviscerate",            ret => !SpellManager.HasSpell(114015) && (Me.ComboPoints > 4 && Me.CurrentEnergy >= 60 || Me.ComboPoints > 4 && Buff.TargetDebuffTimeLeft("Revealing Strike").TotalSeconds <= 2 || Me.ComboPoints >= 1 && Buff.PlayerHasBuff("Fury of the Destroyer") || Me.ComboPoints == 5 && Buff.PlayerHasBuff("Shadow Blades")), "Eviscerate Pre-90"),
                            Spell.CastSpell("Sinister Strike",       ret => !SpellManager.HasSpell(114015) && (Buff.TargetHasDebuff("Revealing Strike") && Me.ComboPoints < 5), "Sinister Strike"),
-                           Spell.CastSpell("Sinister Strike",       ret => SpellManager.HasSpell(114015) && !Buff.PlayerHasActiveBuff("Shadow Blades") && Buff.PlayerCountBuff("Anticipation") < 4 || Buff.PlayerCountBuff("Anticipation") < 5, "Sinister Strike")
+                           Spell.CastSpell("Sinister Strike",       ret => SpellManager.HasSpell(114015) && !Buff.PlayerHasActiveBuff("Shadow Blades") && Buff.PlayerCountBuff("Anticipation") < 4 || Buff.PlayerCountBuff("Anticipation") < 5 || Me.ComboPoints < 5, "Sinister Strike")
                        );
             }
         }
@@ -214,6 +218,80 @@ namespace CLU.Classes.Rogue
             get
             {
                 return this.SingleRotation;
+            }
+        }
+
+        private static bool HasShadowFocus
+        {
+            get { return TalentManager.HasTalent(3); }
+        }
+
+        private static bool BuffsSafeForVanish
+        {
+            get
+            {
+                return Buff.PlayerActiveBuffTimeLeft("Slice and Dice").TotalSeconds > 6 &&
+                       Buff.TargetDebuffTimeLeft("Rupture").TotalSeconds > 4;
+            }
+        }
+
+        private static bool EnergySafeForVanish
+        {
+            get { return ((HasShadowFocus && Me.EnergyPercent < 50) || !HasShadowFocus && Me.CurrentEnergy >= 60); }
+        }
+
+        private static bool SafeToBreakStealth
+        {
+            get
+            {
+                return ((Me.Combat || Me.RaidMembers.Any(rm => rm.Combat) || Unit.IsTrainingDummy(Me.CurrentTarget)) &&
+                         Unit.IsTargetWorthy(Me.CurrentTarget));
+            }
+        }
+
+        private static Composite Vanish
+        {
+            get
+            {
+                // Only Do this if SnD is up, Rupture is up, Target is CD-worthy and we've got spare points.
+                return new Decorator
+                    (x =>
+                     BuffsSafeForVanish && Unit.IsTargetWorthy(Me.CurrentTarget) && Me.ComboPoints < 4 &&
+                     EnergySafeForVanish && Me.CurrentTarget.IsWithinMeleeRange,
+                     Spell.CastSelfSpell("Vanish", x => true, "Vanish"));
+            }
+        }
+
+        internal override void OnPulse()
+        {
+            StealthedCombat();
+        }
+
+        private static void StealthedCombat()
+        {
+            if (Me.CurrentTarget == null || Me.CurrentTarget.IsDead ||
+                 (!Me.CurrentTarget.IsHostile && !Unit.IsTrainingDummy(Me.CurrentTarget)) ||
+                 !Me.CurrentTarget.Attackable)
+            {
+                return;
+            }
+
+            if ((!Me.IsStealthed && !Buff.PlayerHasActiveBuff("Vanish")) || !SafeToBreakStealth)
+            {
+                return;
+            }
+
+            // If we're not behind, attempt to shadowstep and wait for next pulse.
+            if (SpellManager.HasSpell("Shadowstep") && !StyxWoW.Me.IsBehind(Me.CurrentTarget) &&
+                      SpellManager.CanCast("Shadowstep", Me.CurrentTarget))
+            {
+                CLULogger.Log(" [Casting] Shadowstep on {0} @ StealthedCombat", CLULogger.SafeName(Me.CurrentTarget));
+                SpellManager.Cast("Shadowstep");
+            }
+            else if (Me.Behind(Me.CurrentTarget) && (Me.CurrentEnergy >= 60 || HasShadowFocus))
+            {
+                CLULogger.Log(" [Casting] Ambush on {0} @ StealthCombat", CLULogger.SafeName(Me.CurrentTarget));
+                SpellManager.Cast("Ambush");
             }
         }
     }

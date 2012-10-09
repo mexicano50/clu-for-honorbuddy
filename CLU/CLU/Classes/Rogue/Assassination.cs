@@ -183,12 +183,12 @@ namespace CLU.Classes.Rogue
                      Spell.CastSpell
                          ("Vendetta",
                           ret =>
-                          Me.CurrentTarget != null && CLUSettings.Instance.UseCooldowns,
+                          Me.CurrentTarget != null && CLUSettings.Instance.UseCooldowns && Buff.PlayerActiveBuffTimeLeft("Slice and Dice").TotalSeconds > 2 && Buff.TargetDebuffTimeLeft("Rupture").TotalSeconds > 2,
                           "Vendetta"),
                      Spell.CastSpell
                          ("Shadow Blades",
                           ret =>
-                          Me.CurrentTarget != null && CLUSettings.Instance.UseCooldowns,
+                          Me.CurrentTarget != null && CLUSettings.Instance.UseCooldowns && Me.ComboPoints > 4 && Me.CurrentEnergy > 50,
                           "Shadow Blades"),
                      Spell.CastSelfSpell
                          ("Preparation",
@@ -337,7 +337,7 @@ namespace CLU.Classes.Rogue
                           Spell.CastSpell
                               (EnvenomOverride,
                                ret =>
-                               Me.ComboPoints == 5 && Buff.TargetDebuffTimeLeft("Rupture").TotalSeconds > 2 && (Me.CurrentTarget.HealthPercent < 35 || Buff.PlayerHasBuff("Shadow Blades")),
+                               Me.ComboPoints == 5 && Buff.TargetDebuffTimeLeft("Rupture").TotalSeconds > 2 && (!CLUSettings.Instance.UseCooldowns && Me.CurrentTarget.HealthPercent < 35 || CLUSettings.Instance.UseCooldowns && Spell.SpellOnCooldown("Shadow Blades") && Me.CurrentTarget.HealthPercent < 35 || Buff.PlayerHasBuff("Shadow Blades")),
                                "Execute Envenom"),
                           // Envenom if SnD is about to fall off. This should never happen.
                           Spell.CastSpell
