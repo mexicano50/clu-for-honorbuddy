@@ -1,11 +1,11 @@
 ﻿#region Revision info
 /*
- * $Author: clutwopointzero@gmail.com $
- * $Date: 2012-10-02 06:11:22 -0400 (Tue, 02 Oct 2012) $
+ * $Author$
+ * $Date$
  * $ID$
- * $Revision: 583 $
- * $URL: https://clu-for-honorbuddy.googlecode.com/svn/trunk/CLU/CLU/Classes/HealerRotationBase.cs $
- * $LastChangedBy: clutwopointzero@gmail.com $
+ * $Revision$
+ * $URL$
+ * $LastChangedBy$
  * $ChangesMade$
  */
 #endregion
@@ -95,7 +95,7 @@ namespace CLU.Classes
         {
             get
             {
-                return Buff.PlayerCountBuff("Mana Tea") > 2;
+                return Buff.PlayerCountBuff("Mana Tea") >= 2;
             }
         }
         protected static uint Chi
