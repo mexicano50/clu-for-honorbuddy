@@ -179,7 +179,7 @@ namespace CLU.Classes.Monk
 
                            //Nothing else, sooth tank
                            Healer.FindTank(a => true, x => x.ToUnit().InLineOfSight && !x.ToUnit().IsDead, (a, b) => (int)(a.CurrentHealth - b.CurrentHealth), "Single target Tank healing",
-                                    Spell.CastHealSpecial("Soothing Mist", a => !HealTarget.HasMyAura("Soothing Mist"), "Soothing Mist (emergency)")                                
+                                    Spell.CastHealSpecial("Soothing Mist", a => !HealTarget.HasMyAura("Soothing Mist") && HealthCheck(95), "Soothing Mist (emergency)")                                
                            )
 
 
