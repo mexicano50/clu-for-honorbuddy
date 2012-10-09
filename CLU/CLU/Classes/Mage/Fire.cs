@@ -143,7 +143,7 @@ namespace CLU.Classes.Mage
                             Buff.CastDebuff("Mage Bomb", Magebombtalent, ret => true, "Frost/Living Bomb or Nether Tempest"),
                             Spell.CastSpell("Pyroblast",ret => Me.HasMyAura("Pyroblast!"),"Pyroblast with Pyroblast! proc"),
                             Spell.CastSpell("Fire Blast", ret => Me.HasMyAura("Heating Up") && !Spell.SpellOnCooldown("Fire Blast"), "Fire Blast with Heating Up proc"),
-                            Spell.CastSpell("Scorch", ret => Me.IsMoving && TalentManager.HasTalent(2), "Scorch (Moving)"),
+                            Spell.CastSpell("Scorch", ret => Me.IsMoving && TalentManager.HasTalent(2),false, "Scorch (Moving)"),
                             Spell.CastSpell("Fireball", ret => !Me.HasMyAura("Heating Up") || Spell.SpellOnCooldown("Fire Blast") || (Me.HasMyAura("Heating Up") && Spell.SpellOnCooldown("Fire Blast")), "Fireball")
                             
                        );

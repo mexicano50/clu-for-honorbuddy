@@ -397,6 +397,17 @@ namespace CLU.Base
         }
 
         /// <summary>Casts a spell by name on a target</summary>
+        /// <param name="name">the name of the spell to cast in engrish</param>
+        /// <param name="cond">The conditions that must be true</param>
+        /// <param name="checkCanCast">Disable check for CanCast</param>
+        /// <param name="label">A descriptive label for the clients GUI logging output</param>
+        /// <returns>The cast spell.</returns>
+        public static Composite CastSpell(string name, CanRunDecoratorDelegate cond,bool checkCanCast, string label)
+        {
+            return CastSpell(name, ret => Me.CurrentTarget, cond, checkCanCast, label);
+        }
+
+        /// <summary>Casts a spell by name on a target</summary>
         /// <param name="spell">the spell to cast in engrish</param>
         /// <param name="cond">The conditions that must be true</param>
         /// <param name="label">A descriptive label for the clients GUI logging output</param>
@@ -406,6 +417,16 @@ namespace CLU.Base
             return CastSpell(spell, ret => Me.CurrentTarget, cond, label);
         }
 
+        /// <summary>Casts a spell by name on a target</summary>
+        /// <param name="spell">the spell to cast in engrish</param>
+        /// <param name="cond">The conditions that must be true</param>
+        /// <param name="checkCanCast">Disable check for CanCast</param>
+        /// <param name="label">A descriptive label for the clients GUI logging output</param>
+        /// <returns>The cast spell.</returns>
+        public static Composite CastSpell(WoWSpell spell, CanRunDecoratorDelegate cond, bool checkCanCast, string label)
+        {
+            return CastSpell(spell, ret => Me.CurrentTarget, cond, checkCanCast, label);
+        }
         /// <summary>Casts a spell on a specified unit</summary>
         /// <param name="name">the name of the spell to cast</param>
         /// <param name="onUnit">The Unit.</param>
@@ -414,28 +435,35 @@ namespace CLU.Base
         /// <returns>The cast spell on the unit</returns>
         public static Composite CastSpell(string name, CLU.UnitSelection onUnit, CanRunDecoratorDelegate cond, string label)
         {
-            /*WoWSpell spell;
-            bool spellIsOnCoolDown = false;
-            if (SpellManager.Spells.TryGetValue(name, out spell))
-            {
-                if (spell != null) spellIsOnCoolDown = !spell.Cooldown;
-            }*/
+            return CastSpell(name, ret => Me.CurrentTarget, cond, true, label);
+        }
+
+        /// <summary>Casts a spell on a specified unit</summary>
+        /// <param name="name">the name of the spell to cast</param>
+        /// <param name="onUnit">The Unit.</param>
+        /// <param name="cond">The conditions that must be true</param>
+        /// <param name="checkCanCast">Disable the CanCast Check by setting this to false</param>
+        /// <param name="label">A descriptive label for the clients GUI logging output</param>
+        /// <returns>The cast spell on the unit</returns>
+        public static Composite CastSpell(string name, CLU.UnitSelection onUnit, CanRunDecoratorDelegate cond,bool checkCanCast, string label)
+        {
             return new Decorator(
                 delegate(object a)
                 {
                     if (!cond(a))
                         return false;
                     //SysLog.TroubleshootLog("Cancast: {0} = {1}", name, CanCast(name, onUnit(a)));
-                    if (!SpellManager.CanCast(name, onUnit(a)))
-                        return false;
-
+                    if (checkCanCast)
+                    {
+                        if (!SpellManager.CanCast(name, onUnit(a)))
+                            return false;
+                    }
                     return onUnit(a) != null;
                 },
             new Sequence(
                 new Action(a => CLULogger.Log(" [Casting] {0} on {1}", label, CLULogger.SafeName(onUnit(a)))),
                 new Action(a => SpellManager.Cast(name, onUnit(a)))));
         }
-
         /// <summary>Casts a spell on a specified unit</summary>
         /// <param name="spell">the name of the spell to cast</param>
         /// <param name="onUnit">The Unit.</param>
@@ -444,15 +472,28 @@ namespace CLU.Base
         /// <returns>The cast spell on the unit</returns>
         public static Composite CastSpell(WoWSpell spell, CLU.UnitSelection onUnit, CanRunDecoratorDelegate cond, string label)
         {
+            return CastSpell(spell, ret => Me.CurrentTarget, cond, true, label);
+        }
+
+        /// <summary>Casts a spell on a specified unit</summary>
+        /// <param name="spell">the WoWSpell to be casted</param>
+        /// <param name="onUnit">The Unit.</param>
+        /// <param name="cond">The conditions that must be true</param>
+        /// <param name="checkCanCast">Disable the CanCast Check by setting this to false</param>
+        /// <param name="label">A descriptive label for the clients GUI logging output</param>
+        /// <returns>The cast spell on the unit</returns>
+        public static Composite CastSpell(WoWSpell spell, CLU.UnitSelection onUnit, CanRunDecoratorDelegate cond, bool checkCanCast, string label)
+        {
             return new Decorator(
                 delegate(object a)
                 {
                     if (!cond(a))
                         return false;
-                    //SysLog.TroubleshootLog("Cancast: {0} = {1}", name, CanCast(name, onUnit(a)));
-                    if (!SpellManager.CanCast(spell, onUnit(a)))
-                        return false;
-
+                    if (checkCanCast)
+                    {
+                        if (!SpellManager.CanCast(spell, onUnit(a)))
+                            return false;
+                    }
                     return onUnit(a) != null;
                 },
             new Sequence(
