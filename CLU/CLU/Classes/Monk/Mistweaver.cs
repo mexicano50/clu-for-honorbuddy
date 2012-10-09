@@ -105,13 +105,13 @@ namespace CLU.Classes.Monk
                            //If so, we cast on of these on him or we break our mist
                            Healer.FindTank(a => true, x => x.ToUnit().InLineOfSight && !x.ToUnit().IsDead && x.ToUnit().HasMyAura("Soothing Mist"), (a, b) => (int)(a.CurrentHealth - b.CurrentHealth), "Looking for mist heals on most injured tank",
                                     Spell.CastHealSpecial("Surging Mist", a => HealthCheck(30), "Surging Mist"),
-                                    Spell.CastHealSpecial("Enveloping Mist", a => HealthCheck(55) && Chi >= 3, "Enveloping Mist")
+                                    Spell.CastHealSpecial("Enveloping Mist", a => HealthCheck(65) && Chi >= 3, "Enveloping Mist")
                            ),
 
                            //Save any other lives that need saving
                            Healer.FindRaidMember(a => true, x => x.ToUnit().InLineOfSight && !x.ToUnit().IsDead && x.ToUnit().HasMyAura("Soothing Mist"), (a, b) => (int)(a.CurrentHealth - b.CurrentHealth), "Looking for mist heals on raid members",
                                     Spell.CastHealSpecial("Surging Mist", a => HealthCheck(30), "Surging Mist"),
-                                    Spell.CastHealSpecial("Enveloping Mist", a => HealthCheck(55) && Chi >= 3, "Enveloping Mist")                                    
+                                    Spell.CastHealSpecial("Enveloping Mist", a => HealthCheck(65) && Chi >= 3, "Enveloping Mist")                                    
                            ),
 
                            //Not breaking mist on b/c we arent fistweaving anymore
@@ -126,14 +126,14 @@ namespace CLU.Classes.Monk
                            //Save Tank's life
                            Healer.FindTank(a => true, x => x.ToUnit().InLineOfSight && !x.ToUnit().IsDead && x.HealthPercent < 55, (a, b) => (int)(a.CurrentHealth - b.CurrentHealth), "emergency heals on most injured tank",
                                     Spell.CastHealSpecial("Life Cocoon", a => HealthCheck(25), "Life Cocoon"),
-                                    Spell.CastSpecialSpell("Thunder Focus Tea", ret => SpellManager.CanCast("Thunder Focus Tea") && HealthCheck(25) && Chi >= 1, "Tea Popped"),                                                                
-                                    Buff.CastHealBuff("Soothing Mist", a => HealthCheck(55), "Soothing Mist (emergency)")
+                                    Spell.CastSpecialSpell("Thunder Focus Tea", ret => SpellManager.CanCast("Thunder Focus Tea") && HealthCheck(25) && Chi >= 1, "Tea Popped"),
+                                    Spell.CastHealSpecial("Soothing Mist", a => !HealTarget.HasMyAura("Soothing Mist") && HealthCheck(55), "Soothing Mist (emergency)")
                            ),
 
                            //Save any other lives that need saving
                            Healer.FindRaidMember(a => true, x => x.ToUnit().InLineOfSight && !x.ToUnit().IsDead && x.HealthPercent < 55, (a, b) => (int)(a.CurrentHealth - b.CurrentHealth), "I'm fine and tanks are not dying => ensure nobody is REALLY low life",
-                                    Spell.CastSpecialSpell("Thunder Focus Tea", ret => SpellManager.CanCast("Thunder Focus Tea") && HealthCheck(25) && Chi >= 1, "Tea Popped"),                                    
-                                    Buff.CastHealBuff("Soothing Mist", a => HealthCheck(55), "Soothing Mist")
+                                    Spell.CastSpecialSpell("Thunder Focus Tea", ret => SpellManager.CanCast("Thunder Focus Tea") && HealthCheck(25) && Chi >= 1, "Tea Popped"),
+                                    Spell.CastHealSpecial("Soothing Mist", ret => !HealTarget.HasMyAura("Soothing Mist") && HealthCheck(55), "Soothing Mist")
                            ),
 
                            //Moar Mana
@@ -157,10 +157,14 @@ namespace CLU.Classes.Monk
                            ),
 
                            //Healing Sphere by tank
-                           Healer.FindTank(a => true, x => x.ToUnit().InLineOfSight && !x.ToUnit().IsDead, (a, b) => (int)(a.CurrentHealth - b.CurrentHealth), "Single target Tank healing",
+                           /*Healer.FindTank(a => true, x => x.ToUnit().InLineOfSight && !x.ToUnit().IsDead, (a, b) => (int)(a.CurrentHealth - b.CurrentHealth), "Single target Tank healing",
                                     Spell.CastOnUnitLocation("Healing Sphere", ret => HealTarget, ret => !MaxSpheres, "Healing Sphere")                               
-                           ),
-                           
+                           ),*/
+
+                           //Dump Chi for mana tea
+                           Spell.CastSpecialSpell("Chi Burst", ret => SpellManager.CanCast("Chi Burst") && Chi == 5, "Chi burst to dump Chi for Mana tea"),
+
+
                            Healer.FindRaidMember(a => true, x => x.ToUnit().InLineOfSight && !x.ToUnit().IsDead && x.HealthPercent < 80, (a, b) => (int)(a.CurrentHealth - b.CurrentHealth), "Single target healing",
                                     Spell.CastHealSpecial("Renewing Mist", a => !HealTarget.HasMyAura("Renewing Mist") &&  HealthCheck(75), "Renewing Mist"),
                                     Buff.CastHealBuff("Soothing Mist", a => true, "Soothing Mist")
