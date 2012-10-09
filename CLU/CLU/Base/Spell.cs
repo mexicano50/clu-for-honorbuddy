@@ -494,6 +494,12 @@ namespace CLU.Base
                         if (!SpellManager.CanCast(spell, onUnit(a)))
                             return false;
                     }
+                    else
+                    {
+                        if (SpellManager.GlobalCooldown) return false; //in most cases we can't cast when GCD is runningm for all other situations use checkCanCast = true
+                        if (spell.Cooldown) return false; // we can't cast it if it is on Cooldown
+                        if (spell.BaseCooldown > 0) return false; // this should be checked for ... morphed spells i think
+                    }
                     return onUnit(a) != null;
                 },
             new Sequence(
