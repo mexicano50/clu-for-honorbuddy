@@ -18,6 +18,7 @@ using CLU.Settings;
 using CLU.Base;
 using Styx.CommonBot;
 using Styx;
+using Styx.WoWInternals;
 using Rest = CLU.Base.Rest;
 
 namespace CLU.Classes.Warrior
@@ -144,7 +145,7 @@ Credits: kbrebel04
                 return new Decorator(
                     ret => Me.HealthPercent < 100 && CLUSettings.Instance.EnableSelfHealing,
                     new PrioritySelector(
-                        Spell.CastSpell("Impending Victory", ret => Me.CurrentTarget != null && TalentManager.HasTalent(6) && Me.CurrentTarget.HealthPercent >= 20, "Impending Victory"),
+                        Spell.CastSpell("Victory Rush", ret => Me.CurrentTarget != null && Me.HealthPercent < CLUSettings.Instance.Warrior.ImpendingVictoryPercent && Me.RagePercent > 10 && !WoWSpell.FromId(103840).Cooldown && !WoWSpell.FromId(34428).Cooldown, "Victory Rush or Impending Victory"),
                         Spell.CastSelfSpell("Enraged Regeneration", ret => Me.HealthPercent < 45 && !Buff.PlayerHasBuff("Rallying Cry"), "Enraged Regeneration"),
                         Spell.CastSelfSpell("Rallying Cry", ret => Me.HealthPercent < 45 && !Buff.PlayerHasBuff("Enraged Regeneration"), "Rallying Cry"),
                         Item.UseBagItem("Healthstone", ret => Me.HealthPercent < 40 && !Buff.PlayerHasBuff("Rallying Cry") && !Buff.PlayerHasBuff("Enraged Regeneration"), "Healthstone")));

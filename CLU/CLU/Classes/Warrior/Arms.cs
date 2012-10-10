@@ -183,7 +183,7 @@ namespace CLU.Classes.Warrior
                         Buff.CastBuff("Battle Shout",               ret => Me.CurrentRage < 70 && !Buff.TargetHasDebuff("Colossus Smash"), "Battle Shout"),
                         Spell.CastSpell("Bladestorm",               ret => Me.CurrentTarget != null && TalentManager.HasTalent(10) && SpellManager.Spells["Colossus Smash"].CooldownTimeLeft.Seconds >= 5 && !Buff.TargetHasDebuff("Colossus Smash") && SpellManager.Spells["Bloodthirst"].CooldownTimeLeft.Seconds >= 2 && Me.CurrentTarget.HealthPercent >= 20, "Bladestorm"),//<~ add GUI option for user descretion
                         Spell.CastSpell("Slam",                     ret => Me.CurrentTarget != null && Me.CurrentTarget.HealthPercent >= 20, "Slam"),
-                        Spell.CastSpell("Impending Victory",        ret => Me.CurrentTarget != null && TalentManager.HasTalent(6) && Me.CurrentTarget.HealthPercent >= 20, "Impending Victory"),
+                        Spell.CastSpell("Victory Rush",             ret => Me.CurrentTarget != null && Me.HealthPercent < CLUSettings.Instance.Warrior.ImpendingVictoryPercent && Me.RagePercent > 10 && !WoWSpell.FromId(103840).Cooldown && !WoWSpell.FromId(34428).Cooldown, "Victory Rush or Impending Victory"),                        
                         Buff.CastBuff("Battle Shout",               ret => Me.CurrentRage < 70, "Battle Shout")
                 ));
             }
