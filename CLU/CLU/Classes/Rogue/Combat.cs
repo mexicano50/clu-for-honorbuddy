@@ -101,7 +101,9 @@ namespace CLU.Classes.Rogue
         {
             get
             {
+                WoWPlayer TricksTarget = null;
                 return new PrioritySelector(
+                    ctx => TricksTarget = Unit.BestTricksTarget as WoWPlayer,
                     // Pause Rotation
                            new Decorator(ret => CLUSettings.Instance.PauseRotation, new ActionAlwaysSucceed()),
 
@@ -142,7 +144,7 @@ namespace CLU.Classes.Rogue
                            Spell.CastSelfSpell("Blade Flurry",  ret => CLUSettings.Instance.UseAoEAbilities && Unit.EnemyUnits.Count() > 1 && Unit.EnemyUnits.Count() < 7 && !Buff.PlayerHasBuff("Blade Flurry"), "Blade Flurry"),
                            Spell.CastSpell("Ambush",            ret => Me.IsBehind(Me.CurrentTarget), "Ambush"),
                            Spell.CastAreaSpell("Fan of Knives", 8, false, CLUSettings.Instance.Rogue.CombatFanOfKnivesCount, 0.0, 0.0, ret => CLUSettings.Instance.UseAoEAbilities, "Fan of Knives"),
-                           Spell.CastSpell("Tricks of the Trade", u => Unit.BestTricksTarget, ret => CLUSettings.Instance.Rogue.UseTricksOfTheTrade && Unit.BestTricksTarget != null && !Unit.BestTricksTarget.IsHostile && Unit.BestTricksTarget.ToPlayer().IsInMyParty, "Tricks of the Trade"), // TODO: this is taxing to hell (Unit.BestTricksTarget != null && !Unit.BestTricksTarget.IsHostile && Unit.BestTricksTarget.ToPlayer().IsInMyParty) and needs to be improved for speed.
+                           Spell.CastSpell("Tricks of the Trade", u => TricksTarget, ret => TricksTarget != null && TricksTarget.IsAlive && !TricksTarget.IsHostile && TricksTarget.IsInMyParty && CLUSettings.Instance.Rogue.UseTricksOfTheTrade, "Tricks of the Trade"),
                             //Spell.CastSpell("Expose Armor", ret => Me.CurrentTarget != null && Me.ComboPoints == 5 && Unit.IsTargetWorthy(Me.CurrentTarget) && !Buff.UnitHasWeakenedArmor(Me.CurrentTarget), "Expose Armor"),
                            Spell.CastSelfSpell("Slice and Dice",    ret => Me.ComboPoints >= 1 && Buff.PlayerBuffTimeLeft("Slice and Dice") < 2, "Slice and Dice"),
                            Vanish,
