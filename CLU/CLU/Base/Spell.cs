@@ -229,99 +229,6 @@ namespace CLU.Base
                 new Action(a => CLULogger.Log(" [Casting] {0} ", label)), new Action(a => SpellManager.Cast(name, HealableUnit.HealTarget.ToUnit()))));
         }
        
-        
-        
-        
-        ///// <summary>This is CLU's cancast method. It checks ALOT! Returns true if the player can cast the spell.</summary>
-        ///// <param name="name">name of the spell to check.</param>
-        ///// <param name="target">The target.</param>
-        ///// <returns>The can cast.</returns>
-        //public static bool CanCast(string name, WoWUnit target)
-        //{
-
-        //    var canCast = false;
-        //    var inRange = false;
-        //    var minReqs = target != null;
-        //    if (minReqs)
-        //    {
-
-        //        canCast = SpellManager.CanCast(name, target, false, false);
-
-        //        if (canCast)
-        //        {
-        //            // We're always in range of ourselves. So just ignore this bit if we're casting it on us
-        //            if (target.IsMe)
-        //            {
-        //                inRange = true;
-        //            }
-        //            else
-        //            {
-        //                WoWSpell spell;
-        //                if (SpellManager.Spells.TryGetValue(name, out spell))
-        //                {
-        //                    float minRange = spell.ActualMinRange(target);
-        //                    float maxRange = spell.ActualMaxRange(target);
-        //                    if (!target.IsPlayer && target.CombatReach > 20) // thanks to Ama for this..nice! --wulf
-        //                        maxRange += 20;
-        //                    var targetDistance = Unit.DistanceToTargetBoundingBox(target);
-
-
-        //                    // RangeId 1 is "Self Only". This should make life easier for people to use self-buffs, or stuff like Starfall where you cast it as a pseudo-buff.
-        //                    if (spell.IsSelfOnlySpell)
-        //                        inRange = true;
-        //                    // RangeId 2 is melee range. Huzzah :)
-        //                    else if (spell.IsMeleeSpell)
-        //                        inRange = targetDistance < MeleeRange;
-        //                    else
-        //                        inRange = targetDistance < maxRange &&
-        //                                  targetDistance > (Math.Abs(minRange - 0) < 0.01 ? minRange : minRange + 3);
-        //                }
-        //            }
-        //        }
-        //    }
-
-        //    return minReqs && canCast && inRange;
-        //}
-
-        //private static bool CanCast(WoWSpell spell, WoWUnit target)
-        //{
-        //    if (target == null)
-        //    {
-        //        CLULogger.DiagnosticLog("{0}({1},{2}): Target is null.", MethodBase.GetCurrentMethod().Name, spell.Name, target.Name);
-        //        return false;
-        //    }
-
-        //    if (!spell.CanCast)
-        //    {
-        //        CLULogger.DiagnosticLog("{0}({1},{2}): CanCast failed.", MethodBase.GetCurrentMethod().Name, spell.Name, target.Name);
-        //        return false;
-        //    }
-
-        //    if (target.IsMe)
-        //        return true;
-
-        //    float minRange = spell.ActualMinRange(target);
-        //    float maxRange = spell.ActualMaxRange(target);
-        //    var targetDistance = Unit.DistanceToTargetBoundingBox(target);
-
-        //    // RangeId 1 is "Self Only". This should make life easier for people to use self-buffs, or stuff like Starfall where you cast it as a pseudo-buff.
-        //    if (spell.IsSelfOnlySpell)
-        //        return true;
-        //    // RangeId 2 is melee range. Huzzah :)
-        //    if (spell.IsMeleeSpell)
-        //        return targetDistance < MeleeRange;
-
-        //    bool inRange = targetDistance < maxRange &&
-        //                   targetDistance > (Math.Abs(minRange - 0) < 0.01 ? minRange : minRange + 3);
-
-        //    if (!inRange)
-        //    {
-        //        CLULogger.DiagnosticLog("{0}({1},{2}): Not in range.", MethodBase.GetCurrentMethod().Name, spell.Name, target.Name);
-        //        return false;
-        //    }
-
-        //    return true;
-        //}
 
         #region CastSpell - by ID
 
@@ -369,12 +276,7 @@ namespace CLU.Base
                         return false;
                     }
 
-                    var canCast = SpellManager.CanCast(spell, target);
-
-                    if (!canCast)
-                    {
-                        return false;
-                    }
+                    if (!SpellManager.CanCast(spell, target, true)) return false;
 
                     return true;
                 },
@@ -402,7 +304,7 @@ namespace CLU.Base
         /// <param name="checkCanCast">Disable check for CanCast</param>
         /// <param name="label">A descriptive label for the clients GUI logging output</param>
         /// <returns>The cast spell.</returns>
-        public static Composite CastSpell(string name, CanRunDecoratorDelegate cond,bool checkCanCast, string label)
+        public static Composite CastSpell(string name, CanRunDecoratorDelegate cond, bool checkCanCast, string label)
         {
             return CastSpell(name, ret => Me.CurrentTarget, cond, checkCanCast, label);
         }
@@ -442,22 +344,19 @@ namespace CLU.Base
         /// <param name="name">the name of the spell to cast</param>
         /// <param name="onUnit">The Unit.</param>
         /// <param name="cond">The conditions that must be true</param>
-        /// <param name="checkCanCast">Disable the CanCast Check by setting this to false</param>
+        /// <param name="checkmovement"> </param>
         /// <param name="label">A descriptive label for the clients GUI logging output</param>
         /// <returns>The cast spell on the unit</returns>
-        public static Composite CastSpell(string name, CLU.UnitSelection onUnit, CanRunDecoratorDelegate cond,bool checkCanCast, string label)
+        public static Composite CastSpell(string name, CLU.UnitSelection onUnit, CanRunDecoratorDelegate cond, bool checkmovement, string label)
         {
             return new Decorator(
                 delegate(object a)
                 {
                     if (!cond(a))
                         return false;
-                    //SysLog.TroubleshootLog("Cancast: {0} = {1}", name, CanCast(name, onUnit(a)));
-                    if (checkCanCast)
-                    {
-                        if (!SpellManager.CanCast(name, onUnit(a)))
-                            return false;
-                    }
+
+                    if (!SpellManager.CanCast(name, onUnit(a), true, checkmovement)) return false; //This is checking spell, unit, Range, Movement
+
                     return onUnit(a) != null;
                 },
             new Sequence(
@@ -479,27 +378,19 @@ namespace CLU.Base
         /// <param name="spell">the WoWSpell to be casted</param>
         /// <param name="onUnit">The Unit.</param>
         /// <param name="cond">The conditions that must be true</param>
-        /// <param name="checkCanCast">Disable the CanCast Check by setting this to false</param>
+        /// <param name="checkmovement"> check movement </param>
         /// <param name="label">A descriptive label for the clients GUI logging output</param>
         /// <returns>The cast spell on the unit</returns>
-        public static Composite CastSpell(WoWSpell spell, CLU.UnitSelection onUnit, CanRunDecoratorDelegate cond, bool checkCanCast, string label)
+        public static Composite CastSpell(WoWSpell spell, CLU.UnitSelection onUnit, CanRunDecoratorDelegate cond, bool checkmovement, string label)
         {
             return new Decorator(
                 delegate(object a)
                 {
                     if (!cond(a))
                         return false;
-                    if (checkCanCast)
-                    {
-                        if (!SpellManager.CanCast(spell, onUnit(a)))
-                            return false;
-                    }
-                    else
-                    {
-                        if (SpellManager.GlobalCooldown) return false; //in most cases we can't cast when GCD is runningm for all other situations use checkCanCast = true
-                        if (spell.Cooldown) return false; // we can't cast it if it is on Cooldown
-                        if (spell.BaseCooldown > 0) return false; // this should be checked for ... morphed spells i think
-                    }
+
+                    if (!SpellManager.CanCast(spell, onUnit(a), true, checkmovement)) return false; //This is checking spell, unit, Range, Movement
+                   
                     return onUnit(a) != null;
                 },
             new Sequence(
@@ -516,6 +407,7 @@ namespace CLU.Base
         {
             return CastSpell(name, ret => StyxWoW.Me, cond, label);
         }
+
         #endregion
 
         #region CastSpell - by Specific Requirements and Functionality
@@ -599,14 +491,16 @@ namespace CLU.Base
         {
             return CastHeal(name, ret => HealableUnit.HealTarget.ToUnit(), cond, label);
         }
+
         /// <summary>Casts a spell on the MostFocused Target (used for smite healing with disc priest mainly)</summary>
         /// <param name="name">the name of the spell to cast</param>
         /// <param name="onUnit">The on Unit.</param>
         /// <param name="cond">The conditions that must be true</param>
+        /// <param name="checkmovement">checks movement </param>
         /// <param name="label">A descriptive label for the clients GUI logging output</param>
         /// <param name="faceTarget">true if you want to auto face target</param>
         /// <returns>The cast spell at location.</returns>
-        public static Composite CastSpellOnTargetFacing(string name, CLU.UnitSelection onUnit, CanRunDecoratorDelegate cond, string label, bool faceTarget)
+        public static Composite CastSpellOnTargetFacing(string name, CLU.UnitSelection onUnit, CanRunDecoratorDelegate cond, bool checkmovement, string label, bool faceTarget)
         {
             return new Decorator(
                 delegate(object a)
@@ -614,8 +508,7 @@ namespace CLU.Base
                     if (!cond(a))
                         return false;
 
-                    if (!SpellManager.CanCast(name, onUnit(a)))
-                        return false;
+                    if (!SpellManager.CanCast(name, onUnit(a), true, checkmovement)) return false; //This is checking spell, unit, Range, Movement
 
                     return onUnit(a) != null;
                 },
@@ -629,10 +522,11 @@ namespace CLU.Base
         /// <param name="name">the name of the spell to cast</param>
         /// <param name="onUnit">The on Unit.</param>
         /// <param name="cond">The conditions that must be true</param>
+        /// <param name="checkmovement">check for movement </param>
         /// <param name="label">A descriptive label for the clients GUI logging output</param>
         /// <param name="faceTarget">true if you want to auto face target</param>
         /// <returns>The cast spell at location.</returns>
-        public static Composite CastSpellOnCurrentTargetsTarget(string name, CLU.UnitSelection onUnit, CanRunDecoratorDelegate cond, string label, bool faceTarget)
+        public static Composite CastSpellOnCurrentTargetsTarget(string name, CLU.UnitSelection onUnit, CanRunDecoratorDelegate cond, bool checkmovement, string label, bool faceTarget)
         {
             return new Decorator(
                 delegate(object a)
@@ -649,8 +543,7 @@ namespace CLU.Base
                     if (onUnit(a).Guid == Me.Guid)
                         return false;
 
-                    if (!SpellManager.CanCast(name, onUnit(a).CurrentTarget))
-                        return false;
+                    if (!SpellManager.CanCast(name, onUnit(a).CurrentTarget, true, checkmovement)) return false; //This is checking spell, unit, Range, Movement
 
                     // if (Unit.TimeToDeath(onUnit(a).CurrentTarget) < 5)
                     // return false;
@@ -667,10 +560,11 @@ namespace CLU.Base
         /// <param name="name">the name of the spell to cast</param>
         /// <param name="onUnit">The on Unit.</param>
         /// <param name="cond">The conditions that must be true</param>
+        /// <param name="checkmovement">check movement </param>
         /// <param name="label">A descriptive label for the clients GUI logging output</param>
         /// <param name="faceTarget">true if you want to auto face target</param>
         /// <returns>The cast spell at location.</returns>
-        public static Composite CastSpellOnMostFocusedTarget(string name, CLU.UnitSelection onUnit, CanRunDecoratorDelegate cond, string label, bool faceTarget)
+        public static Composite CastSpellOnMostFocusedTarget(string name, CLU.UnitSelection onUnit, CanRunDecoratorDelegate cond, bool checkmovement, string label, bool faceTarget)
         {
             return new Decorator(
                 delegate(object a)
@@ -680,9 +574,7 @@ namespace CLU.Base
 
                     if (!cond(a))
                         return false;
-
-                    if (!SpellManager.CanCast(name, onUnit(a)))
-                        return false;
+                    if (!SpellManager.CanCast(name, onUnit(a), true, checkmovement)) return false; //This is checking spell, unit, Range, Movement
 
                     // if (Unit.TimeToDeath(onUnit(a).CurrentTarget) < 5)
                     // return false;
@@ -732,7 +624,7 @@ namespace CLU.Base
             string name, float maxDistance, float maxAngleDeltaDegrees, CanRunDecoratorDelegate cond, string label)
         {
             return new Decorator(
-                       a => Me.CurrentTarget != null && cond(a) && SpellManager.CanCast(name, Me.CurrentTarget) &&
+                       a => Me.CurrentTarget != null && cond(a) && SpellManager.CanCast(name, Me.CurrentTarget,true,true) &&
                        Unit.DistanceToTargetBoundingBox() <= maxDistance &&
                        Unit.FacingTowardsUnitDegrees(Me.Location, Me.CurrentTarget.Location) <= maxAngleDeltaDegrees,
                        new Sequence(
@@ -763,7 +655,7 @@ namespace CLU.Base
                     if (onUnit != null && onUnit(a) != null && !(onUnit(a).IsCasting && onUnit(a).CanInterruptCurrentSpellCast))
                         return false;
 
-                    if (onUnit != null && SpellManager.CanCast(name, onUnit(a)))
+                    if (onUnit != null && SpellManager.CanCast(name, onUnit(a), true, true))
                         return false;
 
                     return true;
@@ -792,7 +684,7 @@ namespace CLU.Base
                     if (Me.CurrentTarget != null && !(Me.CurrentTarget.IsCasting && Me.CurrentTarget.CanInterruptCurrentSpellCast))
                         return false;
 
-                    if (Me.CurrentTarget != null && !SpellManager.CanCast(name, Me.CurrentTarget))
+                    if (Me.CurrentTarget != null && !SpellManager.CanCast(name, Me.CurrentTarget, true, true))
                         return false;
 
                     return true;
