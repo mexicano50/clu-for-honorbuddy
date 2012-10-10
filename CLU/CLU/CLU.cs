@@ -171,9 +171,7 @@ namespace CLU
                         }
                 return new Sequence
                     (new DecoratorContinue(x => CLUSettings.Instance.EnableMovement && (!Me.IsCasting || !Spell.PlayerIsChanneling), Movement.MovingFacingBehavior()),
-                     new DecoratorContinue(x => true, currentrotation)); // TODO: this has been removed to test Elegon no target. this ensures that we fire the main rotation
-                                                                         // we dont give a fuck if we have a target or not we just fire the rotation in combat.
-                                                                        // Me.CurrentTarget != null || IsHealerRotationActive
+                     new DecoratorContinue(x => Me.CurrentTarget != null || IsHealerRotationActive, currentrotation)); 
             }
         }
 
@@ -287,10 +285,10 @@ namespace CLU
         {
             get
             {
-                if (Me.IsOnTransport)
-                {
-                    return false;
-                }
+                //if (Me.IsOnTransport)
+                //{
+                //    return false; // TODO: WARNING THIS WILL KILL THE ROTATION FOR THE SHIP IN DEEPHOLME AND ELEGON
+                //}
                 if (CLUSettings.Instance.NeverDismount && IsMounted)
                 {
                     return false;
