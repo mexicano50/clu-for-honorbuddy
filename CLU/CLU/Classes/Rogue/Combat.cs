@@ -128,12 +128,12 @@ namespace CLU.Classes.Rogue
 
                            // Trinkets & Cooldowns
                            new Decorator(
-                               ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget),
+                               ret => Me.CurrentTarget != null && Unit.UseCooldowns(),
                                new PrioritySelector(
                                    Item.UseTrinkets(),
                                    Racials.UseRacials(),
                                    Buff.CastBuff("Lifeblood", ret => true, "Lifeblood"), // Thanks Kink
-                                   Spell.CastSelfSpell("Preparation", ret => SpellManager.HasSpell(14185) && Unit.IsTargetWorthy(Me.CurrentTarget) && SpellManager.Spells["Vanish"].Cooldown && CLUSettings.Instance.UseCooldowns, "Preparation"),
+                                   Spell.CastSelfSpell("Preparation", ret => SpellManager.HasSpell(14185) && Unit.UseCooldowns() && SpellManager.Spells["Vanish"].Cooldown, "Preparation"),
                                    Item.UseEngineerGloves())),
                             
                             //Spell.CastSpell("Feint", ret => Me.CurrentTarget != null && (Me.CurrentTarget.ThreatInfo.RawPercent > 80 || Encounte  rSpecific.IsMorchokStomp()) && CLUSettings.Instance.EnableSelfHealing, "Feint"),
@@ -145,12 +145,12 @@ namespace CLU.Classes.Rogue
                            Spell.CastSpell("Ambush",            ret => Me.IsBehind(Me.CurrentTarget), "Ambush"),
                            Spell.CastAreaSpell("Fan of Knives", 8, false, CLUSettings.Instance.Rogue.CombatFanOfKnivesCount, 0.0, 0.0, ret => CLUSettings.Instance.UseAoEAbilities, "Fan of Knives"),
                            Spell.CastSpell("Tricks of the Trade", u => TricksTarget, ret => TricksTarget != null && TricksTarget.IsAlive && !TricksTarget.IsHostile && TricksTarget.IsInMyParty && CLUSettings.Instance.Rogue.UseTricksOfTheTrade, "Tricks of the Trade"),
-                            //Spell.CastSpell("Expose Armor", ret => Me.CurrentTarget != null && Me.ComboPoints == 5 && Unit.IsTargetWorthy(Me.CurrentTarget) && !Buff.UnitHasWeakenedArmor(Me.CurrentTarget), "Expose Armor"),
+                            //Spell.CastSpell("Expose Armor", ret => Me.CurrentTarget != null && Me.ComboPoints == 5 && Unit.UseCooldowns() && !Buff.UnitHasWeakenedArmor(Me.CurrentTarget), "Expose Armor"),
                            Spell.CastSelfSpell("Slice and Dice",    ret => Me.ComboPoints >= 1 && Buff.PlayerBuffTimeLeft("Slice and Dice") < 2, "Slice and Dice"),
                            Vanish,
-                           Spell.CastSelfSpell("Killing Spree",     ret => Me.CurrentEnergy < 35 && Buff.PlayerBuffTimeLeft("Slice and Dice") > 4 && !Buff.PlayerHasActiveBuff("Adrenaline Rush") && CLUSettings.Instance.UseCooldowns, "Killing Spree"),
-                           Spell.CastSelfSpell("Adrenaline Rush",   ret => Me.CurrentTarget != null && Me.CurrentEnergy < 35 && Spell.SpellCooldown("Killing Spree").TotalSeconds > 10 && CLUSettings.Instance.UseCooldowns, "Adrenaline Rush"),
-                           Spell.CastSelfSpell("Shadow Blades",     ret => Me.CurrentTarget != null && Buff.PlayerHasBuff("Adrenaline Rush") && CLUSettings.Instance.UseCooldowns, "Shadow Blades"),
+                           Spell.CastSelfSpell("Killing Spree", ret => Me.CurrentEnergy < 35 && Buff.PlayerBuffTimeLeft("Slice and Dice") > 4 && !Buff.PlayerHasActiveBuff("Adrenaline Rush") && Unit.UseCooldowns(), "Killing Spree"),
+                           Spell.CastSelfSpell("Adrenaline Rush", ret => Me.CurrentTarget != null && Me.CurrentEnergy < 35 && Spell.SpellCooldown("Killing Spree").TotalSeconds > 10 && Unit.UseCooldowns(), "Adrenaline Rush"),
+                           Spell.CastSelfSpell("Shadow Blades", ret => Me.CurrentTarget != null && Buff.PlayerHasBuff("Adrenaline Rush") && Unit.UseCooldowns(), "Shadow Blades"),
                            Spell.CastSpell("Revealing Strike",      ret => SpellManager.HasSpell(114015) && Buff.TargetDebuffTimeLeft("Revealing Strike").TotalSeconds < 2 && (Buff.PlayerCountBuff("Anticipation") < 5 || Me.ComboPoints < 5), "Revealing Strike"),
                            Spell.CastSpell("Revealing Strike",      ret => !SpellManager.HasSpell(114015) && Buff.TargetDebuffTimeLeft("Revealing Strike").TotalSeconds < 2 && Me.ComboPoints < 5, "Revealing Strike"),
                            Spell.CastSpell("Rupture",               ret => Unit.EnemyUnits.Count() < 2 && (Me.ComboPoints == 5 && Buff.TargetDebuffTimeLeft("Rupture").TotalSeconds < 3 && Unit.TimeToDeath(Me.CurrentTarget) > 10 || Me.ComboPoints == 5 && Buff.TargetDebuffTimeLeft("Rupture").TotalSeconds < 2 && Buff.PlayerHasBuff("Deep Insight") && Unit.TimeToDeath(Me.CurrentTarget) > 10 || Me.ComboPoints <= 3 && !Buff.TargetHasDebuff("Rupture") && Unit.TimeToDeath(Me.CurrentTarget) > 10 && Me.CurrentEnergy > 30), "Rupture"),
@@ -247,7 +247,7 @@ namespace CLU.Classes.Rogue
             get
             {
                 return ((Me.Combat || Me.RaidMembers.Any(rm => rm.Combat) || Unit.IsTrainingDummy(Me.CurrentTarget)) &&
-                         Unit.IsTargetWorthy(Me.CurrentTarget));
+                         Unit.UseCooldowns());
             }
         }
 
@@ -258,7 +258,7 @@ namespace CLU.Classes.Rogue
                 // Only Do this if SnD is up, Rupture is up, Target is CD-worthy and we've got spare points.
                 return new Decorator
                     (x =>
-                     BuffsSafeForVanish && Unit.IsTargetWorthy(Me.CurrentTarget) && Me.ComboPoints < 4 &&
+                     BuffsSafeForVanish && Unit.UseCooldowns() && Me.ComboPoints < 4 &&
                      EnergySafeForVanish && Me.CurrentTarget.IsWithinMeleeRange,
                      Spell.CastSelfSpell("Vanish", x => true, "Vanish"));
             }

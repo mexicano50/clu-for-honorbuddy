@@ -113,7 +113,7 @@ namespace CLU.Classes.Druid
                 return false;
 
             // Dummies/bosses are valid by default. Period.
-            if (Unit.IsTargetWorthy(Me.CurrentTarget))
+            if (Unit.UseCooldowns())
                 return true;
 
             // If its a pet, lets ignore it please.

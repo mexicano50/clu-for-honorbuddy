@@ -622,37 +622,63 @@ namespace CLU.Base
         }
 
         /// <summary>
-        /// checks if target is worth blowing a cooldown on
+        /// Use Cooldowns on Current Target
         /// </summary>
-        /// <param name="target">the target to check</param>
-        /// <returns>true or false</returns>
-        public static bool IsTargetWorthy(WoWUnit target)
+        /// <returns>True if the target is valid to pop cooldowns</returns>
+        public static bool UseCooldowns()
         {
-            if (!CLUSettings.Instance.UseCooldowns)
-                return false;
+            return UseCooldowns(Me.CurrentTarget);
+        }
 
-            if (target == null)
-                return false;
+        /// <summary>
+        /// Use Cooldowns on Current Target
+        /// </summary>
+        /// <param name="onUnit">the unit to check</param>
+        /// <returns>True if the target is valid to pop cooldowns</returns>
+        public static bool UseCooldowns(WoWUnit onUnit)
+        {
+            return UseCooldowns(onUnit, 0,0,0);
+        }
 
-            // PvP Player
-            var pvpTarget = target.IsPlayer && CLU.LocationContext == GroupLogic.Battleground;
+        /// <summary>
+        /// Returns true if we should pop our Cooldowns
+        /// </summary>
+        /// <param name="onUnit">the unit to check</param>
+        /// <param name="singleTargetHp">the healthpercent of the single target unit</param>
+        /// <param name="aoeHp">the healthpercent of the AoE units to check</param>
+        /// <param name="aoeCount">the AoE count of units</param>
+        /// <returns>returns true if the healing conditions are met or the target is a valid target to pop cooldowns on.</returns>
+        public static bool UseCooldowns(WoWUnit onUnit, double singleTargetHp, double aoeHp, double aoeCount)
+        {
+            
+            // if user wants control of cooldowns gtfo...
+            if (!CLUSettings.Instance.UseCooldowns) return false;
 
-            // Miniboss not a big boss =)
-            var miniBoss = (target.Level >= Me.Level + 2) && target.Elite;
-
-
-            var targetIsWorthy = ((IsBoss(target) || miniBoss || IsTrainingDummy(target) || pvpTarget) && CLUSettings.Instance.BurstOn == Burst.onBoss) || (CLUSettings.Instance.BurstOn == Burst.onMob && Unit.EnemyUnits.Count() >= CLUSettings.Instance.BurstOnMobCount);
-            if (targetIsWorthy)
-            {
-                CLULogger.DiagnosticLog(String.Format("[IsTargetWorthy] {0} is a boss? {1} or miniBoss? {2} or Training Dummy? {4}. {0} current Health = {3}",
-                             CLULogger.SafeName(target),
-                             IsBoss(target),
-                             miniBoss,
-                             target.CurrentHealth,
-                             IsTrainingDummy(target)));
+            // Deal with Healers...
+            if (CLU.IsHealerRotationActive)
+            {                
+                HealableUnit singleUnit = HealableUnit.ListofHealableUnits.FirstOrDefault(unit => unit.HealthPercent <= singleTargetHp && !unit.ToUnit().IsDead);
+                IEnumerable<HealableUnit> AoEUnit = HealableUnit.ListofHealableUnits.Where(unit => unit.HealthPercent <= aoeHp && !unit.ToUnit().IsDead);
+                if (AoEUnit.Count() > aoeCount) return true;
+                if (singleUnit != null) return true;
             }
 
-            return targetIsWorthy;
+            // gtfo if we are not a healer and have not a valid target.
+            if (onUnit == null) return false;
+
+            // PvP Players are always valid rawr!
+            if (onUnit.IsPlayer && CLU.LocationContext == GroupLogic.Battleground) return true;
+
+            // Miniboss not a big boss =)
+            //if ((onUnit.Level >= Me.Level + 2) && onUnit.Elite) return true; //TODO: this isnt really useful anymore i dont think -- wulf
+
+            // Boss or training Dummy and we have it SET in the Settings then proceed..
+            if ((IsBoss(onUnit) || IsTrainingDummy(onUnit)) && CLUSettings.Instance.BurstOn == Burst.onBoss) return true;
+
+            // Mob count is correct and we have it SET in the Settings then proceed and we are..
+            if (CLUSettings.Instance.BurstOn == Burst.onMob && CountEnnemiesInRange(Me.Location, CLU.Instance.ActiveRotation.CombatMaxDistance == 3.2 ? 15 : 40) >= CLUSettings.Instance.BurstOnMobCount) return true;
+            
+            return false;
         }
 
         /// <summary>returns true if the unit is crowd controlled.</summary>
@@ -661,7 +687,7 @@ namespace CLU.Base
         /// <returns>The unit is controlled.</returns>
         public static bool UnitIsControlled(WoWUnit unit, bool breakOnDamageOnly)
         {
-            return unit != null && unit.ActiveAuras.Any(x => x.Value.IsHarmful && (ControlDebuffs.Contains(x.Value.Name) || (!breakOnDamageOnly && ControlUnbreakableDebuffs.Contains(x.Value.Name))));
+            return unit != null && unit.GetAllAuras().Any(x => x.IsHarmful && (ControlDebuffs.Contains(x.Name) || (!breakOnDamageOnly && ControlUnbreakableDebuffs.Contains(x.Name))));
         }
 
         /// <summary>

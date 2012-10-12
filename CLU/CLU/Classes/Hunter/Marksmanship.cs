@@ -118,7 +118,7 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
 
                            // Trinkets & Cooldowns
                            new Decorator(
-                               ret => Me.CurrentTarget != null && (Unit.IsTargetWorthy(Me.CurrentTarget) && !Buff.PlayerHasBuff("Feign Death")),
+                               ret => Me.CurrentTarget != null && (Unit.UseCooldowns() && !Buff.PlayerHasBuff("Feign Death")),
                                new PrioritySelector(
                                    Item.UseTrinkets(),
                                    Racials.UseRacials(),
@@ -141,23 +141,23 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
                                    // AoE
                                    Spell.HunterTrapBehavior("Explosive Trap",   ret => Me.CurrentTarget, ret => Me.CurrentTarget != null && !Lists.BossList.IgnoreAoE.Contains(Unit.CurrentTargetEntry) && Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 10) >= CLUSettings.Instance.Hunter.ExplosiveTrapCount),
                                     Spell.CastSpell("Blink Strike",             ret => Me.CurrentTarget != null && Me.Pet.Location.DistanceSqr(Me.CurrentTarget.Location) > 10 * 10 && Me.GotAlivePet, "Blink Strike"), // teleports behind target mad damage.
-                                   Spell.CastSpell("Lynx Rush",                 ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget) && Me.Pet.Location.DistanceSqr(Me.CurrentTarget.Location) < 10 * 10, "Lynx Rush"),
+                                   Spell.CastSpell("Lynx Rush",                 ret => Me.CurrentTarget != null && Unit.UseCooldowns() && Me.Pet.Location.DistanceSqr(Me.CurrentTarget.Location) < 10 * 10, "Lynx Rush"),
                                    Spell.CastSpell("Multi-Shot",                ret => Me.CurrentTarget != null && Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 20) >= CLUSettings.Instance.Hunter.MarksMultiShotCount, "Multi-Shot"),
                                    Spell.CastSpell("Steady Shot",               ret => Unit.CountEnnemiesInRange(Me.Location, 30) >= CLUSettings.Instance.Hunter.MarksMultiShotCount, "Steady Shot"),
                                    // Main rotation
                                    Buff.CastDebuff("Serpent Sting",           ret => Me.CurrentTarget != null && Buff.TargetDebuffTimeLeft("Serpent Sting").TotalSeconds <= 0.5 && (Me.CurrentTarget.HealthPercent <= 90 || Me.CurrentTarget.MaxHealth == 1), "Serpent Sting"),
                                    Spell.CastSpell("Chimera Shot",            ret => Me.CurrentTarget != null && (Me.CurrentTarget.HealthPercent <= 90 || Me.CurrentTarget.MaxHealth == 1), "Chimera Shot"),
                                    Spell.CastSpell("Dire Beast",              ret => Me.CurrentTarget != null && Me.Pet.Location.DistanceSqr(Me.CurrentTarget.Location) < 10 * 10, "Dire Beast"),
-                                   Buff.CastBuff("Stampede",                  ret => Unit.IsTargetWorthy(Me.CurrentTarget), "Stampede"),
-                                   Buff.CastBuff("Rapid Fire",                ret => Me.CurrentTarget != null && !Buff.UnitHasHasteBuff(Me) && Unit.IsTargetWorthy(Me.CurrentTarget), "Rapid Fire"),
-                                   Buff.CastBuff("Readiness",                 ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget) && Buff.PlayerHasActiveBuff("Rapid Fire"), "Readiness"),
+                                   Buff.CastBuff("Stampede",                  ret => Unit.UseCooldowns(), "Stampede"),
+                                   Buff.CastBuff("Rapid Fire",                ret => Me.CurrentTarget != null && !Buff.UnitHasHasteBuff(Me) && Unit.UseCooldowns(), "Rapid Fire"),
+                                   Buff.CastBuff("Readiness",                 ret => Me.CurrentTarget != null && Unit.UseCooldowns() && Buff.PlayerHasActiveBuff("Rapid Fire"), "Readiness"),
                                    Spell.CastSpell("Steady Shot",             ret => Buff.PlayerActiveBuffTimeLeft("Improved Steady Shot").TotalSeconds < 3, "Steady Shot (Improved Steady Shot) [" + Buff.PlayerActiveBuffTimeLeft("Improved Steady Shot").TotalSeconds + "]"),
                                    Item.RunMacroText("/cast Aimed Shot!",     ret => Buff.PlayerHasActiveBuff("Fire!"), "Aimed Shot (Fire!)"),
-                                   Buff.CastBuff("A Murder of Crows",         ret => Unit.IsTargetWorthy(Me.CurrentTarget), "A Murder of Crows"), //reduced to 60sec cooldown if under 20%
+                                   Buff.CastBuff("A Murder of Crows",         ret => Unit.UseCooldowns(), "A Murder of Crows"), //reduced to 60sec cooldown if under 20%
                                    Spell.CastSpell("Arcane Shot",             ret => Buff.PlayerHasActiveBuff("Thrill of the Hunt"), "Arcane Shot"),
                                    Spell.CastSpell("Aimed Shot",              ret => Me.CurrentTarget != null && Buff.UnitHasHasteBuff(Me) && Me.CurrentTarget.HealthPercent > 90, "Aimed Shot (RF, Lust or Hero or TW"),
                                    Spell.CastSpell("Arcane Shot",             ret => Me.CurrentTarget != null && (Me.FocusPercent >= CLUSettings.Instance.Hunter.MarksArcaneShotFocusPercent || Spell.SpellCooldown("Chimera Shot").TotalSeconds >= 5) && (Me.CurrentTarget.HealthPercent < 90 && !Buff.UnitHasHasteBuff(Me)), "Arcane Shot"),
-                                   Buff.CastBuff("Fervor",                    ret => Me.CurrentTarget != null && Me.FocusPercent <= CLUSettings.Instance.Hunter.MarksFevorFocusPercent && Unit.IsTargetWorthy(Me.CurrentTarget), "Fervor"),
+                                   Buff.CastBuff("Fervor",                    ret => Me.CurrentTarget != null && Me.FocusPercent <= CLUSettings.Instance.Hunter.MarksFevorFocusPercent && Unit.UseCooldowns(), "Fervor"),
                                    Spell.CastSpell("Steady Shot",             ret => true, "Steady Shot"))));
             }
         }
@@ -281,7 +281,7 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
                         //new Action(a => { SysLog.Log("I am the start of public override Composite PVPRotation"); return RunStatus.Failure; }),
                         CrowdControl.freeMe(),
                         new Decorator(ret => Macro.Manual || BotChecker.BotBaseInUse("BGBuddy"),
-                            new Decorator(ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget),
+                            new Decorator(ret => Me.CurrentTarget != null && Unit.UseCooldowns(),
                                 new PrioritySelector(
                                     Item.UseTrinkets(),
                                     Buff.CastBuff("Lifeblood", ret => true, "Lifeblood"),

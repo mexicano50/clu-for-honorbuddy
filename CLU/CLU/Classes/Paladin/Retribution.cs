@@ -102,7 +102,7 @@ NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagr
                            EncounterSpecific.ExtraActionButton(),
 
                            new Decorator(
-                               ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget),
+                               ret => Me.CurrentTarget != null && Unit.UseCooldowns(),
                                new PrioritySelector(
                                    Item.UseTrinkets(),
                                    Racials.UseRacials(),
@@ -118,9 +118,9 @@ NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagr
                                ret => Buff.PlayerHasBuff("Holy Avenger"),
                                new PrioritySelector(
                                    // Cooldowns
-                                   Buff.CastBuff("Guardian of Ancient Kings",      ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget) && Buff.PlayerHasBuff("Avenging Wrath") && Buff.PlayerHasBuff("Inquisition"), "Guardian of Ancient Kings"),
-                                   Buff.CastBuff("Avenging Wrath",                 ret => Me.CurrentTarget != null && Buff.PlayerHasBuff("Inquisition") && Unit.IsTargetWorthy(Me.CurrentTarget), "Avenging Wrath"),
-                                   Buff.CastBuff("Execution Sentence",             ret => Me.CurrentTarget != null && Buff.PlayerHasBuff("Inquisition") && Unit.IsTargetWorthy(Me.CurrentTarget), "Execution Sentence"),
+                                   Buff.CastBuff("Guardian of Ancient Kings",      ret => Me.CurrentTarget != null && Unit.UseCooldowns() && Buff.PlayerHasBuff("Avenging Wrath") && Buff.PlayerHasBuff("Inquisition"), "Guardian of Ancient Kings"),
+                                   Buff.CastBuff("Avenging Wrath",                 ret => Me.CurrentTarget != null && Buff.PlayerHasBuff("Inquisition") && Unit.UseCooldowns(), "Avenging Wrath"),
+                                   Buff.CastBuff("Execution Sentence",             ret => Me.CurrentTarget != null && Buff.PlayerHasBuff("Inquisition") && Unit.UseCooldowns(), "Execution Sentence"),
                                    // Holy Avenger Rotation
                                    Spell.CastSelfSpell("Inquisition",               ret => (!Buff.PlayerHasBuff("Inquisition") || Buff.PlayerBuffTimeLeft("Inquisition") <= 2) && (Me.CurrentHolyPower >= 3 || Buff.PlayerHasBuff("Divine Purpose")), "Inquisition"),
                                    Spell.CastAreaSpell("Hammer of the Righteous", 8, false, CLUSettings.Instance.Paladin.RetributionHoRCount, 0.0, 0.0, ret => Me.CurrentHolyPower <= 5, "Hammer of the Righteous"),
@@ -136,7 +136,7 @@ NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagr
                                ret => !Buff.PlayerHasBuff("Holy Avenger"),
                                new PrioritySelector(
                                    // Cooldowns
-                                   Buff.CastBuff("Holy Avenger",                      ret => Me.CurrentTarget != null && (Me.CurrentHolyPower >= 3 || Buff.PlayerHasBuff("Divine Purpose")) && Unit.IsTargetWorthy(Me.CurrentTarget), "Holy Avenger"),
+                                   Buff.CastBuff("Holy Avenger",                      ret => Me.CurrentTarget != null && (Me.CurrentHolyPower >= 3 || Buff.PlayerHasBuff("Divine Purpose")) && Unit.UseCooldowns(), "Holy Avenger"),
                                    // Main Rotation
                                    Spell.CastSelfSpell("Inquisition",               ret => (!Buff.PlayerHasBuff("Inquisition") || Buff.PlayerBuffTimeLeft("Inquisition") <= 2) && (Me.CurrentHolyPower >= 3 || Buff.PlayerHasBuff("Divine Purpose")), "Inquisition"),
                                    Spell.CastAreaSpell("Hammer of the Righteous", 8, false, CLUSettings.Instance.Paladin.RetributionHoRCount, 0.0, 0.0, ret => Me.CurrentHolyPower <= 5, "Hammer of the Righteous"),
@@ -202,7 +202,7 @@ NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagr
             get {
                 return
                     new PrioritySelector(
-                        Spell.CastSpell("Flash of Light", ret => Me, ret => Me.HealthPercent < CLUSettings.Instance.Paladin.FlashHealRestingPercent && CLUSettings.Instance.EnableSelfHealing && CLUSettings.Instance.EnableMovement, "Flash of Light on me"),
+                        Spell.CastSpell("Flash of Light", ret => Me, ret => Me.HealthPercent < CLUSettings.Instance.Paladin.FlashHealRestingPercent && CLUSettings.Instance.EnableSelfHealing && CLUSettings.Instance.EnableMovement && !Me.IsMoving, "Flash of Light on me"),
                         Rest.CreateDefaultRestBehaviour());
             }
         }

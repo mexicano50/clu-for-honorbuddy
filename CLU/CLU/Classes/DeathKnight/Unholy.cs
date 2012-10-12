@@ -94,7 +94,7 @@ namespace CLU.Classes.DeathKnight
                     EncounterSpecific.ExtraActionButton(),
 
                     new Decorator(
-                        ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget),
+                        ret => Me.CurrentTarget != null && Unit.UseCooldowns(),
                         new PrioritySelector(
                             Item.UseTrinkets(),
                             Buff.CastBuff("Lifeblood", ret => true, "Lifeblood"), // Thanks Kink
@@ -113,7 +113,7 @@ namespace CLU.Classes.DeathKnight
                     Spell.CastSpell("Dark Transformation", ret => true, "Dark Transformation"),
                     Spell.CastSelfSpell("Raise Dead", ret => (Me.Pet == null || Me.Pet.IsDead), "Raise Dead"),//Gettin' Timmy back
                     //Cooldowns
-                    new Decorator(ret => Unit.IsTargetWorthy(Me.CurrentTarget) && Me.IsWithinMeleeRange,//Check for the damn range, we don't want to pop anything when the destination is shit away
+                    new Decorator(ret => Unit.UseCooldowns() && Me.IsWithinMeleeRange,//Check for the damn range, we don't want to pop anything when the destination is shit away
                                   new PrioritySelector(
                                       Buff.CastBuffonUnit("Unholy Frenzy", u => Unit.BestUnholyFrenzyTarget,ret =>Me.CurrentRunicPower >= 60 && !Buff.UnitHasHasteBuff(Unit.BestUnholyFrenzyTarget),"Unholy Frenzy"),
                                       Buff.CastBuff("Summon Gargoyle",ret => Me.CurrentRunicPower >= 60 && Buff.UnitHasHasteBuff(Me),"Gargoyle"),
@@ -272,7 +272,7 @@ namespace CLU.Classes.DeathKnight
                         //new Action(a => { SysLog.Log("I am the start of public override Composite PVPRotation"); return RunStatus.Failure; }),
                         CrowdControl.freeMe(),
                         new Decorator(ret => Macro.Manual || BotChecker.BotBaseInUse("BGBuddy"),
-                            new Decorator(ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget),
+                            new Decorator(ret => Me.CurrentTarget != null && Unit.UseCooldowns(),
                                 new PrioritySelector(
                                     Item.UseTrinkets(),
                                     Buff.CastBuff("Lifeblood", ret => true, "Lifeblood"),

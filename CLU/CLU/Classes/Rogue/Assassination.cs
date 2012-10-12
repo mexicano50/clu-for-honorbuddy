@@ -87,7 +87,7 @@ namespace CLU.Classes.Rogue
             get
             {
                 return new Decorator
-                    (ret => Me.HealthPercent <= 100,
+                    (ret => Me.HealthPercent <= 100 && CLUSettings.Instance.EnableSelfHealing,
                      new PrioritySelector
                          (Item.UseBagItem("Kafa'Kota Berry", ret => Me.CurrentTarget != null && !Buff.PlayerHasBuff("Kafa Rush"), "Healthstone"),
                           Spell.CastSelfSpell
@@ -183,17 +183,17 @@ namespace CLU.Classes.Rogue
                      Spell.CastSpell
                          ("Vendetta",
                           ret =>
-                          Me.CurrentTarget != null && CLUSettings.Instance.UseCooldowns && Buff.PlayerActiveBuffTimeLeft("Slice and Dice").TotalSeconds > 2 && Buff.TargetDebuffTimeLeft("Rupture").TotalSeconds > 2,
+                          Me.CurrentTarget != null && Unit.UseCooldowns() && Buff.PlayerActiveBuffTimeLeft("Slice and Dice").TotalSeconds > 2 && Buff.TargetDebuffTimeLeft("Rupture").TotalSeconds > 2,
                           "Vendetta"),
                      Spell.CastSpell
                          ("Shadow Blades",
                           ret =>
-                          Me.CurrentTarget != null && CLUSettings.Instance.UseCooldowns && Me.ComboPoints > 4 && Me.CurrentEnergy > 50,
+                          Me.CurrentTarget != null && Unit.UseCooldowns() && Me.ComboPoints > 4 && Me.CurrentEnergy > 50,
                           "Shadow Blades"),
                      Spell.CastSelfSpell
                          ("Preparation",
                           ret =>
-                          SpellManager.HasSpell(14185) && CLUSettings.Instance.UseCooldowns &&
+                          SpellManager.HasSpell(14185) && Unit.UseCooldowns() &&
                           SpellManager.Spells["Vanish"].Cooldown,
                           "Preparation"),
                      Spell.CastSpell
@@ -306,7 +306,7 @@ namespace CLU.Classes.Rogue
                 return new Decorator
                     (ret =>
                      Me.CurrentTarget != null &&
-                     ((Unit.IsTargetWorthy(Me.CurrentTarget) || Buff.TargetHasDebuff("Vendetta"))),
+                     ((Unit.UseCooldowns() || Buff.TargetHasDebuff("Vendetta"))),
                     //Switched to || instead of &&, we want to use trinkets on Cd and not every 2min
                      new PrioritySelector
                          (Item.UseTrinkets(), Racials.UseRacials(), Buff.CastBuff("Lifeblood", ret => true, "Lifeblood"),
@@ -337,7 +337,7 @@ namespace CLU.Classes.Rogue
                           Spell.CastSpell
                               (EnvenomOverride,
                                ret =>
-                               Me.ComboPoints == 5 && Buff.TargetDebuffTimeLeft("Rupture").TotalSeconds > 2 && (!CLUSettings.Instance.UseCooldowns && Me.CurrentTarget.HealthPercent < 35 || CLUSettings.Instance.UseCooldowns && Spell.SpellOnCooldown("Shadow Blades") && Me.CurrentTarget.HealthPercent < 35 || Buff.PlayerHasBuff("Shadow Blades")),
+                               Me.ComboPoints == 5 && Buff.TargetDebuffTimeLeft("Rupture").TotalSeconds > 2 && (!Unit.UseCooldowns() && Me.CurrentTarget.HealthPercent < 35 || Unit.UseCooldowns() && Spell.SpellOnCooldown("Shadow Blades") && Me.CurrentTarget.HealthPercent < 35 || Buff.PlayerHasBuff("Shadow Blades")),
                                "Execute Envenom"),
                           // Envenom if SnD is about to fall off. This should never happen.
                           Spell.CastSpell
@@ -429,7 +429,7 @@ namespace CLU.Classes.Rogue
             get
             {
                 return ((Me.Combat || Me.RaidMembers.Any(rm => rm.Combat) || Unit.IsTrainingDummy(Me.CurrentTarget)) &&
-                         Unit.IsTargetWorthy(Me.CurrentTarget));
+                         Unit.UseCooldowns());
             }
         }
 
@@ -445,7 +445,7 @@ namespace CLU.Classes.Rogue
                 // Only Do this if SnD is up, Rupture is up, Target is CD-worthy and we've got spare points.
                 return new Decorator
                     (x =>
-                     BuffsSafeForVanish && Unit.IsTargetWorthy(Me.CurrentTarget) && Me.ComboPoints < 4 &&
+                     BuffsSafeForVanish && Unit.UseCooldowns() && Me.ComboPoints < 4 &&
                      EnergySafeForVanish && Me.CurrentTarget.IsWithinMeleeRange && !Buff.PlayerHasActiveBuff("Blindside"),
                      Spell.CastSelfSpell("Vanish", x => true, "Vanish"));
             }

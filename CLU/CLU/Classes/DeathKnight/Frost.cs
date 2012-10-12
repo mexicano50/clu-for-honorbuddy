@@ -92,7 +92,7 @@ namespace CLU.Classes.DeathKnight
                            EncounterSpecific.ExtraActionButton(),
                            // Items
                            new Decorator(
-                               ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget),
+                               ret => Me.CurrentTarget != null && Unit.UseCooldowns(),
                                new PrioritySelector(
                                    Item.UseTrinkets(),
                                    Racials.UseRacials(),
@@ -103,7 +103,7 @@ namespace CLU.Classes.DeathKnight
                            Spell.CastInterupt("Strangulate", 		ret => true, "Strangulate"),
                            Spell.CastInterupt("Asphyxiate", 		ret => true, "Asphyxiate"),
                            //Cooldowns
-                           new Decorator(ret => Unit.IsTargetWorthy(Me.CurrentTarget) && Me.CurrentTarget != null && Me.IsWithinMeleeRange,
+                           new Decorator(ret => Unit.UseCooldowns() && Me.CurrentTarget != null && Me.IsWithinMeleeRange,
                                          new PrioritySelector(
                                              Buff.CastBuff("Raise Dead", 				ret => Me.CurrentTarget != null && Buff.PlayerHasBuff("Pillar of Frost") && Buff.PlayerBuffTimeLeft("Pillar of Frost") <= 10 && Buff.PlayerHasBuff("Unholy Strength"), "Raise Dead"),
                                              Buff.CastBuff("Pillar of Frost", 			ret => Me.CurrentTarget != null, "Pillar of Frost"),
@@ -299,7 +299,7 @@ namespace CLU.Classes.DeathKnight
                         //new Action(a => { SysLog.Log("I am the start of public override Composite PVPRotation"); return RunStatus.Failure; }),
                         CrowdControl.freeMe(),
                         new Decorator(ret => Macro.Manual || BotChecker.BotBaseInUse("BGBuddy"),
-                            new Decorator(ret => StyxWoW.Me.CurrentTarget != null && Unit.IsTargetWorthy(StyxWoW.Me.CurrentTarget),
+                            new Decorator(ret => StyxWoW.Me.CurrentTarget != null && Unit.UseCooldowns(),
                                 new PrioritySelector(
                                     Item.UseTrinkets(),
                                     Buff.CastBuff("Lifeblood", ret => true, "Lifeblood"),

@@ -90,7 +90,7 @@ NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagr
                            EncounterSpecific.ExtraActionButton(),
 
                            new Decorator(
-                               ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget),
+                               ret => Me.CurrentTarget != null && Unit.UseCooldowns(),
                                new PrioritySelector(
                                    Item.UseTrinkets(),
                                    Racials.UseRacials(),
@@ -119,7 +119,7 @@ NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagr
                            Spell.CastSpell("Judgment",                    ret => true, "Judgment"),
                            Spell.CastSpell("Avenger's Shield",            ret => true, "Avengers Shield"),
                            Spell.CastSpell("Hammer of Wrath",             ret => Me.CurrentTarget != null && Me.CurrentTarget.HealthPercent < 20, "Hammer of Wrath"),
-                           Spell.CastSpell("Execution Sentence",          ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget), "Execution Sentence"),
+                           Spell.CastSpell("Execution Sentence",          ret => Me.CurrentTarget != null && Unit.UseCooldowns(), "Execution Sentence"),
                            Spell.CastOnGround("Consecration", ret => Me.CurrentTarget.Location, a => Me.CurrentTarget != null && !BossList.IgnoreAoE.Contains(Unit.CurrentTargetEntry) && Me.ManaPercent > CLUSettings.Instance.Paladin.ConsecrationManaPercent && TalentManager.HasGlyph("Consecration")),
                            Spell.CastSpell("Consecration",                ret => Me.CurrentTarget != null && !BossList.IgnoreAoE.Contains(Unit.CurrentTargetEntry) && Me.ManaPercent > CLUSettings.Instance.Paladin.ConsecrationManaPercent && !Me.IsMoving && !Me.CurrentTarget.IsMoving && Me.IsWithinMeleeRange && Unit.EnemyUnits.Count() >= CLUSettings.Instance.Paladin.ConsecrationCount && !TalentManager.HasGlyph("Consecration"), "Consecration"),
                            Spell.CastSpell("Holy Wrath",                  ret => true, "Holy Wrath")

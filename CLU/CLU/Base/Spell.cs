@@ -937,6 +937,9 @@ namespace CLU.Base
                 new Decorator(
                     delegate(object a)
                     {
+                        if (!CLUSettings.Instance.Hunter.EnableHunterTraps)
+                            return false;
+
                         if (!CLUSettings.Instance.UseAoEAbilities)
                             return false;
 

@@ -180,7 +180,7 @@ NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagr
                 return new PrioritySelector(
                     // Cooldowns
                            new Decorator(
-                               ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget),
+                               ret => Me.CurrentTarget != null && Unit.UseCooldowns(),
                                   new PrioritySelector(
                                            Item.UseTrinkets(),
                                            Racials.UseRacials(),
@@ -206,7 +206,7 @@ NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagr
                 return new PrioritySelector(
                                     // Cooldowns
                                    new Decorator(
-                                       ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget),
+                                       ret => Me.CurrentTarget != null && Unit.UseCooldowns(),
                                        new PrioritySelector(
                                            Item.UseTrinkets(),
                                            Racials.UseRacials(),

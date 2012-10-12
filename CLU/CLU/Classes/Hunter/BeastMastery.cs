@@ -118,7 +118,7 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
 
                            // Trinkets & Cooldowns
                            new Decorator(
-                               ret => Me.CurrentTarget != null && (Unit.IsTargetWorthy(Me.CurrentTarget) && !Buff.PlayerHasBuff("Feign Death")),
+                               ret => Me.CurrentTarget != null && (Unit.UseCooldowns() && !Buff.PlayerHasBuff("Feign Death")),
                                new PrioritySelector(
                                    Item.UseTrinkets(),
                                    Racials.UseRacials(),
@@ -141,25 +141,25 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
                                    Spell.CastSpell("Kill Shot",               ret => Me.CurrentTarget != null && Me.CurrentTarget.HealthPercent < 20, "Kill Shot"),
                                    Buff.CastBuff("Focus Fire",                ret => Buff.PlayerHasBuff("Frenzy"), "Focus Fire"),
                                    Buff.CastDebuff("Serpent Sting",           ret => Me.CurrentTarget != null && Buff.TargetDebuffTimeLeft("Serpent Sting").TotalSeconds <= 0.5 && Unit.TimeToDeath(Me.CurrentTarget) > 10, "Serpent Sting"),
-                                   Buff.CastBuff("Fervor",                    ret => Me.CurrentTarget != null && Me.FocusPercent <= CLUSettings.Instance.Hunter.BmFevorFocusPercent && Unit.IsTargetWorthy(Me.CurrentTarget), "Fervor"),
+                                   Buff.CastBuff("Fervor",                    ret => Me.CurrentTarget != null && Me.FocusPercent <= CLUSettings.Instance.Hunter.BmFevorFocusPercent && Unit.UseCooldowns(), "Fervor"),
                                    Buff.CastBuff("Bestial Wrath", ret => Me.CurrentTarget != null && Me.FocusPercent > CLUSettings.Instance.Hunter.BestialWrathFocusPercent && Me.Pet.Location.DistanceSqr(Me.CurrentTarget.Location) < Spell.MeleeRange * Spell.MeleeRange, "Bestial Wrath"),
                                    Spell.CastSpell("Multi-Shot",              ret => Me.CurrentTarget != null && Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 20) >= CLUSettings.Instance.Hunter.BmMultiShotCount, "Multi-Shot"),
                                    //Spell.CastSpell("Steady Shot",              ret => Unit.CountEnnemiesInRange(Me.Location, 30) >= CLUSettings.Instance.Hunter.BmMultiShotCount, "Cobra Shot"),
                                    Spell.HunterTrapBehavior("Explosive Trap", ret => Me.CurrentTarget, ret => Me.CurrentTarget != null && !Lists.BossList.IgnoreAoE.Contains(Unit.CurrentTargetEntry) && Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 10) >= CLUSettings.Instance.Hunter.ExplosiveTrapCount),
-                                   Buff.CastBuff("A Murder of Crows",         ret => Unit.IsTargetWorthy(Me.CurrentTarget), "A Murder of Crows"), //reduced to 60sec cooldown if under 20%
-                                   Buff.CastBuff("Stampede",                  ret => Unit.IsTargetWorthy(Me.CurrentTarget), "Stampede"),
+                                   Buff.CastBuff("A Murder of Crows",         ret => Unit.UseCooldowns(), "A Murder of Crows"), //reduced to 60sec cooldown if under 20%
+                                   Buff.CastBuff("Stampede",                  ret => Unit.UseCooldowns(), "Stampede"),
                                    // Common level 90 ability's
                                    Spell.CastSpell("Glaive Toss",             ret => !Buff.TargetHasDebuff("Glaive Toss") && Unit.CountEnnemiesInRange(Me.Location, 20) > CLUSettings.Instance.Hunter.GlaiveTossCount, "Glaive Toss"), //instant..with no apparent cooldown...needs checking.
                                    Spell.ChannelSpell("Barrage",              ret => Unit.CountEnnemiesInRange(Me.Location, 20) > CLUSettings.Instance.Hunter.BarrageCount, "Barrage"), //AoE? needs testing.
                                    Spell.ChannelSpell("Powershot",            ret => Unit.CountEnnemiesInRange(Me.Location, 20) > CLUSettings.Instance.Hunter.PowershotCount, "Powershot"), //AoE? needs testing also has knockback!
                                    // End Common level 90 ability's
                                    Spell.CastSpell("Blink Strike",            ret => Me.CurrentTarget != null && Me.Pet.Location.DistanceSqr(Me.CurrentTarget.Location) > 10 * 10 && Me.GotAlivePet, "Blink Strike"), // teleports behind target mad damage.
-                                   Spell.CastSpell("Lynx Rush", ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget) && Me.Pet.Location.DistanceSqr(Me.CurrentTarget.Location) < 10 * 10, "Lynx Rush"),
-                                   Buff.CastBuff("Rapid Fire",                ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget) && !Buff.PlayerHasBuff("The Beast Within") && !Buff.UnitHasHasteBuff(Me), "Rapid Fire"),
+                                   Spell.CastSpell("Lynx Rush", ret => Me.CurrentTarget != null && Unit.UseCooldowns() && Me.Pet.Location.DistanceSqr(Me.CurrentTarget.Location) < 10 * 10, "Lynx Rush"),
+                                   Buff.CastBuff("Rapid Fire",                ret => Me.CurrentTarget != null && Unit.UseCooldowns() && !Buff.PlayerHasBuff("The Beast Within") && !Buff.UnitHasHasteBuff(Me), "Rapid Fire"),
                                    Spell.CastSpell("Kill Command", ret => Me.CurrentTarget != null && Me.GotAlivePet && Me.Pet.Location.DistanceSqr(Me.CurrentTarget.Location) < 25 * 25 && Spell.SpellCooldown("Kill Command").TotalSeconds < 1 && Me.FocusPercent >= 40, "Kill Command"),
                                    Spell.CastSpell("Dire Beast", ret => Me.CurrentTarget != null && Me.Pet.Location.DistanceSqr(Me.CurrentTarget.Location) < 10 * 10 && Me.FocusPercent <= 90, "Dire Beast"),
                                    Spell.CastSpell("Arcane Shot",             ret => Buff.PlayerHasActiveBuff("Thrill of the Hunt"), "Arcane Shot (Thrill of the Hunt)"),
-                                   Buff.CastBuff("Readiness",                 ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget) && Buff.PlayerHasActiveBuff("Rapid Fire"), "Readiness"),
+                                   Buff.CastBuff("Readiness",                 ret => Me.CurrentTarget != null && Unit.UseCooldowns() && Buff.PlayerHasActiveBuff("Rapid Fire"), "Readiness"),
                                    Spell.CastSpell("Arcane Shot",             ret => (Me.FocusPercent >= CLUSettings.Instance.Hunter.BmArcaneShotFocusPercent || Buff.PlayerHasBuff("The Beast Within")), "Arcane Shot"),
                                    Buff.CastBuff("Focus Fire",                ret => Buff.PlayerHasBuff("Frenzy") && !Buff.PlayerHasBuff("The Beast Within"), "Focus Fire"),
                                    Spell.CastSpell("Steady Shot",              ret => true, "Cobra Shot"))));
@@ -289,7 +289,7 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
                         //new Action(a => { SysLog.Log("I am the start of public override Composite PVPRotation"); return RunStatus.Failure; }),
                         CrowdControl.freeMe(),
                         new Decorator(ret => Macro.Manual || BotChecker.BotBaseInUse("BGBuddy"),
-                            new Decorator(ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget),
+                            new Decorator(ret => Me.CurrentTarget != null && Unit.UseCooldowns(),
                                 new PrioritySelector(
                                     Item.UseTrinkets(),
                                     Buff.CastBuff("Lifeblood", ret => true, "Lifeblood"),

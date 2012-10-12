@@ -164,7 +164,7 @@ namespace CLU.Classes.Paladin
                                          ),
 
                     ////// Cooldowns
-                    //Healer.FindAreaHeal(a => CLUSettings.Instance.UseCooldowns && StyxWoW.Me.Combat && PaladinCooldownsOK, 10, 65, 30f, (Me.GroupInfo.IsInRaid ? 6 : 4), "Cooldowns: Avg: 10-65, 38yrds, count: 6 or 3",
+                    //Healer.FindAreaHeal(a => Unit.UseCooldowns() && StyxWoW.Me.Combat && PaladinCooldownsOK, 10, 65, 30f, (Me.GroupInfo.IsInRaid ? 6 : 4), "Cooldowns: Avg: 10-65, 38yrds, count: 6 or 3",
                     // // Item.UseTrinkets(),
                     // // Racials.UseRacials(),
                     //                    Spell.CastSelfSpell("Divine Favor", ret => !Buff.PlayerHasActiveBuff("Guardian of Ancient Kings") && !Buff.PlayerHasActiveBuff("Avenging Wrath"), "Divine Favor"),

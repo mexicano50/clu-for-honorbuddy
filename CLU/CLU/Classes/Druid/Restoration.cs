@@ -147,7 +147,7 @@ namespace CLU.Classes.Druid
 
 
                            // Cooldowns
-                    //Healer.FindAreaHeal(a => CLUSettings.Instance.UseCooldowns && StyxWoW.Me.Combat, 10, 65, 38f, (Me.GroupInfo.IsInRaid ? 6 : 4),"party healing: Avg: 10-65, 38yrds, count: 6 or 4",
+                    //Healer.FindAreaHeal(a => Unit.UseCooldowns() && StyxWoW.Me.Combat, 10, 65, 38f, (Me.GroupInfo.IsInRaid ? 6 : 4),"party healing: Avg: 10-65, 38yrds, count: 6 or 4",
                     //                    Item.UseTrinkets(),
                     //                    Racials.UseRacials(),
                     //                    Buff.CastBuff("Lifeblood", ret => true, "Lifeblood"),
@@ -187,7 +187,7 @@ namespace CLU.Classes.Druid
 
                            // Tree of Life oh shit [SpellManager] Incarnation: Tree of Life (33891) overrides Incarnation (106731)
                            Healer.FindAreaHeal(a => SpellManager.CanCast("Incarnation") && StyxWoW.Me.Combat, 10, (Me.GroupInfo.IsInRaid ? 75 : 65), 30f, (Me.GroupInfo.IsInRaid ? 5 : 3), "Tree of Life party healing: Avg: 10-70 or 65, 30yrds, count: 5 or 3",
-                                               Spell.CastSelfSpell("Incarnation", ret => CLUSettings.Instance.UseCooldowns, "Incarnation") //TODO: Check.
+                                               Spell.CastSpell("Incarnation", ret => Me, ret => CLUSettings.Instance.UseCooldowns, "Incarnation") //TODO: Check.
                                               ),
 
                            // Tranquility oh shit

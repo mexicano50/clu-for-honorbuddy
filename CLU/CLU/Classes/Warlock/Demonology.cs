@@ -112,7 +112,7 @@ namespace CLU.Classes.Warlock
                     // Threat
                             Buff.CastBuff("Soulshatter", ret => Me.CurrentTarget != null && Me.GotTarget && Me.CurrentTarget.ThreatInfo.RawPercent > 90 && !Spell.PlayerIsChanneling, "[High Threat] Soulshatter - Stupid Tank"),
                            new Decorator(
-                               ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget),
+                               ret => Me.CurrentTarget != null && Unit.UseCooldowns(),
                                new PrioritySelector(
                                    Item.UseTrinkets(),
                                    Racials.UseRacials(),
@@ -140,8 +140,8 @@ namespace CLU.Classes.Warlock
                             
                             new Decorator(ret => CLUSettings.Instance.UseCooldowns,
                                 new PrioritySelector(                                    
-                                    Item.UseBagItem("Jade Serpent Potion", ret => (Buff.UnitHasHasteBuff(Me) || Me.CurrentTarget.HealthPercent < 20) && Unit.IsTargetWorthy(Me.CurrentTarget), "Jade Serpent Potion"),
-                                    Item.UseBagItem("Volcanic Potion", ret => (Buff.UnitHasHasteBuff(Me) || Me.CurrentTarget.HealthPercent < 20) && Unit.IsTargetWorthy(Me.CurrentTarget), "Volcanic Potion"),
+                                    Item.UseBagItem("Jade Serpent Potion", ret => (Buff.UnitHasHasteBuff(Me) || Me.CurrentTarget.HealthPercent < 20) && Unit.UseCooldowns(), "Jade Serpent Potion"),
+                                    Item.UseBagItem("Volcanic Potion", ret => (Buff.UnitHasHasteBuff(Me) || Me.CurrentTarget.HealthPercent < 20) && Unit.UseCooldowns(), "Volcanic Potion"),
                                     Buff.CastBuff("Dark Soul", ret => !WoWSpell.FromId(113861).Cooldown && !Me.HasAnyAura(Common.DarkSoul), "Dark Soul")
                                     )),
                             PetManager.CastPetSpell("Wrathstorm", ret => Me.CurrentTarget != null && PetManager.CanCastPetSpell("Wrathstorm") && Me.Pet.Location.Distance(Me.CurrentTarget.Location) < Spell.MeleeRange, "Wrathstorm"),
@@ -163,7 +163,7 @@ namespace CLU.Classes.Warlock
 
                             new Decorator(ret => CLUSettings.Instance.UseCooldowns,
                                 new PrioritySelector(
-                                    Spell.CastSpell("Summon Doomguard", ret => !WoWSpell.FromId(18540).Cooldown && Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget), "Summon Doomguard")
+                                    Spell.CastSpell("Summon Doomguard", ret => !WoWSpell.FromId(18540).Cooldown && Me.CurrentTarget != null && Unit.UseCooldowns(), "Summon Doomguard")
                                     )),
 
                            new Decorator(ret => Me.CurrentTarget != null,

@@ -99,7 +99,7 @@ namespace CLU.Classes.Monk
                     // For DS Encounters.
                     EncounterSpecific.ExtraActionButton(),
                     new Decorator(
-                        ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget),
+                        ret => Me.CurrentTarget != null && Unit.UseCooldowns(),
                         new PrioritySelector(
                             Item.UseTrinkets(),
                             Racials.UseRacials(),
@@ -134,7 +134,7 @@ namespace CLU.Classes.Monk
                     
                     // AoE
                     Spell.CastAreaSpell("Dizzying Haze", 10, false, 3, 0.0, 0.0, ret => (from enemy in Unit.EnemyUnits where !enemy.HasAura("Dizzying Haze") select enemy).Any(), "Dizzying Haze"),
-                    //Spell.CastOnGround("Dizzying Haze", u => Me.CurrentTarget.Location, ret => Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 8) >= 3 && !Buff.TargetHasDebuff("Dizzying Haze")),
+                    //Spell.CastOnUnitLocation("Dizzying Haze", ret => Me.CurrentTarget, ret => Me.CurrentTarget != null && Me.CurrentTarget.DistanceSqr <= 40 * 40 && Unit.NearbyNonControlledUnits(Me.CurrentTarget.Location, 8, CLU.LocationContext == GroupLogic.Battleground).Any(x => !x.HasAura("Dizzying Haze")), "Dizzying Haze"),
                     Spell.CastSpell("Breath of Fire", ret => Chi >= 2 && Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 8) >= 3 && Buff.TargetHasDebuff("Dizzying Haze") && !Buff.TargetHasDebuff("Breath of Fire"), "Breath of Fire"),
                     Spell.CastAreaSpell("Spinning Crane Kick", 8, false, 7, 0.0, 0.0, ret => true, "Spinning Crane Kick"));
             }

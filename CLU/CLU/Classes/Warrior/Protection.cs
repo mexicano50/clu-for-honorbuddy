@@ -15,7 +15,6 @@ using Styx.TreeSharp;
 using CommonBehaviors.Actions;
 using CLU.Settings;
 using CLU.Base;
-using Rest = CLU.Base.Rest;
 using CLU.Managers;
 using Styx.WoWInternals;
 
@@ -97,14 +96,14 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
 
                      // Trinkets & Cooldowns
                          new Decorator(
-                             ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget),
+                             ret => Me.CurrentTarget != null && Unit.UseCooldowns(),
                                  new PrioritySelector(
                                          Item.UseTrinkets(),
                                          Racials.UseRacials(),
                                          Item.UseEngineerGloves(),
                                          Buff.CastBuff("Lifeblood", ret => true, "Lifeblood"),
                                          Spell.CastSpell("Shattering Throw", ret => Me.CurrentTarget != null && (Me.CurrentTarget.HealthPercent < 20 || Buff.UnitHasHasteBuff(Me)) && CLUSettings.Instance.Warrior.UseShatteringThrow, "Shattering Throw"),
-                                         Spell.CastSelfSpell("Recklessness", ret => Me.CurrentTarget != null && (Me.CurrentTarget.HealthPercent < 20 || Buff.UnitHasHasteBuff(Me)) && CLUSettings.Instance.Warrior.UseRecklessness && CLUSettings.Instance.UseCooldowns, "Recklessness"))),
+                                         Spell.CastSelfSpell("Recklessness", ret => Me.CurrentTarget != null && (Me.CurrentTarget.HealthPercent < 20 || Buff.UnitHasHasteBuff(Me)) && CLUSettings.Instance.Warrior.UseRecklessness && Unit.UseCooldowns(), "Recklessness"))),
                     // Interupts
                      Spell.CastInterupt("Pummel",               ret => CLUSettings.Instance.Warrior.UsePummel, "Pummel"),
                      Spell.CastInterupt("Shockwave",            ret => CLUSettings.Instance.Warrior.UseShockwave, "Shockwave"),
@@ -124,8 +123,8 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
                      Spell.CastSpell("Heroic Strike",       ret => Buff.PlayerHasActiveBuff("Ultimatum") || Me.RagePercent >= CLUSettings.Instance.Warrior.ProtHeroicStrikeRagePercent, "Heroic Strike"),
                      Spell.CastSpell("Shield Slam",         ret => true, "Shield Slam on CD"),
                      Spell.CastSpell("Revenge",             ret => true, "Revenge on CD"),
-                     Spell.CastSelfSpell("Deadly Calm",     ret => CLUSettings.Instance.Warrior.UseDeadlyCalm && CLUSettings.Instance.UseCooldowns, "Deadly Calm"),
-                     Spell.CastSelfSpell("Berserker Rage", ret => Me.CurrentTarget != null && (CLUSettings.Instance.Warrior.UseBerserkerRage && CLUSettings.Instance.UseCooldowns && Me.CurrentTarget.IsWithinMeleeRange), "Berserker Rage"),
+                     Spell.CastSelfSpell("Deadly Calm", ret => CLUSettings.Instance.Warrior.UseDeadlyCalm && Unit.UseCooldowns(), "Deadly Calm"),
+                     Spell.CastSelfSpell("Berserker Rage", ret => Me.CurrentTarget != null && (CLUSettings.Instance.Warrior.UseBerserkerRage && Unit.UseCooldowns() && Me.CurrentTarget.IsWithinMeleeRange), "Berserker Rage"),
                      Spell.CastAreaSpell("Thunder Clap", 8, false, 1, 0.0, 0.0, ret => !Buff.UnitHasWeakenedBlows(Me.CurrentTarget) && Me.CurrentTarget != null && Me.CurrentTarget.IsWithinMeleeRange, "Thunder Clap for Weakened Blows"),
                      Buff.CastDebuff("Demoralizing Shout",  ret => Me.CurrentTarget != null && !Buff.UnitHasWeakenedBlows(Me.CurrentTarget) && CLUSettings.Instance.Warrior.UseDemoralizingShout, "Demoralizing Shout"),
                      Spell.CastSpell("Commanding Shout", ret => Me.RagePercent < 40 && !WoWSpell.FromId(469).Cooldown && CLUSettings.Instance.Warrior.ShoutSelection == WarriorShout.Commanding, "Commanding Shout for Rage"),
@@ -236,7 +235,7 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
                         //new Action(a => { SysLog.Log("I am the start of public override Composite PVPRotation"); return RunStatus.Failure; }),
                         CrowdControl.freeMe(),
                         new Decorator(ret => Macro.Manual || BotChecker.BotBaseInUse("BGBuddy"),
-                            new Decorator(ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget),
+                            new Decorator(ret => Me.CurrentTarget != null && Unit.UseCooldowns(),
                                 new PrioritySelector(
                                     Item.UseTrinkets(),
                                     Buff.CastBuff("Lifeblood", ret => true, "Lifeblood"),

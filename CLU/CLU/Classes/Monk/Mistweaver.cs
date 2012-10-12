@@ -101,7 +101,7 @@ namespace CLU.Classes.Monk
 
                            //Trinkets, Racials, whatever.. I dont really care
                            new Decorator(
-                               ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget),
+                               ret => Me.CurrentTarget != null && Unit.UseCooldowns(),
                                new PrioritySelector(
                                    Item.UseTrinkets(),
                                    Racials.UseRacials(),

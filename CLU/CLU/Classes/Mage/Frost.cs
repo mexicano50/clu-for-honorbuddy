@@ -109,7 +109,7 @@ namespace CLU.Classes.Mage
                            EncounterSpecific.ExtraActionButton(),
 
                            new Decorator(
-                               ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget),
+                               ret => Me.CurrentTarget != null && Unit.UseCooldowns(),
                                new PrioritySelector(
                                    Item.UseTrinkets(),
                                    Racials.UseRacials(),
@@ -128,11 +128,11 @@ namespace CLU.Classes.Mage
                             //Added Frost Bomb or Nether Tempest 9-20-2012
                            Buff.CastDebuff("Mage Bomb", Magebombtalent, ret => true, "Frost Bomb or Nether Tempest"),
                            Spell.ChannelSelfSpell("Evocation",  ret => Me.ManaPercent < 40 && !Me.IsMoving && (Buff.PlayerHasActiveBuff("Icy Veins") || Buff.UnitHasHasteBuff(Me)), "Evocation"),
-                           Item.UseBagItem("Mana Gem",          ret => Me.CurrentTarget != null && Me.ManaPercent < 90 && Unit.IsTargetWorthy(Me.CurrentTarget), "Mana Gem"),
+                           Item.UseBagItem("Mana Gem",          ret => Me.CurrentTarget != null && Me.ManaPercent < 90 && Unit.UseCooldowns(), "Mana Gem"),
                            Spell.CastSelfSpell("Cold Snap",     ret => Spell.SpellCooldown("Deep Freeze").TotalSeconds > 15 && Spell.SpellCooldown("Flame Orb").TotalSeconds > 30 && Spell.SpellCooldown("Icy Veins").TotalSeconds > 30, "Cold Snap"),
                             //Changed Fire Orb to Frozen Orb 9-20-2012
-                           Spell.CastSpell("Frozen Orb",        ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget), "Frozen Orb"),
-                           Spell.CastSelfSpell("Mirror Image",  ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget), "Mirror Image"),
+                           Spell.CastSpell("Frozen Orb",        ret => Me.CurrentTarget != null && Unit.UseCooldowns(), "Frozen Orb"),
+                           Spell.CastSelfSpell("Mirror Image",  ret => Me.CurrentTarget != null && Unit.UseCooldowns(), "Mirror Image"),
                            Spell.CastSelfSpell("Icy Veins",     ret => !Buff.PlayerHasActiveBuff("Icy Veins") && !Buff.UnitHasHasteBuff(Me) && (Buff.PlayerCountBuff("Stolen Time") > 7 || Spell.SpellCooldown("Cold Snap").TotalSeconds < 22), "Icy Veins"),
                            Spell.CastSpell("Deep Freeze",       ret => Buff.PlayerHasActiveBuff("Fingers of Frost"), "Deep Freeze (Fingers of Frost)"),
                            Spell.CastSpell("Frostfire Bolt",    ret => Buff.PlayerHasActiveBuff("Brain Freeze"), "Frostfire Bolt (Brain Freeze)"),

@@ -148,7 +148,7 @@ namespace CLU.Classes.Shaman
 
 
                     //// Cooldowns
-                    //Healer.FindAreaHeal(a => CLUSettings.Instance.UseCooldowns && StyxWoW.Me.Combat, 10, 65, 38f, (Me.GroupInfo.IsInRaid ? 6 : 4), "Cooldowns: Avg: 10-65, 38yrds, count: 6 or 3",
+                    //Healer.FindAreaHeal(a => Unit.UseCooldowns() && StyxWoW.Me.Combat, 10, 65, 38f, (Me.GroupInfo.IsInRaid ? 6 : 4), "Cooldowns: Avg: 10-65, 38yrds, count: 6 or 3",
                     //                    Item.UseTrinkets(),
                     //                    Racials.UseRacials(),
                     //                    Buff.CastBuff("Lifeblood", ret => true, "Lifeblood"),

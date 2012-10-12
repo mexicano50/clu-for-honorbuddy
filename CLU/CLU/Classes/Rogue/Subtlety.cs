@@ -123,7 +123,7 @@ namespace CLU.Classes.Rogue
 
                            // Trinkets & Cooldowns
                            new Decorator(
-                               ret => Me.CurrentTarget != null && (Unit.IsTargetWorthy(Me.CurrentTarget)),
+                               ret => Me.CurrentTarget != null && (Unit.UseCooldowns()),
                                new PrioritySelector(
                                    Item.UseTrinkets(),
                                    Racials.UseRacials(),
@@ -231,7 +231,7 @@ namespace CLU.Classes.Rogue
             get
             {
                 return (Me.Combat || Me.RaidMembers.Any(rm => rm.Combat) || Unit.IsTrainingDummy(Me.CurrentTarget)) &&
-                       Unit.IsTargetWorthy(Me.CurrentTarget);
+                       Unit.UseCooldowns();
             }
         }
 

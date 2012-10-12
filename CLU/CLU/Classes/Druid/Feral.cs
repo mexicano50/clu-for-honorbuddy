@@ -178,7 +178,7 @@ CREDITS TO: HandNavi - because he owns the business.
                 return new PrioritySelector(
                     // Cooldowns
                     new Decorator(
-                        ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget),
+                        ret => Me.CurrentTarget != null && Unit.UseCooldowns(),
                         new PrioritySelector(
                             Item.UseTrinkets(),
                             Racials.UseRacials(),
@@ -259,7 +259,7 @@ CREDITS TO: HandNavi - because he owns the business.
                                       new Decorator(
                                           ret =>
                                           Buff.PlayerHasBuff("Tiger's Fury") && Me.CurrentTarget != null &&
-                                          Unit.IsTargetWorthy(Me.CurrentTarget),
+                                          Unit.UseCooldowns(),
                                           new PrioritySelector(
                                               Item.UseTrinkets(),
                                               Item.UseEngineerGloves()
@@ -292,7 +292,7 @@ CREDITS TO: HandNavi - because he owns the business.
                                                       1 && Buff.PlayerHasBuff("Berserk"), "Incarnation"),
                                       //Use Racials!
                                       new Decorator(
-                                          ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget),
+                                          ret => Me.CurrentTarget != null && Unit.UseCooldowns(),
                                           Racials.UseRacials()
                                           ),
                                       Spell.CastSpell("Ferocious Bite",

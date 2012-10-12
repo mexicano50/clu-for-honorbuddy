@@ -140,7 +140,7 @@ Credits: alxaw , Kbrebel04
 
                     //Single Target
                     Spell.CastSpell("Touch of Death", ret => Buff.PlayerHasBuff("Death Note"), "Touch of Death"),
-                    Spell.CastSelfSpell("Tigereye Brew", ret => !Buff.PlayerHasBuff("Tigereye Brew Use") && Buff.PlayerCountBuff("Tigereye Brew") == 10 && CLUSettings.Instance.UseCooldowns, "Tigerye Brew"),
+                    Spell.CastSelfSpell("Tigereye Brew", ret => !Buff.PlayerHasBuff("Tigereye Brew Use") && Buff.PlayerCountBuff("Tigereye Brew") == 10 && Unit.UseCooldowns(), "Tigerye Brew"),
                     Spell.CastSelfSpell("Chi Brew", ret => TalentManager.HasTalent(9) && Chi == 0 && Me.CurrentEnergy <= 50, "Chi Brew"),
                     Spell.CastSpell("Energizing Brew", ret => Me.CurrentEnergy < 40 && !Spell.PlayerIsChanneling, "Energizing Brew"),
                     Spell.CastSpell("Tiger Palm", ret => Buff.PlayerHasBuff("Tiger Power") && Buff.PlayerBuffTimeLeft("Tiger Power") < 3, "Refresh Tiger Power"),
@@ -148,8 +148,8 @@ Credits: alxaw , Kbrebel04
                     Spell.CastSpell("Jab", ret => CLUSettings.Instance.Monk.EnableFists && (Chi <= 2 && Me.HealthPercent > 70 && Me.CurrentEnergy >= 80 || Chi < 2 && Me.HealthPercent > 70 || Chi < 2 && Spell.SpellOnCooldown("Expel Harm") && Me.HealthPercent <= 70 || Chi <= 2 && Me.HealthPercent > 70 && !Spell.SpellOnCooldown("Fists of Fury") || Chi <= 2 && Spell.SpellOnCooldown("Expel Harm") && Me.HealthPercent <= 70 && !Spell.SpellOnCooldown("Fists of Fury") || Chi <= 2 && Spell.SpellOnCooldown("Expel Harm") && Me.HealthPercent <= 70 && Me.CurrentEnergy >= 80), "Jab w/FoF"),
 					Spell.CastSpell("Jab", ret => !CLUSettings.Instance.Monk.EnableFists && (Chi <= 2 && Me.HealthPercent > 70 && Me.CurrentEnergy > 80 || Chi < 2 && Me.HealthPercent > 70 || Chi < 2 && Spell.SpellOnCooldown("Expel Harm") && Me.HealthPercent <= 70 || Chi <= 2 && Spell.SpellOnCooldown("Expel Harm") && Me.HealthPercent <= 70 && Me.CurrentEnergy > 80), "Jab"),
 					Spell.CastSpell("Tiger Palm", ret => Buff.PlayerCountBuff("Tiger Power") < 3, "Tiger Palm"),
-                    Spell.CastSpell("Invoke Xuen, the White Tiger", ret => TalentManager.HasTalent(17) && Me.CurrentEnergy < 80 && CLUSettings.Instance.UseCooldowns, "Invoke Xuen"),
-                    Spell.CastSpell("Rushing Jade Wind", ret => TalentManager.HasTalent(16) && Buff.PlayerCountBuff("Tiger Power") == 3 && Buff.TargetHasDebuff("Rising Sun Kick") && Me.CurrentEnergy <= 80 && CLUSettings.Instance.UseCooldowns, "Rushing Jade Wind"),
+                    Spell.CastSpell("Invoke Xuen, the White Tiger", ret => TalentManager.HasTalent(17) && Me.CurrentEnergy < 80 && Unit.UseCooldowns(), "Invoke Xuen"),
+                    Spell.CastSpell("Rushing Jade Wind", ret => TalentManager.HasTalent(16) && Buff.PlayerCountBuff("Tiger Power") == 3 && Buff.TargetHasDebuff("Rising Sun Kick") && Me.CurrentEnergy <= 80 && Unit.UseCooldowns(), "Rushing Jade Wind"),
                     Spell.CastSpell("Fists of Fury", ret => CLUSettings.Instance.Monk.EnableFists && (!Me.IsMoving && !Buff.PlayerHasActiveBuff("Energizing Brew") && Me.CurrentEnergy <= 60 && Buff.PlayerBuffTimeLeft("Tiger Power") > 5 && Buff.PlayerCountBuff("Tiger Power") == 3 && Spell.SpellCooldown("Rising Sun Kick").TotalSeconds >= 2), "Fists of Fury"),
                     Spell.CastSpell("Jab", ret => !CLUSettings.Instance.Monk.EnableFists && (Chi <= 2 && Me.HealthPercent > 70 && Me.CurrentEnergy > 80 || Chi < 2 && Me.HealthPercent > 70 || Chi < 2 && Spell.SpellOnCooldown("Expel Harm") && Me.HealthPercent <= 70 || Chi <= 2 && Spell.SpellOnCooldown("Expel Harm") && Me.HealthPercent <= 70 && Me.CurrentEnergy > 80), "Jab"),
                     Spell.CastSpell("Expel Harm", ret => !CLUSettings.Instance.Monk.EnableFists && (Chi <= 2 && Me.HealthPercent <= 70), "Expel Harm"),

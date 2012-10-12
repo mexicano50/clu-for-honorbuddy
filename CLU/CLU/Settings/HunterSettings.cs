@@ -95,6 +95,17 @@ namespace CLU.Settings
         [Setting]
         [DefaultValue(false)]
         [Category("Common")]
+        [DisplayName("Enable Hunter Traps")]
+        [Description("If set to true CLU Will cast the appropriate traps")]
+        public bool EnableHunterTraps
+        {
+            get;
+            set;
+        }
+
+        [Setting]
+        [DefaultValue(false)]
+        [Category("Common")]
         [DisplayName("Misdirection")]
         [Description("If set to true CLU Will use Misdirection with thefollowing target priority: Focus, Pet, RafLeader, Tank")]
         public bool UseMisdirection

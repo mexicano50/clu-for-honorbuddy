@@ -122,7 +122,7 @@ namespace CLU.Classes.Druid
                         ret => Buff.PlayerHasBuff("Moonkin Form") && !Buff.PlayerHasActiveBuff("Shadowmeld"),
                         new PrioritySelector(
                             new Decorator(
-                                ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget),
+                                ret => Me.CurrentTarget != null && Unit.UseCooldowns(),
                                 new PrioritySelector(
                                     Item.UseTrinkets(),
                                     Racials.UseRacials(),
@@ -134,10 +134,10 @@ namespace CLU.Classes.Druid
                     // AoE Rotation
                     Spell.CastSpell("Wild Mushroom: Detonate", ret => MushroomCount == 3, "Detonate Shrooms!"),
                     Spell.CastSpell("Wild Mushroom: Detonate", ret => MushroomCount > 0 && Buff.PlayerHasBuff("Eclipse (Solar)"), "Detonate Shrooms!"),
-                    Spell.CastOnUnitLocation("Force of Nature", u => Me.CurrentTarget, ret => TalentManager.HasTalent(12) && Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget) && !BossList.IgnoreAoE.Contains(Unit.CurrentTargetEntry), "Force of Nature"),
+                    Spell.CastOnUnitLocation("Force of Nature", u => Me.CurrentTarget, ret => TalentManager.HasTalent(12) && Me.CurrentTarget != null && Unit.UseCooldowns() && !BossList.IgnoreAoE.Contains(Unit.CurrentTargetEntry), "Force of Nature"),
                     Spell.CastOnUnitLocation("Wild Mushroom", u => Me.CurrentTarget, ret => Me.CurrentTarget != null && Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 6) >= 3 && MushroomCount < 3, "Wild Mushroom"),
                     //Main Rotation [SpellManager] Incarnation: Chosen of Elune (102560) overrides Incarnation (106731)
-                    Item.RunMacroText("/cast Incarnation", ret => Unit.IsTargetWorthy(Me.CurrentTarget) && !WoWSpell.FromId(102560).Cooldown && TalentManager.HasTalent(11) && (Buff.PlayerHasBuff("Eclipse Visual (Solar)") || Buff.PlayerHasBuff("Eclipse Visual (Lunar)")), "ncarnation: Chosen of Elune"),
+                    Item.RunMacroText("/cast Incarnation", ret => Unit.UseCooldowns() && !WoWSpell.FromId(102560).Cooldown && TalentManager.HasTalent(11) && (Buff.PlayerHasBuff("Eclipse Visual (Solar)") || Buff.PlayerHasBuff("Eclipse Visual (Lunar)")), "ncarnation: Chosen of Elune"),
                     Spell.CastSelfSpell("Incarnation", ret => TalentManager.HasTalent(11) && (Buff.PlayerHasBuff("Eclipse Visual (Solar)") || Buff.PlayerHasBuff("Eclipse Visual (Lunar)")), "Incarnation: Chosen of Elune"),
                     Spell.CastSelfSpell("Celestial Alignment", ret => Me.CurrentEclipse >= -20 && Me.CurrentEclipse <= 20 && (Buff.PlayerHasBuff("Incarnation: Chosen of Elune") || !TalentManager.HasTalent(11)), "Celestial Alignment"),
                     Spell.CastSpell("Moonfire",         ret => Buff.PlayerHasBuff("Eclipse Visual (Lunar)") && !Buff.TargetHasBuff("Moonfire"), "Moonfire @ Lunar"),
@@ -302,7 +302,7 @@ namespace CLU.Classes.Druid
                         //new Action(a => { SysLog.Log("I am the start of public override Composite PVPRotation"); return RunStatus.Failure; }),
                         CrowdControl.freeMe(),
                         new Decorator(ret => Macro.Manual || BotChecker.BotBaseInUse("BGBuddy"),
-                            new Decorator(ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget),
+                            new Decorator(ret => Me.CurrentTarget != null && Unit.UseCooldowns(),
                                 new PrioritySelector(
                                     Item.UseTrinkets(),
                                     Buff.CastBuff("Lifeblood", ret => true, "Lifeblood"),

@@ -88,7 +88,7 @@ namespace CLU.Classes.Warlock
                            EncounterSpecific.ExtraActionButton(),
 
                            new Decorator(
-                               ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget),
+                               ret => Me.CurrentTarget != null && Unit.UseCooldowns(),
                                new PrioritySelector(
                                    Item.UseTrinkets(),
                                    Racials.UseRacials(),
@@ -110,11 +110,11 @@ namespace CLU.Classes.Warlock
                     //Cooldowns
                     new Decorator(ret => CLUSettings.Instance.UseCooldowns,
                         new PrioritySelector(
-                            Buff.CastBuff("Dark Soul", ret => !WoWSpell.FromId(113858).Cooldown && Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget) && !Me.IsMoving && !Me.HasAnyAura(Common.DarkSoul), "Dark Soul"),
-                            Spell.CastSpell("Summon Doomguard", ret => !WoWSpell.FromId(18540).Cooldown && Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget), "Summon Doomguard"),
-                            Spell.CastSelfSpell("Unending Resolve", ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget) && Me.HealthPercent < 40, "Unending Resolve (Save my life)"),
-                            Spell.CastSelfSpell("Twilight Warden", ret => Me.CurrentTarget != null && Me.CurrentTarget.IsCasting && Unit.IsTargetWorthy(Me.CurrentTarget) && Me.HealthPercent < 80, "Twilight Warden (Protect me from magical damage)"))),
-                    Buff.CastDebuff("Curse of the Elements",       ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget) && Me.CurrentTarget.HealthPercent > 70 && !Buff.UnitHasMagicVulnerabilityDeBuffs(Me.CurrentTarget), "Curse of the Elements"),
+                            Buff.CastBuff("Dark Soul", ret => !WoWSpell.FromId(113858).Cooldown && Me.CurrentTarget != null && Unit.UseCooldowns() && !Me.IsMoving && !Me.HasAnyAura(Common.DarkSoul), "Dark Soul"),
+                            Spell.CastSpell("Summon Doomguard", ret => !WoWSpell.FromId(18540).Cooldown && Me.CurrentTarget != null && Unit.UseCooldowns(), "Summon Doomguard"),
+                            Spell.CastSelfSpell("Unending Resolve", ret => Me.CurrentTarget != null && Unit.UseCooldowns() && Me.HealthPercent < 40, "Unending Resolve (Save my life)"),
+                            Spell.CastSelfSpell("Twilight Warden", ret => Me.CurrentTarget != null && Me.CurrentTarget.IsCasting && Unit.UseCooldowns() && Me.HealthPercent < 80, "Twilight Warden (Protect me from magical damage)"))),
+                    Buff.CastDebuff("Curse of the Elements",       ret => Me.CurrentTarget != null && Unit.UseCooldowns() && Me.CurrentTarget.HealthPercent > 70 && !Buff.UnitHasMagicVulnerabilityDeBuffs(Me.CurrentTarget), "Curse of the Elements"),
                     Buff.CastDebuff("Corruption", ret => Me.CurrentTarget != null && Me.CurrentTarget.HasMyAura("Immolate"), "Immolate"),
                     //Spell.CastSpell("Havoc", u => Unit.BestBaneOfHavocTarget, ret => true, "Havoc on "), // + Unit.BestBaneOfHavocTarget.Name
                     Spell.CastSpell("Conflagrate", ret => Me.CurrentTarget != null && Me.CurrentTarget.HasMyAura("Immolate"), "Conflagrate"),

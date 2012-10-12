@@ -108,7 +108,7 @@ namespace CLU.Classes.Mage
                            EncounterSpecific.ExtraActionButton(),
 
                            new Decorator(
-                        ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget),
+                        ret => Me.CurrentTarget != null && Unit.UseCooldowns(),
                         new PrioritySelector(
                             Item.UseTrinkets(),
                             Racials.UseRacials(),
@@ -124,11 +124,11 @@ namespace CLU.Classes.Mage
                             Spell.CastInterupt("Counterspell", ret => true, "Counterspell"),
                             // Cooldowns
                             Spell.ChannelSelfSpell("Evocation", ret => Me.ManaPercent < 35 && !Me.IsMoving, "Evocation"),
-                            Item.UseBagItem("Mana Gem", ret => Me.CurrentTarget != null && Me.ManaPercent < 90 && Unit.IsTargetWorthy(Me.CurrentTarget), "Mana Gem"),
-                            Item.UseBagItem("Brilliant Mana Gem", ret => Me.CurrentTarget != null && Me.ManaPercent < 90 && Unit.IsTargetWorthy(Me.CurrentTarget), "Brilliant Mana Gem"),
-                            Spell.CastSelfSpell("Mirror Image", ret => Unit.IsTargetWorthy(Me.CurrentTarget), "Mirror Image"),
+                            Item.UseBagItem("Mana Gem", ret => Me.CurrentTarget != null && Me.ManaPercent < 90 && Unit.UseCooldowns(), "Mana Gem"),
+                            Item.UseBagItem("Brilliant Mana Gem", ret => Me.CurrentTarget != null && Me.ManaPercent < 90 && Unit.UseCooldowns(), "Brilliant Mana Gem"),
+                            Spell.CastSelfSpell("Mirror Image", ret => Unit.UseCooldowns(), "Mirror Image"),
                             Spell.CastSelfSpell("Presence of Mind", ret => !Buff.PlayerHasBuff("Invisibility"), "Presence of Mind"),
-                            Spell.CastSelfSpell("Arcane Power", ret => Me.CurrentTarget != null && Buff.PlayerHasBuff("Improved Mana Gem") || Unit.IsTargetWorthy(Me.CurrentTarget), "Arcane Power"),
+                            Spell.CastSelfSpell("Arcane Power", ret => Me.CurrentTarget != null && Buff.PlayerHasBuff("Improved Mana Gem") || Unit.UseCooldowns(), "Arcane Power"),
                             Item.RunMacroText("/cast Conjure Mana Gem", ret => Buff.PlayerHasBuff("Presence of Mind") && !Item.HaveManaGem() && Me.Level > 50, "Conjure Mana Gem"),                            
                             // AoE
                             new Decorator(
@@ -139,7 +139,7 @@ namespace CLU.Classes.Mage
                                )),
                             // Default Rotaion
                             //Tier5 Talent
-                            Spell.CastSpell("Combustion", ret => CLUSettings.Instance.Mage.EnableCombustion && Buff.TargetHasDebuff("Ignite") && Buff.TargetHasDebuff("Pyroblast") && Unit.IsTargetWorthy(Me.CurrentTarget), "Combustion"),
+                            Spell.CastSpell("Combustion", ret => CLUSettings.Instance.Mage.EnableCombustion && Buff.TargetHasDebuff("Ignite") && Buff.TargetHasDebuff("Pyroblast") && Unit.UseCooldowns(), "Combustion"),
                             Buff.CastDebuff("Mage Bomb", Magebombtalent, ret => true, "Frost/Living Bomb or Nether Tempest"),
                             Spell.CastSpell("Pyroblast",ret => Me.HasMyAura("Pyroblast!"),"Pyroblast with Pyroblast! proc"),
                             Spell.CastSpell("Fire Blast", ret => Me.HasMyAura("Heating Up") && !Spell.SpellOnCooldown("Fire Blast"), "Fire Blast with Heating Up proc"),

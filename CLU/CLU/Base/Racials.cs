@@ -63,7 +63,7 @@ namespace CLU.Base
                     case "Escape Artist":
                         return StyxWoW.Me.Rooted;
                     case "Every Man for Himself":
-                        return Unit.IsCrowdControlled(StyxWoW.Me);
+                        return Unit.UnitIsControlled(StyxWoW.Me,false);
                     case "Shadowmeld":
                         return false;
                     case "Gift of the Naaru":
@@ -77,7 +77,7 @@ namespace CLU.Base
                     case "Berserking":
                         return true;
                     case "Will of the Forsaken":
-                        return Unit.IsCrowdControlled(StyxWoW.Me);
+                        return Unit.UnitIsControlled(StyxWoW.Me, false);
                     case "Cannibalize":
                         return false;
                     case "Arcane Torrent":
