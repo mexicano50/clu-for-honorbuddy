@@ -422,7 +422,7 @@ namespace CLU.Base
             return new Decorator(
                 delegate(object a)
                 {
-                    if (!cond(a))
+                    if (!cond(a) || !SpellManager.HasSpell(name))
                         return false;
 
                     return true;
