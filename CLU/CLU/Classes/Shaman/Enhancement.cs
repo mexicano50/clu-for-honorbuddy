@@ -97,9 +97,11 @@ namespace CLU.Classes.Shaman
             }
         }
 
-        //[SpellManager] Stormstrike (17364) overrides Primal Strike (73899)
+      //[SpellManager] Stormstrike (17364) overrides Primal Strike (73899)
         private static bool EverythingOnCoolDown { get { return Spell.SpellCooldown("Primal Strike").TotalSeconds > 2.0 && Spell.SpellCooldown("Lava Lash").TotalSeconds > 2.5 && Spell.SpellCooldown("Unleash Elements").TotalSeconds > 2.0 && Spell.SpellCooldown("Earth Shock").Seconds > 2.0; } }
         private static bool StromstrikeOnCoolDown { get { return Spell.SpellCooldown("Primal Strike").TotalSeconds < 7.5; } }
+        private static bool UnleashedElementsCoolDown { get { return Spell.SpellCooldown("Unleash Elements").TotalSeconds < 14; } }
+     
         public override Composite SingleRotation
         {
             get
@@ -112,51 +114,45 @@ namespace CLU.Classes.Shaman
                            EncounterSpecific.ExtraActionButton(),
 
                            new Decorator(
-                               ret => Me.CurrentTarget != null && Unit.UseCooldowns(),
+                               ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget),
                                new PrioritySelector(
                                    Item.UseTrinkets(),
                                    Racials.UseRacials(),
                                    Item.UseEngineerGloves())),
                             // Interupts
-                         Spell.CastInterupt("Wind Shear", ret => Me.CurrentTarget.CanInteruptCastSpell() && Unit.UseCooldowns() && CLUSettings.Instance.Shaman.WindShearSelection == WindShear.OnBoss, "Wind Shear"),
+                         Spell.CastInterupt("Wind Shear", ret => Me.CurrentTarget.CanInteruptCastSpell() && Unit.IsTargetWorthy(Me.CurrentTarget) && CLUSettings.Instance.Shaman.WindShearSelection == WindShear.OnBoss, "Wind Shear"),
                          Spell.CastInterupt("Wind Shear", ret => Me.CurrentTarget.CanInteruptCastSpell() && CLUSettings.Instance.Shaman.WindShearSelection == WindShear.OnCooldown, "Wind Shear"),
-                                // Threat
-                            //        Buff.CastBuff("Wind Shear", ret => Me.CurrentTarget != null && Me.CurrentTarget.ThreatInfo.RawPercent > 90, "Wind Shear (Threat)"),
-                            // Totem management
-                           Totems.CreateTotemsBehavior(),
+
+                    // Totems
+                              Totems.CreateTotemsBehavior(),
+
                             // Rotation 
                             // AuraId = 118470 is unleashing fury which comes from Unleashed Fury talent. Lightning bolt gains extra dmg.
                             // Cooldown Useage
-                           Spell.CastSpell("Searing Totem", ret => !Totems.Exist(WoWTotem.Searing) && !Totems.Exist(WoWTotem.FireElemental), "Searing Totem"),
-                           Buff.CastBuff("Feral Spirit", ret => CLUSettings.Instance.Shaman.FeralSpiritSelection == FeralSpirit.OnBoss && Unit.UseCooldowns(), "Feral Spirit"),
-                           Buff.CastBuff("Feral Spirit", ret => CLUSettings.Instance.Shaman.FeralSpiritSelection == FeralSpirit.OnCooldown, "Feral Spirit"),
-                           Spell.CastSelfSpell("Fire Elemental Totem", ret => Unit.UseCooldowns() || (Me.HasAnyAura(Me.IsHorde ? "Bloodlust" : "Heroism", "Timewarp", "Ancient Hysteria")) || Buff.PlayerHasBuff("Elemental Mastery"), "Fire Elemental Totem"),
-                           Spell.CastSelfSpell("Earth Elemental Totem", ret => Unit.UseCooldowns() && Spell.SpellCooldown("Fire Elemental Totem").TotalSeconds >= 50, "Earth Elemental Totem"),
-                           Spell.CastSpell("Stormlash Totem", ret => CLUSettings.Instance.Shaman.UseStormlashTotem != StormlashTotem.Never
-                                        && ((CLUSettings.Instance.Shaman.UseStormlashTotem == StormlashTotem.OnHaste && Me.HasAnyAura(Me.IsHorde ? "Bloodlust" : "Heroism", "Timewarp", "Ancient Hysteria")
-                                        || CLUSettings.Instance.Shaman.UseStormlashTotem == StormlashTotem.OnCooldown)
-                                        && !Totems.Exist(WoWTotemType.Air)), "Stormlash Totem"),
-                           Spell.CastSelfSpell("Elemental Mastery", ret => CLUSettings.Instance.Shaman.ElementalMasterySelection == ElementalMastery.OnBoss && Unit.UseCooldowns() && TalentManager.HasTalent(10), "Elemental Mastery"),
-                           Spell.CastSelfSpell("Elemental Mastery", ret => CLUSettings.Instance.Shaman.ElementalMasterySelection == ElementalMastery.OnCooldown && TalentManager.HasTalent(10), "Elemental Mastery"),
-                            // AoE
-                           Spell.CastSpell("Magma Totem", ret => Unit.EnemyUnits.Count(u => u.Distance <= Totems.GetTotemRange(WoWTotem.Magma)) >= 3 && !Totems.Exist(WoWTotem.FireElemental),"Magma Totem"),
-                           Spell.CastAreaSpell("Chain Lightning", 5, false, 3, 0.0, 0.0, a => Buff.PlayerCountBuff("Maelstrom Weapon") == 5, "Chain Lightning"),
+                          Spell.CastAreaSpell("Chain Lightning", 5, false, 3, 0.0, 0.0, a => Buff.PlayerCountBuff("Maelstrom Weapon") == 5, "Chain Lightning"),
+
                            Spell.CastAreaSpell("Fire Nova", 5, false, 3, 0.0, 0.0, a => Buff.TargetHasDebuff("Flame Shock"), "Fire Nova"),
                             //Single Target
-                           Item.RunMacroText("/Cast Stormblast", ret => Buff.PlayerHasActiveBuff("Ascendance") && !WoWSpell.FromId(115356).Cooldown, "Stormblast"),
-                           Spell.CastSpell("Lava Lash", ret => Buff.PlayerCountBuff("Searing Flames") == 5 && StromstrikeOnCoolDown, "Lava Lash"),
-                           Spell.CastSpell("Unleash Elements", ret => TalentManager.HasTalent(17), "Unleash Elements"),
+						   Item.RunMacroText("/Cast Stormblast", ret => Buff.PlayerHasActiveBuff("Ascendance") && !WoWSpell.FromId(115356).Cooldown, "Stormblast"),
+                           Spell.CastSpell("Unleash Elements", ret => TalentManager.HasTalent(16), "Unleash Elements"),
+						   Spell.CastSpell("Lightning Bolt", ret => StyxWoW.Me.HasAura(53817) && StyxWoW.Me.GetAuraById(53817).StackCount > 4, "Lightning Bolt"),
                            Spell.CastSpell("Flame Shock", ret => !Buff.TargetHasDebuff("Flame Shock") || Buff.TargetDebuffTimeLeft("Flame Shock").Seconds < 3 || Buff.PlayerHasBuff("Unleash Flame"), "Flame Shock"),
+                           Spell.CastSpell("Primal Strike", ret => UnleashedElementsCoolDown, "Stormstrike"),
+                           Spell.CastSpell("Lava Lash", ret => Buff.PlayerCountBuff("Searing Flames") > 4 && StromstrikeOnCoolDown && UnleashedElementsCoolDown, "Lava Lash"),
+                           Spell.CastSpell("Earth Shock", ret => !Buff.PlayerHasBuff("Unleash Flame") && UnleashedElementsCoolDown && Buff.TargetHasDebuff("Flame Shock"), "Earth Shock"),
+						   Spell.CastSpell("Lightning Bolt", ret => StyxWoW.Me.HasAura(53817) && StyxWoW.Me.GetAuraById(53817).StackCount > 3 && StyxWoW.Me.HasAura(118470), "Lightning Bolt Fury!"),
+						   Spell.CastSpell("Lightning Bolt", ret => StyxWoW.Me.HasAura(53817) && StyxWoW.Me.GetAuraById(53817).StackCount > 3 && !Buff.PlayerHasActiveBuff("Ascendance") && EverythingOnCoolDown && Buff.TargetHasDebuff("Flame Shock"), "Lightning Bolt Filler."),
                            Spell.CastSpell("Primal Strike", ret => true, "Stormstrike"),
                            Spell.CastSpell("Unleash Elements", ret => true, "Unleash Elements"),
                            Spell.CastSpell("Lightning Bolt", ret => Buff.PlayerCountBuff("Maelstrom Weapon") == 5 || (  Buff.PlayerCountBuff("Maelstrom Weapon") > 3 && StyxWoW.Me.HasAura(118470)) || (Buff.PlayerCountBuff("Maelstrom Weapon") > 1 && !Buff.PlayerHasActiveBuff("Ascendance") && EverythingOnCoolDown && Buff.TargetHasDebuff("Flame Shock")), "Lightning Bolt"),
                            Spell.CastSpell("Earth Shock", ret => !Buff.PlayerHasBuff("Unleash Flame") && Buff.TargetHasDebuff("Flame Shock"), "Earth Shock"),
                             //Ascendance NO GCD
-                          Spell.CastSelfSpell("Ascendance", ret => CLUSettings.Instance.Shaman.AscendanceSelection == Ascendance.OnBoss && Unit.UseCooldowns() && !WoWSpell.FromId(114049).Cooldown, "Ascendance"),
-                          Spell.CastSelfSpell("Ascendance", ret => CLUSettings.Instance.Shaman.AscendanceSelection == Ascendance.OnCooldown && !WoWSpell.FromId(114049).Cooldown, "Ascendance")
+                          Buff.CastBuff("Ascendance", ret => CLUSettings.Instance.Shaman.AscendanceSelection == Ascendance.OnBoss && Unit.IsTargetWorthy(Me.CurrentTarget) && !WoWSpell.FromId(114049).Cooldown, "Ascendance"),
+                          Buff.CastBuff("Ascendance", ret => CLUSettings.Instance.Shaman.AscendanceSelection == Ascendance.OnCooldown && !WoWSpell.FromId(114049).Cooldown, "Ascendance")
                            );
             }
         }
+
 
 
 
@@ -298,7 +294,7 @@ namespace CLU.Classes.Shaman
                     //new Action(a => { SysLog.Log("I am the start of public override Composite PVPRotation"); return RunStatus.Failure; }),
                         CrowdControl.freeMe(),
                         new Decorator(ret => Macro.Manual || BotChecker.BotBaseInUse("BGBuddy"),
-                            new Decorator(ret => Me.CurrentTarget != null && Unit.UseCooldowns(),
+                            new Decorator(ret => Me.CurrentTarget != null && Unit.IsTargetWorthy(Me.CurrentTarget),
                                 new PrioritySelector(
                                     new Decorator(ret => Macro.weaponSwap && !BotChecker.BotBaseInUse("BGbuddy"), wepSwapDefensive),
                                     new Decorator(ret => !Macro.weaponSwap && !BotChecker.BotBaseInUse("BGbuddy"), wepSwapOffensive),

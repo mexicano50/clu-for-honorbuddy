@@ -74,14 +74,11 @@ namespace CLU.Classes.Shaman
                //   Magma - handle within AoE DPS logic only
                                 
                       
-                  //    Spell.CastSelfSpell("Magma Totem",
-                 //      ret => Unit.EnemyUnits.Count(u => u.Distance <= GetTotemRange(WoWTotem.Magma)) >= StressMobCount
-              //          && !Exist( WoWTotem.FireElemental),"Magma Totem"),
+                     Spell.CastSpell("Magma Totem",
+                      ret => Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 20) >= 5 && !Exist(WoWTotemType.Fire) &&
+                      !Totems.Exist(WoWTotem.FireElemental),"Magma Totem"),
                    
-                
-               //     Spell.CastSelfSpell("Searing Totem",
-               //         ret => Me.GotTarget && Unit.EnemyUnits.Count(u => u.Distance <= GetTotemRange(WoWTotem.Searing)) < 2
-               //             && Me.CurrentTarget.Distance < GetTotemRange(WoWTotem.Searing) - 2f && !Exist(WoWTotemType.Fire), "Searing Totem")
+                    Spell.CastSpell("Searing Totem", ret => !Totems.Exist(WoWTotemType.Fire), "Searing Totem")
                     );
 
             if (Me.Specialization == WoWSpec.ShamanRestoration)
@@ -95,8 +92,8 @@ namespace CLU.Classes.Shaman
                 ctx => Unit.EnemyUnits.Count() >= StressMobCount,
 
                 // earth totems
-                Spell.CastSelfSpell(WoWTotem.EarthElemental.ToSpellId(),
-                    ret => (bool)ret && !Exist(WoWTotem.StoneBulwark),"Earth Elemental"),
+            //   Spell.CastSelfSpell(WoWTotem.EarthElemental.ToSpellId(),
+             //      ret => (bool)ret && !Exist(WoWTotem.StoneBulwark),"Earth Elemental"),
 
                 Spell.CastSelfSpell(WoWTotem.StoneBulwark.ToSpellId(),
                     ret => Me.HealthPercent < 50 && !Exist(WoWTotem.EarthElemental),"Stone Bulwark"),
@@ -320,22 +317,24 @@ namespace CLU.Classes.Shaman
             switch (totem)
             {
                 case WoWTotem.HealingStream:
+				
                 case WoWTotem.Tremor:
                     return 30f;
 
                 case WoWTotem.Searing:
-                    if (SpellManager.HasSpell(29000))
-                        return 35f;
                     return 20f;
 
                 case WoWTotem.Earthbind:
                     return 10f;
 
                 case WoWTotem.Grounding:
+				
                 case WoWTotem.Magma:
-                    return 8f;
+                    return 10f;
 
                 case WoWTotem.EarthElemental:
+				
+			
                 case WoWTotem.FireElemental:
                     // Not really sure about these 3.
                     return 20f;
