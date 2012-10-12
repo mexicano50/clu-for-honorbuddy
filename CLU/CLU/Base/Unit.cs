@@ -676,7 +676,7 @@ namespace CLU.Base
             if ((IsBoss(onUnit) || IsTrainingDummy(onUnit)) && CLUSettings.Instance.BurstOn == Burst.onBoss) return true;
 
             // Mob count is correct and we have it SET in the Settings then proceed and we are..
-            if (CLUSettings.Instance.BurstOn == Burst.onMob && CountEnnemiesInRange(Me.Location, CLU.Instance.ActiveRotation.CombatMaxDistance == 3.2 ? 15 : 40) >= CLUSettings.Instance.BurstOnMobCount) return true;
+            if (CLUSettings.Instance.BurstOn == Burst.onMob && CountEnnemiesInRange(Me.Location, CLU.Instance.ActiveRotation.CombatMaxDistance <= 10 ? 15 : 40) >= CLUSettings.Instance.BurstOnMobCount) return true;
             
             return false;
         }
