@@ -119,8 +119,8 @@ namespace CLU.Classes.Mage
                     Spell.CastInterupt("Counterspell", ret => true, "Counterspell"),
                     // Cooldowns
                     Spell.ChannelSelfSpell("Evocation", ret => Me.ManaPercent < 35 && !Me.IsMoving, "Evocation"),
-                    Item.UseBagItem("Mana Gem", ret => Me.CurrentTarget != null && Me.ManaPercent < 90 && Unit.UseCooldowns(), "Mana Gem"),
-                    Item.UseBagItem("Brilliant Mana Gem", ret => Me.CurrentTarget != null && Me.ManaPercent < 90 && Unit.UseCooldowns(), "Brilliant Mana Gem"),
+                    Item.UseBagItem("Mana Gem", ret => Me.CurrentTarget != null && Me.ManaPercent < 90 && CLUSettings.Instance.UseCooldowns, "Mana Gem"),
+                    Item.UseBagItem("Brilliant Mana Gem", ret => Me.CurrentTarget != null && Me.ManaPercent < 90 && CLUSettings.Instance.UseCooldowns, "Brilliant Mana Gem"),
                     Spell.CastSelfSpell("Mirror Image", ret => Buff.PlayerHasBuff("Arcane Power") && Unit.UseCooldowns(), "Mirror Image"),
                     Spell.CastSelfSpell("Presence of Mind", ret => !Buff.PlayerHasBuff("Invisibility"), "Presence of Mind"),
                     Spell.CastSelfSpell("Arcane Power", ret => Me.CurrentTarget != null && Buff.PlayerHasBuff("Improved Mana Gem") || Unit.UseCooldowns(), "Arcane Power"),

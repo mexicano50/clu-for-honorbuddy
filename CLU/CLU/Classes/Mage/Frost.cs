@@ -128,7 +128,8 @@ namespace CLU.Classes.Mage
                             //Added Frost Bomb or Nether Tempest 9-20-2012
                            Buff.CastDebuff("Mage Bomb", Magebombtalent, ret => true, "Frost Bomb or Nether Tempest"),
                            Spell.ChannelSelfSpell("Evocation",  ret => Me.ManaPercent < 40 && !Me.IsMoving && (Buff.PlayerHasActiveBuff("Icy Veins") || Buff.UnitHasHasteBuff(Me)), "Evocation"),
-                           Item.UseBagItem("Mana Gem",          ret => Me.CurrentTarget != null && Me.ManaPercent < 90 && Unit.UseCooldowns(), "Mana Gem"),
+                           Item.UseBagItem("Mana Gem", ret => Me.CurrentTarget != null && Me.ManaPercent < 90 && CLUSettings.Instance.UseCooldowns, "Mana Gem"),
+                           Item.UseBagItem("Brilliant Mana Gem", ret => Me.CurrentTarget != null && Me.ManaPercent < 90 && CLUSettings.Instance.UseCooldowns, "Brilliant Mana Gem"),
                            Spell.CastSelfSpell("Cold Snap",     ret => Spell.SpellCooldown("Deep Freeze").TotalSeconds > 15 && Spell.SpellCooldown("Flame Orb").TotalSeconds > 30 && Spell.SpellCooldown("Icy Veins").TotalSeconds > 30, "Cold Snap"),
                             //Changed Fire Orb to Frozen Orb 9-20-2012
                            Spell.CastSpell("Frozen Orb",        ret => Me.CurrentTarget != null && Unit.UseCooldowns(), "Frozen Orb"),
