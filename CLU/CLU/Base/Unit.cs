@@ -959,7 +959,7 @@ namespace CLU.Base
                 {
 
                     // If the player has a focus target set, use it instead.
-                    if (StyxWoW.Me.FocusedUnitGuid != 0 && StyxWoW.Me.FocusedUnit.IsAlive)
+                    if (StyxWoW.Me.FocusedUnitGuid != 0 && StyxWoW.Me.FocusedUnit.IsAlive && !StyxWoW.Me.FocusedUnit.HasAura("Tricks of the Trade"))
                     {
                         CLULogger.TroubleshootLog("StyxWoW.Me.FocusedUnit is {0} - {1}", StyxWoW.Me.FocusedUnit.Name, StyxWoW.Me.FocusedUnit.Class);
                         return StyxWoW.Me.FocusedUnit;
