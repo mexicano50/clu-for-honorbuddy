@@ -157,6 +157,7 @@ namespace CLU.Classes.Mage
                 return new Decorator(
                            ret => Me.HealthPercent < 100 && CLUSettings.Instance.EnableSelfHealing,
                            new PrioritySelector(
+                               Spell.CastSpell("Ice Barrier",      ret => Me.HealthPercent < 80 && TalentManager.HasTalent(6), "Ice Barrier"),
                                Item.UseBagItem("Healthstone",      ret => Me.HealthPercent < 30, "Healthstone"),
                                Buff.CastBuff("Ice Block",          ret => Me.HealthPercent < 20 && !Buff.PlayerHasActiveBuff("Hypothermia"), "Ice Block"),
                                Buff.CastBuff("Mage Ward",          ret => Me.HealthPercent < 50, "Mage Ward")));

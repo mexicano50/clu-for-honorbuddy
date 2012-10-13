@@ -127,7 +127,7 @@ namespace CLU.Classes.Mage
                            Item.RunMacroText("/cast Conjure Mana Gem", ret => !Item.HaveManaGem() && Me.Level > 50, "Conjure Mana Gem"),
                             //Added Frost Bomb or Nether Tempest 9-20-2012
                            Buff.CastDebuff("Mage Bomb", Magebombtalent, ret => true, "Frost Bomb or Nether Tempest"),
-                           Spell.ChannelSelfSpell("Evocation",  ret => Me.ManaPercent < 40 && !Me.IsMoving && (Buff.PlayerHasActiveBuff("Icy Veins") || Buff.UnitHasHasteBuff(Me)), "Evocation"),
+                           Spell.ChannelSelfSpell("Evocation",  ret => Me.ManaPercent < 40 && !Me.IsMoving && (Buff.PlayerHasActiveBuff("Icy Veins") || Buff.UnitHasHasteBuff(Me) || CLUSettings.Instance.EnableMovement), "Evocation"),
                            Item.UseBagItem("Mana Gem", ret => Me.CurrentTarget != null && Me.ManaPercent < 90 && CLUSettings.Instance.UseCooldowns, "Mana Gem"),
                            Item.UseBagItem("Brilliant Mana Gem", ret => Me.CurrentTarget != null && Me.ManaPercent < 90 && CLUSettings.Instance.UseCooldowns, "Brilliant Mana Gem"),
                            Spell.CastSelfSpell("Cold Snap",     ret => Spell.SpellCooldown("Deep Freeze").TotalSeconds > 15 && Spell.SpellCooldown("Flame Orb").TotalSeconds > 30 && Spell.SpellCooldown("Icy Veins").TotalSeconds > 30, "Cold Snap"),
@@ -172,6 +172,7 @@ namespace CLU.Classes.Mage
                     new Decorator(
                            ret => Me.HealthPercent < 100 && CLUSettings.Instance.EnableSelfHealing,
                            new PrioritySelector(
+                               Spell.CastSpell("Ice Barrier", ret => Me.HealthPercent < 80 && TalentManager.HasTalent(6), "Ice Barrier"),
                                Item.UseBagItem("Healthstone", ret => Me.HealthPercent < 30, "Healthstone"),
                                Buff.CastBuff("Ice Block", ret => Me.HealthPercent < 20 && !Buff.PlayerHasActiveBuff("Hypothermia"), "Ice Block"),
                                Buff.CastBuff("Mage Ward", ret => Me.HealthPercent < 50, "Mage Ward")))
