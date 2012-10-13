@@ -34,7 +34,7 @@ using Styx.TreeSharp;
 using Styx.WoWInternals;
 using Styx.WoWInternals.DBC;
 using Styx.WoWInternals.WoWObjects;
-
+using Action = Styx.TreeSharp.Action;
 using Timer = System.Timers.Timer;
 
 /*Credits
@@ -198,6 +198,7 @@ namespace CLU
             get
             {
                 return new Sequence(
+                    //new Action(x => CLULogger.TroubleshootLog(" Pull Behavior pulsed")),
                     new DecoratorContinue(x => CLUSettings.Instance.EnableMovement, Movement.MovingFacingBehavior()),
                     new DecoratorContinue(x => true, ActiveRotation.Pull));
             }

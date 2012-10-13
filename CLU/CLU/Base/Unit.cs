@@ -869,36 +869,39 @@ namespace CLU.Base
                     return EnemyHealer.OrderBy(u => u.CurrentHealth).FirstOrDefault();
                 }
 
-                // Enemys Attacking Us
+                // Enemys Attacking Us - battlegrounds only
                 if (EnemysAttackingUs.OrderBy(u => u.CurrentHealth).FirstOrDefault(u => u.DistanceSqr < 10) != null && CLU.LocationContext == GroupLogic.Battleground)
                 {
                     CLULogger.MovementLog("[CLU] " + CLU.Version + ": CLU targeting activated. *Engaging [{0}] Reason: Enemy Attacking Us*", CLULogger.SafeName(EnemysAttackingUs.OrderBy(u => u.CurrentHealth).FirstOrDefault(u => u.DistanceSqr < 10)));
                     return EnemysAttackingUs.OrderBy(u => u.CurrentHealth).FirstOrDefault(u => u.DistanceSqr < 10);
                 }
 
-                // Flag Carrier units
+                // Flag Carrier units  - battlegrounds only
                 if (EnemyFlagCarrier != null && CLU.LocationContext == GroupLogic.Battleground)
                 {
                     CLULogger.MovementLog("[CLU] " + CLU.Version + ": CLU targeting activated. *Engaging [{0}] Reason: Flag Carrier*", EnemyFlagCarrier);
                     return EnemyFlagCarrier;
                 }
 
-                // Low Health units
+                // Low Health units  - battlegrounds only
                 if (EnemyLowHealth.OrderBy(u => u.CurrentHealth).FirstOrDefault() != null && CLU.LocationContext == GroupLogic.Battleground)
                 {
                     CLULogger.MovementLog("[CLU] " + CLU.Version + ": CLU targeting activated. *Engaging [{0}] Reason: Low Health*", CLULogger.SafeName(EnemyLowHealth.OrderBy(u => u.CurrentHealth).FirstOrDefault()));
                     return EnemyLowHealth.OrderBy(u => u.CurrentHealth).FirstOrDefault();
                 }
 
-                // Check bot poi.
+                // Check botpoi first and make sure our target is set to POI's object.
                 if (BotPoi.Current.Type == PoiType.Kill)
                 {
-                    var unit = BotPoi.Current.AsObject as WoWUnit;
+                    var obj = BotPoi.Current.AsObject;
 
-                    if (unit != null && unit.IsAlive && !unit.IsMe && !Blacklist.Contains(unit))
+                    if (obj != null)
                     {
-                        CLULogger.MovementLog("[CLU] " + CLU.Version + ": CLU targeting activated. *Engaging [{0}] Reason: BotPoi*", CLULogger.SafeName(unit));
-                        return unit;
+                        if (StyxWoW.Me.CurrentTarget != obj)
+                        {
+                            CLULogger.MovementLog("[CLU] " + CLU.Version + ": CLU targeting activated. *Engaging [{0}] Reason: BotPoi*", CLULogger.SafeName((WoWUnit)obj));
+                            return (WoWUnit)obj;
+                        }
                     }
                 }
 
@@ -906,7 +909,7 @@ namespace CLU.Base
                 // Make sure we only check target combat, if we're NOT in a BG. (Inside BGs, all targets are valid!!)
                 var firstUnit = Targeting.Instance.FirstUnit;
                 if (firstUnit != null && firstUnit.IsAlive && !firstUnit.IsMe &&
-                        (CLU.LocationContext != GroupLogic.Battleground ? firstUnit.Combat : firstUnit != null) && !Blacklist.Contains(firstUnit))
+                        (CLU.LocationContext == GroupLogic.Battleground || firstUnit.Combat) && !Blacklist.Contains(firstUnit))
                 {
                     CLULogger.DiagnosticLog("[CLU] " + CLU.Version + ": CLU targeting activated. *Engaging [{0}] Reason: Target list*", CLULogger.SafeName(firstUnit));
                     return firstUnit;
@@ -926,12 +929,6 @@ namespace CLU.Base
                     return MostFocusedUnit.Unit;
                 }
 
-                //// Healing units
-                // if (HealList.OrderBy(u => u.CurrentHealth).FirstOrDefault() != null && this.Logic == GroupLogic.PVE)
-                // {
-                // CLU.DebugLog(Color.Goldenrod, "[CLU] " + CLU.Version + ": CLU targeting activated. *Engaging [{0}] Reason: Healing Target*", HealList.OrderBy(u => u.CurrentHealth).FirstOrDefault());
-                // return HealList.OrderBy(u => u.CurrentHealth).FirstOrDefault();
-                // }
                 CLULogger.MovementLog("[CLU] " + CLU.Version + ": CLU targeting FAILED. *Reason: I cannot find a good target.*");
                 return null;
             }

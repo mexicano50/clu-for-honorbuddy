@@ -12,6 +12,7 @@
 
 #endregion
 
+using System;
 using Styx.TreeSharp;
 using CommonBehaviors.Actions;
 using CLU.Helpers;
@@ -87,24 +88,22 @@ Credits: alxaw , Kbrebel04
         {
             get
             {
-                return Me.CurrentChi; // StyxWoW.Me.GetCurrentPower(WoWPowerType.LightForce);
+                return Me.CurrentChi;
             }
         }
 
-        // TODO: CHECK COMBO BREAKER NAMES.
-        // TODO: CHECK CHI
-        // TODO: FIND AWAY TO RETURN ENERGY REGEN RATE
-        // TODO: CHECK ALL SPELL NAMES FROM "SPELLS" DUMP
-        // TODO: CHECK ALL AURAS
-        // TODO: CHECK JAB IS NOT AFFECTED BY THE WEAPON YOU ARE CARRYING AND WE ONLY NEED TO USE JAB AND THE SPELLID AND ICON WILL CHANGE.
-
-
-        private static readonly List<string> JabSpellList = new List<string> { "Jab", "Club", "Slice", "Sever", "Pike", "Clobber" };
-
-        private static bool RisingSunKickCoolDown
-        {
-            get { return Spell.SpellCooldown("Rising Sun Kick").TotalSeconds > 40.0; }
+        private static Composite HandleFlyingUnits			        
+        {		
+            get		
+            {		
+               //Shoot flying targets		
+               return new Decorator(
+                    ret => StyxWoW.Me.CurrentTarget != null && (StyxWoW.Me.CurrentTarget.IsFlying || StyxWoW.Me.CurrentTarget.Distance2DSqr < 5 * 5 && Math.Abs(StyxWoW.Me.Z - StyxWoW.Me.CurrentTarget.Z) >= 5) && CLUSettings.Instance.EnableMovement,
+	                    new PrioritySelector(		
+                       Spell.ChannelSpell("Crackling Jade Lightning", ret => true, "Crackling Jade Lightning")));		
+            }		
         }
+
 
         public override Composite SingleRotation
         {
@@ -121,6 +120,8 @@ Credits: alxaw , Kbrebel04
                         new PrioritySelector(
                             Spell.CastSpell("Disable", ret => Me.CurrentEnergy >= 15 && (Me.CurrentTarget.IsPlayer || Me.CurrentTarget.Fleeing) && Me.CurrentTarget.MovementInfo.RunSpeed > 3.5, "Disable")
                             )),
+
+                    HandleFlyingUnits,
 
                     //Cooldowns
                     new Decorator(
@@ -167,7 +168,18 @@ Credits: alxaw , Kbrebel04
 
         public override Composite Pull
         {
-            get { return new PrioritySelector(); }
+            get
+            {
+                return new PrioritySelector(
+                    new Decorator(ret => CLUSettings.Instance.EnableMovement,
+                        new PrioritySelector(
+                            Spell.CastSpell("Flying Serpent Kick", ret => !CLU.IsMounted && (Me.CurrentTarget != null && Me.CurrentTarget.DistanceSqr >= 10 * 10), "Flying Serpent Kick"),
+                            Spell.CastSpell("Provoke", ret => !CLU.IsMounted && (Me.CurrentTarget != null && Me.CurrentTarget.DistanceSqr >= 8 * 8), "Provoke"),
+                            Spell.CastSpell("Roll", ret => !CLU.IsMounted && (Me.CurrentTarget != null && Me.CurrentTarget.DistanceSqr >= 10 * 10), "Roll"),
+                            this.SingleRotation)),
+                    this.SingleRotation
+                    );
+            }
         }
 
         public override Composite Medic
