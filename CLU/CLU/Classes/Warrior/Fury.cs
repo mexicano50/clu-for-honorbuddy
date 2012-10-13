@@ -81,6 +81,8 @@ Credits: kbrebel04
             }
         }
 
+        private static bool ColossusSmashBloodthirstCooldown { get { return Spell.SpellCooldown("Colossus Smash").TotalSeconds > 1 && Spell.SpellCooldown("Bloodthirst").TotalSeconds > 1; } }
+       
         public override Composite SingleRotation
         {
             get
@@ -110,11 +112,10 @@ Credits: kbrebel04
                                     Spell.CastSelfSpell("Berserker Rage",       ret => Me.CurrentTarget != null && !(Buff.PlayerHasActiveBuff("Enrage") || (Buff.PlayerCountBuff("Raging Blow!") == 2 && Me.CurrentTarget.HealthPercent >= 20)) && Me.CurrentTarget.IsWithinMeleeRange, "Berserker Rage"),
                                     Spell.CastSelfSpell("Deadly Calm",          ret => CLUSettings.Instance.Warrior.UseDeadlyCalm && Unit.UseCooldowns() && Me.CurrentRage >= 40 && (CLUSettings.Instance.UseAoEAbilities && Unit.EnemyUnits.Count() < 4 || !CLUSettings.Instance.UseAoEAbilities), "Deadly Calm"),
                                     Spell.CastSelfSpell("Skull Banner",         ret => Me.CurrentTarget != null && Unit.UseCooldowns(), "Skull Banner"),
-                                    // TODO: add support for Skull Banner
                                     //AoE
-                                    Spell.CastSpell("Raging Blow",              ret => Me.HasAura(131116) && Buff.PlayerCountBuff ("Meat Cleaver") > 2, "Raging Blow AoE"), //Buff.PlayerHasActiveBuff("Raging Blow!")
-                                    Spell.CastSpell("Whirlwind",                ret => Me.CurrentTarget != null && Unit.EnemyUnits.Count() > 3 && CLUSettings.Instance.UseAoEAbilities && Spell.SpellOnCooldown("Bloodthirst") && Spell.SpellOnCooldown("Colossus Smash") && Me.CurrentRage >= (TalentManager.HasGlyph("Unending Rage") ? 60 : 80) && (Buff.PlayerCountBuff("Meat Cleaver") < 3 || Buff.PlayerCountBuff("Meat Cleaver") > 2 && !Buff.PlayerHasActiveBuff("Raging Blow!")), "Whirlwind"),
-									Spell.CastSpell("Cleave",                   ret => Me.CurrentTarget != null && Unit.EnemyUnits.Count() > 1 && Unit.EnemyUnits.Count() < 4 && CLUSettings.Instance.UseAoEAbilities && Spell.SpellOnCooldown("Bloodthirst") && Spell.SpellOnCooldown("Colossus Smash") && !Buff.PlayerHasActiveBuff("Raging Blow!") && (Me.CurrentRage >= (TalentManager.HasGlyph("Unending Rage") ? 60 : 80) || Buff.PlayerHasBuff("Deadly Calm") && Me.CurrentRage >= (TalentManager.HasGlyph("Unending Rage") ? 60 : 40)), "Cleave"),
+                                    Spell.CastSpell("Raging Blow",              ret => Me.HasAura(131116) && Buff.PlayerCountBuff("Meat Cleaver") > 2, "Raging Blow AoE"), //Buff.PlayerHasActiveBuff("Raging Blow!")
+                                    Spell.CastAreaSpell("Whirlwind", 8, false, 4, 0.0, 0.0, a => ColossusSmashBloodthirstCooldown && Me.CurrentRage >= (TalentManager.HasGlyph("Unending Rage") ? 60 : 80) && (Buff.PlayerCountBuff("Meat Cleaver") < 3 || Buff.PlayerCountBuff("Meat Cleaver") > 2 && !Buff.PlayerHasActiveBuff("Raging Blow!")), "Whirlwind"),
+                                    Spell.CastSpell("Cleave",                   ret => Me.CurrentTarget != null && Unit.EnemyUnits.Count() > 1 && Unit.EnemyUnits.Count() < 4 && CLUSettings.Instance.UseAoEAbilities && ColossusSmashBloodthirstCooldown && !Buff.PlayerHasActiveBuff("Raging Blow!") && (Me.CurrentRage >= (TalentManager.HasGlyph("Unending Rage") ? 60 : 80) || Buff.PlayerHasBuff("Deadly Calm") && Me.CurrentRage >= (TalentManager.HasGlyph("Unending Rage") ? 60 : 40)), "Cleave"),
                                     //Single Target
                                     Spell.CastSpell("Bloodthirst",              ret => true, "Bloodthirst"),
                                     Spell.CastSpell("Colossus Smash",           ret => true, "Colossus Smash"),
