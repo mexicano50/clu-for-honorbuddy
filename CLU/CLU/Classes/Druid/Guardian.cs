@@ -11,6 +11,7 @@
 #endregion
 
 using CLU.Lists;
+using CLU.Managers;
 using CLU.Settings;
 using CommonBehaviors.Actions;
 using Styx.TreeSharp;
@@ -117,23 +118,30 @@ NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagr
 
         public override Composite Medic
         {
-            get {
+            get
+            {
                 return new Decorator(
-                           ret => Me.HealthPercent < 100 && CLUSettings.Instance.EnableSelfHealing,
-                           new PrioritySelector(
-                               new Decorator(
-                                   ret => Buff.PlayerHasBuff("Bear Form"),
-                                   new PrioritySelector(
-                                       Spell.CastSelfSpell("Frenzied Regeneration",   ret => Me.HealthPercent <= 25 && !Buff.PlayerHasBuff("Survival Instincts"), "Frenzied Regeneration"),
-                                       Spell.CastSelfSpell("Survival Instincts",      ret => Me.HealthPercent <= 40 && !Buff.PlayerHasBuff("Frenzied Regeneration"), "Survival Instincts"),
-                                       Spell.CastSelfSpell("Barkskin",                ret => Me.HealthPercent <= 80, "Barkskin"),
-                                       Item.UseBagItem("Healthstone",                 ret => Me.HealthPercent < 40, "Healthstone"))),
-                               new Decorator(
-                                   ret => Buff.PlayerHasBuff("Cat Form"),
-                                   new PrioritySelector(
-                                       Spell.CastSelfSpell("Survival Instincts",      ret => Me.HealthPercent <= 40, "Survival Instincts"),
-                                       Spell.CastSelfSpell("Barkskin",                ret => Me.HealthPercent <= 80, "Barkskin"),
-                                       Item.UseBagItem("Healthstone",                 ret => Me.HealthPercent < 40, "Healthstone")))));
+                    ret => Me.HealthPercent < 100 && CLUSettings.Instance.EnableSelfHealing,
+                    new PrioritySelector(
+                        new Decorator(
+                            ret => Buff.PlayerHasBuff("Bear Form"),
+                            new PrioritySelector(
+                                Spell.CastSelfSpell("Frenzied Regeneration", ret => Me.HealthPercent <= 25 && !Buff.PlayerHasBuff("Survival Instincts"), "Frenzied Regeneration"),
+                                Spell.CastSelfSpell("Survival Instincts", ret => Me.HealthPercent <= 40 && !Buff.PlayerHasBuff("Frenzied Regeneration"), "Survival Instincts"),
+                                Spell.CastSelfSpell("Renewal", ret => TalentManager.HasTalent(5) && Me.HealthPercent <= 60, "Renewal"),
+                                Spell.CastSelfSpell("Might of Ursoc", ret => Me.HealthPercent <= 50, "Might of Ursoc"),
+                                Spell.CastSelfSpell("Barkskin", ret => Me.HealthPercent <= 80, "Barkskin"),
+                                Item.UseBagItem("Healthstone", ret => Me.HealthPercent < 40, "Healthstone"))),
+                        new Decorator(
+                            ret => Buff.PlayerHasBuff("Cat Form"),
+                            new PrioritySelector(
+                                Spell.CastSelfSpell("Healing Touch", ret => Me.HasMyAura("Predatory Swiftness"), "Free Healing Touch!!"),
+                                Spell.CastSelfSpell("Barkskin", ret => Me.HealthPercent <= 80, "Barkskin"),
+                                Spell.CastSelfSpell("Renewal", ret => TalentManager.HasTalent(5) && Me.HealthPercent <= 60, "Renewal"),
+                                Spell.CastSelfSpell("Might of Ursoc", ret => Me.HealthPercent <= 50, "Might of Ursoc"),
+                                Spell.CastSelfSpell("Survival Instincts", ret => Me.HealthPercent <= 40, "Survival Instincts"),
+                                Spell.CastSelfSpell("Barkskin", ret => Me.HealthPercent <= 80, "Barkskin"),
+                                Item.UseBagItem("Healthstone", ret => Me.HealthPercent < 40, "Healthstone")))));
             }
         }
 

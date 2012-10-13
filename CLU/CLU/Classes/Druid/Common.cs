@@ -198,7 +198,7 @@ namespace CLU.Classes.Druid
                          ret => CLUSettings.Instance.EnableMovement,
                                new PrioritySelector(
                                    Spell.CastSelfSpell("Bear Form", ret => TalentManager.CurrentSpec == WoWSpec.DruidGuardian && !Buff.PlayerHasBuff("Bear Form"), "Bear Form"),
-                                   Spell.CastSelfSpell("Cat Form", ret => TalentManager.CurrentSpec == WoWSpec.DruidFeral && !Buff.PlayerHasBuff("Cat Form"), "Cat Form")));
+                                   Spell.CastSelfSpell("Cat Form", ret => TalentManager.CurrentSpec == WoWSpec.DruidFeral && !Buff.PlayerHasBuff("Cat Form") && !Buff.PlayerHasBuff("Might of Ursoc"), "Cat Form")));
             }
         }
 

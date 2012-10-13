@@ -112,23 +112,22 @@ CREDITS TO: HandNavi - because he owns the business.
                         new Decorator(
                             ret => Buff.PlayerHasBuff("Bear Form"),
                             new PrioritySelector(
-                                Spell.CastSelfSpell("Frenzied Regeneration",
-                                                    ret =>
-                                                    Me.HealthPercent <= 25 && !Buff.PlayerHasBuff("Survival Instincts"),
-                                                    "Frenzied Regeneration"),
-                                Spell.CastSelfSpell("Survival Instincts",
-                                                    ret =>
-                                                    Me.HealthPercent <= 40 &&
-                                                    !Buff.PlayerHasBuff("Frenzied Regeneration"), "Survival Instincts"),
-                                Spell.CastSelfSpell("Barkskin", ret => Me.HealthPercent <= 80, "Barkskin"),
-                                Item.UseBagItem("Healthstone", ret => Me.HealthPercent < 40, "Healthstone"))),
+                                Spell.CastSelfSpell("Frenzied Regeneration",    ret => Me.HealthPercent <= 25 && !Buff.PlayerHasBuff("Survival Instincts"), "Frenzied Regeneration"),
+                                Spell.CastSelfSpell("Survival Instincts",       ret => Me.HealthPercent <= 40 && !Buff.PlayerHasBuff("Frenzied Regeneration"), "Survival Instincts"),
+                                Spell.CastSelfSpell("Renewal",                  ret => TalentManager.HasTalent(5) && Me.HealthPercent <= 60, "Renewal"),
+                                Spell.CastSelfSpell("Might of Ursoc",           ret => Me.HealthPercent <= 50, "Might of Ursoc"),
+                                Spell.CastSelfSpell("Barkskin",                 ret => Me.HealthPercent <= 80, "Barkskin"),
+                                Item.UseBagItem("Healthstone",                  ret => Me.HealthPercent < 40, "Healthstone"))),
                         new Decorator(
                             ret => Buff.PlayerHasBuff("Cat Form"),
                             new PrioritySelector(
-                                Spell.CastSelfSpell("Survival Instincts", ret => Me.HealthPercent <= 40,
-                                                    "Survival Instincts"),
-                                Spell.CastSelfSpell("Barkskin", ret => Me.HealthPercent <= 80, "Barkskin"),
-                                Item.UseBagItem("Healthstone", ret => Me.HealthPercent < 40, "Healthstone")))));
+                                //Spell.CastSelfSpell("Healing Touch", ret => Me.HasMyAura("Predatory Swiftness"), "Free Healing Touch!!"), //TODO: Not used as PS buff is used throughout the main rotation.
+                                Spell.CastSelfSpell("Barkskin",                 ret => Me.HealthPercent <= 80, "Barkskin"),
+                                Spell.CastSelfSpell("Renewal",                  ret => TalentManager.HasTalent(5) && Me.HealthPercent <= 60, "Renewal"),
+                                Spell.CastSelfSpell("Might of Ursoc",           ret => Me.HealthPercent <= 50, "Might of Ursoc"),
+                                Spell.CastSelfSpell("Survival Instincts",       ret => Me.HealthPercent <= 40,"Survival Instincts"),
+                                Spell.CastSelfSpell("Barkskin",                 ret => Me.HealthPercent <= 80, "Barkskin"),
+                                Item.UseBagItem("Healthstone",                  ret => Me.HealthPercent < 40, "Healthstone")))));
             }
         }
 
