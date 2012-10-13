@@ -11,6 +11,7 @@
 #endregion
 
 using System;
+using CLU.Settings;
 
 namespace CLU.Classes.Warrior
 {
@@ -30,7 +31,7 @@ namespace CLU.Classes.Warrior
             {
                 //Shoot flying targets
                 return new Decorator(
-                      ret => StyxWoW.Me.CurrentTarget.IsFlying || StyxWoW.Me.CurrentTarget.Distance2DSqr < 5 * 5 && Math.Abs(StyxWoW.Me.Z - StyxWoW.Me.CurrentTarget.Z) >= 5,
+                      ret => StyxWoW.Me.CurrentTarget != null && (StyxWoW.Me.CurrentTarget.IsFlying || StyxWoW.Me.CurrentTarget.Distance2DSqr < 5 * 5 && Math.Abs(StyxWoW.Me.Z - StyxWoW.Me.CurrentTarget.Z) >= 5) && CLUSettings.Instance.EnableMovement,
                       new PrioritySelector(
                           Spell.CastSpell("Heroic Throw", ret => true, "Heroic Throw"),
                           Spell.CastSpell("Throw", ret => true, "Throw")));
