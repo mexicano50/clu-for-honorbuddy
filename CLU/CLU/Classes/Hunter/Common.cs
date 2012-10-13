@@ -70,9 +70,11 @@ namespace CLU.Classes.Hunter
         /// </summary>
         public static Composite HandleMisdirection()
         {
-            return new Decorator(ret => CLUSettings.Instance.Hunter.UseMisdirection,
-                        new PrioritySelector(
-                            Spell.CastSpell("Misdirection", u => Unit.BestMisdirectTarget, ret => Me.CurrentTarget != null && !Buff.PlayerHasBuff("Misdirection") && Me.CurrentTarget.ThreatInfo.RawPercent > 90, "Misdirection")));
+            WoWPlayer MisdirectTarget = null;
+            return new Decorator(ret => CLUSettings.Instance.Hunter.UseMisdirection,        
+                new PrioritySelector(
+                    ctx => MisdirectTarget = Unit.BestMisdirectTarget as WoWPlayer,
+                            Spell.CastSpell("Misdirection", u => MisdirectTarget, ret => MisdirectTarget != null && MisdirectTarget.IsAlive && !MisdirectTarget.IsHostile && MisdirectTarget.IsInMyParty && Me.CurrentTarget != null && !Buff.PlayerHasBuff("Misdirection") && Me.CurrentTarget.ThreatInfo.RawPercent > 90, "Misdirection")));
         }
 
         /// <summary>

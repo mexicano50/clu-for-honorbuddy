@@ -97,7 +97,9 @@ namespace CLU.Classes.Rogue
         {
             get
             {
+                WoWPlayer TricksTarget = null;
                 return new PrioritySelector(
+                    ctx => TricksTarget = Unit.BestTricksTarget as WoWPlayer,
                             // Pause Rotation
                            new Decorator(ret => CLUSettings.Instance.PauseRotation, new ActionAlwaysSucceed()),
 
@@ -138,8 +140,7 @@ namespace CLU.Classes.Rogue
                                    Spell.CastInterupt("Kick",               ret => true, "Kick"),
                                    Spell.CastSpell("Arcane Torrent",        ret => Me.CurrentEnergy <= 50, "Arcane Torrent"),
                                    Spell.CastSpell("Redirect",              ret => Me.RawComboPoints > 0 && Me.ComboPoints < 1, "Redirect"),
-                                   Spell.CastSpell("Tricks of the Trade", u => Unit.BestTricksTarget, ret => Me.CurrentEnergy >= 60 && Me.ComboPoints < 5 && (!Buff.PlayerHasBuff("Stealth") && Spell.SpellCooldown("Premeditation").TotalSeconds < 4 && !Spell.SpellOnCooldown("Shadow Dance") || !Buff.PlayerHasBuff("Stealth") && !Spell.SpellOnCooldown("Premeditation") && !Spell.SpellOnCooldown("Shadow Dance")), "Tricks of the Trade"),
-                                    //Spell.CastSpell("Tricks of the Trade", u => Unit.BestTricksTarget, ret => Buff.PlayerHasActiveBuff("Shadow Dance"), "Tricks of the Trade"),
+                                   Spell.CastSpell("Tricks of the Trade", u => TricksTarget, ret => TricksTarget != null && TricksTarget.IsAlive && !TricksTarget.IsHostile && TricksTarget.IsInMyParty && CLUSettings.Instance.Rogue.UseTricksOfTheTrade && Me.CurrentEnergy >= 60 && Me.ComboPoints < 5 && (!Buff.PlayerHasBuff("Stealth") && Spell.SpellCooldown("Premeditation").TotalSeconds < 4 && !Spell.SpellOnCooldown("Shadow Dance") || !Buff.PlayerHasBuff("Stealth") && !Spell.SpellOnCooldown("Premeditation") && !Spell.SpellOnCooldown("Shadow Dance")), "Tricks of the Trade"),
                                    Spell.CastSpell("Garrote",               ret => Me.CurrentTarget != null && Me.ComboPoints <= 4 && Buff.PlayerHasBuff("Stealth") && !Buff.TargetHasDebuff("Rupture") && !Buff.TargetHasDebuff("Garrote"), "Garrote"),
                                    Spell.CastSpell("Shadow Dance",          ret => Me.CurrentEnergy >= 60 && Me.ComboPoints < 5 && (!Buff.PlayerHasBuff("Stealth") && Spell.SpellCooldown("Premeditation").TotalSeconds < 4 || !Buff.PlayerHasBuff("Stealth") && Spell.SpellCooldown("Premeditation").TotalSeconds < 4), "Shadow Dance"),
                                    Spell.CastSpell("Vanish",                ret => Me.CurrentEnergy >= 60 && Me.ComboPoints <= 1 && !Buff.PlayerHasActiveBuff("Shadow Dance") && !Buff.PlayerHasActiveBuff("Master of Subtlety") && !Buff.TargetHasDebuff("Find Weakness") && !Buff.PlayerHasActiveBuff("Vanish") && !Spell.SpellOnCooldown("Premeditation"), "Vanish"),
@@ -172,7 +173,7 @@ namespace CLU.Classes.Rogue
                                    Spell.CastSpell("Feint",                 ret => Me.CurrentTarget != null && (Me.CurrentTarget.ThreatInfo.RawPercent > 80 || EncounterSpecific.IsMorchokStomp()), "Feint"),
                                    Spell.CastInterupt("Kick",               ret => true, "Kick"),
                                    Spell.CastSpell("Redirect",              ret => Me.RawComboPoints > 0 && Me.ComboPoints < 1, "Redirect"),
-                    // Spell.CastAreaSpell("Fan of Knives", 8, false, CLUSettings.Instance.Rogue.SubtletyFanOfKnivesCount, 0.0, 0.0, ret => true, "Fan of Knives"),
+                                   // Spell.CastAreaSpell("Fan of Knives", 8, false, CLUSettings.Instance.Rogue.SubtletyFanOfKnivesCount, 0.0, 0.0, ret => true, "Fan of Knives"),
                                    Spell.CastSpell("Tricks of the Trade", u => Unit.BestTricksTarget, ret => CLUSettings.Instance.Rogue.UseTricksOfTheTrade, "Tricks of the Trade"),
                                    Spell.CastSpell("Shadow Dance",          ret => Me.CurrentEnergy > 85 && Me.ComboPoints < 5 && (!Buff.PlayerHasActiveBuff("Vanish") || !Buff.PlayerHasActiveBuff("Stealth")), "Shadow Dance"),
                                    Spell.CastSpell("Vanish",                ret => Me.CurrentEnergy > 60 && Me.ComboPoints <= 1 && Spell.SpellCooldown("Shadowstep").TotalSeconds <= 0 && !Buff.PlayerHasActiveBuff("Shadow Dance") && !Buff.PlayerHasActiveBuff("Master of Subtlety") && !Buff.TargetHasDebuff("Find Weakness"), "Vanish"),
