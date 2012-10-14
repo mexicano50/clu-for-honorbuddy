@@ -154,6 +154,7 @@ namespace CLU.Lists
 			84945, 		// Malevolent Gladiator's Medallion of Tenacity - Alliance -  (Removes all movement impairing effects and all effects which cause loss of control of your character.)             
             79329, 		// Relic of Niuzao	Darkmoon Ox Deck (Dodge)
             89080, 		// Scroll of Revered Ancestors (spirit)
+            81263,      // Flashfrozen Resin Globule
             // 6948, // hearthstone...to initialize the list of no trinket found
             // 39769, //test
         };
