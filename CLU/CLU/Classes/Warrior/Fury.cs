@@ -136,7 +136,20 @@ Credits: kbrebel04
 
         public override Composite Pull
         {
-            get { return this.SingleRotation; }
+            get
+            {
+                return new PrioritySelector(
+                    new Decorator(ret => CLUSettings.Instance.EnableMovement,
+                        new PrioritySelector(
+                            Spell.CastSpell("Charge", ret => !CLU.IsMounted && (Me.CurrentTarget != null && Me.CurrentTarget.DistanceSqr >= 10 * 10), "Flying Serpent Kick"),
+                            Spell.CastOnUnitLocation("Heroic Leap", ret => Me.CurrentTarget, ret => Me.CurrentTarget != null &&
+                                Me.CurrentTarget.DistanceSqr > 3.2 * 3.2 &&
+                                SpellManager.Spells["Charge"].CooldownTimeLeft.Seconds > 1 &&
+                                SpellManager.Spells["Charge"].CooldownTimeLeft.Seconds < 18, "Heroic Leap"),
+                            this.SingleRotation)),
+                    this.SingleRotation
+                    );
+            }
         }
 
         public override Composite Medic
@@ -146,7 +159,7 @@ Credits: kbrebel04
                 return new Decorator(
                     ret => Me.HealthPercent < 100 && CLUSettings.Instance.EnableSelfHealing,
                     new PrioritySelector(
-                        //Spell.CastSpell("Impending Victory",            ret => Me.CurrentTarget != null && !WoWSpell.FromId(103840).Cooldown && TalentManager.HasTalent(6) && Me.CurrentTarget.HealthPercent >= 20, "Impending Victory"),
+                        Spell.CastSpell("Victory Rush", onUnit => Me, ret => Buff.PlayerHasActiveBuff("Victorious") && Me.HealthPercent < CLUSettings.Instance.Warrior.ImpendingVictoryPercent, "Victory Rush or Impending Victory"),
                         Spell.CastSelfSpell("Enraged Regeneration",     ret => Me.HealthPercent < 45 && !Buff.PlayerHasBuff("Rallying Cry"), "Enraged Regeneration"),
                         Spell.CastSelfSpell("Rallying Cry",             ret => Me.HealthPercent < 45 && !Buff.PlayerHasBuff("Enraged Regeneration"), "Rallying Cry"),
                         Item.UseBagItem("Healthstone",                  ret => Me.HealthPercent < 40 && !Buff.PlayerHasBuff("Rallying Cry") && !Buff.PlayerHasBuff("Enraged Regeneration"), "Healthstone")));

@@ -65,7 +65,12 @@ namespace CLU.Settings
             set;
         }
 
-
+        [Setting]
+        [DefaultValue(80)]
+        [Category("Common")]
+        [DisplayName("Impending Victory Percent")]
+        [Description("Will use Impending Victory or Victory Rush when health percent is less than or equal to the set value")]
+        public int ImpendingVictoryPercent { get; set; }
 
         [Setting]
         [DefaultValue(true)]
@@ -183,13 +188,6 @@ namespace CLU.Settings
         [DisplayName("Shield Barrier Percent")]
         [Description("Will use Shield Barrier when health percent is less than or equal to the set value")]
         public int ShieldBarrierPercent { get; set; }
-
-        [Setting]
-        [DefaultValue(80)]
-        [Category("Protection")]
-        [DisplayName("Impending Victory Percent")]
-        [Description("Will use Impending Victory when health percent is less than or equal to the set value")]
-        public int ImpendingVictoryPercent { get; set; }
 
         [Setting]
         [DefaultValue(40)]
