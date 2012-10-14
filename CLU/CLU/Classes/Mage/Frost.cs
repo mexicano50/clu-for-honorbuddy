@@ -123,6 +123,7 @@ namespace CLU.Classes.Mage
                             // Interupts & Steal Buffs
                            Spell.CastSpell("Spellsteal", ret => Spell.TargetHasStealableBuff() && !Me.IsMoving, "[Steal] Spellsteal"),
                            Spell.CastInterupt("Counterspell", ret => true, "Counterspell"),
+                           Spell.CastSpell("Blazing Speed", unit => Me, ret => Me.MovementInfo.ForwardSpeed < 8.05 && Me.IsMoving && TalentManager.HasTalent(5) && CLUSettings.Instance.EnableMovement, "Blazing Speed"),
                            Item.RunMacroText("/cast Conjure Mana Gem", ret => !Item.HaveManaGem() && Me.Level > 50, "Conjure Mana Gem"),
 
                            // Rune of Power
@@ -196,6 +197,7 @@ namespace CLU.Classes.Mage
                            ret => !Me.Mounted && !Me.IsDead && !Me.Combat && !Me.IsFlying && !Me.IsOnTransport && !Me.HasAura("Food") && !Me.HasAura("Drink"),
                            new PrioritySelector(
                                PetManager.CastPetSummonSpell("Summon Water Elemental", ret => !Me.GotAlivePet, "Calling Pet Water Elemental"),
+                               Spell.CastSpell("Blazing Speed", unit => Me, ret => Me.MovementInfo.ForwardSpeed < 8.05 && Me.IsMoving && TalentManager.HasTalent(5) && CLUSettings.Instance.EnableMovement, "Blazing Speed"),
                                Buff.CastBuff("Frost Armor", ret => true, "Frost Armor"),
                                //Buff.CastRaidBuff("Dalaran Brilliance",         ret => true, "Dalaran Brilliance"), //Commentet out as it is of no real importance except for 10yrd extra range.
                                Buff.CastRaidBuff("Arcane Brilliance", ret => true, "Arcane Brilliance"),

@@ -121,6 +121,7 @@ namespace CLU.Classes.Mage
                             // Interupts & Steal Buffs
                             Spell.CastSpell("Spellsteal", ret => Spell.TargetHasStealableBuff() && !Me.IsMoving, "[Steal] Spellsteal"),
                             Spell.CastInterupt("Counterspell", ret => true, "Counterspell"),
+                            Spell.CastSpell("Blazing Speed", unit => Me, ret => Me.MovementInfo.ForwardSpeed < 8.05 && Me.IsMoving && TalentManager.HasTalent(5) && CLUSettings.Instance.EnableMovement, "Blazing Speed"),
                             // Cooldowns
                             Spell.ChannelSelfSpell("Evocation",             ret => Me.ManaPercent < 35 && !Me.IsMoving, "Evocation"),
                             Item.UseBagItem("Mana Gem",                     ret => Me.CurrentTarget != null && Me.ManaPercent < 90 && CLUSettings.Instance.UseCooldowns, "Mana Gem"),
@@ -181,6 +182,7 @@ namespace CLU.Classes.Mage
                 return new Decorator(
                            ret => !Me.Mounted && !Me.IsDead && !Me.Combat && !Me.IsFlying && !Me.IsOnTransport && !Me.HasAura("Food") && !Me.HasAura("Drink"),
                            new PrioritySelector(
+                               Spell.CastSpell("Blazing Speed", unit => Me, ret => Me.MovementInfo.ForwardSpeed < 8.05 && Me.IsMoving && TalentManager.HasTalent(5) && CLUSettings.Instance.EnableMovement, "Blazing Speed"),
                                Buff.CastBuff("Molten Armor",                   ret => true, "Molten Armor"),
                                //Buff.CastRaidBuff("Dalaran Brilliance",         ret => true, "Dalaran Brilliance"), //Commentet out as it is of no real importance except for 10yrd extra range.
                                Buff.CastRaidBuff("Arcane Brilliance",          ret => true, "Arcane Brilliance"),
