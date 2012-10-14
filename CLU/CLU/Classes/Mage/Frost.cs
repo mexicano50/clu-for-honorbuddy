@@ -118,25 +118,30 @@ namespace CLU.Classes.Mage
                                    Item.UseEngineerGloves())),
 
                            // Comment: Dont break Invinsibility!!
-                           new Decorator(
-                               x => Buff.PlayerHasBuff("Invisibility"), new Action(a => CLULogger.TroubleshootLog("Invisibility active"))),
+                           new Decorator(x => Buff.PlayerHasBuff("Invisibility"), new Action(a => CLULogger.TroubleshootLog("Invisibility active"))),
+
                             // Interupts & Steal Buffs
                            Spell.CastSpell("Spellsteal", ret => Spell.TargetHasStealableBuff() && !Me.IsMoving, "[Steal] Spellsteal"),
-                            // Rotation based on SimCraft - Build 15211
                            Spell.CastInterupt("Counterspell", ret => true, "Counterspell"),
                            Item.RunMacroText("/cast Conjure Mana Gem", ret => !Item.HaveManaGem() && Me.Level > 50, "Conjure Mana Gem"),
-                            //Added Frost Bomb or Nether Tempest 9-20-2012
+                           
+                           
+                           //Added Frost Bomb or Nether Tempest 9-20-2012
+                           Spell.CastSpell("Frostfire Bolt", ret => Buff.PlayerHasActiveBuff("Brain Freeze") && Buff.PlayerHasBuff("Alter Time"), "Frostfire Bolt (Brain Freeze & Alter Time)"),
                            Buff.CastDebuff("Mage Bomb", Magebombtalent, ret => true, "Frost Bomb or Nether Tempest"),
+                           
                            Spell.ChannelSelfSpell("Evocation",  ret => Me.ManaPercent < 40 && !Me.IsMoving && (Buff.PlayerHasActiveBuff("Icy Veins") || Buff.UnitHasHasteBuff(Me) || CLUSettings.Instance.EnableMovement), "Evocation"),
-                           Item.UseBagItem("Mana Gem", ret => Me.CurrentTarget != null && Me.ManaPercent < 90 && CLUSettings.Instance.UseCooldowns, "Mana Gem"),
+                           Item.UseBagItem("Mana Gem",          ret => Me.CurrentTarget != null && Me.ManaPercent < 90 && CLUSettings.Instance.UseCooldowns, "Mana Gem"),
                            Item.UseBagItem("Brilliant Mana Gem", ret => Me.CurrentTarget != null && Me.ManaPercent < 90 && CLUSettings.Instance.UseCooldowns, "Brilliant Mana Gem"),
                            Spell.CastSelfSpell("Cold Snap",     ret => Spell.SpellCooldown("Deep Freeze").TotalSeconds > 15 && Spell.SpellCooldown("Flame Orb").TotalSeconds > 30 && Spell.SpellCooldown("Icy Veins").TotalSeconds > 30, "Cold Snap"),
                             //Changed Fire Orb to Frozen Orb 9-20-2012
                            Spell.CastSpell("Frozen Orb",        ret => Me.CurrentTarget != null && Unit.UseCooldowns(), "Frozen Orb"),
                            Spell.CastSelfSpell("Mirror Image",  ret => Me.CurrentTarget != null && Unit.UseCooldowns(), "Mirror Image"),
                            Spell.CastSelfSpell("Icy Veins",     ret => !Buff.PlayerHasActiveBuff("Icy Veins") && !Buff.UnitHasHasteBuff(Me) && (Buff.PlayerCountBuff("Stolen Time") > 7 || Spell.SpellCooldown("Cold Snap").TotalSeconds < 22), "Icy Veins"),
+                           Buff.CastBuff("Alter Time",          ret => Unit.UseCooldowns() && Buff.PlayerHasActiveBuff("Brain Freeze") && Buff.PlayerHasActiveBuff("Fingers of Frost"), "Alter Time"),
                            Spell.CastSpell("Deep Freeze",       ret => Buff.PlayerHasActiveBuff("Fingers of Frost"), "Deep Freeze (Fingers of Frost)"),
                            Spell.CastSpell("Frostfire Bolt",    ret => Buff.PlayerHasActiveBuff("Brain Freeze"), "Frostfire Bolt (Brain Freeze)"),
+                           
                             // AoE
                            new Decorator(
                                ret => Me.CurrentTarget != null && !Me.IsMoving && Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 15) > 2,
@@ -144,7 +149,7 @@ namespace CLU.Classes.Mage
                                    Spell.CastOnUnitLocation("Flamestrike", u => Me.CurrentTarget, ret => Me.CurrentTarget != null && !Buff.TargetHasDebuff("Flamestrike") && !BossList.IgnoreAoE.Contains(Unit.CurrentTargetEntry) && Me.ManaPercent > 30 && Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 15) > 3, "Flamestrike"),
                                    Spell.ChannelAreaSpell("Blizzard", 11.0, true, 4, 0.0, 0.0, ret => Me.CurrentTarget != null && !BossList.IgnoreAoE.Contains(Unit.CurrentTargetEntry) && Me.ManaPercent > 30 && Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 15) > 3, "Blizzard")
                                )),
-                           PetManager.CastPetSpellAtLocation("Freeze", u => Me.CurrentTarget, ret => true, "Freeze (Pet)"),
+                            PetManager.CastPetSpellAtLocation("Freeze", u => Me.CurrentTarget, ret => true, "Freeze (Pet)"),
                            Spell.CastSpell("Ice Lance",         ret => Buff.PlayerCountBuff("Fingers of Frost") > 1, "Ice Lance"),
                             // PetSpellCooldown NOT returning correctly although it does return the correct value within the method, when you call it here it returns zero for some reason...still investigating
                             // K    ice_lance,if=buff.fingers_of_frost.react&pet.water_elemental.cooldown.freeze.remains<gcd

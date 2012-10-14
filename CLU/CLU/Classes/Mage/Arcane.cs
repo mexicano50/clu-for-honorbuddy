@@ -110,14 +110,19 @@ namespace CLU.Classes.Mage
                             Buff.CastBuff("Lifeblood", ret => true, "Lifeblood"), // Thanks Kink
                             Item.UseBagItem("Volcanic Potion", ret => Buff.UnitHasHasteBuff(Me), "Volcanic Potion Heroism/Bloodlust"),
                             Item.UseEngineerGloves())),
+
                     // Comment: Dont break Invinsibility!!
-                    new Decorator(
-                        x => Buff.PlayerHasBuff("Invisibility"),
-                        new Action(a => CLULogger.TroubleshootLog("Invisibility active"))),
+                    new Decorator(x => Buff.PlayerHasBuff("Invisibility"), new Action(a => CLULogger.TroubleshootLog("Invisibility active"))),
                     // Interupts & Steal Buffs
                     Spell.CastSpell("Spellsteal", ret => Spell.TargetHasStealableBuff() && !Me.IsMoving, "[Steal] Spellsteal"),
                     Spell.CastInterupt("Counterspell", ret => true, "Counterspell"),
                     // Cooldowns
+                    Buff.CastBuff("Alter Time", ret => Unit.UseCooldowns() && Buff.PlayerHasBuff("Arcane Power") && Buff.GetAuraStack(Me, "Arcane Missiles!", true) == 2 && Buff.GetAuraStack(Me, "Arcane Charge", true) > 3, "Alter Time"),
+                    
+                    // Rune of Power - Needs testing at 90
+                    Spell.CastOnUnitLocation("Rune of Power", unit => Me, ret => !Buff.PlayerHasBuff("Rune of Power"),"Rune of Power"),
+                    // Rune of Power - Needs testing at 90
+
                     Spell.ChannelSelfSpell("Evocation", ret => Me.ManaPercent < 35 && !Me.IsMoving, "Evocation"),
                     Item.UseBagItem("Mana Gem", ret => Me.CurrentTarget != null && Me.ManaPercent < 90 && CLUSettings.Instance.UseCooldowns, "Mana Gem"),
                     Item.UseBagItem("Brilliant Mana Gem", ret => Me.CurrentTarget != null && Me.ManaPercent < 90 && CLUSettings.Instance.UseCooldowns, "Brilliant Mana Gem"),
@@ -139,9 +144,11 @@ namespace CLU.Classes.Mage
                     //Damage
                     //Tier5 Talent
                     Buff.CastDebuff("Mage Bomb", Magebombtalent, ret => true, "Frost/Living Bomb or Nether Tempest"),
+                    Spell.CastSpell("Fire Blast",        ret => Me.IsMoving, "Fire Blast (Moving)"),
+                    Spell.CastSpell("Ice Lance",         ret => Me.IsMoving, "Ice Lance (Moving)") , 
                     Spell.CastSpell("Arcane Missiles", ret => Buff.GetAuraStack(Me, "Arcane Missiles!", true) == 2 || Buff.GetAuraStack(Me, "Arcane Charge", true) >= 5, "Arcane Missles"),
                     Spell.CastSpell("Arcane Barrage", ret => Buff.GetAuraStack(Me, "Arcane Charge", true) > 4, "Arcane Barrage"),
-                    Spell.CastSpell("Arcane Blast", ret => Buff.GetAuraStack(Me, "Arcane Charge", true) < 6,"Arcane Blast")
+                    Spell.CastSpell("Arcane Blast", ret => Buff.GetAuraStack(Me, "Arcane Charge", true) < 6,"Arcane Blast")    
                     );
             }
         }
