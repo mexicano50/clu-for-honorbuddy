@@ -128,7 +128,11 @@ namespace CLU.Classes.Mage
                             Spell.CastSelfSpell("Mirror Image",             ret => Unit.UseCooldowns(), "Mirror Image"),
                             Spell.CastSelfSpell("Presence of Mind",         ret => !Buff.PlayerHasBuff("Invisibility") && !Buff.PlayerHasBuff("Alter Time"), "Presence of Mind"),
                             Spell.CastSelfSpell("Arcane Power",             ret => Me.CurrentTarget != null && Buff.PlayerHasBuff("Improved Mana Gem") || Unit.UseCooldowns(), "Arcane Power"),
-                            Item.RunMacroText("/cast Conjure Mana Gem",     ret => Buff.PlayerHasBuff("Presence of Mind") && !Item.HaveManaGem() && Me.Level > 50, "Conjure Mana Gem"),                            
+                            Item.RunMacroText("/cast Conjure Mana Gem",     ret => Buff.PlayerHasBuff("Presence of Mind") && !Item.HaveManaGem() && Me.Level > 50, "Conjure Mana Gem"),
+
+                            // Rune of Power
+                            Spell.CastOnUnitLocation("Rune of Power", unit => Me, ret => !Buff.PlayerHasBuff("Rune of Power") && TalentManager.HasTalent(17), "Rune of Power"),
+                            
                             // AoE
                             new Decorator(
                                ret => !Me.IsMoving && Me.CurrentTarget != null && Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 15) >= CLUSettings.Instance.BurstOnMobCount && CLUSettings.Instance.UseAoEAbilities,

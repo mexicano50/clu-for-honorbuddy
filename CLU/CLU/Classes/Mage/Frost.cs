@@ -124,8 +124,10 @@ namespace CLU.Classes.Mage
                            Spell.CastSpell("Spellsteal", ret => Spell.TargetHasStealableBuff() && !Me.IsMoving, "[Steal] Spellsteal"),
                            Spell.CastInterupt("Counterspell", ret => true, "Counterspell"),
                            Item.RunMacroText("/cast Conjure Mana Gem", ret => !Item.HaveManaGem() && Me.Level > 50, "Conjure Mana Gem"),
-                           
-                           
+
+                           // Rune of Power
+                            Spell.CastOnUnitLocation("Rune of Power", unit => Me, ret => !Buff.PlayerHasBuff("Rune of Power") && TalentManager.HasTalent(17), "Rune of Power"),
+
                            //Added Frost Bomb or Nether Tempest 9-20-2012
                            Spell.CastSpell("Frostfire Bolt", ret => Buff.PlayerHasActiveBuff("Brain Freeze") && Buff.PlayerHasBuff("Alter Time"), "Frostfire Bolt (Brain Freeze & Alter Time)"),
                            Buff.CastDebuff("Mage Bomb", Magebombtalent, ret => true, "Frost Bomb or Nether Tempest"),
