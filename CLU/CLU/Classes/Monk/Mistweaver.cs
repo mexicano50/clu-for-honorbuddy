@@ -125,8 +125,8 @@ namespace CLU.Classes.Monk
                            //Spell.BreakMist(),
                                    
                            //Save my life
-                           Spell.CastSpecialSpell("Dampen Harm", ret => !SpellManager.Spells["Dampen Harm"].Cooldown && Me.HealthPercent < 40, "Dampen Harm  on me, emergency"),
-                           Spell.CastSpecialSpell("Expel Harm", ret => !SpellManager.Spells["Expel Harm"].Cooldown && Me.HealthPercent < 96, "Expel Harm  on me, emergency"),
+                           Spell.CastSpecialSpell("Dampen Harm", ret => Me.HealthPercent < 40, "Dampen Harm  on me, emergency"),
+                           Spell.CastSpecialSpell("Expel Harm", ret => Me.HealthPercent < 96, "Expel Harm  on me, emergency"),
                            //Spell.CastSpell(JabSpellList.Find(SpellManager.CanCast), ret => Buff.PlayerHasActiveBuff("Power Strikes"), "Jab"),                         
 
                            //Moar Mana
@@ -135,14 +135,14 @@ namespace CLU.Classes.Monk
 
                            //Save Tank's life
                            Healer.FindTank(a => true, x => x.ToUnit().InLineOfSight && !x.ToUnit().IsDead && x.HealthPercent < 65, (a, b) => (int)(a.CurrentHealth - b.CurrentHealth), "emergency heals on most injured tank",
-                                    Spell.CastHealSpecial("Life Cocoon", a => !SpellManager.Spells["Life Cocoon"].Cooldown && HealthCheck(25), "Life Cocoon"),
-                                    Spell.CastSpecialSpell("Thunder Focus Tea", ret => !SpellManager.Spells["Thunder Focus Tea"].Cooldown && HealthCheck(25) && Chi >= 4, "Tea Popped"),
+                                    Spell.CastHealSpecial("Life Cocoon", a => HealthCheck(25), "Life Cocoon"),
+                                    Spell.CastSpecialSpell("Thunder Focus Tea", ret => HealthCheck(25) && Chi >= 4, "Tea Popped"),
                                     Spell.CastHealSpecial("Soothing Mist", a => !HealTarget.HasMyAura("Soothing Mist"), "Soothing Mist (emergency)")
                            ),
 
                            //Save any other lives that need saving
                            Healer.FindRaidMember(a => true, x => x.ToUnit().InLineOfSight && !x.ToUnit().IsDead && x.HealthPercent < 65, (a, b) => (int)(a.CurrentHealth - b.CurrentHealth), "I'm fine and tanks are not dying => ensure nobody is REALLY low life",
-                                    Spell.CastSpecialSpell("Thunder Focus Tea", ret => !SpellManager.Spells["Thunder Focus Tea"].Cooldown && HealthCheck(25) && Chi >= 4, "Tea Popped"),
+                                    Spell.CastSpecialSpell("Thunder Focus Tea", ret => HealthCheck(25) && Chi >= 4, "Tea Popped"),
                                     Spell.CastHealSpecial("Soothing Mist", ret => !HealTarget.HasMyAura("Soothing Mist"), "Soothing Mist")
                            ),                           
 
@@ -156,7 +156,7 @@ namespace CLU.Classes.Monk
                            ),
                     
                            Healer.FindAreaHeal(a => true, 10, 75, 30f, (Me.GroupInfo.IsInRaid ? 3 : 2), "AOE Thunder Focus Tea: Avg: 10-75, 30yrds, count: 3 or 2",
-                                    Spell.CastSpecialSpell("Thunder Focus Tea", ret => !SpellManager.Spells["Thunder Focus Tea"].Cooldown && Buff.GroupCountBuff("Renewing Mist") >= 3 && Chi >= 3, "Tea Popped"),
+                                    Spell.CastSpecialSpell("Thunder Focus Tea", ret => Buff.GroupCountBuff("Renewing Mist") >= 3 && Chi >= 3, "Tea Popped"),
                                     Spell.CastSpecialSpell("Rushing Jade Wind", ret => SpellManager.CanCast("Rushing Jade Wind") && Chi >= 1, "Rushing Jade Wind"),
                                     Spell.CastSpecialSpell("Uplift", ret => Buff.GroupCountBuff("Renewing Mist") >= 3 && Chi >= 2 || TalentManager.HasGlyph("Uplift"), "Uplift")
                                     //Spell.CastSpell("Spinning Crane Kick", ret => Me.CurrentTarget, ret => Unit.EnemyUnits.Count() > 2, "Spinning Crane Kick")
