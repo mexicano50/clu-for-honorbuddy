@@ -11,6 +11,7 @@
 #endregion
 
 using CLU.Helpers;
+using Styx.WoWInternals;
 
 namespace CLU.Classes.DeathKnight
 {
@@ -103,22 +104,33 @@ namespace CLU.Classes.DeathKnight
         /// Of course we are checking we have a rune to refresh!
         /// </summary>
         /// <returns>true if we have Blood Plague and Frost Fever up and Outbreak is about to come off cooldown.</returns>
-        private static bool CanPlagueLeech()
+        private static bool CanPlagueLeech
         {
-            try
+            get
             {
-                return (Buff.TargetDebuffTimeLeft("Blood Plague").TotalSeconds < 1
-                        && Buff.TargetDebuffTimeLeft("Frost Fever").TotalSeconds < 1)
-                        && Spell.SpellCooldown("Outbreak").TotalSeconds < 1 
-                        && Buff.TargetHasDebuff("Blood Plague")
-                        && Buff.TargetHasDebuff("Frost Fever");
-            }
-            catch (Exception ex)
-            {
-                CLULogger.TroubleshootLog( "CanPlagueLeech : {0}", ex);
-            }
+                try
+                {
+                    if (!StyxWoW.Me.GotTarget)
+                        return false;
 
-            return false;
+                    WoWAura frostFever =
+                        StyxWoW.Me.CurrentTarget.GetAllAuras().FirstOrDefault(
+                            u => u.CreatorGuid == StyxWoW.Me.Guid && u.Name == "Frost Fever");
+                    WoWAura bloodPlague =
+                        StyxWoW.Me.CurrentTarget.GetAllAuras().FirstOrDefault(
+                            u => u.CreatorGuid == StyxWoW.Me.Guid && u.Name == "Blood Plague");
+                    // if there is 3 or less seconds left on the diseases and we have a fully depleted rune then return true.
+                    return frostFever != null && frostFever.TimeLeft <= TimeSpan.FromSeconds(3) ||
+                           bloodPlague != null && bloodPlague.TimeLeft <= TimeSpan.FromSeconds(3) &&
+                           ((BloodRuneSlotsActive == 0 || FrostRuneSlotsActive == 0) && UnholyRuneSlotsActive < 2);
+                }
+                catch (Exception ex)
+                {
+                    CLULogger.TroubleshootLog("CanPlagueLeech : {0}", ex);
+                }
+
+                return false;
+            }
         }
 
         /// <summary>
@@ -157,7 +169,7 @@ namespace CLU.Classes.DeathKnight
                     new PrioritySelector(
                     //Diseases -- The most important stuff for playing a Death Knight is keeping them up at all times
                     Spell.CastSpell("Blood Boil", ret => Buff.PlayerHasActiveBuff("Crimson Scourge"), "Blood Boil (Crimson Scourge)"),
-                    Spell.CastSpell("Plague Leech" , ret => CanPlagueLeech(), "Plague Leech"), // should be used just as your diseases are about to expire, and each time that you can refresh them right away with Outbreak
+                    Spell.CastSpell("Plague Leech" , ret => CanPlagueLeech, "Plague Leech"), // should be used just as your diseases are about to expire, and each time that you can refresh them right away with Outbreak
                     Spell.CastSpell("Outbreak"     , ret => Buff.TargetDebuffTimeLeft("Blood Plague").TotalSeconds < 0.5 ||Buff.TargetDebuffTimeLeft("Frost Fever").TotalSeconds < 0.5, "Outbreak"),
                     Buff.CastDebuff("Icy Touch",    ret => TalentManager.CurrentSpec != WoWSpec.DeathKnightFrost && Spell.SpellOnCooldown("Outbreak") && Buff.TargetDebuffTimeLeft("Frost Fever").TotalSeconds < 1, "Icy Touch for Frost Fever"),
                     Spell.CastSpell("Howling Blast", ret => TalentManager.CurrentSpec == WoWSpec.DeathKnightFrost && Spell.SpellOnCooldown("Outbreak") && Buff.TargetDebuffTimeLeft("Frost Fever").TotalSeconds < 1,"Howling Blast (Frost Fever)"),

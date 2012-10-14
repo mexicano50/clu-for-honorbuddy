@@ -115,7 +115,7 @@ namespace CLU.Classes.DeathKnight
                                new PrioritySelector(
                                     Common.ApplyDiseases(ret => Me.CurrentTarget),
                                     Common.SpreadDiseasesBehavior(ret => Me.CurrentTarget),
-                                    Spell.CastSpell("Howling Blast",    ret => Common.BloodRuneSlotsActive == 2 || Common.FrostRuneSlotsActive == 2 || (Common.BloodRuneSlotsActive == 2 || Common.FrostRuneSlotsActive == 2), "Howling Blast (Aoe)"),
+                                    Spell.CastSpell("Howling Blast",    ret => Me.FrostRuneCount + Me.DeathRuneCount > 0, "Howling Blast (Aoe)"),
                                     Spell.CastAreaSpell("Death and Decay", 10, true, 3, 0.0, 0.0, ret => Me.CurrentTarget != null && !BossList.IgnoreAoE.Contains(Unit.CurrentTargetEntry) && Me.UnholyRuneCount == 2 && !Me.IsMoving && !Me.CurrentTarget.IsMoving, "Death and Decay"),
                                     Spell.CastSpell("Frost Strike", ret => Me.CurrentRunicPower >= 90, "Frost Strike (Aoe)"),
                                     Spell.CastSpell("Obliterate",       ret => Common.UnholyRuneSlotsActive == 2 , "Obliterate (Aoe)"),
