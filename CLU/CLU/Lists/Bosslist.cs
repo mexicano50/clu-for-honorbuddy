@@ -185,6 +185,7 @@ namespace CLU.Lists
             32542, // 65 EPL
             32666, // 60
             30527, // ?? Boss one (no idea?)
+            67127, // MoP Trainings Dummy
         };
 
 

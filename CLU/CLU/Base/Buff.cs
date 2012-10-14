@@ -509,6 +509,23 @@ namespace CLU.Base
             return 0;
         }
 
+        /// <summary>Check the aura stack count thats created by the specified unit</summary>
+        /// <param name="unit">The unit to check auras for.</param>
+        /// <param name="auraId">The Id of the aura</param>
+        /// <param name="fromMyAura">True if you applied the aura</param>
+        /// <returns>The get aura stack.</returns>
+        public static uint GetAuraStack(WoWUnit unit, int auraId, bool fromMyAura)
+        {
+            if (unit != null)
+            {
+                var wantedAura = unit.GetAllAuras().FirstOrDefault(a => a.SpellId == auraId && a.StackCount > 0 && (!fromMyAura || a.CreatorGuid == Me.Guid));
+                return wantedAura != null ? wantedAura.StackCount : 0;
+            }
+
+            CLULogger.DiagnosticLog(" [GetAuraStack] Unit is null ");
+            return 0;
+        }
+
         /// <summary>
         /// Casts a specified debuff given specific conditions
         /// </summary>
