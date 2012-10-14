@@ -36,6 +36,8 @@ namespace CLU.Base
     {
         /* putting all the spell logic here */
 
+        public static string LastspellCast;
+
         /// <summary>
         /// known channeled spells. used as part of the isChannelled spell check method
         /// </summary>
@@ -361,7 +363,8 @@ namespace CLU.Base
                 },
             new Sequence(
                 new Action(a => CLULogger.Log(" [Casting] {0} on {1}", label, CLULogger.SafeName(onUnit(a)))),
-                new Action(a => SpellManager.Cast(name, onUnit(a)))));
+                new Action(a => SpellManager.Cast(name, onUnit(a))),
+                new Action(a => LastspellCast = name)));
         }
         /// <summary>Casts a spell on a specified unit</summary>
         /// <param name="spell">the name of the spell to cast</param>
@@ -395,7 +398,8 @@ namespace CLU.Base
                 },
             new Sequence(
                 new Action(a => CLULogger.Log(" [Casting] {0} on {1}", label, CLULogger.SafeName(onUnit(a)))),
-                new Action(a => SpellManager.Cast(spell, onUnit(a)))));
+                new Action(a => SpellManager.Cast(spell, onUnit(a))),
+                new Action(a => LastspellCast = spell.Name)));
         }
 
         /// <summary>Casts self spells eg: 'Fient', 'Shield Wall', 'Blood Tap', 'Rune Tap' </summary>
