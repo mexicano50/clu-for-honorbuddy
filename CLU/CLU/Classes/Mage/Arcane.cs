@@ -120,7 +120,7 @@ namespace CLU.Classes.Mage
                     Buff.CastBuff("Alter Time", ret => Unit.UseCooldowns() && Buff.PlayerHasBuff("Arcane Power") && Buff.GetAuraStack(Me, "Arcane Missiles!", true) == 2 && Buff.GetAuraStack(Me, "Arcane Charge", true) > 3, "Alter Time"),
                     
                     // Rune of Power - Needs testing at 90
-                    Spell.CastOnUnitLocation("Rune of Power", unit => Me, ret => !Buff.PlayerHasBuff("Rune of Power"),"Rune of Power"),
+                    //Spell.CastOnUnitLocation("Rune of Power", unit => Me, ret => !Buff.PlayerHasBuff("Rune of Power"),"Rune of Power"),
                     // Rune of Power - Needs testing at 90
 
                     Spell.ChannelSelfSpell("Evocation", ret => Me.ManaPercent < 35 && !Me.IsMoving, "Evocation"),
