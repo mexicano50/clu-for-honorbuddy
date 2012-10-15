@@ -118,6 +118,7 @@ namespace CLU.Classes.Warlock
                     Buff.CastDebuff("Corruption", ret => Me.CurrentTarget != null && Me.CurrentTarget.HasMyAura("Immolate"), "Immolate"),
                     //Spell.CastSpell("Havoc", u => Unit.BestBaneOfHavocTarget, ret => true, "Havoc on "), // + Unit.BestBaneOfHavocTarget.Name
                     Spell.CastSpell("Conflagrate", ret => Me.CurrentTarget != null && Me.CurrentTarget.HasMyAura("Immolate"), "Conflagrate"),
+                    new Decorator(ret => CLUSettings.Instance.EnableSelfHealing && Me.CurrentHealth <= 70, Common.WarlockTierOneTalents),
                     Spell.CastSpell("Chaos Bolt", ret => Buff.GetAuraStack(Me, "Backdraft", true) < 3 && Me.GetCurrentPower(Styx.WoWPowerType.BurningEmbers)>0 && Me.CurrentTarget.HealthPercent >= 20, "Chaos Bolt"),
                     Spell.CastSpell("Shadowburn", ret => Buff.GetAuraStack(Me, "Backdraft", true) < 3 && Me.GetCurrentPower(Styx.WoWPowerType.BurningEmbers) > 0 && Me.CurrentTarget.HealthPercent < 20, "Chaos Bolt"),
                     Spell.CastSpell("Shadow Bolt", ret => true, "Incinerate"),

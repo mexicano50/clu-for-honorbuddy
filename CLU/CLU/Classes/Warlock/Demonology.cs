@@ -176,7 +176,8 @@ namespace CLU.Classes.Warlock
                                        && (Buff.TargetDebuffTimeLeft("Corruption").TotalSeconds > 20
                                        && !Me.HasAnyAura(Common.DarkSoul) && Me.GetPowerInfo(Styx.WoWPowerType.DemonicFury).CurrentI <= 750 && Unit.TimeToDeath(Me.CurrentTarget) > 30), "Cancel Metamorphosis"),
                                    Spell.CastSpell("Hand of Gul'dan", ret => !Me.HasMyAura(103965) && !Me.CurrentTarget.MovementInfo.IsMoving
-                                       && !Me.CurrentTarget.HasMyAura(47960), "Hand of Gul'dan"),                            
+                                       && !Me.CurrentTarget.HasMyAura(47960), "Hand of Gul'dan"),
+                                   new Decorator(ret => CLUSettings.Instance.EnableSelfHealing && Me.CurrentHealth <= 70, Common.WarlockTierOneTalents),
                                    Spell.CastSpell("Shadow Bolt", ret => Me.HasMyAura(103965) && Buff.TargetDebuffTimeLeft("Corruption").TotalSeconds < 20 && Me.CurrentTarget.HasMyAura(172), "Touch of Chaos"),
                                    Spell.CastSpell("Soul Fire", ret => Me.HasMyAura(122355), "Soul Fire"),   
                                    Spell.CastSpell("Shadow Bolt", ret => Me.HasMyAura(103965), "Touch of Chaos"),

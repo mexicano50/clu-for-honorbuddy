@@ -101,5 +101,16 @@ namespace CLU.Classes.Warlock
                                 ))));
             }
         }
+        public static Composite WarlockTierOneTalents 
+        {
+            get 
+            {
+                return new PrioritySelector(
+                    new Decorator(ret=> TalentManager.HasTalent(1) && !WoWSpell.FromId(108359).Cooldown, Spell.CastSelfSpell(108359,ret => true,"Dark Regneration")),
+                    new Decorator(ret=> TalentManager.HasTalent(3) && !Me.IsChanneling && ObjectManager.GetObjectsOfType<WoWUnit>(false,false).Count(q=> q.DistanceSqr<=15*15)>=2, Spell.ChannelSpell("Drain Life",ret=>true,"Harvest Life")),
+                    Spell.ChannelSpell("Drain Life",ret=> true,"Drain Life")
+                    );
+            }
+        }
     }
 }

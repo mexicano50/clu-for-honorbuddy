@@ -126,6 +126,7 @@ namespace CLU.Classes.Warlock
                     Buff.CastDebuff("Haunt", ret => !Spell.PlayerIsChanneling  , "Haunt"),
                     Spell.CastSelfSpell("Life Tap", ret => Me.ManaPercent < 20 && Me.HealthPercent > 40, "Life Tap"),
                     Spell.CastSpell("Fel Flame", ret => Me.IsMoving, "Fel flame while moving"),
+                    new Decorator(ret=> CLUSettings.Instance.EnableSelfHealing && Me.CurrentHealth <= 70, Common.WarlockTierOneTalents),
                     Spell.ChannelSpell("Shadow Bolt", ret => Me.CurrentTarget != null && (Me.CurrentTarget.HealthPercent >= 20 && Me.GetPowerInfo(Styx.WoWPowerType.SoulShards).CurrentI > 0) && !Me.IsMoving && !Spell.PlayerIsChanneling, "Malefic Grasp"),
                     Spell.ChannelSpell("Drain Soul", ret => Me.CurrentTarget != null && (Me.CurrentTarget.HealthPercent < 20 || Me.GetPowerInfo(Styx.WoWPowerType.SoulShards).CurrentI == 0) && !Me.IsMoving && !Spell.PlayerIsChanneling, "Drain Soul"));
             }
