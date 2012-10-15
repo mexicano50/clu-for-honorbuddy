@@ -139,7 +139,7 @@ namespace CLU.Classes.Rogue
                             //Spell.CastSpell("Feint", ret => Me.CurrentTarget != null && (Me.CurrentTarget.ThreatInfo.RawPercent > 80 || Encounte  rSpecific.IsMorchokStomp()) && CLUSettings.Instance.EnableSelfHealing, "Feint"),
                            Spell.CastInterupt("Kick",           ret => true, "Kick"),
                            Spell.CastSpell("Redirect",          ret => Me.RawComboPoints > 0 && Me.ComboPoints < 1, "Redirect"),
-                           Spell.CancelMyAura("Blade Flurry",   ret => CLUSettings.Instance.UseAoEAbilities && Buff.PlayerHasBuff("Blade Flurry") && (Unit.EnemyUnits.Count() < 2 || Unit.EnemyUnits.Count() > 6) || !CLUSettings.Instance.UseAoEAbilities && Buff.PlayerHasBuff("Blade Flurry"), "Blade Flurry"),
+                           Spell.CancelMyAura("Blade Flurry",   ret => CLUSettings.Instance.UseAoEAbilities && Buff.PlayerHasBuff("Blade Flurry") && (Unit.EnemyUnits.Count() < 2 || Unit.EnemyUnits.Count() > 6), "Blade Flurry"),
                            Spell.CastSpell("Crimson Tempest",   ret => Unit.EnemyUnits.Count() >= 7 && Me.ComboPoints == 5 && CLUSettings.Instance.UseAoEAbilities, "Crimson Tempest"),
                            Spell.CastSelfSpell("Blade Flurry",  ret => CLUSettings.Instance.UseAoEAbilities && Unit.EnemyUnits.Count() > 1 && Unit.EnemyUnits.Count() < 7 && !Buff.PlayerHasBuff("Blade Flurry"), "Blade Flurry"),
                            Spell.CastSpell("Ambush",            ret => Me.IsBehind(Me.CurrentTarget), "Ambush"),
