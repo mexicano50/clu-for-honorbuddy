@@ -57,7 +57,7 @@ namespace CLU.Classes.Monk
             get
             {
                 return "----------------------------------------------------------------------\n" +
-                       "Credits: alxaw , Kbrebel04" +
+                       "Credits: Dagradt" +
                        "----------------------------------------------------------------------\n";
             }
         }
@@ -82,12 +82,10 @@ namespace CLU.Classes.Monk
             }
         }
 
-        // TODO: CHECK COMBO BREAKER NAMES.
-        // TODO: CHECK CHI
+        // TODO: GUI OPTIONS FOR FUCKING EVERYTHIGN!!!
         // TODO: FIND AWAY TO RETURN ENERGY REGEN RATE
         // TODO: CHECK ALL SPELL NAMES FROM "SPELLS" DUMP
         // TODO: CHECK ALL AURAS
-        // TODO: CHECK JAB IS NOT AFFECTED BY THE WEAPON YOU ARE CARRYING AND WE ONLY NEED TO USE JAB AND THE SPELLID AND ICON WILL CHANGE.
 
         public override Composite SingleRotation
         {
@@ -112,31 +110,47 @@ namespace CLU.Classes.Monk
                     Spell.CastInterupt("Spear Hand Strike", ret => true, "Spear Hand Strike"),
                     Spell.CastSpell("Leg Sweep", ret => TalentManager.HasTalent(12) && Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 8) >= 2 && Me.CurrentTarget.IsWithinMeleeRange, "Leg Sweep"),
 
-                    //Single Target
-                    Spell.CastSpell("Clash", ret => Me.CurrentTarget.DistanceSqr >= 8 * 8 && Me.CurrentTarget.DistanceSqr <= 50 * 50, "Clash"),
-                    Spell.CastSpell("Touch of Death", ret => Buff.PlayerHasBuff("Death Note"), "Touch of Death"),
-                    Spell.CastSpell("Elusive Brew", ret => !Buff.PlayerHasBuff("Elusive Brew Use") && Buff.PlayerCountBuff("Elusive Brew") >= 6 && Me.HealthPercent <= 80, "Elusive Brew"),
-                    Spell.CastSpell("Purifying Brew", ret => Chi >= 1 && Me.HasAura("Moderate Stagger") && Me.HealthPercent <= 60 || Chi >= 1 && Me.HasAura("Heavy Stagger") && Me.HealthPercent <= 60, "Purifying Brew"),
-                    Spell.CastOnUnitLocation("Summon Black Ox Statue", u => Me.CurrentTarget, ret => Me.HealthPercent <= 70, "Summon Black Ox Statue"),
-                    Spell.CastSpell("Disable", ret => Me.CurrentEnergy >= 15 && (Me.CurrentTarget.IsPlayer || Me.CurrentTarget.Fleeing) && Me.CurrentTarget.MovementInfo.RunSpeed > 3.5, "Disable"),
-                    Spell.CastSpell("Chi Wave", ret => TalentManager.HasTalent(4) && Chi >= 2 && Me.HealthPercent <= 40, "Chi Wave"),
-                    Spell.CastSelfSpell("Guard", ret => Chi >= 2 && Buff.PlayerHasBuff("Power Guard"), "Guard"),
-                    Spell.CastSpell("Tiger Palm", ret => Buff.PlayerCountBuff("Tiger Power") < 3 || Buff.PlayerBuffTimeLeft("Tiger Power") <= 3, "Tiger Palm"),
-                    Spell.CastSpell("Blackout Kick", ret => Chi >= 2 && !Buff.PlayerHasActiveBuff("Shuffle") || Chi >= 2 && Buff.PlayerCountBuff("Tiger Power") == 3 && Buff.PlayerBuffTimeLeft("Tiger Power") >= 3 && Buff.PlayerHasActiveBuff("Guard"), "Blackout Kick"),
+                    //Not sure what to do with these
                     Spell.CastSpell("Invoke Xuen, the White Tiger", ret => TalentManager.HasTalent(17) && Buff.PlayerCountBuff("Tiger Power") == 3 && Me.CurrentEnergy <= 80, "Invoke Xuen"),
-                    Spell.CastSpell("Rushing Jade Wind", ret => TalentManager.HasTalent(16) && Buff.PlayerCountBuff("Tiger Power") == 3 && Me.CurrentEnergy <= 80, "Rushing Jade Wind"),
-                    Spell.CastSpell("Keg Smash", ret => Chi <= 2, "Keg Smash"),
-                    Spell.CastSpell("Expel Harm", ret => Chi <= 2 && Me.HealthPercent <= 80 && Spell.SpellOnCooldown("Keg Smash"), "Keg Smash"),
                     Spell.CastSpell("Touch of Karma", ret => Chi <= 2 && Me.HealthPercent <= 40, "Touch of Karma"),
-                    Spell.CastSpell("Jab", ret => Chi <= 2 && Me.HealthPercent > 80 && Spell.SpellOnCooldown("Keg Smash") || Chi <= 2 && Spell.SpellOnCooldown("Expel Harm") && Spell.SpellOnCooldown("Keg Smash") && Me.HealthPercent <= 80, "Jab"),
-                    Spell.CastSpell("Tiger Palm", ret => Chi < 2 && Me.CurrentEnergy < 40, "Tiger Palm"),
+                    Spell.CastSpell("Clash", ret => Me.CurrentTarget.DistanceSqr >= 8 * 8 && Me.CurrentTarget.DistanceSqr <= 50 * 50, "Clash"),
+                    Spell.CastSpell("Disable", ret => Me.CurrentEnergy >= 15 && (Me.CurrentTarget.IsPlayer || Me.CurrentTarget.Fleeing) && Me.CurrentTarget.MovementInfo.RunSpeed > 3.5, "Disable"),
 
-                    
-                    // AoE
-                    Spell.CastAreaSpell("Dizzying Haze", 10, false, 3, 0.0, 0.0, ret => (from enemy in Unit.EnemyUnits where !enemy.HasAura("Dizzying Haze") select enemy).Any(), "Dizzying Haze"),
-                    //Spell.CastOnUnitLocation("Dizzying Haze", ret => Me.CurrentTarget, ret => Me.CurrentTarget != null && Me.CurrentTarget.DistanceSqr <= 40 * 40 && Unit.NearbyNonControlledUnits(Me.CurrentTarget.Location, 8, CLU.LocationContext == GroupLogic.Battleground).Any(x => !x.HasAura("Dizzying Haze")), "Dizzying Haze"),
-                    Spell.CastSpell("Breath of Fire", ret => Chi >= 2 && Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 8) >= 3 && Buff.TargetHasDebuff("Dizzying Haze") && !Buff.TargetHasDebuff("Breath of Fire"), "Breath of Fire"),
-                    Spell.CastAreaSpell("Spinning Crane Kick", 8, false, 7, 0.0, 0.0, ret => true, "Spinning Crane Kick"));
+                    //Single Target
+                    new Decorator(ret => Me.CurrentChi < 4,
+                        new PrioritySelector(
+                            Spell.CastSpell("Keg Smash", ret => Me.CurrentEnergy >= 40 && Me.CurrentTarget != null && Me.CurrentTarget.DistanceSqr <= 8 * 8 && Me.CurrentChi <= 2, "Keg Smash"),
+                            Spell.CastSelfSpell("Expel Harm", ret => Me.CurrentEnergy >= 40 && Me.HealthPercent < 100, "Expel Harm"),
+                            Spell.CastSpell("Jab", ret => Me.CurrentEnergy >= 40 && Me.CurrentTarget != null && Me.CurrentTarget.IsWithinMeleeRange && Me.HealthPercent > 35, "Jab")
+                            )),
+                    new Decorator(ret => Me.CurrentTarget != null && Me.CurrentTarget.IsWithinMeleeRange && Unit.CountEnnemiesInRange(Me.Location, 8) < 3,
+                        new PrioritySelector(
+                            Spell.CastSpell("Touch of Death", ret => Me.CurrentChi >= 3 && Me.CurrentTarget != null && Me.CurrentTarget.IsWithinMeleeRange && Buff.PlayerHasBuff("Death Note"), "Touch of Death"),//~> GUI option for use on boss only
+                            //Spell.CastSpell("Rushing Jade Wind", ret => TalentManager.HasTalent(16) && Buff.PlayerCountBuff("Tiger Power") == 3 && Me.CurrentEnergy <= 80, "Rushing Jade Wind"),
+                            Spell.CastSpell("Blackout Kick", ret => Me.CurrentChi >= 2 && Me.CurrentTarget != null && Me.CurrentTarget.IsWithinMeleeRange && (!Buff.PlayerHasActiveBuff("Shuffle") || Buff.PlayerActiveBuffTimeLeft("Shuffle").Seconds < 18), "Blackout Kick"),//~> GUI option for Shuffle min time
+                            Spell.CastSpell("Tiger Palm", ret => Me.CurrentTarget != null && Me.CurrentTarget.IsWithinMeleeRange && Buff.PlayerCountBuff("Tiger Power") < 3 || Buff.PlayerCountBuff("Power Guard") < 3, "Tiger Palm"),
+                            Spell.CastSpell("Tiger Palm", ret => Me.CurrentTarget != null && Me.CurrentTarget.IsWithinMeleeRange && Me.CurrentEnergy < 40, "Tiger Palm")
+                            )),
+                    new Decorator(ret => Me.CurrentTarget != null && Me.CurrentTarget.IsWithinMeleeRange && Unit.CountEnnemiesInRange(Me.Location, 8) >= 3,
+                        new PrioritySelector(
+                            Spell.CastOnUnitLocation("Dizzying Haze", ret => Me.CurrentTarget, ret => Me.CurrentEnergy >= 20 && Me.CurrentTarget != null && Me.CurrentTarget.DistanceSqr <= 40 * 40 && Unit.NearbyNonControlledUnits(Me.CurrentTarget.Location, 8, CLU.LocationContext == GroupLogic.Battleground).Any(x => !x.HasAura("Dizzying Haze")), "Dizzying Haze"),//~> GUI option for mob count
+                            Spell.CastSpell("Breath of Fire", ret => Me.CurrentChi >= 2 && Me.CurrentTarget != null && Me.CurrentTarget.DistanceSqr <= 8 * 8 && Unit.NearbyNonControlledUnits(Me.Location, 8, CLU.LocationContext == GroupLogic.Battleground).Any(x => !x.HasAura("Breath of Fire")), "Breath of Fire"),//~> GUI option for mob count
+                            Spell.CastAreaSpell("Spinning Crane Kick", 8, false, 5, 0.0, 0.0, ret => Me.CurrentEnergy >= 40, "Spinning Crane Kick"),//~> GUI option for mob count
+                            //Spell.CastSpell("Rushing Jade Wind", ret => TalentManager.HasTalent(16) && Buff.PlayerCountBuff("Tiger Power") == 3 && Me.CurrentEnergy <= 80, "Rushing Jade Wind"),
+                            Spell.CastSpell("Blackout Kick", ret => Me.CurrentChi >= 2 && Me.CurrentTarget != null && Me.CurrentTarget.IsWithinMeleeRange && (!Buff.PlayerHasActiveBuff("Shuffle") || Buff.PlayerActiveBuffTimeLeft("Shuffle").Seconds < 18), "Blackout Kick"),//~> GUI option for Shuffle min time
+                            Spell.CastSpell("Tiger Palm", ret => Me.CurrentTarget != null && Me.CurrentTarget.IsWithinMeleeRange && Buff.PlayerCountBuff("Tiger Power") < 3 || Buff.PlayerCountBuff("Power Guard") < 3, "Tiger Palm"),
+                            Spell.CastSpell("Tiger Palm", ret => Me.CurrentTarget != null && Me.CurrentTarget.IsWithinMeleeRange && Me.CurrentEnergy < 40, "Tiger Palm")
+                            )),
+                    new Decorator(ret => Me.CurrentTarget != null && !Me.CurrentTarget.IsWithinMeleeRange && Me.CurrentTarget.DistanceSqr <= 8 * 8 && Unit.CountEnnemiesInRange(Me.Location, 8) >= 3,
+                        new PrioritySelector(
+                            Spell.CastOnUnitLocation("Dizzying Haze", ret => Me.CurrentTarget, ret => Me.CurrentEnergy >= 20 && Me.CurrentTarget != null && Me.CurrentTarget.DistanceSqr <= 40 * 40 && Unit.NearbyNonControlledUnits(Me.CurrentTarget.Location, 8, CLU.LocationContext == GroupLogic.Battleground).Any(x => !x.HasAura("Dizzying Haze")), "Dizzying Haze"),//~> GUI option for mob count
+                            Spell.CastSpell("Breath of Fire", ret => Me.CurrentChi >= 2 && Me.CurrentTarget != null && Me.CurrentTarget.DistanceSqr <= 8 * 8 && Unit.NearbyNonControlledUnits(Me.Location, 8, CLU.LocationContext == GroupLogic.Battleground).Any(x => !x.HasAura("Breath of Fire")), "Breath of Fire"),//~> GUI option for mob count
+                            Spell.CastAreaSpell("Spinning Crane Kick", 8, false, 5, 0.0, 0.0, ret => Me.CurrentEnergy >= 40, "Spinning Crane Kick")//~> GUI option for mob count
+                            )),
+                    new Decorator(ret => Me.CurrentTarget != null && Me.CurrentTarget.DistanceSqr > 8 * 8 && Me.CurrentTarget.DistanceSqr <= 40 * 40 && Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 8) >= 3,
+                        new PrioritySelector(
+                            Spell.CastOnUnitLocation("Dizzying Haze", ret => Me.CurrentTarget, ret => Me.CurrentEnergy >= 20 && Me.CurrentTarget != null && Me.CurrentTarget.DistanceSqr <= 40 * 40 && Unit.NearbyNonControlledUnits(Me.CurrentTarget.Location, 8, CLU.LocationContext == GroupLogic.Battleground).Any(x => !x.HasAura("Dizzying Haze")), "Dizzying Haze")//~> GUI option for mob count
+                            )));    
             }
         }
 
@@ -162,8 +176,17 @@ namespace CLU.Classes.Monk
                 return new Decorator(
                     ret => Me.HealthPercent < 100 && CLUSettings.Instance.EnableSelfHealing,
                     new PrioritySelector(
-                        Buff.CastBuff("Fortifying Brew", ret => Me.HealthPercent < 50, "Fortifying Brew"),
-                    // Turns your skin to stone, increasing your health by 20%, and reducing damage taken by 20%. Lasts 20 sec.
+                        Buff.CastBuff("Fortifying Brew", ret => Me.HealthPercent < 50, "Fortifying Brew"),//~> GUI option for HP%
+                        //avert_harm
+                        Spell.CastSelfSpell("Purifying Brew", ret => Me.CurrentChi >= 1 && Buff.PlayerHasActiveBuff("Moderate Stagger") || Buff.PlayerHasActiveBuff("Heavy Stagger"), "Purifying Brew"),
+                        Spell.CastSelfSpell("Elusive Brew", ret => Buff.PlayerCountBuff("Elusive Brew") >= 9, "Elusive Brew"),//~> GUI option for stacks
+                        Spell.CastSelfSpell("Guard", ret => Me.CurrentChi >= 2 && Buff.PlayerCountBuff("Power Guard") == 3, "Guard"),
+                        //Spell.CastSpell("Rushing Jade Wind", ret => TalentManager.HasTalent(16) && Buff.PlayerCountBuff("Tiger Power") == 3 && Me.CurrentEnergy <= 80, "Rushing Jade Wind"),
+                        Spell.CastSpell("Blackout Kick", ret => Me.CurrentChi >= 2 && Me.CurrentTarget != null && Me.CurrentTarget.IsWithinMeleeRange && (!Buff.PlayerHasActiveBuff("Shuffle") || Buff.PlayerActiveBuffTimeLeft("Shuffle").Seconds < 18), "Blackout Kick"),//~> GUI option for Shuffle min time
+                        Spell.CastOnUnitLocation("Summon Black Ox Statue", ret => Me.CurrentTarget, ret => !Buff.PlayerHasBuff("Sanctuary of the Ox"), "Summon Black Ox Statue"),
+                        Spell.CastOnUnitLocation("Healing Sphere", ret => Me, ret => Me.CurrentEnergy >= 60 && Me.HealthPercent <= 50, "Healing Sphere"),//~> GUI option for HP%
+                        Spell.CastSelfSpell("Zen Sphere", ret => Me.CurrentChi >= 2 && Me.HealthPercent <= 75 && !Buff.PlayerHasActiveBuff("Zen Sphere") || Me.HealthPercent <= 50 && Buff.PlayerHasActiveBuff("Zen Sphere"), "Zen Sphere"),//~> GUI option for HP%
+                        Spell.CastSpell("Chi Wave", ret => TalentManager.HasTalent(4) && Chi >= 2 && Me.HealthPercent <= 40, "Chi Wave"),//~> This is usless
                         Item.UseBagItem("Healthstone", ret => Me.HealthPercent < 40, "Healthstone")));
             }
         }
