@@ -114,43 +114,39 @@ NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagr
                     Spell.CastInterupt("Rebuke",                                ret => CLU.LocationContext != GroupLogic.Battleground, "Rebuke"),
                     Spell.CastInterupt("Rebuke",                                ret => Unit.MeleePvPUnits.OrderBy(u => Me.IsFacing(u) && u.IsCasting && u.CastingSpell.CooldownTimeLeft > TimeSpan.FromMilliseconds(500) && (u.CanInteruptCastSpell() || u.CanInteruptChannelSpell())).FirstOrDefault(), ret => CLU.LocationContext == GroupLogic.Battleground, "Rebuke"),
                     // Threat
-                    Buff.CastBuff("Hand of Salvation",                          ret => Me.CurrentTarget != null && Me.GotTarget && Me.CurrentTarget.ThreatInfo.RawPercent > 90, "Hand of Salvation"),
+                    Buff.CastBuff("Hand of Salvation",                          ret => Me.CurrentTarget != null && Me.GotTarget && Me.CurrentTarget.ThreatInfo.RawPercent > 90 && Unit.IsInGroup, "Hand of Salvation"),
                     //Inquisition
                     Buff.CastBuff("Inquisition",                                ret => !Me.HasMyAura("Inquisition") && (Me.CurrentHolyPower >= 3 || Me.HasMyAura(90174)), "Inquisition (Buff)"),
                     Buff.CastBuff("Inquisition",                                ret => Me.HasMyAura("Inquisition") && Buff.GetAuraTimeLeft(Me, "Inquisition", true).TotalSeconds < 5 && (Me.CurrentHolyPower >= 3 || Me.HasMyAura(90174)), "Inquisition (Maintain)"),
                     Buff.CastBuff("Inquisition",                                ret => Me.HasMyAura("Inquisition") && Buff.GetAuraTimeLeft(Me, "Inquisition", true).TotalSeconds < 2 && (Me.CurrentHolyPower > 0 || Me.HasMyAura(90174)), "Inquisition (Emergency Maintain)"),
-                    new Decorator(ret => Unit.UseCooldowns(),
+                    new Decorator(ret => Me.CurrentTarget != null && Unit.UseCooldowns(),
                         new PrioritySelector(
                                 Spell.CastSpell("Guardian of Ancient Kings",    ret => Me.HasMyAura("Inquisition"), "GoAK on Boss"),
-                                Buff.CastBuff("Avenging Wrath",                 ret => Me.HasMyAura(86700) && Buff.GetAuraStack(Me, 86700, true) >= 10, "Avenging Wrath with 10 Ancient Fury stacks"),
+                                Buff.CastBuff("Avenging Wrath",                 ret => Me.HasMyAura(86700) && Buff.GetAuraStack(Me, 86700, true) >= 10, "Avenging Wrath with 10 stacks of Ancient Power"),
                                 Buff.CastBuff("Avenging Wrath",                 ret => Spell.SpellOnCooldown("Guardian of Ancient Kings") && Spell.SpellCooldown("Guardian of Ancient Kings").TotalSeconds < 240, "Avenging Wrath with GoAK on cooldown"),
                                 Buff.CastBuff("Holy Avenger",                   ret => Me.HasMyAura("Avenging Wrath"), "Holy Avenger with Avenging Wrath"),
                                 Spell.CastSpell("Execution Sentence",           ret => true, "Execution Sentence"),
                                 Spell.CastSpell("Light's Hammer",               ret => true, "Light's Hammer"),
-                                Spell.CastSpell("Holy Prism",                   ret => true, "Holy Prism")
-                            )),
-                    new Decorator(ret => Unit.CountEnnemiesInRange(Me.Location, 12f) > 2 && CLUSettings.Instance.UseAoEAbilities,
+                                Spell.CastSpell("Holy Prism",                   ret => true, "Holy Prism"))),
+                    new Decorator(ret => Unit.EnemyUnits.Count(a => a.DistanceSqr <= 12 * 12) > 2 && CLUSettings.Instance.UseAoEAbilities,
                         new PrioritySelector(
                             Spell.CastSpell("Divine Storm",                     ret => Me.HasMyAura("Inquisition") && (Me.CurrentHolyPower == 5 || Me.HasMyAura(90174)), "Divine Storm with 5 HP"),
                             Spell.CastSpell("Hammer of Wrath",                  ret => true, "Hammer of Wrath on < 20% HP target"),
                             Spell.CastSpell("Exorcism",                         ret => Me.CurrentHolyPower < 5 || (Me.HasMyAura(59578) && Me.CurrentHolyPower < 5), "Excorcism to generate Holy Power"),
                             Spell.CastSpell("Hammer of the Righteous",          ret => Me.CurrentHolyPower < 5 && !Me.HasMyAura(59578), "Hammer of the Righteous to generate Holy Power"),
                             Spell.CastSpell("Judgment",                         ret => Me.CurrentHolyPower < 5 && !Me.HasMyAura(59578) ,"Judgment to generate Holy Power"),
-                            Spell.CastSpell("Divine Storm",                     ret => Me.HasMyAura("Inquisition") &&  Me.CurrentHolyPower >= 3 || Me.HasMyAura(90174), "Divine Storm with 3+ HP")
-                            )),
-                    new Decorator(ret => Unit.CountEnnemiesInRange(Me.Location, 12f) < 2 || !CLUSettings.Instance.UseAoEAbilities,
+                            Spell.CastSpell("Divine Storm",                     ret => Me.HasMyAura("Inquisition") &&  Me.CurrentHolyPower >= 3 || Me.HasMyAura(90174), "Divine Storm with 3+ HP"))),
+                    new Decorator(ret => Unit.EnemyUnits.Count(a => a.DistanceSqr <= 12*12) < 2 || !CLUSettings.Instance.UseAoEAbilities,
                         new PrioritySelector(
                             Spell.CastSpell("Templar's Verdict",                ret => Me.HasMyAura("Inquisition") && Me.CurrentHolyPower == 5 || Me.HasMyAura(90174), "Divine Storm with 5 HP"),
                             Spell.CastSpell("Hammer of Wrath",                  ret => true, "Hammer of Wrath on < 20% HP target"),
                             Spell.CastSpell("Exorcism",                         ret => Me.CurrentHolyPower < 5 || (Me.HasMyAura(59578) && Me.CurrentHolyPower < 5), "Excorcism to generate Holy Power"),
                             Spell.CastSpell("Crusader Strike",                  ret => Me.CurrentHolyPower < 5 && !Me.HasMyAura(59578), "Crusader Strike to generate Holy Power"),
                             Spell.CastSpell("Judgment",                         ret => Me.CurrentHolyPower < 5 && !Me.HasMyAura(59578), "Judgment to generate Holy Power"),
-                            Spell.CastSpell("Templar's Verdict",                ret => Me.HasMyAura("Inquisition") && Me.CurrentHolyPower >= 3 || Me.HasMyAura(90174), "Divine Storm with 3+ HP")
-                            )),
+                            Spell.CastSpell("Templar's Verdict",                ret => Me.HasMyAura("Inquisition") && Me.CurrentHolyPower >= 3 || Me.HasMyAura(90174), "Divine Storm with 3+ HP"))),
                     Buff.CastBuff("Sacred Shield",                              ret => Me.HasMyAura("Inquisition"), "Sacred Shield as a filler"),
-                    Spell.CastSelfSpell("Flash of Light",                       ret => Me.HealthPercent < 100 && Buff.GetAuraStack(Me, "Selfless Healer", true) == 3, "Flash of Light with 3 stacks of Selfless Healer"),
-                    Spell.CastSelfSpell("Arcane Torrent",                       ret => Me.ManaPercent < 80 && Me.CurrentHolyPower < 3, "Arcane Torrent")
-                    );
+                    Spell.CastSelfSpell("Flash of Light",                       ret => Me.HealthPercent < 100 && Me.HasMyAura("Selfless Healer") && Buff.GetAuraStack(Me, "Selfless Healer", true) == 3, "Flash of Light with 3 stacks of Selfless Healer"),
+                    Spell.CastSelfSpell("Arcane Torrent",                       ret => Me.ManaPercent < 80 && Me.CurrentHolyPower < 3, "Arcane Torrent"));
             }
         }
 
@@ -179,8 +175,8 @@ NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagr
                                        Buff.CastBuff("Hand of Protection", ret => Me.HealthPercent < CLUSettings.Instance.Paladin.RetributionHoPPercent, "Hand of Protection"))))),
                     
                      // Seal Swapping for AoE
-                     Buff.CastBuff("Seal of Righteousness",  ret => Unit.EnemyUnits.Count() >= CLUSettings.Instance.Paladin.SealofRighteousnessCount, "Seal of Righteousness"),
-                     Buff.CastBuff("Seal of Truth",          ret => Unit.EnemyUnits.Count() < CLUSettings.Instance.Paladin.SealofRighteousnessCount, "Seal of Truth")
+                     Buff.CastBuff("Seal of Righteousness", ret => Unit.EnemyUnits.Count(a => a.DistanceSqr <= 12 * 12) >= CLUSettings.Instance.Paladin.SealofRighteousnessCount, "Seal of Righteousness"),
+                     Buff.CastBuff("Seal of Truth", ret => Unit.EnemyUnits.Count(a => a.DistanceSqr <= 12 * 12) < CLUSettings.Instance.Paladin.SealofRighteousnessCount, "Seal of Truth")
                     ); 
                     
                     
