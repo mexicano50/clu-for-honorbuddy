@@ -91,6 +91,8 @@ NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagr
             }
         }
 
+        // Commit this shit...CLU svn doesn't like me :(
+
         public override Composite SingleRotation
         {
             get
