@@ -856,16 +856,25 @@ namespace CLU.Base
             return new Decorator(
                 delegate(object a)
                 {
-                    if (PlayerHasBuff(name))
-                        return false;
+                    try
+                    {
+                        if (PlayerHasBuff(name))
+                            return false;
 
-                    if (!cond(a))
-                        return false;
+                        if (!cond(a))
+                            return false;
 
-                    if (!SpellManager.CanBuff(name, Me))
-                        return false;
+                        if (!SpellManager.CanBuff(name, Me))
+                            return false;
 
-                    return true;
+                        return true;
+                    }
+                    catch(Exception ex)
+                    {
+                        CLULogger.TroubleshootLog("[Buff] Failed to cast {0} for {1}",name,label);
+                        return false
+                    }
+
                 },
             new Sequence(
                 new Action(a => CLULogger.Log(" [Buff] {0} ", label)),
