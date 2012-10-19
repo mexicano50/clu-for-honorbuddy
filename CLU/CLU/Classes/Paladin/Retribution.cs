@@ -138,7 +138,7 @@ NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagr
                             Spell.CastSpell("Hammer of the Righteous",          ret => Me.CurrentHolyPower < 5 && !Me.HasMyAura(59578), "Hammer of the Righteous to generate Holy Power"),
                             Spell.CastSpell("Judgment",                         ret => Me.CurrentHolyPower < 5 && !Me.HasMyAura(59578) ,"Judgment to generate Holy Power"),
                             Spell.CastSpell("Divine Storm",                     ret => Me.HasMyAura("Inquisition") &&  Me.CurrentHolyPower >= 3 || Me.HasMyAura(90174), "Divine Storm with 3+ HP"))),
-                    new Decorator(ret => Unit.EnemyUnits.Count(a => a.DistanceSqr <= 12*12) < 2 || !CLUSettings.Instance.UseAoEAbilities,
+                    new Decorator(ret => Unit.EnemyUnits.Count(a => a.DistanceSqr <= 12*12) <= 2 || !CLUSettings.Instance.UseAoEAbilities,
                         new PrioritySelector(
                             Spell.CastSpell("Templar's Verdict",                ret => Me.HasMyAura("Inquisition") && Me.CurrentHolyPower == 5 || Me.HasMyAura(90174), "Divine Storm with 5 HP"),
                             Spell.CastSpell("Hammer of Wrath",                  ret => true, "Hammer of Wrath on < 20% HP target"),
