@@ -872,7 +872,7 @@ namespace CLU.Base
                     catch(Exception ex)
                     {
                         CLULogger.TroubleshootLog("[Buff] Failed to cast {0} for {1}",name,label);
-                        return false
+                        return false;
                     }
 
                 },
