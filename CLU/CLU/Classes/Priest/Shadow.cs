@@ -136,18 +136,18 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
                                ret => CLUSettings.Instance.Priest.SpriestRotationSelection == ShadowPriestRotation.Default,
                                new PrioritySelector(
                                    Spell.WaitForCast(),
+                                   Buff.CastDebuff("Devouring Plague", ret => Buff.PlayerCountBuff("Shadow Orb") > 2, "Devouring Plague"),
+                                   Buff.CastDebuff("Shadow Word: Pain", ret => true, "Shadow Word: Pain"),
                                    Spell.CastSpell("Mind Blast",              ret => Buff.PlayerHasActiveBuff("Divine Insight"), "Mind Blast"),
                                    Buff.CastDebuff("Vampiric Touch",          ret => !Me.IsMoving, "Vampiric Touch"), // Vampiric Touch <DND> ??
-                                   Buff.CastDebuff("Shadow Word: Pain",       ret => true, "Shadow Word: Pain"),
                                    Spell.CastSpell("Mind Blast",              ret => true, "Mind Blast"),
-                                   Buff.CastDebuff("Devouring Plague",        ret => Buff.PlayerCountBuff("Shadow Orb") > 2, "Devouring Plague"),
                                    Spell.CastSpell("Shadow Word: Death",      ret => Me.CurrentTarget != null && (TalentManager.HasGlyph("Shadow Word: Death") ? Me.CurrentTarget.HealthPercent <= 100 : Me.CurrentTarget.HealthPercent <= 25), "Shadow Word: Death"),
                                    Spell.CastSpell("Mind Spike",              ret => Buff.PlayerHasActiveBuff("Surge of Darkness"), "Mind Spike"),
                                    Spell.CastSpell("Mindbender",              ret => Me.CurrentTarget != null && Unit.UseCooldowns(), "Mindbender"),
                                    Spell.ChannelSpell("Mind Sear",            ret => Me.CurrentTarget != null && Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 12) > 4 && !BossList.IgnoreAoE.Contains(Unit.CurrentTargetEntry), "Mind Sear - [PvE]"),
                                    Spell.CastSpell("Shadow Word: Death",      ret => Me.ManaPercent < 10, "Shadow Word: Death - Low Mana"),
                                    Spell.CastSpell("Shadow Word: Death",      ret => Me.IsMoving, "Shadow Word: Death - Moving"),
-                                   Spell.CastSpell("Devouring Plague",        ret => Me.IsMoving && Me.ManaPercent > 10, "Devouring Plague"),
+                                   //               Spell.CastSpell("Devouring Plague",        ret => Me.IsMoving && Me.ManaPercent > 10, "Devouring Plague"),
                                    Spell.CastSpell("Mind Blast",              ret => Buff.PlayerHasActiveBuff("Divine Insight"), "Mind Blast"),
                                    Spell.CastSelfSpell("Dispersion",          ret => Me.CurrentTarget != null && Unit.UseCooldowns() && (Me.HealthPercent < 10 || Me.ManaPercent < 10), "Dispersion"),
                                    Spell.CastSpecialSpell("Smite", ret => CanMindFlay && Buff.TargetDebuffTimeLeft("Mind Flay").TotalSeconds <= Spell.ClippingDuration(), "Mind Flay")
