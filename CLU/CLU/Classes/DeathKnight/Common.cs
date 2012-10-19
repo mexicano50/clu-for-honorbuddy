@@ -170,7 +170,7 @@ namespace CLU.Classes.DeathKnight
                     //Diseases -- The most important stuff for playing a Death Knight is keeping them up at all times
                     Spell.CastSpell("Blood Boil", ret => Buff.PlayerHasActiveBuff("Crimson Scourge"), "Blood Boil (Crimson Scourge)"),
                     Spell.CastSpell("Plague Leech" , ret => CanPlagueLeech, "Plague Leech"), // should be used just as your diseases are about to expire, and each time that you can refresh them right away with Outbreak
-                    Spell.CastSpell("Outbreak"     , ret => Buff.TargetDebuffTimeLeft("Blood Plague").TotalSeconds < 0.5 ||Buff.TargetDebuffTimeLeft("Frost Fever").TotalSeconds < 0.5, "Outbreak"),
+                    Spell.CastSpell("Outbreak"     , ret => Buff.TargetDebuffTimeLeft("Blood Plague").TotalSeconds < 1 ||Buff.TargetDebuffTimeLeft("Frost Fever").TotalSeconds < 1, "Outbreak"),
                     Buff.CastDebuff("Icy Touch",    ret => TalentManager.CurrentSpec != WoWSpec.DeathKnightFrost && Spell.SpellOnCooldown("Outbreak") && Buff.TargetDebuffTimeLeft("Frost Fever").TotalSeconds < 1, "Icy Touch for Frost Fever"),
                     Spell.CastSpell("Howling Blast", ret => TalentManager.CurrentSpec == WoWSpec.DeathKnightFrost && Spell.SpellOnCooldown("Outbreak") && Buff.TargetDebuffTimeLeft("Frost Fever").TotalSeconds < 1,"Howling Blast (Frost Fever)"),
                     Spell.CastSpell("Plague Strike", ret => Spell.SpellOnCooldown("Outbreak") && Buff.TargetDebuffTimeLeft("Blood Plague").TotalSeconds < 1, "Plague Strike"))

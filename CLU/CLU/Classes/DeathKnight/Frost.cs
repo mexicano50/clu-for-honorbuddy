@@ -130,10 +130,9 @@ namespace CLU.Classes.DeathKnight
                            //Operation: Two-hander bitches!
                            new Decorator(ret => Common.IsWieldingTwoHandedWeapon(),
                                new PrioritySelector(
-                                    Spell.CastSpell("Outbreak", ret => Buff.TargetDebuffTimeLeft("Frost Fever").Seconds < 3 || Buff.TargetDebuffTimeLeft("Blood Plague").Seconds < 3, "Outbreak"),
+                                   Common.ApplyDiseases(ret => Me.CurrentTarget),
+                                   Common.SpreadDiseasesBehavior(ret => Me.CurrentTarget),
                                    Spell.CastSpell("Soul Reaper", ret => Me.CurrentTarget != null && Me.CurrentTarget.HealthPercent <= 35 && Unit.TimeToDeath(Me.CurrentTarget) > 5, "Soul Reaper"),
-                                   Spell.CastSpell("Plague Strike", ret => OutbreakOnCoolDown && Buff.TargetDebuffTimeLeft("Blood Plague").Seconds < 3, "Plague Strike To Buff Blood Plague"),
-                                   Spell.CastSpell("Howling Blast", ret => OutbreakOnCoolDown && Buff.TargetDebuffTimeLeft("Frost Fever").Seconds < 3, "Howling Blast to Buff Frost Fever"),
                                    Spell.CastSpell("Howling Blast", ret => Me.HasMyAura(59052), "Howling Blast"),
                                    Spell.CastSpell("Obliterate", ret => Me.HasMyAura(51124) || Me.CurrentRunicPower < 85, "Obliterate"),
                                    Spell.CastSpell("Frost Strike", ret => Me.CurrentRunicPower > 90, "Frost Strike"),
@@ -144,11 +143,11 @@ namespace CLU.Classes.DeathKnight
                            //Operation: DUAL WIELD BITCHES!
                            new Decorator(ret => !Common.IsWieldingTwoHandedWeapon(),
                                new PrioritySelector(
+                                    Common.ApplyDiseases(ret => Me.CurrentTarget),
+                                    Common.SpreadDiseasesBehavior(ret => Me.CurrentTarget),
                                    Spell.CastSpell("Outbreak", ret => Buff.TargetDebuffTimeLeft("Frost Fever").Seconds < 3 || Buff.TargetDebuffTimeLeft("Blood Plague").Seconds < 3, "Outbreak"),
                                    Spell.CastSpell("Soul Reaper", ret => Me.CurrentTarget.HealthPercent <= 35, "Soul Reaping"),//~> soul_reaper,if=target.health.pct<=35|((target.health.pct-3*(target.health.pct%target.time_to_die))<=35)
                                    Spell.CastSelfSpell("Unholy Blight", ret => Me.CurrentTarget != null && Me.CurrentTarget.DistanceSqr <= 10 * 10 && TalentManager.HasTalent(3) && (Buff.TargetDebuffTimeLeft("Frost Fever").Seconds < 3 || Buff.TargetDebuffTimeLeft("Blood Plague").Seconds < 3), "Unholy Blight"),
-                                   Spell.CastSpell("Plague Strike", ret => OutbreakOnCoolDown && Buff.TargetDebuffTimeLeft("Blood Plague").Seconds < 3, "Plague Strike To Buff Blood Plague"),
-                                   Spell.CastSpell("Howling Blast", ret => OutbreakOnCoolDown && Buff.TargetDebuffTimeLeft("Frost Fever").Seconds < 3, "Howling Blast to Buff Frost Fever"),
                                    Spell.CastSpell("Howling Blast", ret => Me.HasMyAura(59052), "Howling Blast"),
                                    Spell.CastSpell("Frost Strike", ret => Me.HasMyAura(51124) && Me.CurrentRunicPower > 21 || Me.CurrentRunicPower > 90, "Frost Strike"),
                                    Spell.CastSpell("Obliterate", ret => Me.HasMyAura(51124) && Me.CurrentRunicPower < 20 || (Common.UnholyRuneSlotsActive == 2 && Common.FrostRuneSlotsActive == 2),  "Obliterate"),
