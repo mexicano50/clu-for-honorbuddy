@@ -134,7 +134,7 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
 
                            //AoE        
                            new Decorator(
-                               ret => !Buff.PlayerHasBuff("Feign Death") && CLUSettings.Instance.UseAoEAbilities && Unit.EnemyUnits.Count(a => a.Location.DistanceSqr(Me.CurrentTarget.Location) <= 20 * 20) >= CLUSettings.Instance.Hunter.BmMultiShotCount,
+                               ret => !Buff.PlayerHasBuff("Feign Death") && CLUSettings.Instance.UseAoEAbilities && Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 20) >= CLUSettings.Instance.Hunter.BmMultiShotCount,
                                new PrioritySelector(
                                    Spell.CastSelfSpell("Feign Death", ret => Me.CurrentTarget != null && Me.CurrentTarget.ThreatInfo.RawPercent > 90 && CLUSettings.Instance.Hunter.UseFeignDeath, "Feign Death Threat"),
                                    Spell.CastSpell("Concussive Shot", ret => Me.CurrentTarget != null && Me.CurrentTarget.CurrentTargetGuid == Me.Guid && CLUSettings.Instance.Hunter.UseConcussiveShot, "Concussive Shot"),
@@ -158,11 +158,11 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
                                    Spell.CastSpecialSpell("Steady Shot", ret => Me.CurrentTarget != null & Me.CurrentFocus < 40, "Cobra Shot"),
                                    Buff.CastBuff("Focus Fire", ret => Me.ActiveAuras["Frenzy"].StackCount == 5 && !Buff.PlayerHasBuff("The Beast Within") && Spell.SpellCooldown("Kill Command").TotalSeconds > 1 && Spell.SpellCooldown("Bestial Wrath").TotalSeconds > 10 && !Buff.PlayerHasBuff("Rapid Fire"), "Focus Fire"),
                     //Pet
-                                   PetManager.CastPetSpell("Froststorm Breath", ret => Me.CurrentTarget != null && Me.Pet.CurrentFocus >= 30 && Unit.EnemyUnits.Count(a => a.Location.DistanceSqr(Me.CurrentTarget.Location) <= 12 * 12) >= CLUSettings.Instance.Hunter.BmMultiShotCount && PetManager.CanCastPetSpell("Froststorm Breath") && !Me.Pet.HasAura("Froststorm Breath"), "Froststorm Breath"))),
+                                   PetManager.CastPetSpell("Froststorm Breath", ret => Me.CurrentTarget != null && Me.Pet.CurrentFocus >= 30 && Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 12) >= CLUSettings.Instance.Hunter.BmMultiShotCount && PetManager.CanCastPetSpell("Froststorm Breath") && !Me.Pet.HasAura("Froststorm Breath"), "Froststorm Breath"))),
 
                            // Single Target
                            new Decorator(
-                               ret => !Buff.PlayerHasBuff("Feign Death") && (Unit.EnemyUnits.Count(a => a.Location.DistanceSqr(Me.CurrentTarget.Location) <= 20 * 20) < CLUSettings.Instance.Hunter.BmMultiShotCount || !CLUSettings.Instance.UseAoEAbilities),
+                               ret => !Buff.PlayerHasBuff("Feign Death") && (Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 20) >= CLUSettings.Instance.Hunter.BmMultiShotCount || !CLUSettings.Instance.UseAoEAbilities),
                                new PrioritySelector(
                     // HandleMovement? Lets Misdirect to Focus, Pet, RafLeader or Tank
                     // TODO: Add Binding shot logic..need to see it working well.
@@ -182,7 +182,7 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
                                    Buff.CastBuff("Bestial Wrath", ret => Me.CurrentTarget != null && Unit.UseCooldowns() && Spell.SpellOnCooldown("Lynx Rush") && Spell.SpellOnCooldown("Dire Beast") && Me.FocusPercent > CLUSettings.Instance.Hunter.BestialWrathFocusPercent && Me.Pet.Location.DistanceSqr(Me.CurrentTarget.Location) < Spell.MeleeRange * Spell.MeleeRange && !Buff.PlayerHasActiveBuff("The Beast Within"), "Bestial Wrath"),
                                    Buff.CastBuff("Rapid Fire", ret => Me.CurrentTarget != null && Unit.UseCooldowns() && Me.Pet.Location.DistanceSqr(Me.CurrentTarget.Location) < Spell.MeleeRange * Spell.MeleeRange && !Buff.PlayerHasBuff("Rapid Fire") && (!Spell.SpellOnCooldown("Readiness") || !Buff.PlayerHasBuff("The Beast Within") && Spell.SpellOnCooldown("Readiness")), "Rapid Fire"),
                                    Spell.CastSpell("Kill Command", ret => Me.CurrentTarget != null && Me.GotAlivePet && Me.Pet.Location.DistanceSqr(Me.CurrentTarget.Location) < 25 * 25 && Spell.SpellCooldown("Kill Command").TotalSeconds < 1 && Me.FocusPercent >= 40, "Kill Command"),
-                                   Spell.CastSpell("Glaive Toss", ret => !Buff.TargetHasDebuff("Glaive Toss") && Unit.EnemyUnits.Count(a => a.Location.DistanceSqr(Me.CurrentTarget.Location) <= 20 * 20) >= CLUSettings.Instance.Hunter.GlaiveTossCount, "Glaive Toss"), //instant..with no apparent cooldown...needs checking.
+                                   Spell.CastSpell("Glaive Toss", ret => !Buff.TargetHasDebuff("Glaive Toss") && Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 20) >= CLUSettings.Instance.Hunter.GlaiveTossCount, "Glaive Toss"), //instant..with no apparent cooldown...needs checking.
                                    Spell.CastSpecialSpell("Steady Shot", ret => Me.CurrentTarget != null && Buff.TargetHasDebuff("Serpent Sting") && Buff.TargetDebuffTimeLeft("Serpent Sting").TotalSeconds <= 3, "Cobra Shot"),
                                    Buff.CastDebuff("Serpent Sting", ret => Me.CurrentTarget != null && Buff.TargetDebuffTimeLeft("Serpent Sting").TotalSeconds <= 0.5 && Unit.TimeToDeath(Me.CurrentTarget) > 10, "Serpent Sting"),
                                    Buff.CastBuff("Fervor", ret => Me.CurrentTarget != null && Me.FocusPercent <= CLUSettings.Instance.Hunter.BmFevorFocusPercent && Unit.UseCooldowns(), "Fervor"),
