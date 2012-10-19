@@ -304,7 +304,7 @@ namespace CLU.Lists
             //Scarley Monastery: Cathedral
             4542, //High Inquisitor Fairbanks
             3976, //Scarlet Commander Mograine
-            3977, //High Inquisitor Whitemane
+            3977, //High Inquisitor Whitemane now also a MoP Boss level 90
 
             //Razorfen Downs
             7355, //Tuten'kash
@@ -1329,7 +1329,7 @@ namespace CLU.Lists
             56877, // Raigonn
             56895, // Raigonn
             
-            // Mogu'shan Palace
+            // Mogu'shan Palace http://www.wowhead.com/zone=6182
             61442, // Kuai the Brute
             61243, // Gekkan
             61884, // Xin the Weaponmaster <King of the Clans>
@@ -1339,6 +1339,24 @@ namespace CLU.Lists
             61634, // Commander Vo'jak
             61485, // General Pa'valak
             62205, // Wing Leader Ner'onok
+
+            // Scarlet Halls http://www.wowhead.com/zone=6052
+            59303, // Houndsmaster Braun
+            58632, // Armsmaster Harlan
+            59150, // Flameweaver Koegler
+            // Scarlet Monastry http://www.wowhead.com/zone=6109
+            59789, // Thalnos the Soulrender
+            59223, // Brother Korloff
+            60040, // Commander Durand
+
+            // Scholomance http://www.wowhead.com/zone=6066
+            58633, // Instructor Chillheart
+            59184, // Jandice Barov
+            59153, // Rattlegore
+            58722, // Lilian Moss
+            59080, // Darkmaster Gandling
+
+
             
             // POSSIBLE DUNGEONS
             // Crypt of Forgotten Kings
