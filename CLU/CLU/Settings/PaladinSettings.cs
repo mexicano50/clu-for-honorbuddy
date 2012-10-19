@@ -385,7 +385,27 @@ namespace CLU.Settings
             get;
             set;
         }
+        [Setting]
+        [DefaultValue(2)]
+        [Category("Retribution")]
+        [DisplayName("Light's Hammer Count")]
+        [Description("Will use Light's Hammer if AddCount >= this value (AOE Must be enabled)")]
+        public int RetributionLightsHammerCount
+        {
+            get;
+            set;
+        }
 
+        [Setting]
+        [DefaultValue(true)]
+        [Category("Retribution")]
+        [DisplayName("Prevent Inquisition from falling off")]
+        [Description("Enable this to prevent Inquisition from fallin off")]
+        public bool RetributionInquisitionFallOffProtection
+        {
+            get;
+            set;
+        }
 
         #endregion
     }
