@@ -165,6 +165,7 @@ namespace CLU.Lists
             52409, // Ragnaros (Firelands)
             56781, //Goriona ---- Warmaster Blackhorn
             56895, // Raigonn = Gate of the Setting Sun
+            56754, // Azure Serpent, Phase 2 of Gu Cloudstrike
         };
 
         public static HashSet<uint> TrainingDummies
@@ -1315,6 +1316,7 @@ namespace CLU.Lists
             
             // Shado-Pan Monastery http://mop.wowhead.com/zone=5918#npcs
             56747, // Gu Cloudstrike
+            56754, // Azure Serpent, Phase 2 of Gu Cloudstrike
             64387, // Master Snowdrift
             56719, // Sha of Violence
             56884, // Taran Zhu <Lord of the Shado-Pan>
