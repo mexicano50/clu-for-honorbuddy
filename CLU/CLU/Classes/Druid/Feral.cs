@@ -181,7 +181,7 @@ CREDITS TO: HandNavi - because he owns the business.
                         new PrioritySelector(
                             Item.UseTrinkets(),
                             Racials.UseRacials(),
-                            Spell.CastSelfSpell("Enrage", ret => !SpellManager.CanCast("Berserk", Me) && Me.CurrentRage < 80,
+                            Spell.CastSelfSpell("Enrage", ret => !Spell.CanCast("Berserk", Me) && Me.CurrentRage < 80,
                                                 "Enrage"),
                             Spell.CastSelfSpell("Berserk", ret => true, "Berserk"),
                             Item.UseEngineerGloves(),
@@ -190,7 +190,7 @@ CREDITS TO: HandNavi - because he owns the business.
                     Spell.CastSpell("Thrash",
                                     ret =>
                                     Buff.TargetDebuffTimeLeft("Weakened Blows").TotalSeconds < 2 ||
-                                    Buff.TargetDebuffTimeLeft("Thrash").TotalSeconds < 4 || Unit.EnemyUnits.Count() > 2,
+                                    Buff.TargetDebuffTimeLeft("Thrash").TotalSeconds < 4 || Unit.EnemyMeleeUnits.Count() > 2,
                                     "Thrash (Bear)"),
                     Spell.CastAreaSpell("Swipe", 8, false, 3, 0.0, 0.0, ret => true, "Swipe"),
                     Spell.CastSpell("Faerie Fire",

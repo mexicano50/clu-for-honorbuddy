@@ -75,6 +75,42 @@ namespace CLU.Base
             }
         }
 
+        /// <summary>This is CLU's cancast method.</summary>
+        /// <param name="name">name of the spell to check.</param>
+        /// <returns> Returns true if the player can cast the spell.</returns>
+        public static bool CanCast(string name)
+        {
+            return SpellManager.CanCast(name) || CanCastGCDFree(name);
+        }
+
+        public static bool CanCast(string name, WoWUnit target)
+        {
+            return SpellManager.CanCast(name, target, true) || CanCastGCDFree(name);
+        }
+
+        public static bool CanCast(string name, WoWUnit target, bool checkmovement)
+        {
+            return SpellManager.CanCast(name, target, true, checkmovement) || CanCastGCDFree(name);
+        }
+
+        public static bool CanCast(string name, WoWUnit target, bool checkrange, bool checkmovement)
+        {
+            return SpellManager.CanCast(name, target, checkrange, checkmovement) || CanCastGCDFree(name);
+        }
+
+        public static bool CanCastGCDFree(string name)
+        {
+            var spell = GetSpellByName(name); // Convert the string name to a WoWspell
+            var GCDFree = spell != null && MiscLists.GCDFreeAbilities.Contains(spell.Id); // Check if its not on the GCD.
+
+            if (GCDFree)
+            {
+                return WoWSpell.FromId(spell.Id).Cooldown && SpellManager.CanCast(name); // if its not on teh GCD check that its not on cooldown
+            }
+
+            return false;
+        }
+
         /// <summary>
         /// Returns true if the player is currently channeling a spell
         /// </summary>
@@ -278,7 +314,7 @@ namespace CLU.Base
                         return false;
                     }
 
-                    if (!SpellManager.CanCast(spell, target, true)) return false;
+                    if (!Spell.CanCast(spell.ToString(), target, true)) return false;
 
                     return true;
                 },
@@ -357,7 +393,7 @@ namespace CLU.Base
                     if (!cond(a))
                         return false;
 
-                    if (!SpellManager.CanCast(name, onUnit(a), true, checkmovement)) return false; //This is checking spell, unit, Range, Movement
+                    if (!Spell.CanCast(name, onUnit(a), true, checkmovement)) return false; //This is checking spell, unit, Range, Movement
 
                     return onUnit(a) != null;
                 },
@@ -392,7 +428,7 @@ namespace CLU.Base
                     if (!cond(a))
                         return false;
 
-                    if (!SpellManager.CanCast(spell, onUnit(a), true, checkmovement)) return false; //This is checking spell, unit, Range, Movement
+                    if (!Spell.CanCast(spell.ToString(), onUnit(a), true, checkmovement)) return false; //This is checking spell, unit, Range, Movement
                    
                     return onUnit(a) != null;
                 },
@@ -512,7 +548,7 @@ namespace CLU.Base
                     if (!cond(a))
                         return false;
 
-                    if (!SpellManager.CanCast(name, onUnit(a), true, checkmovement)) return false; //This is checking spell, unit, Range, Movement
+                    if (!Spell.CanCast(name, onUnit(a), true, checkmovement)) return false; //This is checking spell, unit, Range, Movement
 
                     return onUnit(a) != null;
                 },
@@ -547,7 +583,7 @@ namespace CLU.Base
                     if (onUnit(a).Guid == Me.Guid)
                         return false;
 
-                    if (!SpellManager.CanCast(name, onUnit(a).CurrentTarget, true, checkmovement)) return false; //This is checking spell, unit, Range, Movement
+                    if (!Spell.CanCast(name, onUnit(a).CurrentTarget, true, checkmovement)) return false; //This is checking spell, unit, Range, Movement
 
                     // if (Unit.TimeToDeath(onUnit(a).CurrentTarget) < 5)
                     // return false;
@@ -578,7 +614,7 @@ namespace CLU.Base
 
                     if (!cond(a))
                         return false;
-                    if (!SpellManager.CanCast(name, onUnit(a), true, checkmovement)) return false; //This is checking spell, unit, Range, Movement
+                    if (!Spell.CanCast(name, onUnit(a), true, checkmovement)) return false; //This is checking spell, unit, Range, Movement
 
                     // if (Unit.TimeToDeath(onUnit(a).CurrentTarget) < 5)
                     // return false;
@@ -607,7 +643,7 @@ namespace CLU.Base
                     if (!cond(a))
                         return false;
 
-                    if (!SpellManager.CanCast(name, Me))
+                    if (!Spell.CanCast(name, Me))
                         return false;
 
                     return true;
@@ -628,7 +664,7 @@ namespace CLU.Base
             string name, float maxDistance, float maxAngleDeltaDegrees, CanRunDecoratorDelegate cond, string label)
         {
             return new Decorator(
-                       a => Me.CurrentTarget != null && cond(a) && SpellManager.CanCast(name, Me.CurrentTarget,true,true) &&
+                       a => Me.CurrentTarget != null && cond(a) && Spell.CanCast(name, Me.CurrentTarget,true,true) &&
                        Unit.DistanceToTargetBoundingBox() <= maxDistance &&
                        Unit.FacingTowardsUnitDegrees(Me.Location, Me.CurrentTarget.Location) <= maxAngleDeltaDegrees,
                        new Sequence(
@@ -659,7 +695,7 @@ namespace CLU.Base
                     if (onUnit != null && onUnit(a) != null && !(onUnit(a).IsCasting && onUnit(a).CanInterruptCurrentSpellCast))
                         return false;
 
-                    if (onUnit != null && SpellManager.CanCast(name, onUnit(a), true, true))
+                    if (onUnit != null && Spell.CanCast(name, onUnit(a), true, true))
                         return false;
 
                     return true;
@@ -688,7 +724,7 @@ namespace CLU.Base
                     if (Me.CurrentTarget != null && !(Me.CurrentTarget.IsCasting && Me.CurrentTarget.CanInterruptCurrentSpellCast))
                         return false;
 
-                    if (Me.CurrentTarget != null && !SpellManager.CanCast(name, Me.CurrentTarget, true, true))
+                    if (Me.CurrentTarget != null && !Spell.CanCast(name, Me.CurrentTarget, true, true))
                         return false;
 
                     return true;
@@ -828,7 +864,7 @@ namespace CLU.Base
             return
                 new Decorator(
                     ret =>
-                    requirements(ret) && onLocation != null && SpellManager.CanCast(spell) && CLUSettings.Instance.UseAoEAbilities &&
+                    requirements(ret) && onLocation != null && Spell.CanCast(spell) && CLUSettings.Instance.UseAoEAbilities &&
                     (StyxWoW.Me.Location.Distance(onLocation(ret)) <= SpellManager.Spells[spell].MaxRange ||
                      SpellManager.Spells[spell].MaxRange == 0),
                     new Sequence(
@@ -892,7 +928,7 @@ namespace CLU.Base
                     if (!cond(a))
                         return false;
 
-                    return onUnit != null && SpellManager.CanCast(name, onUnit(a));
+                    return onUnit != null && Spell.CanCast(name, onUnit(a));
                 },
             new Sequence(
                 new Action(a => CLULogger.Log(" [Casting at Location] {0} ", label)),
@@ -1013,7 +1049,7 @@ namespace CLU.Base
                     if (bestLocation == WoWPoint.Empty)
                         return false;
 
-                    if (!SpellManager.CanCast(name, Me.CurrentTarget))
+                    if (!Spell.CanCast(name, Me.CurrentTarget))
                         return false;
 
                     return true;
@@ -1055,7 +1091,7 @@ namespace CLU.Base
                     if (!cond(a))
                         return false;
 
-                    if (!SpellManager.CanCast(name, Me))
+                    if (!Spell.CanCast(name, Me))
                         return false;
 
                     bestLocation = Unit.FindClusterTargets(

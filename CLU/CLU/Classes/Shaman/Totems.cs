@@ -89,7 +89,7 @@ namespace CLU.Classes.Shaman
 
                 // check for stress - enemy player or elite within 8 levels nearby
                 // .. dont use NearbyUnitsInCombatWithMe since it checks .Tagged and we only care if we are being attacked 
-                ctx => Unit.EnemyUnits.Count() >= StressMobCount,
+                ctx => Unit.EnemyMeleeUnits.Count() >= StressMobCount,
 
                 // earth totems
             //   Spell.CastSelfSpell(WoWTotem.EarthElemental.ToSpellId(),
@@ -99,7 +99,7 @@ namespace CLU.Classes.Shaman
                     ret => Me.HealthPercent < 50 && !Exist(WoWTotem.EarthElemental),"Stone Bulwark"),
 
                 new PrioritySelector(
-                    ctx => Unit.EnemyUnits.Any(u => u.IsTargetingMeOrPet && u.IsPlayer && u.Combat),
+                    ctx => Unit.EnemyRangedUnits.Any(u => u.IsTargetingMeOrPet && u.IsPlayer && u.Combat),
 
                     Spell.CastSelfSpell(WoWTotem.Earthgrab.ToSpellId(),
                         ret => (bool)ret && !Exist(WoWTotem.StoneBulwark, WoWTotem.EarthElemental, WoWTotem.Earthbind),"Earth Grab"),
@@ -130,12 +130,12 @@ namespace CLU.Classes.Shaman
                 // air totems
                 Spell.CastSpell("Grounding Totem",
                     ret => ((bool)ret)
-                        && Unit.EnemyUnits.Any(u => u.DistanceSqr < 40 *40 && u.IsTargetingMeOrPet && u.IsCasting)
+                        && Unit.EnemyRangedUnits.Any(u => u.IsCasting)
                         && !Exist(WoWTotemType.Air), "Grounding Totem"),
 
                 Spell.CastSpell("Capacitor Totem",
                     ret => ((bool)ret)
-                        && Unit.EnemyUnits.Any(u => u.DistanceSqr < GetTotemRange(WoWTotem.Capacitor) * GetTotemRange(WoWTotem.Capacitor))
+                        && Unit.EnemyRangedUnits.Any(u => u.DistanceSqr < GetTotemRange(WoWTotem.Capacitor) * GetTotemRange(WoWTotem.Capacitor))
                         && !Exist(WoWTotemType.Air),"Capacitor Totem"),
 
                 Spell.CastSpell("Stormlash Totem",

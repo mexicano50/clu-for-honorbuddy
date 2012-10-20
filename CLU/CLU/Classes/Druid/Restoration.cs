@@ -156,7 +156,7 @@ namespace CLU.Classes.Druid
 
                            // emergency heals on most injured tank
                            Healer.FindTank(a => true, x => x.ToUnit().InLineOfSight && !x.ToUnit().IsDead && x.HealthPercent < 50, (a, b) => (int)(a.CurrentHealth - b.CurrentHealth), "emergency heals on most injured tank",
-                                           new Sequence(ret => SpellManager.CanCast("Nature's Swiftness", Me),
+                                           new Sequence(ret => Spell.CanCast("Nature's Swiftness", Me),
                                                         Spell.CastSelfSpell("Nature's Swiftness", ret => true, "Nature's Swiftness"),
                                                         Spell.CastHeal("Healing Touch", a => true, "Healing Touch")),
                                            Spell.CastHeal("Swiftmend", a => (Buff.TargetHasBuff("Regrowth", HealTarget) || Buff.TargetHasBuff("Rejuvenation", HealTarget)), "Swiftmend (emergency)"),
@@ -168,14 +168,14 @@ namespace CLU.Classes.Druid
                            Healer.FindRaidMember(a => true, x => x.ToUnit().InLineOfSight && !x.ToUnit().IsDead && x.HealthPercent < 45, (a, b) => (int)(a.CurrentHealth - b.CurrentHealth), "I'm fine and tanks are not dying => ensure nobody is REALLY low life",
                                                  Spell.CastHeal("Swiftmend", a => (Buff.TargetHasBuff("Regrowth", HealTarget) || Buff.TargetHasBuff("Rejuvenation", HealTarget)), "Swiftmend (emergency)"),
                                                  Spell.CastHeal("Rejuvenation", a => !Buff.TargetHasBuff("Rejuvenation", HealTarget), "Rejuvenation (emergency)"),
-                                                 new Sequence(ret => SpellManager.CanCast("Nature's Swiftness", Me),
+                                                 new Sequence(ret => Spell.CanCast("Nature's Swiftness", Me),
                                                          Spell.CastSelfSpell("Nature's Swiftness", ret => true, "Nature's Swiftness"),
                                                          Spell.CastHeal("Healing Touch", a => true, "Healing Touch")),
                                                  Spell.CastHeal("Regrowth", a => true, "Regrowth (emergency)")
                                                 ),
 
                            // party healing
-                           Healer.FindAreaHeal(a => SpellManager.CanCast("Wild Growth"), 10, 95, 30f, (Me.GroupInfo.IsInRaid ? 4 : 3), "Wild Growth party healing: Avg: 10-95, 30yrds, count: 5 or 3",
+                           Healer.FindAreaHeal(a => Spell.CanCast("Wild Growth"), 10, 95, 30f, (Me.GroupInfo.IsInRaid ? 4 : 3), "Wild Growth party healing: Avg: 10-95, 30yrds, count: 5 or 3",
                                                Spell.CastHeal("Wild Growth", ret => true, "Wild Growth")
                                               ),
 
@@ -186,12 +186,12 @@ namespace CLU.Classes.Druid
 
 
                            // Tree of Life oh shit [SpellManager] Incarnation: Tree of Life (33891) overrides Incarnation (106731)
-                           Healer.FindAreaHeal(a => SpellManager.CanCast("Incarnation") && StyxWoW.Me.Combat, 10, (Me.GroupInfo.IsInRaid ? 75 : 65), 30f, (Me.GroupInfo.IsInRaid ? 5 : 3), "Tree of Life party healing: Avg: 10-70 or 65, 30yrds, count: 5 or 3",
+                           Healer.FindAreaHeal(a => Spell.CanCast("Incarnation") && StyxWoW.Me.Combat, 10, (Me.GroupInfo.IsInRaid ? 75 : 65), 30f, (Me.GroupInfo.IsInRaid ? 5 : 3), "Tree of Life party healing: Avg: 10-70 or 65, 30yrds, count: 5 or 3",
                                                Spell.CastSpell("Incarnation", ret => Me, ret => CLUSettings.Instance.UseCooldowns, "Incarnation") //TODO: Check.
                                               ),
 
                            // Tranquility oh shit
-                           Healer.FindAreaHeal(a => SpellManager.CanCast("Tranquility") && !Buff.PlayerHasBuff("Tree of Life") && CLUSettings.Instance.UseCooldowns, 10, (Me.GroupInfo.IsInRaid ? 80 : 65), 40f, (Me.GroupInfo.IsInRaid ? 5 : 4), "Tranquility party healing: Avg: 10-70 or 65, 40yrds, count: 5 or 3",
+                           Healer.FindAreaHeal(a => Spell.CanCast("Tranquility") && !Buff.PlayerHasBuff("Tree of Life") && CLUSettings.Instance.UseCooldowns, 10, (Me.GroupInfo.IsInRaid ? 80 : 65), 40f, (Me.GroupInfo.IsInRaid ? 5 : 4), "Tranquility party healing: Avg: 10-70 or 65, 40yrds, count: 5 or 3",
                                                Spell.ChannelSelfSpell("Tranquility", ret => true, "Tranquility")
                                               ),
 

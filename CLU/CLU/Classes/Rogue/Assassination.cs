@@ -104,10 +104,10 @@ namespace CLU.Classes.Rogue
                               ("Evasion",
                                ret =>
                                Me.HealthPercent < 35 &&
-                               Unit.EnemyUnits.Count(u => u.DistanceSqr < 6 * 6 && u.IsTargetingMeOrPet) >= 1, "Evasion"),
+                               Unit.EnemyMeleeUnits.Count(u => u.DistanceSqr < 6 * 6 && u.IsTargetingMeOrPet) >= 1, "Evasion"),
                           Spell.CastSelfSpell
                               ("Cloak of Shadows",
-                               ret => Unit.EnemyUnits.Count(u => u.IsTargetingMeOrPet && u.IsCasting) >= 1,
+                               ret => Unit.EnemyMeleeUnits.Count(u => u.IsTargetingMeOrPet && u.IsCasting) >= 1,
                                "Cloak of Shadows"), Poisons.CreateApplyPoisons()));
             }
         }
@@ -266,7 +266,7 @@ namespace CLU.Classes.Rogue
 
         private static IEnumerable<WoWUnit> AoETargets
         {
-            get { return _aoeTargets ?? (_aoeTargets = Unit.EnemyUnits.Where(x => x.DistanceSqr <= 100)); }
+            get { return _aoeTargets ?? (_aoeTargets = Unit.EnemyMeleeUnits.Where(x => x.DistanceSqr <= 100)); }
         }
 
         private static WoWUnit _tricksTarget;
@@ -488,7 +488,7 @@ namespace CLU.Classes.Rogue
 
             // If we're not behind, attempt to shadowstep and wait for next pulse.
             if (SpellManager.HasSpell("Shadowstep") && !StyxWoW.Me.IsBehind(Me.CurrentTarget) &&
-                      SpellManager.CanCast("Shadowstep", Me.CurrentTarget))
+                      Spell.CanCast("Shadowstep", Me.CurrentTarget))
             {
                 CLULogger.Log(" [Casting] Shadowstep on {0} @ StealthedCombat", CLULogger.SafeName(Me.CurrentTarget));
                 SpellManager.Cast("Shadowstep");

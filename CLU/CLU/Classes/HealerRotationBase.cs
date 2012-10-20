@@ -17,8 +17,6 @@ using Styx;
 using Styx.WoWInternals.WoWObjects;
 using CLU.Base;
 using CLU.Managers;
-using Styx.TreeSharp;
-using System.Text;
 
 namespace CLU.Classes
 {
@@ -128,7 +126,7 @@ namespace CLU.Classes
         {
             get
             {
-                return Battlegrounds.IsInsideBattleground ? Unit.RangedPvPUnits.FirstOrDefault(u => u.DistanceSqr < 35 * 35 && !Unit.UnitIsControlled(u, true)) : Unit.RangedPvEUnits.FirstOrDefault(u => !Unit.UnitIsControlled(u, true));
+                return Battlegrounds.IsInsideBattleground ? Unit.RangedPvPUnits.FirstOrDefault(u => u.DistanceSqr < 35 * 35 && !Unit.UnitIsControlled(u, true)) : Unit.EnemyRangedUnits.FirstOrDefault(u => !Unit.UnitIsControlled(u, true));
             }
         }
 

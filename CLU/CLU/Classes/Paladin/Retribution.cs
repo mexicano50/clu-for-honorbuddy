@@ -126,21 +126,21 @@ NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagr
                                 Buff.CastBuff("Avenging Wrath",                 ret => Me.HasMyAura(86700) && Buff.GetAuraStack(Me, 86700, true) >= 10, "Avenging Wrath with 10 stacks of Ancient Power"),
                                 Buff.CastBuff("Holy Avenger",                   ret => Me.HasMyAura("Avenging Wrath"), "Holy Avenger with Avenging Wrath"),
                                 Spell.CastSpell("Holy Prism",                   ret => true, "Holy Prism"))),
-                    new Decorator(ret => Unit.EnemyUnits.Count(a => a.DistanceSqr <= 12 * 12) > 2 && CLUSettings.Instance.UseAoEAbilities,
+                    new Decorator(ret => Unit.EnemyMeleeUnits.Count() > 2 && CLUSettings.Instance.UseAoEAbilities,
                         new PrioritySelector(
                             Spell.CastSpell("Divine Storm", ret => Me.HasMyAura("Inquisition") && Buff.GetAuraTimeLeft(Me, "Inquisition", true).TotalSeconds >= 2 && (Me.CurrentHolyPower == 5 || Me.HasMyAura(90174)), "Divine Storm with 5 HP"),
                             Spell.CastSpell("Execution Sentence", ret => Me.HasMyAura("Inquisition"), "Execution Sentence"),
-                            Spell.CastSpell("Light's Hammer", ret => Unit.EnemyUnits.Count(a => a.DistanceSqr <= 12 * 12) >= CLUSettings.Instance.Paladin.RetributionLightsHammerCount && Me.HasMyAura("Inquisition") && CLUSettings.Instance.UseAoEAbilities, "Light's Hammer"),
+                            Spell.CastSpell("Light's Hammer", ret => Unit.EnemyMeleeUnits.Count() >= CLUSettings.Instance.Paladin.RetributionLightsHammerCount && Me.HasMyAura("Inquisition") && CLUSettings.Instance.UseAoEAbilities, "Light's Hammer"),
                             Spell.CastSpell("Hammer of Wrath",                  ret => true, "Hammer of Wrath on < 20% HP target"),
                             Spell.CastSpell("Exorcism",                         ret => Me.CurrentHolyPower < 5 || (Me.HasMyAura(59578) && Me.CurrentHolyPower < 5), "Excorcism to generate Holy Power"),
                             Spell.CastSpell("Hammer of the Righteous",          ret => Me.CurrentHolyPower < 5 && !Me.HasMyAura(59578), "Hammer of the Righteous to generate Holy Power"),
                             Spell.CastSpell("Judgment",                         ret => Me.CurrentHolyPower < 5 && !Me.HasMyAura(59578) ,"Judgment to generate Holy Power"),
                             Spell.CastSpell("Divine Storm", ret => Me.HasMyAura("Inquisition") && Buff.GetAuraTimeLeft(Me, "Inquisition", true).TotalSeconds >=2 && Me.CurrentHolyPower >= 3 || Me.HasMyAura(90174), "Divine Storm with 3+ HP"))),
-                    new Decorator(ret => Unit.EnemyUnits.Count(a => a.DistanceSqr <= 12*12) <= 2 || !CLUSettings.Instance.UseAoEAbilities,
+                    new Decorator(ret => Unit.EnemyMeleeUnits.Count() <= 2 || !CLUSettings.Instance.UseAoEAbilities,
                         new PrioritySelector(
                             Spell.CastSpell("Templar's Verdict", ret => Me.HasMyAura("Inquisition") && Buff.GetAuraTimeLeft(Me, "Inquisition", true).TotalSeconds >= 2 && Me.CurrentHolyPower == 5 || Me.HasMyAura(90174), "Templar's Verdict with 5 HP"),
                             Spell.CastSpell("Execution Sentence", ret => Me.HasMyAura("Inquisition"), "Execution Sentence"),
-                            Spell.CastSpell("Light's Hammer", ret => Unit.EnemyUnits.Count(a => a.DistanceSqr <= 12 * 12) >= CLUSettings.Instance.Paladin.RetributionLightsHammerCount && Me.HasMyAura("Inquisition") && CLUSettings.Instance.UseAoEAbilities, "Light's Hammer"),
+                            Spell.CastSpell("Light's Hammer", ret => Unit.EnemyMeleeUnits.Count() >= CLUSettings.Instance.Paladin.RetributionLightsHammerCount && Me.HasMyAura("Inquisition") && CLUSettings.Instance.UseAoEAbilities, "Light's Hammer"),
                             Spell.CastSpell("Hammer of Wrath",                  ret => true, "Hammer of Wrath on < 20% HP target"),
                             Spell.CastSpell("Exorcism",                         ret => Me.CurrentHolyPower < 5 || (Me.HasMyAura(59578) && Me.CurrentHolyPower < 5), "Excorcism to generate Holy Power"),
                             Spell.CastSpell("Crusader Strike",                  ret => Me.CurrentHolyPower < 5 && !Me.HasMyAura(59578), "Crusader Strike to generate Holy Power"),
@@ -177,8 +177,8 @@ NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagr
                                        Buff.CastBuff("Hand of Protection", ret => Me.HealthPercent < CLUSettings.Instance.Paladin.RetributionHoPPercent, "Hand of Protection"))))),
                     
                      // Seal Swapping for AoE
-                     Buff.CastBuff("Seal of Righteousness", ret => Unit.EnemyUnits.Count(a => a.DistanceSqr <= 12 * 12) >= CLUSettings.Instance.Paladin.SealofRighteousnessCount, "Seal of Righteousness"),
-                     Buff.CastBuff("Seal of Truth", ret => Unit.EnemyUnits.Count(a => a.DistanceSqr <= 12 * 12) < CLUSettings.Instance.Paladin.SealofRighteousnessCount, "Seal of Truth")
+                     Buff.CastBuff("Seal of Righteousness", ret => Unit.EnemyMeleeUnits.Count() >= CLUSettings.Instance.Paladin.SealofRighteousnessCount, "Seal of Righteousness"),
+                     Buff.CastBuff("Seal of Truth", ret => Unit.EnemyMeleeUnits.Count() < CLUSettings.Instance.Paladin.SealofRighteousnessCount, "Seal of Truth")
                     ); 
                     
                     

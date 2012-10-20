@@ -226,7 +226,7 @@ namespace CLU.Base
         ///     List of nearby enemy units that pass certain criteria, this list should only return units
         ///     in active combat with the player, the player's party, or the player's raid.
         /// </summary>
-        public static IEnumerable<WoWUnit> EnemyUnits
+        public static IEnumerable<WoWUnit> EnemyMeleeUnits
         {
             get
             {
@@ -258,7 +258,7 @@ namespace CLU.Base
         ///     List of nearby Ranged enemy units that pass certain criteria, this list should only return units
         ///     in active combat with the player, the player's party, or the player's raid.
         /// </summary>
-        public static IEnumerable<WoWUnit> RangedPvEUnits
+        public static IEnumerable<WoWUnit> EnemyRangedUnits
         {
             get
             {
@@ -1072,7 +1072,7 @@ namespace CLU.Base
                     return StyxWoW.Me.FocusedUnit;
 
                 var bestHostileEnemy =
-                    RangedPvEUnits.Where(
+                    EnemyRangedUnits.Where(
                         t => t != Me.CurrentTarget).OrderBy(
                         t => t.DistanceSqr).FirstOrDefault(t => t.IsAlive && !UnitIsControlled(t, true));
 
@@ -1188,7 +1188,7 @@ namespace CLU.Base
                                     return RunStatus.Failure;
                                 }
 
-                                WoWUnit target = RangedPvEUnits.FirstOrDefault(u => !u.HasAura(spell) && u.Distance2DSqr < 40 * 40);
+                                WoWUnit target = EnemyRangedUnits.FirstOrDefault(u => !u.HasAura(spell) && u.Distance2DSqr < 40 * 40);
                                 if (target != null)
                                 {
                                     CLULogger.DiagnosticLog(target.Name);

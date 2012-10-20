@@ -110,8 +110,8 @@ NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagr
                            Spell.CastSpell("Word of Glory",               ret=> Me,   ret => Me.HealthPercent < CLUSettings.Instance.Paladin.WordofGloryPercent && (Me.CurrentHolyPower > 1 || Buff.PlayerHasBuff("Divine Purpose")), "Word of Glory"),
                             // AOE
                            Spell.CastAreaSpell("Hammer of the Righteous", 8, false, CLUSettings.Instance.Paladin.ProtectionHoRCount, 0.0, 0.0, ret => true, "Hammer of the Righteous"),
-                           Spell.CastSpell("Holy Prism", ret => Me.HealthPercent < CLUSettings.Instance.Paladin.HolyPrismPercent && Me.CurrentTarget != null && Unit.EnemyUnits.Count() >= CLUSettings.Instance.Paladin.HolyPrismCount, "Holy Prism"),
-                           Spell.CastSpell("Light's Hammer", ret => Me.HealthPercent > CLUSettings.Instance.Paladin.HolyPrismPercent && Me.CurrentTarget != null && Unit.EnemyUnits.Count() >= CLUSettings.Instance.Paladin.LightsHammerCount, "Light's Hammer"),
+                           Spell.CastSpell("Holy Prism", ret => Me.HealthPercent < CLUSettings.Instance.Paladin.HolyPrismPercent && Me.CurrentTarget != null && Unit.EnemyMeleeUnits.Count() >= CLUSettings.Instance.Paladin.HolyPrismCount, "Holy Prism"),
+                           Spell.CastSpell("Light's Hammer", ret => Me.HealthPercent > CLUSettings.Instance.Paladin.HolyPrismPercent && Me.CurrentTarget != null && Unit.EnemyMeleeUnits.Count() >= CLUSettings.Instance.Paladin.LightsHammerCount, "Light's Hammer"),
                            // end AoE
                            Spell.CastSpell("Crusader Strike",             ret => true, "Crusader Strike"),
                            
@@ -121,7 +121,7 @@ NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagr
                            Spell.CastSpell("Hammer of Wrath",             ret => Me.CurrentTarget != null && Me.CurrentTarget.HealthPercent < 20, "Hammer of Wrath"),
                            Spell.CastSpell("Execution Sentence",          ret => Me.CurrentTarget != null && Unit.UseCooldowns(), "Execution Sentence"),
                            Spell.CastOnGround("Consecration", ret => Me.CurrentTarget.Location, a => Me.CurrentTarget != null && !BossList.IgnoreAoE.Contains(Unit.CurrentTargetEntry) && Me.ManaPercent > CLUSettings.Instance.Paladin.ConsecrationManaPercent && TalentManager.HasGlyph("Consecration")),
-                           Spell.CastSpell("Consecration",                ret => Me.CurrentTarget != null && !BossList.IgnoreAoE.Contains(Unit.CurrentTargetEntry) && Me.ManaPercent > CLUSettings.Instance.Paladin.ConsecrationManaPercent && !Me.IsMoving && !Me.CurrentTarget.IsMoving && Me.IsWithinMeleeRange && Unit.EnemyUnits.Count() >= CLUSettings.Instance.Paladin.ConsecrationCount && !TalentManager.HasGlyph("Consecration"), "Consecration"),
+                           Spell.CastSpell("Consecration",                ret => Me.CurrentTarget != null && !BossList.IgnoreAoE.Contains(Unit.CurrentTargetEntry) && Me.ManaPercent > CLUSettings.Instance.Paladin.ConsecrationManaPercent && !Me.IsMoving && !Me.CurrentTarget.IsMoving && Me.IsWithinMeleeRange && Unit.EnemyMeleeUnits.Count() >= CLUSettings.Instance.Paladin.ConsecrationCount && !TalentManager.HasGlyph("Consecration"), "Consecration"),
                            Spell.CastSpell("Holy Wrath",                  ret => true, "Holy Wrath")
                           );
             }
@@ -151,8 +151,8 @@ NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagr
                                Item.UseBagItem("Healthstone",              ret => Me.HealthPercent < CLUSettings.Instance.Paladin.HealthstonePercent, "Healthstone"),
                                Buff.CastBuff("Divine Protection",          ret => Me.HealthPercent < CLUSettings.Instance.Paladin.ProtectionDPPercent, "Divine Protection"))),
                     // Seal Swapping for AoE
-                    Buff.CastBuff("Seal of Righteousness",  ret => Unit.EnemyUnits.Count() >= CLUSettings.Instance.Paladin.SealofRighteousnessCount, "Seal of Righteousness"),
-                    Buff.CastBuff("Seal of Truth",          ret => Me.ManaPercent > CLUSettings.Instance.Paladin.SealofInsightMana && Unit.EnemyUnits.Count() < CLUSettings.Instance.Paladin.SealofRighteousnessCount, "Seal of Truth"),
+                    Buff.CastBuff("Seal of Righteousness",  ret => Unit.EnemyMeleeUnits.Count() >= CLUSettings.Instance.Paladin.SealofRighteousnessCount, "Seal of Righteousness"),
+                    Buff.CastBuff("Seal of Truth",          ret => Me.ManaPercent > CLUSettings.Instance.Paladin.SealofInsightMana && Unit.EnemyMeleeUnits.Count() < CLUSettings.Instance.Paladin.SealofRighteousnessCount, "Seal of Truth"),
                     Buff.CastBuff("Seal of Insight",        ret => Me.ManaPercent < CLUSettings.Instance.Paladin.SealofInsightMana && !Buff.PlayerHasBuff("Seal of Righteousness"), "Seal of Insight for Mana Gen")
                     
                     );

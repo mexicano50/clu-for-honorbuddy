@@ -121,20 +121,20 @@ namespace CLU.Classes.DeathKnight
                                       )
                         ),
                     // Long Duration AoE
-                    new Decorator(ret => CLUSettings.Instance.UseAoEAbilities && Unit.EnemyUnits.Count() > 5,
+                    new Decorator(ret => CLUSettings.Instance.UseAoEAbilities && Unit.EnemyMeleeUnits.Count() > 5,
                                new PrioritySelector(
                                     Common.SpreadDiseasesBehavior(ret => Me.CurrentTarget), // Used to spread your Diseases based upon your Tier one Talent. -- wulf
-                                    Spell.CastAreaSpell("Death and Decay", 10, true, 3, 0.0, 0.0,   ret => Me.CurrentTarget != null && !BossList.IgnoreAoE.Contains(Unit.CurrentTargetEntry) && Me.UnholyRuneCount == 2 && Unit.EnemyUnits.Count() >= 3 && !Me.IsMoving && !Me.CurrentTarget.IsMoving, "Death and Decay"),
+                                    Spell.CastAreaSpell("Death and Decay", 10, true, 3, 0.0, 0.0,   ret => Me.CurrentTarget != null && !BossList.IgnoreAoE.Contains(Unit.CurrentTargetEntry) && Me.UnholyRuneCount == 2 && Unit.EnemyMeleeUnits.Count() >= 3 && !Me.IsMoving && !Me.CurrentTarget.IsMoving, "Death and Decay"),
                                     Spell.CastSpell("Festering Strike",                             ret => Common.FrostRuneSlotsActive + Common.BloodRuneSlotsActive >= 2, "Festering Strike"),
                                     Spell.CastSpell("Blood Tap",                                    ret => Me.CurrentTarget, ret => Buff.PlayerCountBuff("Blood Charge") >= 5 && (Common.FrostRuneSlotsActive == 0 || Common.UnholyRuneSlotsActive == 0 || Common.BloodRuneSlotsActive == 0), "Blood Tap (Refreshed a depleted Rune)"),  //Don't waste it on Unholy Runes
                                     Spell.CastAreaSpell("Blood Boil", 10, false, 3, 0.0, 0.0,       ret => Me.BloodRuneCount >= 1, "Blood Boil")
                                    )
                                ),
                     // Short Duration AoE
-                    new Decorator(ret => CLUSettings.Instance.UseAoEAbilities && Unit.EnemyUnits.Count() > 2,
+                    new Decorator(ret => CLUSettings.Instance.UseAoEAbilities && Unit.EnemyMeleeUnits.Count() > 2,
                                new PrioritySelector(
                                     Common.SpreadDiseasesBehavior(ret => Me.CurrentTarget), // Used to spread your Diseases based upon your Tier one Talent. -- wulf
-                                    Spell.CastAreaSpell("Death and Decay", 10, true, 3, 0.0, 0.0,   ret => Me.CurrentTarget != null && !BossList.IgnoreAoE.Contains(Unit.CurrentTargetEntry) && Me.UnholyRuneCount == 2 && Unit.EnemyUnits.Count() >= 3 && !Me.IsMoving && !Me.CurrentTarget.IsMoving, "Death and Decay"),
+                                    Spell.CastAreaSpell("Death and Decay", 10, true, 3, 0.0, 0.0,   ret => Me.CurrentTarget != null && !BossList.IgnoreAoE.Contains(Unit.CurrentTargetEntry) && Me.UnholyRuneCount == 2 && Unit.EnemyMeleeUnits.Count() >= 3 && !Me.IsMoving && !Me.CurrentTarget.IsMoving, "Death and Decay"),
                                     Spell.CastSpell("Scourge Strike",                               ret => Spell.SpellOnCooldown("Death and Decay"), "Scourge Strike"),
                                     Spell.CastAreaSpell("Blood Boil", 10, false, 3, 0.0, 0.0,       ret => Me.BloodRuneCount >= 1, "Blood Boil"),
                                     Spell.CastSpell("Death Coil",                                   ret => Me.ActiveAuras.ContainsKey("Sudden Doom"), "Death Coil (Sudden Doom)"),// need ActiveAuras, don't mess with me! Seriously... -- Weischbier
@@ -177,7 +177,7 @@ namespace CLU.Classes.DeathKnight
                         //new Action(a => { SysLog.Log("I am the start of public Composite baseRotation"); return RunStatus.Failure; }),
                         //PvP Utilities
                         Spell.CastSpell("Chains of Ice",        ret => Me.CurrentTarget != null && !Me.CurrentTarget.IsWithinMeleeRange && Me.CurrentTarget.DistanceSqr <= 30 * 30 && !Buff.TargetHasDebuff("Chains of Ice"), "Chains of Ice"),
-                        Spell.CastSpell("Death Grip",           ret => Me.CurrentTarget != null && !Me.CurrentTarget.IsWithinMeleeRange && Me.CurrentTarget.DistanceSqr <= 30 * 30 && !Buff.TargetHasDebuff("Chains of Ice") && !SpellManager.CanCast("Chains of Ice"), "Death Grip"),
+                        Spell.CastSpell("Death Grip",           ret => Me.CurrentTarget != null && !Me.CurrentTarget.IsWithinMeleeRange && Me.CurrentTarget.DistanceSqr <= 30 * 30 && !Buff.TargetHasDebuff("Chains of Ice") && !Spell.CanCast("Chains of Ice"), "Death Grip"),
 
                         //Rotation
                         Racials.UseRacials(),
@@ -248,7 +248,7 @@ namespace CLU.Classes.DeathKnight
                             Spell.CastSelfSpell("Raise Dead",       ret => (Me.Pet == null || Me.Pet.IsDead), "Raise Dead"),
                             //mogu_power_potion
                             Spell.CastSpell("Chains of Ice",        ret => Me.CurrentTarget != null && Macro.Manual && (CLU.LocationContext == GroupLogic.Battleground || Unit.IsTrainingDummy(Me.CurrentTarget)) && !Me.CurrentTarget.IsWithinMeleeRange && Me.CurrentTarget.DistanceSqr <= 30 * 30 && !Buff.TargetHasDebuff("Chains of Ice"), "Chains of Ice"),
-                            Spell.CastSpell("Death Grip",           ret => Me.CurrentTarget != null && Macro.Manual && (CLU.LocationContext == GroupLogic.Battleground || Unit.IsTrainingDummy(Me.CurrentTarget)) && !Me.CurrentTarget.IsWithinMeleeRange && Me.CurrentTarget.DistanceSqr <= 30 * 30 && !Buff.TargetHasDebuff("Chains of Ice") && !SpellManager.CanCast("Chains of Ice"), "Death Grip"),
+                            Spell.CastSpell("Death Grip",           ret => Me.CurrentTarget != null && Macro.Manual && (CLU.LocationContext == GroupLogic.Battleground || Unit.IsTrainingDummy(Me.CurrentTarget)) && !Me.CurrentTarget.IsWithinMeleeRange && Me.CurrentTarget.DistanceSqr <= 30 * 30 && !Buff.TargetHasDebuff("Chains of Ice") && !Spell.CanCast("Chains of Ice"), "Death Grip"),
                             new Action(delegate
                             {
                                 Macro.isMultiCastMacroInUse();

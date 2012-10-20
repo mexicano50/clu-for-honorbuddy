@@ -130,8 +130,8 @@ namespace CLU.Classes.Monk
                            //Spell.CastSpell(JabSpellList.Find(SpellManager.CanCast), ret => Buff.PlayerHasActiveBuff("Power Strikes"), "Jab"),                         
 
                            //Moar Mana
-                           Spell.CastSpecialSpell("Mana Tea", ret => SpellManager.CanCast("Mana Tea") && Me.ManaPercent < 85 && GotTea, "Me want moar mana! Me drink Mana Tea!"),
-                           Spell.CastSpecialSpell("Arcane Torrent", ret => SpellManager.CanCast("Arcane Torrent") && Me.ManaPercent < 85, "Arcane Torrent"),
+                           Spell.CastSpecialSpell("Mana Tea", ret => Spell.CanCast("Mana Tea") && Me.ManaPercent < 85 && GotTea, "Me want moar mana! Me drink Mana Tea!"),
+                           Spell.CastSpecialSpell("Arcane Torrent", ret => Spell.CanCast("Arcane Torrent") && Me.ManaPercent < 85, "Arcane Torrent"),
 
                            //Save Tank's life
                            Healer.FindTank(a => true, x => x.ToUnit().InLineOfSight && !x.ToUnit().IsDead && x.HealthPercent < 65, (a, b) => (int)(a.CurrentHealth - b.CurrentHealth), "emergency heals on most injured tank",
@@ -157,7 +157,7 @@ namespace CLU.Classes.Monk
                     
                            Healer.FindAreaHeal(a => true, 10, 75, 30f, (Me.GroupInfo.IsInRaid ? 3 : 2), "AOE Thunder Focus Tea: Avg: 10-75, 30yrds, count: 3 or 2",
                                     Spell.CastSpecialSpell("Thunder Focus Tea", ret => Buff.GroupCountBuff("Renewing Mist") >= 3 && Chi >= 3, "Tea Popped"),
-                                    Spell.CastSpecialSpell("Rushing Jade Wind", ret => SpellManager.CanCast("Rushing Jade Wind") && Chi >= 1, "Rushing Jade Wind"),
+                                    Spell.CastSpecialSpell("Rushing Jade Wind", ret => Spell.CanCast("Rushing Jade Wind") && Chi >= 1, "Rushing Jade Wind"),
                                     Spell.CastSpecialSpell("Uplift", ret => Buff.GroupCountBuff("Renewing Mist") >= 3 && Chi >= 2 || TalentManager.HasGlyph("Uplift"), "Uplift")
                                     //Spell.CastSpell("Spinning Crane Kick", ret => Me.CurrentTarget, ret => Unit.EnemyUnits.Count() > 2, "Spinning Crane Kick")
                            ),

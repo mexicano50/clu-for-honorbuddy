@@ -1366,11 +1366,20 @@ namespace CLU.Lists
             
             // Mogu'shan Vaults
             60047, // Amethyst Guardian
+            60051, // Cobalt Guardian
+            60043, // Jade Guardian
+            59915, // Jasper Guardian
             60009, // Feng the Accursed <Keeper of Champion Spirits>
             60143, // Gara'jal the Spiritbinder
             61429, // Meng the Demented <Mad King>
+            61421, // Zian of the Endless Shadow
+            61423, // Qiang the Merciless
+            61427, // Subetai the Swift
+            60397, // Emperor's Strength
             60410, // Elegon
             60400, // Jan-xi <Emperor's Open Hand>
+            60399, // Qin-xi
+
             
             // Heart of Fear
             66791, // Imperial Vizier Zor'lok <Voice of the Empress>
@@ -1382,6 +1391,8 @@ namespace CLU.Lists
             
             // Terrace of Endless Spring
             60583, // Protector Kaolan
+            60586, // Elder Asani
+            60585, // Elder Regail
             60491, // Sha of Anger
             62346, // Galleon
             62442, // Tsulong

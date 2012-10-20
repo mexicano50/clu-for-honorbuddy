@@ -555,7 +555,7 @@ namespace CLU.Base
                     }
                     catch { }
 
-                    if (!SpellManager.CanCast(name, Me.CurrentTarget))
+                    if (!Spell.CanCast(name, Me.CurrentTarget))
                     {
                         return false;
                     }
@@ -598,7 +598,7 @@ namespace CLU.Base
                     }
                     catch { }
 
-                    if (!SpellManager.CanCast(name, Me.CurrentTarget))
+                    if (!Spell.CanCast(name, Me.CurrentTarget))
                     {
                         return false;
                     }
@@ -640,7 +640,7 @@ namespace CLU.Base
                     }
                     catch { }
 
-                    if (!SpellManager.CanCast(name, HealableUnit.HealTarget.ToUnit()))
+                    if (!Spell.CanCast(name, HealableUnit.HealTarget.ToUnit()))
                     {
                         return false;
                     }
@@ -674,7 +674,7 @@ namespace CLU.Base
                     }
                     catch { }
 
-                    if (!SpellManager.CanCast(name, Me.CurrentTarget))
+                    if (!Spell.CanCast(name, Me.CurrentTarget))
                     {
                         return false;
                     }
@@ -714,7 +714,7 @@ namespace CLU.Base
                         return false;
                     }
 
-                    if (!SpellManager.CanCast(spell, Me.CurrentTarget))
+                    if (!Spell.CanCast(spell, Me.CurrentTarget))
                     {
                         return false;
                     }
@@ -900,7 +900,7 @@ namespace CLU.Base
                     if (!cond(a))
                         return false;
 
-                    if (!SpellManager.CanCast(name, Me))
+                    if (!Spell.CanCast(name, Me))
                         return false;
 
                     return true;

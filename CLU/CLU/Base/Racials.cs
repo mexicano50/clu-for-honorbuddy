@@ -37,7 +37,7 @@ namespace CLU.Base
             {
                 if (!CLUSettings.Instance.UseRacials) return false; // gtfo if we do not want to use racials.
 
-                foreach (WoWSpell r in CurrentRacials.Where(racial => SpellManager.CanCast(racial.Name, StyxWoW.Me) && RacialUsageSatisfied(racial)))
+                foreach (WoWSpell r in CurrentRacials.Where(racial => Spell.CanCast(racial.Name, StyxWoW.Me) && RacialUsageSatisfied(racial)))
                 {
                     CLULogger.Log(" [Racial Abilitie] {0} ", r.Name);
                     SpellManager.Cast(r.Name);

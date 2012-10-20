@@ -109,12 +109,12 @@ namespace CLU.Classes.DeathKnight
                            new Decorator(ret => Unit.UseCooldowns() && Me.CurrentTarget != null && Me.IsWithinMeleeRange,
                                          new PrioritySelector(
                                              Buff.CastBuff("Raise Dead", 				ret => Me.CurrentTarget != null && Buff.PlayerHasBuff("Pillar of Frost") && Buff.PlayerBuffTimeLeft("Pillar of Frost") <= 10 && Buff.PlayerHasBuff("Unholy Strength"), "Raise Dead"),
-                                             Buff.CastBuff("Pillar of Frost", 			ret => Me.CurrentTarget != null, "Pillar of Frost"),
+                                             Buff.CastBuff("Pillar of Frost", 			ret => Me.CurrentTarget != null && Me.FrostRuneCount > 0, "Pillar of Frost"),
                                              Spell.CastSelfSpell("Empower Rune Weapon", ret => Me.CurrentTarget != null && CLUSettings.Instance.DeathKnight.UseEmpowerRuneWeapon && Common.ActiveRuneCount < 2 && !Buff.UnitHasHasteBuff(Me), "Empower Rune Weapon")
                                          )
                                         ),
                            //Aoe
-                           new Decorator(ret => CLUSettings.Instance.UseAoEAbilities && Unit.EnemyUnits.Count() >= 3,
+                           new Decorator(ret => CLUSettings.Instance.UseAoEAbilities && Unit.EnemyMeleeUnits.Count() >= 3,
                                new PrioritySelector(
                                     Common.ApplyDiseases(ret => Me.CurrentTarget),
                                     Common.SpreadDiseasesBehavior(ret => Me.CurrentTarget),
@@ -178,7 +178,7 @@ namespace CLU.Classes.DeathKnight
                         //new Action(a => { SysLog.Log("I am the start of public Composite baseRotation"); return RunStatus.Failure; }),
                         //PvP Utilities
                         Spell.CastSpell("Chains of Ice",                        ret => Me.CurrentTarget != null && !Me.CurrentTarget.IsWithinMeleeRange && Me.CurrentTarget.DistanceSqr <= 30 * 30 && !Buff.TargetHasDebuff("Chains of Ice"), "Chains of Ice"),
-                        Spell.CastSpell("Death Grip",                           ret => Me.CurrentTarget != null && !Me.CurrentTarget.IsWithinMeleeRange && Me.CurrentTarget.DistanceSqr <= 30 * 30 && !Buff.TargetHasDebuff("Chains of Ice") && !SpellManager.CanCast("Chains of Ice"), "Death Grip"),
+                        Spell.CastSpell("Death Grip",                           ret => Me.CurrentTarget != null && !Me.CurrentTarget.IsWithinMeleeRange && Me.CurrentTarget.DistanceSqr <= 30 * 30 && !Buff.TargetHasDebuff("Chains of Ice") && !Spell.CanCast("Chains of Ice"), "Death Grip"),
 
                         //Rotation
                         Racials.UseRacials(),
@@ -272,7 +272,7 @@ namespace CLU.Classes.DeathKnight
                             //army_of_the_dead
                             //mogu_power_potion
                             Spell.CastSpell("Chains of Ice",        ret => Me.CurrentTarget != null && Macro.Manual && (CLU.LocationContext == GroupLogic.Battleground || Unit.IsTrainingDummy(Me.CurrentTarget)) && !Me.CurrentTarget.IsWithinMeleeRange && Me.CurrentTarget.DistanceSqr <= 30 * 30 && !Buff.TargetHasDebuff("Chains of Ice"), "Chains of Ice"),
-                            Spell.CastSpell("Death Grip",           ret => Me.CurrentTarget != null && Macro.Manual && (CLU.LocationContext == GroupLogic.Battleground || Unit.IsTrainingDummy(Me.CurrentTarget)) && !Me.CurrentTarget.IsWithinMeleeRange && Me.CurrentTarget.DistanceSqr <= 30 * 30 && !Buff.TargetHasDebuff("Chains of Ice") && !SpellManager.CanCast("Chains of Ice"), "Death Grip"),
+                            Spell.CastSpell("Death Grip",           ret => Me.CurrentTarget != null && Macro.Manual && (CLU.LocationContext == GroupLogic.Battleground || Unit.IsTrainingDummy(Me.CurrentTarget)) && !Me.CurrentTarget.IsWithinMeleeRange && Me.CurrentTarget.DistanceSqr <= 30 * 30 && !Buff.TargetHasDebuff("Chains of Ice") && !Spell.CanCast("Chains of Ice"), "Death Grip"),
                             new Action(delegate
                             {
                                 Macro.isMultiCastMacroInUse();

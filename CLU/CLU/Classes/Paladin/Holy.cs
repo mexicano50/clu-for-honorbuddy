@@ -225,7 +225,7 @@ namespace CLU.Classes.Paladin
                     //),
 
                     // cast Holy Shock while moving
-                    Healer.FindRaidMember(a => Me.IsMoving && SpellManager.CanCast("Holy Shock"), x => x.ToUnit().InLineOfSight && !x.ToUnit().IsDead && x.HealthPercent < 90, (a, b) => (int)(a.CurrentHealth - b.CurrentHealth), "cast Holy Shock while moving",
+                    Healer.FindRaidMember(a => Me.IsMoving && Spell.CanCast("Holy Shock"), x => x.ToUnit().InLineOfSight && !x.ToUnit().IsDead && x.HealthPercent < 90, (a, b) => (int)(a.CurrentHealth - b.CurrentHealth), "cast Holy Shock while moving",
                                           Spell.CastHeal("Holy Shock", a => true, "Holy Shock while moving")
                                          ),
 

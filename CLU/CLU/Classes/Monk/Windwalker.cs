@@ -17,11 +17,9 @@ using Styx.TreeSharp;
 using CommonBehaviors.Actions;
 using CLU.Helpers;
 using CLU.Settings;
-using System.Collections.Generic;
 using CLU.Base;
 using System.Linq;
 using CLU.Managers;
-using Styx.CommonBot;
 using Rest = CLU.Base.Rest;
 
 namespace CLU.Classes.Monk
@@ -142,7 +140,7 @@ Credits: alxaw , Kbrebel04
 
                     // AoE
                     new Decorator(
-                        ret => Unit.EnemyUnits.Count(a => a.DistanceSqr <= 12 * 12) > 3 && CLUSettings.Instance.UseAoEAbilities,
+                        ret => Unit.EnemyMeleeUnits.Count() > 3 && CLUSettings.Instance.UseAoEAbilities,
                         new PrioritySelector(
                         Spell.CastSpell("Rising Sun Kick", ret => !Buff.TargetHasDebuff("Rising Sun Kick"), "Rising Sun Kick"),
                     //Spell.CastAreaSpell("Fists of Fury", 8, false, 4, 0.0, 0.0, ret => true, "Fists of Fury"),
@@ -153,7 +151,7 @@ Credits: alxaw , Kbrebel04
 
                     //Single Target With Fists of Fury
                     new Decorator(
-                        ret => CLUSettings.Instance.Monk.EnableFists && (Unit.EnemyUnits.Count(a => a.DistanceSqr <= 12 * 12) < 4 || !CLUSettings.Instance.UseAoEAbilities),
+                        ret => CLUSettings.Instance.Monk.EnableFists && (Unit.EnemyMeleeUnits.Count() < 4 || !CLUSettings.Instance.UseAoEAbilities),
                         new PrioritySelector(
                         Spell.CastSpell("Touch of Death", ret => Buff.PlayerHasBuff("Death Note"), "Touch of Death"),
                         Spell.CastSelfSpell("Chi Brew", ret => TalentManager.HasTalent(9) && Chi == 0 && Me.CurrentEnergy <= 50, "Chi Brew"),
@@ -173,7 +171,7 @@ Credits: alxaw , Kbrebel04
 
                     //Single Target Without Fists of Fury
                     new Decorator(
-                        ret => !CLUSettings.Instance.Monk.EnableFists && (Unit.EnemyUnits.Count(a => a.DistanceSqr <= 12 * 12) < 4 || !CLUSettings.Instance.UseAoEAbilities),
+                        ret => !CLUSettings.Instance.Monk.EnableFists && (Unit.EnemyMeleeUnits.Count() < 4 || !CLUSettings.Instance.UseAoEAbilities),
                         new PrioritySelector(
                         Spell.CastSpell("Touch of Death", ret => Buff.PlayerHasBuff("Death Note"), "Touch of Death"),
                         Spell.CastSelfSpell("Chi Brew", ret => TalentManager.HasTalent(9) && Chi == 0 && Me.CurrentEnergy <= 50, "Chi Brew"),

@@ -114,7 +114,7 @@ namespace CLU.Managers
                         if (!cond(a))
                             return false;
 
-                        if (!SpellManager.CanCast(name, Me))
+                        if (!Spell.CanCast(name, Me))
                             return false;
 
                         return true;
@@ -156,7 +156,7 @@ namespace CLU.Managers
                     if (!cond(a))
                         return false;
 
-                    if (!SpellManager.CanCast(summonPet))
+                    if (!Spell.CanCast(summonPet.ToString()))
                         return false;
 
                     return true;
@@ -190,7 +190,7 @@ namespace CLU.Managers
             switch (StyxWoW.Me.Class)
             {
                 case WoWClass.Warlock:
-                    if (SpellManager.CanCast("Summon " + petName))
+                    if (Spell.CanCast("Summon " + petName))
                     {
                         CLULogger.DiagnosticLog(string.Format("[Pet] Calling out my {0}", petName));
                         bool result = SpellManager.Cast("Summon " + petName);
@@ -201,7 +201,7 @@ namespace CLU.Managers
                     break;
 
                 case WoWClass.Mage:
-                    if (SpellManager.CanCast("Summon Water Elemental"))
+                    if (Spell.CanCast("Summon Water Elemental"))
                     {
                         CLULogger.DiagnosticLog("[Pet] Calling out Water Elemental");
                         bool result = SpellManager.Cast("Summon Water Elemental");
@@ -212,7 +212,7 @@ namespace CLU.Managers
                     break;
 
                 case WoWClass.Hunter:
-                    if (SpellManager.CanCast("Call Pet " + petName))
+                    if (Spell.CanCast("Call Pet " + petName))
                     {
                         if (!StyxWoW.Me.GotAlivePet)
                         {
