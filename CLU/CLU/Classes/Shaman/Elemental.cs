@@ -137,12 +137,11 @@ namespace CLU.Classes.Shaman
                            Spell.CastSpell("Unleash Elements", ret => TalentManager.HasTalent(16) && !Buff.PlayerHasActiveBuff("Ascendance"), "Unleash Elements"),
                            Spell.CastSpell("Flame Shock", ret => !Buff.TargetHasDebuff("Flame Shock") || Buff.TargetDebuffTimeLeft("Flame Shock").Seconds < 3, "Flame Shock"),
                            Spell.CastSpell("Lava Burst", ret => Buff.TargetDebuffTimeLeft("Flame Shock").TotalSeconds > 1.25 && (Buff.PlayerHasActiveBuff("Ascendance") || Spell.CanCast("Lava Burst")), "Lava Burst"),
+                           Item.RunMacroText("/Cast Elemental Blast", ret => TalentManager.HasTalent(19) && !Buff.PlayerHasActiveBuff("Ascendance"), "Elemental Blast"),
                            Spell.CastSpell("Earth Shock", ret => Buff.PlayerCountBuff("Lightning Shield") == 7, "Earth Shock"),
                            Spell.CastSpell("Earth Shock", ret => Buff.PlayerCountBuff("Lightning Shield") > 3 && Buff.TargetDebuffTimeLeft("Flame Shock").Seconds > 5 && Buff.TargetDebuffTimeLeft("Flame Shock").TotalSeconds < 5 + 2.50, "Earth Shock"),
                            Spell.CastSpell("Lightning Bolt", ret => true, "Lightning Bolt"),
-                           Spell.CastSpell("Fire Elemental Totem", ret => true, "Fire Elemental Totem"),
-                           Spell.CastSpell("Searing Totem", ret => !Totems.Exist(WoWTotemType.Fire) && !Totems.Exist(WoWTotem.FireElemental), "Searing Totem"),
-                           Spell.CastSpell("Elemental Blast", ret => TalentManager.HasTalent(19) && !WoWSpell.FromId(117014).Cooldown, "Elemental Blast"),
+                           Spell.CastSpell("Fire Elemental Totem", ret => Unit.UseCooldowns(), "Fire Elemental Totem"),
 
 
                   //Cooldowns
