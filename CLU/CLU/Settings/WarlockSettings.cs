@@ -45,6 +45,20 @@ namespace CLU.Settings
         #endregion
 
         #region Demonology
+
+
+        [Setting]
+        [DefaultValue(true)]
+        [Category("Demonology Spec")]
+        [DisplayName("Dark Apotheosis Tanking")]
+        [Description("When this is set to true, CLU will tank using Dark Apotheosis")]
+        public bool ImTheFuckingBoss
+        {
+            get;
+            set;
+        }
+
+
         #endregion
 
         #region Destruction
