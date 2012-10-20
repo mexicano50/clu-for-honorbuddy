@@ -25,14 +25,16 @@ namespace CLU.Lists
     {
         static BossList()
         {
-            foreach (var bossId in _dummies) {
+            foreach (var bossId in _dummies)
+            {
                 _bosses.Add(bossId);
             }
         }
 
         public static HashSet<uint> BossIds
         {
-            get {
+            get
+            {
                 return _bosses;
             }
         }
@@ -42,7 +44,8 @@ namespace CLU.Lists
         /// </summary>
         public static HashSet<uint> IgnoreShadowStep
         {
-            get {
+            get
+            {
                 return _ignoreShadowStep;
             }
         }
@@ -69,7 +72,8 @@ namespace CLU.Lists
 
         public static HashSet<uint> OverrideDnD
         {
-            get {
+            get
+            {
                 return _overrideDnD;
             }
         }
@@ -88,7 +92,8 @@ namespace CLU.Lists
         /// </summary>
         public static HashSet<uint> IgnoreAoE
         {
-            get {
+            get
+            {
                 return _ignoreAoE;
             }
         }
@@ -110,7 +115,8 @@ namespace CLU.Lists
         /// </summary>
         public static HashSet<uint> BackstabIds
         {
-            get {
+            get
+            {
                 return _Backstab;
             }
         }
@@ -129,7 +135,8 @@ namespace CLU.Lists
         /// </summary>
         public static HashSet<uint> CanShred
         {
-            get {
+            get
+            {
                 return _canShred;
             }
         }
@@ -147,7 +154,8 @@ namespace CLU.Lists
         /// </summary>
         public static HashSet<uint> IgnoreRangeCheck
         {
-            get {
+            get
+            {
                 return _ignorableBossIds;
             }
         }
@@ -170,7 +178,8 @@ namespace CLU.Lists
 
         public static HashSet<uint> TrainingDummies
         {
-            get {
+            get
+            {
                 return _dummies;
             }
         }
@@ -1302,22 +1311,23 @@ namespace CLU.Lists
             // Patch 5.0 - MoP Bosses ============================
             
             // Temple of the Jade Serpent http://mop.wowhead.com/zone=5956#npcs
-            56448, // Wise Mari
-            58826, // Zao Sunseeker
-            56787, // Wise Mari <Waterspeaker>
-            56843, // Lorewalker Stonestep <The Keeper of Scrolls>
+            56448, // Wise Mari <Waterspeaker>
+            58826, // Zao Sunseeker <Champion of the Five Suns>
+            59051, // Strife
+            59726, // Peril
             56732, // Liu Flameheart <Priestess of the Jade Serpent>
+            56762, // Yu'lon <The Jade Serpent>
             56439, // Sha of Doubt
                        
             // Stormstout Brewery http://mop.wowhead.com/zone=5963#npcs
-            57963, // Ook-Ook 
+            56637, // Ook-Ook 
             56717, // Hoptallus
             59479, // Yan-Zhu the Uncasked
             
             // Shado-Pan Monastery http://mop.wowhead.com/zone=5918#npcs
             56747, // Gu Cloudstrike
             56754, // Azure Serpent, Phase 2 of Gu Cloudstrike
-            64387, // Master Snowdrift
+            56541, // Master Snowdrift
             56719, // Sha of Violence
             56884, // Taran Zhu <Lord of the Shado-Pan>
             
@@ -1331,8 +1341,14 @@ namespace CLU.Lists
             
             // Mogu'shan Palace http://www.wowhead.com/zone=6182
             61442, // Kuai the Brute
+            61444, // Ming the Cunning
+            61445, // Haiyan the Unstoppable
             61243, // Gekkan
-            61884, // Xin the Weaponmaster <King of the Clans>
+            61337, // Glintrok Ironhide
+            61338, // Glintrok Skulker
+            61339, // Glintrok Oracle
+            61340, // Glintrok Hexxer
+            61398, // Xin the Weaponmaster <King of the Clans>
             
             // Siege of Niuzao Temple http://mop.wowhead.com/zone=6214#npcs
             61567, // Vizier Jin'bak
@@ -1344,9 +1360,11 @@ namespace CLU.Lists
             59303, // Houndsmaster Braun
             58632, // Armsmaster Harlan
             59150, // Flameweaver Koegler
+
             // Scarlet Monastry http://www.wowhead.com/zone=6109
             59789, // Thalnos the Soulrender
             59223, // Brother Korloff
+            3977, // High Inquisitor Whitemane
             60040, // Commander Durand
 
             // Scholomance http://www.wowhead.com/zone=6066
