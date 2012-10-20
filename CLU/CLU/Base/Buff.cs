@@ -878,7 +878,7 @@ namespace CLU.Base
                     }
                     catch(Exception ex)
                     {
-                        CLULogger.TroubleshootLog("[Buff] Failed to cast {0} for {1}",name,label);
+                        CLULogger.TroubleshootLog("[Buff] Failed to cast {0} for {1}, Exception thrown:: {2}",name,label,ex.ToString());
                         return false;
                     }
 
