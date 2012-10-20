@@ -162,7 +162,7 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
 
                            // Single Target
                            new Decorator(
-                               ret => !Buff.PlayerHasBuff("Feign Death") && (Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 20) >= CLUSettings.Instance.Hunter.BmMultiShotCount || !CLUSettings.Instance.UseAoEAbilities),
+                               ret => !Buff.PlayerHasBuff("Feign Death") && (Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 20) < CLUSettings.Instance.Hunter.BmMultiShotCount || !CLUSettings.Instance.UseAoEAbilities),
                                new PrioritySelector(
                     // HandleMovement? Lets Misdirect to Focus, Pet, RafLeader or Tank
                     // TODO: Add Binding shot logic..need to see it working well.
