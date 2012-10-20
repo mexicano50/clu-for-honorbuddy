@@ -504,7 +504,7 @@ namespace CLU.Base
         /// </summary>
         /// <param name="unit">the unit to query</param>
         /// <returns>true if a baws</returns>
-        private static bool IsBoss(WoWUnit unit)
+        public static bool IsBoss(WoWUnit unit)
         {
             return unit != null && BossList.BossIds.Contains(unit.Entry);
         }
