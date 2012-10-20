@@ -375,8 +375,10 @@ namespace CLU.Base
         /// <returns>The cast spell on the unit</returns>
         public static Composite CastSpell(string name, CLU.UnitSelection onUnit, CanRunDecoratorDelegate cond, string label)
         {
-            return CastSpell(name, ret => Me.CurrentTarget, cond, true, label);
+            return CastSpell(name, onUnit, cond, true, label);
         }
+
+         
 
         /// <summary>Casts a spell on a specified unit</summary>
         /// <param name="name">the name of the spell to cast</param>
