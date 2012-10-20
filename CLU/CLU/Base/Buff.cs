@@ -533,11 +533,17 @@ namespace CLU.Base
         /// <param name="cond">The conditions that must be true</param>
         /// <param name="label">A descriptive label for the clients GUI logging output</param>
         /// <returns>true or false</returns>
+        private static string lastdebuffcast;
         public static Composite CastDebuff(string name, CanRunDecoratorDelegate cond, string label)
         {
             return new Decorator(
                 delegate(object a)
                 {
+                    if (StyxWoW.Me.CastingSpell != null && lastdebuffcast == StyxWoW.Me.CastingSpell.Name)
+                    {
+                        return false;
+                    }
+
                     if (!cond(a))
                     {
                         return false;
@@ -565,6 +571,7 @@ namespace CLU.Base
             new Sequence(
                 new Action(a => CLULogger.Log(" [Casting Debuff] {0} : (RefreshTime={1}) had {2} second(s) left : {0} cast time = {3}", label, DotDelta(name), TargetDebuffTimeLeft(name).TotalSeconds, Spell.CastTime(name))),
                 new Action(a => SpellManager.Cast(name)),
+                new Action(a => lastdebuffcast = name),
                 new Action(a => CombatLogEvents.Locks[name] = DateTime.Now.AddSeconds(Spell.CastTime(name) * 1.5 + CombatLogEvents.ClientLag))));
         }
 
