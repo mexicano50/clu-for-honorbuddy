@@ -144,21 +144,23 @@ namespace CLU.Classes.Warlock
                                 new PrioritySelector(
                                     Item.UseBagItem("Jade Serpent Potion", ret => (Buff.UnitHasHasteBuff(Me) || Me.CurrentTarget.HealthPercent < 20) && Unit.UseCooldowns(), "Jade Serpent Potion"),
                                     Item.UseBagItem("Volcanic Potion", ret => (Buff.UnitHasHasteBuff(Me) || Me.CurrentTarget.HealthPercent < 20) && Unit.UseCooldowns(), "Volcanic Potion"),
-                                    Buff.CastBuff("Dark Soul", ret => !WoWSpell.FromId(103958).Cooldown && !WoWSpell.FromId(113861).Cooldown && !Me.HasAnyAura(Common.DarkSoul) && (Me.GetPowerInfo(Styx.WoWPowerType.DemonicFury).CurrentI >= 850 || Me.GetPowerInfo(Styx.WoWPowerType.DemonicFury).CurrentI >= 650 && Me.HasMyAura(103965)), "Dark Soul"),
+                                    Spell.CastSelfSpell("Dark Soul", ret => !WoWSpell.FromId(103958).Cooldown && !WoWSpell.FromId(113861).Cooldown && !Me.HasAnyAura(Common.DarkSoul) && (Me.GetPowerInfo(Styx.WoWPowerType.DemonicFury).CurrentI >= 800 && Me.HasMyAura(103965) || Unit.IsBoss(Me.CurrentTarget) && Me.GetPowerInfo(Styx.WoWPowerType.DemonicFury).CurrentI >= (Unit.TimeToDeath(Me.CurrentTarget) * 30)), "Dark Soul"),
                                     Spell.CastSpell("Grimore: Felguard", ret => true, "Grimore: Felguard")
                                     )),
                             Spell.CastSpell("Command Demon", ret => Me.CurrentTarget != null && (PetManager.CanCastPetSpell("Wrathstorm") || PetManager.CanCastPetSpell("Felstorm")) && Me.Pet.Location.Distance(Me.CurrentTarget.Location) < Spell.MeleeRange, "Command Demon"),
-
-                            // AoE
+                            //vvv ENABLE FOR QUESTING
+                            //Spell.CastSelfSpell("Health Funnel", ret =>Me.Pet.HealthPercent < 60 && StyxWoW.Me.HealthPercent > 40, "Health Funnel"),
+                    // AoE
                             new Decorator(
-                               ret => CLUSettings.Instance.UseAoEAbilities && Me.CurrentTarget != null && Unit.EnemyMeleeUnits.Count() > 3,
+                               ret => CLUSettings.Instance.UseAoEAbilities && Me.CurrentTarget != null && !CLUSettings.Instance.Warlock.ImTheFuckingBoss && Unit.EnemyMeleeUnits.Count() > 3,
                                new PrioritySelector(
+                                   Spell.CancelMyAura("Dark Apotheosis", ret => Me.HasMyAura(114168), "Cancel Dark Apotheosis"),
                                    Spell.CancelMyAura("Hellfire", ret => Me.HasMyAura(1949) && (Me.GetPowerInfo(Styx.WoWPowerType.DemonicFury).CurrentI >= 1000 || !Me.CurrentTarget.HasMyAura(172) || Me.HealthPercent < 50), "Corruption"),
-                                   Spell.CastSpell("Corruption", ret => !Me.HasMyAura(103965) && Unit.TimeToDeath(Me.CurrentTarget) > 15 && (!Me.CurrentTarget.HasMyAura(172) || Buff.TargetDebuffTimeLeft("Corruption").TotalSeconds < 1.89), "Corruption"),
-                                   Spell.CastSpell("Corruption", ret => Me.HasMyAura(103965) && Unit.TimeToDeath(Me.CurrentTarget) > 30 && (!Me.CurrentTarget.HasMyAura(603) || Buff.TargetDebuffTimeLeft("Doom").TotalSeconds < 14.2), "Doom"),
+                                   Spell.CastSpell("Corruption", ret => !Me.HasMyAura(103965) && Unit.TimeToDeath(Me.CurrentTarget) > 15 && (!Me.CurrentTarget.HasMyAura(172) || Buff.GetAuraTimeLeft(Me.CurrentTarget, "Corruption", true).TotalSeconds < 1.89), "Corruption"),
+                                   Spell.CastSpell("Corruption", ret => Me.HasMyAura(103965) && Unit.TimeToDeath(Me.CurrentTarget) > 30 && (!Me.CurrentTarget.HasMyAura(603) || Buff.GetAuraTimeLeft(Me.CurrentTarget, "Doom", true).TotalSeconds < 14.2), "Doom"),
                                    Spell.CastSelfSpell("Metamorphosis", ret => !WoWSpell.FromId(103958).Cooldown && !Me.HasMyAura(103965) && Me.GetPowerInfo(Styx.WoWPowerType.DemonicFury).CurrentI >= 1000 || Me.GetPowerInfo(Styx.WoWPowerType.DemonicFury).CurrentI >= (Unit.TimeToDeath(Me.CurrentTarget) * 31), "Metamorphosis"),
                                    Spell.CastSpell("Hellfire", ret => Me.HasMyAura(103965) && !Me.HasMyAura(104025), "Immolation Aura"),
-                                   Spell.CastSpell("Fel Flame", ret => Me.IsFacing(Me.CurrentTarget) && Me.HasMyAura(103965) && Me.CurrentTarget.Distance < 20 && Me.CurrentTarget.HasMyAura(172) && Buff.TargetDebuffTimeLeft("Corruption").TotalSeconds < 10, "Void Ray"),
+                                   Spell.CastSpell("Fel Flame", ret => Me.IsFacing(Me.CurrentTarget) && Me.HasMyAura(103965) && Me.CurrentTarget.Distance < 20 && Me.CurrentTarget.HasMyAura(172) && Buff.GetAuraTimeLeft(Me.CurrentTarget, "Corruption", true).TotalSeconds < 10, "Void Ray"),
                                    Spell.CastSpell("Fel Flame", ret => Me.IsFacing(Me.CurrentTarget) && Me.HasMyAura(103965) && Me.CurrentTarget.Distance < 20, "Void Ray"),
                                    Spell.CastSpell("Carrion Swarm", ret => Me.HasMyAura(103965), "Carrion Swarm"),
                                    Spell.CastSpell("Hellfire", ret => !Me.HasMyAura(103965) && Me.HealthPercent >= 50 && Me.GetPowerInfo(Styx.WoWPowerType.DemonicFury).CurrentI < 1000, "Hellfire"),
@@ -172,20 +174,33 @@ namespace CLU.Classes.Warlock
                                     )),
 
                            //Single Target
-                           new Decorator(ret => Me.CurrentTarget != null && (Unit.EnemyMeleeUnits.Count() <= 3 || !CLUSettings.Instance.UseAoEAbilities),
+                           new Decorator(ret => Me.CurrentTarget != null && !CLUSettings.Instance.Warlock.ImTheFuckingBoss && (Unit.EnemyMeleeUnits.Count() <= 3 || !CLUSettings.Instance.UseAoEAbilities),
                                new PrioritySelector(
                     //TEST IS BOSS SWAP
-                                   Spell.CancelMyAura("Metamorphosis", ret => Unit.IsBoss(Me.CurrentTarget) && Me.HasMyAura(103965) && (Me.CurrentTarget.HasMyAura(603) && Unit.TimeToDeath(Me.CurrentTarget) >= 30) && (Spell.SpellCooldown("Metamorphosis").TotalSeconds <= 8 && !Me.HasAnyAura(Common.DarkSoul) && Me.GetPowerInfo(Styx.WoWPowerType.DemonicFury).CurrentI <= 650 || !Me.CurrentTarget.HasMyAura(172) && Unit.TimeToDeath(Me.CurrentTarget) > 15), "Cancel Metamorphosis"),
-                                   Spell.CancelMyAura("Metamorphosis", ret => !Unit.IsBoss(Me.CurrentTarget) && Me.HasMyAura(103965) && (Spell.SpellCooldown("Metamorphosis").TotalSeconds <= 8 && !Me.HasAnyAura(Common.DarkSoul) && Me.GetPowerInfo(Styx.WoWPowerType.DemonicFury).CurrentI <= 650 && Unit.TimeToDeath(Me.CurrentTarget) > 30 && Me.CurrentTarget.HasMyAura(603) || !Me.CurrentTarget.HasMyAura(172) && Unit.TimeToDeath(Me.CurrentTarget) > 15), "Cancel Metamorphosis BOSS"),
-                                   Spell.CastSelfSpell("Metamorphosis", ret => !Me.HasMyAura(103965) && !WoWSpell.FromId(103958).Cooldown && (Me.CurrentTarget.HasMyAura(172) && Unit.TimeToDeath(Me.CurrentTarget) > 15) && (Me.HasAnyAura(Common.DarkSoul) || !Me.CurrentTarget.HasMyAura(603) && Unit.TimeToDeath(Me.CurrentTarget) >= 30 || Buff.TargetDebuffTimeLeft("Corruption").TotalSeconds < 4 && Unit.TimeToDeath(Me.CurrentTarget) > 15 || Me.GetPowerInfo(Styx.WoWPowerType.DemonicFury).CurrentI >= 850 || Unit.IsBoss(Me.CurrentTarget) && Me.GetPowerInfo(Styx.WoWPowerType.DemonicFury).CurrentI >= (Unit.TimeToDeath(Me.CurrentTarget) * 30)), "Metamorphosis BOSS"),
-                                   Spell.CastSpell("Corruption", ret => !Me.HasMyAura(103965) && Unit.TimeToDeath(Me.CurrentTarget) > 15 && (!Me.CurrentTarget.HasMyAura(172) || Buff.TargetDebuffTimeLeft("Corruption").TotalSeconds < 1.89), "Corruption"),
-                                   Spell.CastSpell("Corruption", ret => Me.HasMyAura(103965) && (!Me.CurrentTarget.HasMyAura(603) || Buff.TargetDebuffTimeLeft("Doom").TotalSeconds < 14.2 || (Buff.TargetDebuffTimeLeft("Doom").TotalSeconds < 28 && Me.HasAnyAura(Common.DarkSoul))) && Unit.TimeToDeath(Me.CurrentTarget) >= 30, "Doom"),
-                                   Buff.CastDebuff("Hand of Gul'dan", ret => !Me.HasMyAura(103965) && !Me.CurrentTarget.MovementInfo.IsMoving && !Me.CurrentTarget.HasMyAura(47960), "Hand of Gul'dan"),
-                                   Spell.CastSpell("Shadow Bolt", ret => Me.HasMyAura(103965) && Buff.TargetDebuffTimeLeft("Corruption").TotalSeconds < 20 && Me.CurrentTarget.HasMyAura(172), "Touch of Chaos"),
+                                   Spell.CancelMyAura("Dark Apotheosis", ret => Me.HasMyAura(114168), "Cancel Dark Apotheosis"),
+                                   //VVV ENABLE FOR RAIDING VVVV
+                                   Spell.CastSelfSpell("Metamorphosis", ret => !Unit.IsBoss(Me.CurrentTarget) && !Me.HasMyAura(103965) && !WoWSpell.FromId(103958).Cooldown && Unit.TimeToDeath(Me.CurrentTarget) > 30 && Me.CurrentTarget.HasMyAura(172) && (Me.HasAnyAura(Common.DarkSoul) || !Me.CurrentTarget.HasMyAura(603) || Me.GetPowerInfo(Styx.WoWPowerType.DemonicFury).CurrentI >= 900), "Metamorphosis High"),
+                                   Spell.CastSelfSpell("Metamorphosis", ret => !Unit.IsBoss(Me.CurrentTarget) && !Me.HasMyAura(103965) && !WoWSpell.FromId(103958).Cooldown && Unit.TimeToDeath(Me.CurrentTarget) <= 30 && Me.CurrentTarget.HasMyAura(172) && (Me.HasAnyAura(Common.DarkSoul) || Me.GetPowerInfo(Styx.WoWPowerType.DemonicFury).CurrentI >= 900), "Metamorphosis Low"),
+                                   Spell.CancelMyAura("Metamorphosis", ret => !Unit.IsBoss(Me.CurrentTarget) && Me.HasMyAura(103965) && !Me.HasAnyAura(Common.DarkSoul) && Unit.TimeToDeath(Me.CurrentTarget) > 30 && (Me.GetPowerInfo(Styx.WoWPowerType.DemonicFury).CurrentI <= 750 && Me.CurrentTarget.HasMyAura(603) && Buff.GetAuraTimeLeft(Me.CurrentTarget, "Corruption", true).TotalSeconds > 20 || !Me.CurrentTarget.HasMyAura(172)), "Cancel Meta High"),
+                                   Spell.CancelMyAura("Metamorphosis", ret => !Unit.IsBoss(Me.CurrentTarget) && Me.HasMyAura(103965) && !Me.HasAnyAura(Common.DarkSoul) && Unit.TimeToDeath(Me.CurrentTarget) <= 30 && (Me.GetPowerInfo(Styx.WoWPowerType.DemonicFury).CurrentI <= 750 && Buff.GetAuraTimeLeft(Me.CurrentTarget, "Corruption", true).TotalSeconds > 20 || !Me.CurrentTarget.HasMyAura(172)), "Cancel Meta Low"),
+                                   Spell.CastSelfSpell("Metamorphosis", ret => Unit.IsBoss(Me.CurrentTarget) && !Me.HasMyAura(103965) && !WoWSpell.FromId(103958).Cooldown && Unit.TimeToDeath(Me.CurrentTarget) > 30 && Me.CurrentTarget.HasMyAura(172) && (Me.HasAnyAura(Common.DarkSoul) || !Me.CurrentTarget.HasMyAura(603) || Me.GetPowerInfo(Styx.WoWPowerType.DemonicFury).CurrentI >= 900 || Me.GetPowerInfo(Styx.WoWPowerType.DemonicFury).CurrentI >= (Unit.TimeToDeath(Me.CurrentTarget) * 30)), "Meta Boss High"),
+                                   Spell.CastSelfSpell("Metamorphosis", ret => Unit.IsBoss(Me.CurrentTarget) && !Me.HasMyAura(103965) && !WoWSpell.FromId(103958).Cooldown && Unit.TimeToDeath(Me.CurrentTarget) <= 30 && Me.CurrentTarget.HasMyAura(172) && (Me.HasAnyAura(Common.DarkSoul) || Me.GetPowerInfo(Styx.WoWPowerType.DemonicFury).CurrentI >= 900 || Me.GetPowerInfo(Styx.WoWPowerType.DemonicFury).CurrentI >= (Unit.TimeToDeath(Me.CurrentTarget) * 30)), "Meta Boss Low"),
+                                   Spell.CancelMyAura("Metamorphosis", ret => Unit.IsBoss(Me.CurrentTarget) && Me.HasMyAura(103965) && !Me.HasAnyAura(Common.DarkSoul) && Unit.TimeToDeath(Me.CurrentTarget) > 30 && (Me.GetPowerInfo(Styx.WoWPowerType.DemonicFury).CurrentI <= 750 && Me.CurrentTarget.HasMyAura(603) && Buff.GetAuraTimeLeft(Me.CurrentTarget, "Corruption", true).TotalSeconds > 20 || !Me.CurrentTarget.HasMyAura(172)), "Cancel Meta Boss High"),
+                                   Spell.CancelMyAura("Metamorphosis", ret => Unit.IsBoss(Me.CurrentTarget) && Me.HasMyAura(103965) && !Me.HasAnyAura(Common.DarkSoul) && Unit.TimeToDeath(Me.CurrentTarget) <= 30 && (Me.GetPowerInfo(Styx.WoWPowerType.DemonicFury).CurrentI < (Unit.TimeToDeath(Me.CurrentTarget) * 30) && Buff.GetAuraTimeLeft(Me.CurrentTarget, "Corruption", true).TotalSeconds > 20 || Unit.TimeToDeath(Me.CurrentTarget) > 15 && !Me.CurrentTarget.HasMyAura(172)), "Cancel Meta Boss Low"),
+                    //VVV ENABLE FOR QUESTING ^^^DISABLE FOR QUESTING
+                                    //Spell.CastSelfSpell("Metamorphosis", ret => !Me.HasMyAura(103965) && !WoWSpell.FromId(103958).Cooldown && Unit.TimeToDeath(Me.CurrentTarget) > 30 && Me.CurrentTarget.HasMyAura(172) && (Me.HasAnyAura(Common.DarkSoul) || !Me.CurrentTarget.HasMyAura(603) || Me.GetPowerInfo(Styx.WoWPowerType.DemonicFury).CurrentI >= 900 || Me.GetPowerInfo(Styx.WoWPowerType.DemonicFury).CurrentI >= (Unit.TimeToDeath(Me.CurrentTarget) * 30)), "Meta Boss High"),
+                                    //Spell.CastSelfSpell("Metamorphosis", ret => !Me.HasMyAura(103965) && !WoWSpell.FromId(103958).Cooldown && Unit.TimeToDeath(Me.CurrentTarget) <= 30 && Me.CurrentTarget.HasMyAura(172) && (Me.HasAnyAura(Common.DarkSoul) || Me.GetPowerInfo(Styx.WoWPowerType.DemonicFury).CurrentI >= 900 || Me.GetPowerInfo(Styx.WoWPowerType.DemonicFury).CurrentI >= (Unit.TimeToDeath(Me.CurrentTarget) * 30)), "Meta Boss Low"),
+                                    //Spell.CancelMyAura("Metamorphosis", ret => Me.HasMyAura(103965) && !Me.HasAnyAura(Common.DarkSoul) && Unit.TimeToDeath(Me.CurrentTarget) > 30 && (Me.GetPowerInfo(Styx.WoWPowerType.DemonicFury).CurrentI <= 750 && Me.CurrentTarget.HasMyAura(603) && Buff.GetAuraTimeLeft(Me.CurrentTarget, "Corruption", true).TotalSeconds > 20 || !Me.CurrentTarget.HasMyAura(172)), "Cancel Meta Boss High"),
+                                    //Spell.CancelMyAura("Metamorphosis", ret => Me.HasMyAura(103965) && !Me.HasAnyAura(Common.DarkSoul) && Unit.TimeToDeath(Me.CurrentTarget) <= 30 && (Me.GetPowerInfo(Styx.WoWPowerType.DemonicFury).CurrentI < (Unit.TimeToDeath(Me.CurrentTarget) * 30) && Buff.GetAuraTimeLeft(Me.CurrentTarget, "Corruption", true).TotalSeconds > 20 || Unit.TimeToDeath(Me.CurrentTarget) > 15 && !Me.CurrentTarget.HasMyAura(172)), "Cancel Meta Boss Low"),
+                    //^^^ ENABLE FOR QUESTING ^^^
+                                   Spell.CastSpell("Corruption", ret => !Me.HasMyAura(103965) && (!Me.CurrentTarget.HasMyAura(172) || Buff.GetAuraTimeLeft(Me.CurrentTarget, "Corruption", true).TotalSeconds <= 3), "Corruption"),
+                                   Spell.CastSpell("Corruption", ret => Me.HasMyAura(103965) && Unit.TimeToDeath(Me.CurrentTarget) > 30 && (Buff.GetAuraTimeLeft(Me.CurrentTarget, "Doom", true).TotalSeconds < 14.2 || Buff.GetAuraTimeLeft(Me.CurrentTarget, "Doom", true).TotalSeconds < 28 && Me.HasAnyAura(Common.DarkSoul) || !Me.CurrentTarget.HasMyAura(603)), "Doom"),
+                                   Buff.CastDebuff("Hand of Gul'dan", ret => !Me.HasMyAura(103965) && !Me.CurrentTarget.MovementInfo.IsMoving && !Me.CurrentTarget.HasMyAura(47960) || Buff.GetAuraTimeLeft(Me.CurrentTarget, "Shadowflame", true).TotalSeconds < 1.89, "Hand of Gul'dan"),
+                                   Spell.CastSpell("Shadow Bolt", ret => (Me.HasMyAura(103965) && Me.CurrentTarget.HasMyAura(172) && Buff.GetAuraTimeLeft(Me.CurrentTarget, "Corruption", true).TotalSeconds < 20), "Touch of Chaos"),
                                    Spell.CastSpell("Soul Fire", ret => Me.HasMyAura(122355), "Soul Fire"),
-                                   Spell.CastSpell("Shadow Bolt", ret => Me.HasMyAura(103965) && ((Me.CurrentTarget.HasMyAura(603) && Unit.TimeToDeath(Me.CurrentTarget) >= 30) || Unit.TimeToDeath(Me.CurrentTarget) < 30 || Unit.IsBoss(Me.CurrentTarget)), "Touch of Chaos"),
+                                   Spell.CastSpell("Shadow Bolt", ret => Me.HasMyAura(103965) && (Unit.TimeToDeath(Me.CurrentTarget) > 30 && Me.CurrentTarget.HasMyAura(603) || Unit.TimeToDeath(Me.CurrentTarget) <= 30), "Touch of Chaos"),
                                    Spell.CastSelfSpell("Life Tap", ret => Me.ManaPercent < 50 && Me.HealthPercent > 50, "Life tap - mana < 50%"),
-                                   Spell.CastSpell("Shadow Bolt", ret => !Me.HasMyAura(103965) && (Me.CurrentTarget.HasMyAura(172) && Unit.TimeToDeath(Me.CurrentTarget) > 15), "Shadow Bolt"),
+                                   Spell.CastSpell("Shadow Bolt", ret => !Me.HasMyAura(103965) && !Me.HasMyAura(122355) && Me.CurrentTarget.HasMyAura(172), "Shadow Bolt"),
                                    Spell.CastSpell("Fel Flame", ret => !Me.HasMyAura(103965) && Me.IsMoving, "Fel Flame"),
                                    Spell.CastSelfSpell("Life Tap", ret => Me.ManaPercent < 100 && !Spell.PlayerIsChanneling && Me.HealthPercent > 50, "Life tap - mana < 50%"))),
 
@@ -193,14 +208,14 @@ namespace CLU.Classes.Warlock
                            new Decorator(ret => Me.CurrentTarget != null && CLUSettings.Instance.Warlock.ImTheFuckingBoss,
                                new PrioritySelector(
                                    Spell.CastSelfSpell("Dark Apotheosis", ret => !Me.HasMyAura(114168), "Dark Apotheosis"),
-                                   Spell.CastSpell("Corruption", ret => !Me.CurrentTarget.HasMyAura(172) || Buff.TargetDebuffTimeLeft("Corruption").TotalSeconds < 1.89, "Corruption"),
-                                   Buff.CastDebuff("Hand of Gul'dan", ret => !Me.CurrentTarget.MovementInfo.IsMoving && !Me.CurrentTarget.HasMyAura(47960) || Buff.TargetDebuffTimeLeft("Shadowflame").TotalSeconds < 1.89, "Hand of Gul'dan"),
-                                   Spell.CastSpell("Hellfire", ret => !Me.HasMyAura(104025) && Me.GetPowerInfo(Styx.WoWPowerType.DemonicFury).CurrentI >= 800, "Immolation Aura"),
+                                   Spell.CastSpell("Corruption", ret => !Me.CurrentTarget.HasMyAura(172) || Buff.GetAuraTimeLeft(Me.CurrentTarget, "Corruption", true).TotalSeconds < 1.89, "Corruption"),
+                                   Buff.CastDebuff("Hand of Gul'dan", ret => !Me.CurrentTarget.MovementInfo.IsMoving && !Me.CurrentTarget.HasMyAura(47960) || Buff.GetAuraTimeLeft(Me.CurrentTarget, "Shadowflame", true).TotalSeconds < 1.89, "Hand of Gul'dan"),
+                                   Spell.CastSpell("Hellfire", ret => !Me.HasMyAura(104025) && Me.GetPowerInfo(Styx.WoWPowerType.DemonicFury).CurrentI >= 900, "Immolation Aura"),
                                    Spell.CastSpell("Fel Flame", ret => Me.CurrentTarget.HasMyAura(172) && Me.GetPowerInfo(Styx.WoWPowerType.DemonicFury).CurrentI >= 900, "Fel Flame"),
                                    Spell.CastSpell("Shadow Bolt", ret => Buff.TargetDebuffTimeLeft("Corruption").TotalSeconds < 20 && Me.CurrentTarget.HasMyAura(172), "Touch of Chaos"),
                                    Spell.CastSpell("Shadow Bolt", ret => true, "Touch of Chaos"),
+                                   Spell.CastSpell("Soul Fire", ret => Me.HasMyAura(122355), "Soul Fire"),
                                    Spell.CastSelfSpell("Life Tap", ret => Me.ManaPercent < 50 && Me.HealthPercent > 50, "Life tap - mana < 50%"),
-                                   Spell.CastSpell("Shadow Bolt", ret => !Me.HasMyAura(114168) && Me.CurrentTarget.HasMyAura(172), "Shadow Bolt"),
                                    Spell.CastSpell("Fel Flame", ret => Me.IsMoving, "Fel Flame"),
                                    Spell.CastSelfSpell("Life Tap", ret => Me.ManaPercent < 100 && !Spell.PlayerIsChanneling && Me.HealthPercent > 50, "Life tap - mana < 50%")))
                            );
@@ -250,4 +265,3 @@ namespace CLU.Classes.Warlock
         }
     }
 }
-
