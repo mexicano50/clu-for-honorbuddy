@@ -144,7 +144,7 @@ namespace CLU.Classes.Warlock
                                 new PrioritySelector(
                                     Item.UseBagItem("Jade Serpent Potion", ret => (Buff.UnitHasHasteBuff(Me) || Me.CurrentTarget.HealthPercent < 20) && Unit.UseCooldowns(), "Jade Serpent Potion"),
                                     Item.UseBagItem("Volcanic Potion", ret => (Buff.UnitHasHasteBuff(Me) || Me.CurrentTarget.HealthPercent < 20) && Unit.UseCooldowns(), "Volcanic Potion"),
-                                    Spell.CastSelfSpell("Dark Soul", ret => !WoWSpell.FromId(103958).Cooldown && !WoWSpell.FromId(113861).Cooldown && !Me.HasAnyAura(Common.DarkSoul) && (Me.GetPowerInfo(Styx.WoWPowerType.DemonicFury).CurrentI >= 800 || Unit.IsBoss(Me.CurrentTarget) && Me.GetPowerInfo(Styx.WoWPowerType.DemonicFury).CurrentI >= (Unit.TimeToDeath(Me.CurrentTarget) * 30)), "Dark Soul"),
+                                    Spell.CastSelfSpell("Dark Soul", ret => !WoWSpell.FromId(103958).Cooldown && !WoWSpell.FromId(113861).Cooldown && !Me.HasAnyAura(Common.DarkSoul) && (Me.GetPowerInfo(Styx.WoWPowerType.DemonicFury).CurrentI >= 900 || Unit.IsBoss(Me.CurrentTarget) && Me.GetPowerInfo(Styx.WoWPowerType.DemonicFury).CurrentI >= (Unit.TimeToDeath(Me.CurrentTarget) * 30)), "Dark Soul"),
                                     Spell.CastSpell("Grimore: Felguard", ret => true, "Grimore: Felguard")
                                     )),
                             Spell.CastSpell("Command Demon", ret => Me.CurrentTarget != null && (PetManager.CanCastPetSpell("Wrathstorm") || PetManager.CanCastPetSpell("Felstorm")) && Me.Pet.Location.Distance(Me.CurrentTarget.Location) < Spell.MeleeRange, "Command Demon"),
@@ -165,7 +165,7 @@ namespace CLU.Classes.Warlock
                                    Spell.CastSpell("Carrion Swarm", ret => Me.HasMyAura(103965), "Carrion Swarm"),
                                    Spell.CastSpell("Hellfire", ret => !Me.HasMyAura(103965) && Me.HealthPercent >= 50 && Me.GetPowerInfo(Styx.WoWPowerType.DemonicFury).CurrentI < 1000, "Hellfire"),
                                    Spell.ChannelSpell("Drain Life", ret => !Me.HasMyAura(103965) && Me.HealthPercent < 50, "Harvest Life"),
-                                   Spell.CastSelfSpell("Life Tap", ret => Me.ManaPercent < 15 && Me.HealthPercent > 50, "Life tap - mana < 50%")
+                                   Spell.CastSelfSpell("Life Tap", ret => Me.ManaPercent < 15 && Me.HealthPercent > 50, "Life tap - mana < 15%")
                                )),
 
                             new Decorator(ret => CLUSettings.Instance.UseCooldowns,
@@ -195,14 +195,14 @@ namespace CLU.Classes.Warlock
                     //^^^ ENABLE FOR QUESTING ^^^
                                    Spell.CastSpell("Corruption", ret => !Me.HasMyAura(103965) && (!Me.CurrentTarget.HasMyAura(172) || Buff.GetAuraTimeLeft(Me.CurrentTarget, "Corruption", true).TotalSeconds <= 3), "Corruption"),
                                    Spell.CastSpell("Corruption", ret => Me.HasMyAura(103965) && Unit.TimeToDeath(Me.CurrentTarget) > 30 && (Buff.GetAuraTimeLeft(Me.CurrentTarget, "Doom", true).TotalSeconds < 14.2 || Buff.GetAuraTimeLeft(Me.CurrentTarget, "Doom", true).TotalSeconds < 28 && Me.HasAnyAura(Common.DarkSoul) || !Me.CurrentTarget.HasMyAura(603)), "Doom"),
-                                   Buff.CastDebuff("Hand of Gul'dan", ret => !Me.HasMyAura(103965) && !Me.CurrentTarget.MovementInfo.IsMoving && (!Me.CurrentTarget.HasMyAura(47960) || Buff.GetAuraTimeLeft(Me.CurrentTarget, "Shadowflame"), true).TotalSeconds < 1.89, "Hand of Gul'dan"),
+                                   Buff.CastDebuff("Hand of Gul'dan", ret => !Me.HasMyAura(103965) && !Me.CurrentTarget.MovementInfo.IsMoving && (!Me.CurrentTarget.HasMyAura(47960) || Buff.GetAuraTimeLeft(Me.CurrentTarget, "Shadowflame", true).TotalSeconds < 1.890, "Hand of Gul'dan"),
                                    Spell.CastSpell("Shadow Bolt", ret => Me.HasMyAura(103965) && Me.CurrentTarget.HasMyAura(172) && Buff.GetAuraTimeLeft(Me.CurrentTarget, "Corruption", true).TotalSeconds < 20, "Touch of Chaos"),
                                    Buff.CastDebuff("Soul Fire", ret => Me.HasMyAura(122355), "Soul Fire"),
                                    Spell.CastSpell("Shadow Bolt", ret => Me.HasMyAura(103965) && (Unit.TimeToDeath(Me.CurrentTarget) > 30 && Me.CurrentTarget.HasMyAura(603) || Unit.TimeToDeath(Me.CurrentTarget) <= 30), "Touch of Chaos"),
                                    Spell.CastSelfSpell("Life Tap", ret => Me.ManaPercent < 50 && Me.HealthPercent > 50, "Life tap - mana < 50%"),
                                    Spell.CastSpell("Shadow Bolt", ret => !Me.HasMyAura(103965) && !Me.HasMyAura(122355) && Me.CurrentTarget.HasMyAura(172), "Shadow Bolt"),
                                    Spell.CastSpell("Fel Flame", ret => !Me.HasMyAura(103965) && Me.IsMoving, "Fel Flame"),
-                                   Spell.CastSelfSpell("Life Tap", ret => Me.ManaPercent < 100 && !Spell.PlayerIsChanneling && Me.HealthPercent > 50, "Life tap - mana < 50%"))),
+                                   Spell.CastSelfSpell("Life Tap", ret => Me.ManaPercent < 20 && !Spell.PlayerIsChanneling && Me.HealthPercent > 50, "Life tap - mana < 20%"))),
 
                            //Dark Apotheosis Tanking
                            new Decorator(ret => Me.CurrentTarget != null && CLUSettings.Instance.Warlock.ImTheFuckingBoss,
@@ -217,7 +217,7 @@ namespace CLU.Classes.Warlock
                                    Buff.CastDebuff("Soul Fire", ret => Me.HasMyAura(122355), "Soul Fire"),
                                    Spell.CastSelfSpell("Life Tap", ret => Me.ManaPercent < 50 && Me.HealthPercent > 50, "Life tap - mana < 50%"),
                                    Spell.CastSpell("Fel Flame", ret => Me.IsMoving, "Fel Flame"),
-                                   Spell.CastSelfSpell("Life Tap", ret => Me.ManaPercent < 100 && !Spell.PlayerIsChanneling && Me.HealthPercent > 50, "Life tap - mana < 50%")))
+                                   Spell.CastSelfSpell("Life Tap", ret => Me.ManaPercent < 20 && !Spell.PlayerIsChanneling && Me.HealthPercent > 50, "Life tap - mana < 20%")))
                            );
             }
         }
