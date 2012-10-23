@@ -248,10 +248,8 @@ namespace CLU.Managers
         {
             WoWPetSpell petAction = Me.PetSpells.FirstOrDefault(p => p.ToString() == name);
             if (petAction == null || petAction.Spell == null) {
-                CLULogger.TroubleshootLog( String.Format("[PetManager] Pet does not have the spell {0}", name));
                 return false;
             }
-            CLULogger.TroubleshootLog( String.Format("[PetManager] Spell {0}, Cooldown left {1}", petAction.Spell.Name, petAction.Spell.CooldownTimeLeft));
             return !petAction.Spell.Cooldown;
         }
 
