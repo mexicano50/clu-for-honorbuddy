@@ -79,6 +79,7 @@ namespace CLU.Classes.Warlock
                         new Decorator(ret => !Me.Mounted && !Me.IsDead && !Me.Combat && !Me.IsFlying && !Me.IsOnTransport && !Me.HasAura("Food") && !Me.HasAura("Drink"),
                             new PrioritySelector(
                                 Buff.CastBuff("Dark Intent", ret => true, "Dark Intent"),
+                                Spell.CancelMyAura("Metamorphosis", ret => !Me.HasMyAura(114168) && Me.HasMyAura(103965), "Cancel Metamorphosis"),
                                 Spell.CastSelfSpell(108503, ret => Me.GotAlivePet && TalentManager.HasTalent(15) && !Buff.PlayerHasActiveBuff(108503) && !WoWSpell.FromId(108503).Cooldown, "Grimoire of Sacrifice"),
                                 new Decorator(ret => CLUSettings.Instance.Warlock.CurrentPetType == PetType.None && !Me.IsMoving && !Me.GotAlivePet && !Buff.PlayerHasActiveBuff(108503),
                                     new Sequence(

@@ -48,7 +48,7 @@ namespace CLU.Settings
 
 
         [Setting]
-        [DefaultValue(true)]
+        [DefaultValue(false)]
         [Category("Demonology Spec")]
         [DisplayName("Dark Apotheosis Tanking")]
         [Description("When this is set to true, CLU will tank using Dark Apotheosis")]
