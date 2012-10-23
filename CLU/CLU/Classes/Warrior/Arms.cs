@@ -101,7 +101,7 @@ namespace CLU.Classes.Warrior
                                 Common.HandleFlyingUnits,
 
                                 new Decorator(
-                                    ret => Me.CurrentTarget != null && Unit.UseCooldowns(),
+                                    ret => CLUSettings.Instance.UseCooldowns && Me.CurrentTarget != null && Unit.UseCooldowns(),
                                         new PrioritySelector(
                                         Item.UseTrinkets(),
                                         Racials.UseRacials(),
@@ -109,7 +109,7 @@ namespace CLU.Classes.Warrior
                                         Item.UseEngineerGloves(),
                                         Spell.CastSelfSpell("Recklessness", ret => (HasColossusSmash || IsColossusSmashOnCooldown) && CLUSettings.Instance.Warrior.UseRecklessness, "Recklessness"),
                                         Spell.CastSelfSpell("Avatar", ret => SpellManager.HasSpell("Avatar") && (SpellManager.HasSpell("Avatar") && (((Spell.SpellCooldown("Recklessness").TotalSeconds >= 180 || Buff.PlayerHasBuff("Recklessness")) || (Me.CurrentTarget.HealthPercent >= 20 && Unit.TimeToDeath(Me.CurrentTarget) > 195) || (Me.CurrentTarget.HealthPercent < 20 && Item.Has4PcTeirBonus(ItemSetId))) || Unit.TimeToDeath(Me.CurrentTarget) <= 20)), "Avatar"),
-                                        Spell.CastSelfSpell("Skull Banner", ret => Me.CurrentTarget != null && !Me.HasAura(114206), "Skull Banner"))),
+                                        Spell.CastSelfSpell("Skull Banner", ret => !Me.HasAura(114206), "Skull Banner"))),
                     // Interupts
                                     Spell.CastInterupt("Pummel", ret => CLUSettings.Instance.Warrior.UsePummel, "Pummel"),
                                     Spell.CastInterupt("Spell Reflection", ret => Me.CurrentTarget != null && Me.CurrentTarget.CurrentTarget == Me, "Spell Reflection"),

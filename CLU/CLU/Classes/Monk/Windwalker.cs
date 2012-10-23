@@ -124,15 +124,16 @@ Credits: alxaw , Kbrebel04
 
                     //Cooldowns
                     new Decorator(
-                        ret => !Spell.PlayerIsChanneling,
+                        ret => CLUSettings.Instance.UseCooldowns && Me.CurrentTarget != null && !Spell.PlayerIsChanneling && Unit.UseCooldowns(),
                         new PrioritySelector(
                             Item.UseTrinkets(),
-                            Item.UseEngineerGloves())),
+                            Item.UseEngineerGloves(),
+                    Spell.CastSelfSpell("Tigereye Brew", ret => !Buff.PlayerHasBuff("Tigereye Brew Use") && Buff.PlayerCountBuff("Tigereye Brew") == 10, "Tigerye Brew"),
+                    Spell.CastSpell("Invoke Xuen, the White Tiger", ret => TalentManager.HasTalent(17) && Me.CurrentEnergy < 80, "Invoke Xuen"),
+                    Spell.CastSpell("Rushing Jade Wind", ret => TalentManager.HasTalent(16) && Buff.PlayerCountBuff("Tiger Power") == 3 && Buff.TargetHasDebuff("Rising Sun Kick") && Me.CurrentEnergy <= 80, "Rushing Jade Wind"))),
 
                     //Class Cooldowns
-                    Spell.CastSelfSpell("Tigereye Brew", ret => !Buff.PlayerHasBuff("Tigereye Brew Use") && Buff.PlayerCountBuff("Tigereye Brew") == 10 && Unit.UseCooldowns(), "Tigerye Brew"),
-                    Spell.CastSpell("Invoke Xuen, the White Tiger", ret => TalentManager.HasTalent(17) && Me.CurrentEnergy < 80 && Unit.UseCooldowns(), "Invoke Xuen"),
-                    Spell.CastSpell("Rushing Jade Wind", ret => TalentManager.HasTalent(16) && Buff.PlayerCountBuff("Tiger Power") == 3 && Buff.TargetHasDebuff("Rising Sun Kick") && Me.CurrentEnergy <= 80 && Unit.UseCooldowns(), "Rushing Jade Wind"),
+
 
                     //Interupts
                     Spell.CastInterupt("Spear Hand Strike", ret => true, "Spear Hand Strike"),

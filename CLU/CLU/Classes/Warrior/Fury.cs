@@ -98,39 +98,53 @@ Credits: kbrebel04
                                 Common.HandleFlyingUnits,
 
                                 new Decorator(
-                                    ret => Me.CurrentTarget != null && Unit.UseCooldowns(),
+                                    ret => CLUSettings.Instance.UseCooldowns && Me.CurrentTarget != null && Unit.UseCooldowns(),
                                         new PrioritySelector(
                                         Item.UseTrinkets(),
                                         Racials.UseRacials(),
-                                        Buff.CastBuff("Lifeblood", ret => true, "Lifeblood"), // Thanks Kink
-                                        Item.UseEngineerGloves())),
-                    // Interupts
+                                        Buff.CastBuff("Lifeblood", ret => true, "Lifeblood"),
+                                        Item.UseEngineerGloves(),
+                                        Spell.CastSelfSpell("Skull Banner", ret => !Me.HasAura(114206) && Unit.UseCooldowns(), "Skull Banner"),
+                                        Spell.CastSelfSpell("Recklessness", ret => CLUSettings.Instance.Warrior.UseRecklessness && Unit.UseCooldowns() && Me.CurrentTarget != null && ((Buff.TargetDebuffTimeLeft("Colossus Smash").TotalSeconds >= 5 || Spell.SpellCooldown("Colossus Smash").TotalSeconds <= 4) && ((!SpellManager.HasSpell("Avatar") || !Item.Has4PcTeirBonus(ItemSetId))) && ((Me.CurrentTarget.HealthPercent < 20 || Unit.TimeToDeath(Me.CurrentTarget) > 315 || (Unit.TimeToDeath(Me.CurrentTarget) > 165 && Item.Has4PcTeirBonus(ItemSetId)))) || (SpellManager.HasSpell("Avatar") && Item.Has4PcTeirBonus(ItemSetId) && Buff.PlayerHasBuff("Avatar"))), "Recklessness"),
+                                        Spell.CastSelfSpell("Avatar", ret => SpellManager.HasSpell("Avatar") && (((Spell.SpellCooldown("Recklessness").TotalSeconds >= 180 || Buff.PlayerHasBuff("Recklessness")) || (Me.CurrentTarget.HealthPercent >= 20 && Unit.TimeToDeath(Me.CurrentTarget) > 195) || (Me.CurrentTarget.HealthPercent < 20 && Item.Has4PcTeirBonus(ItemSetId))) || Unit.TimeToDeath(Me.CurrentTarget) <= 20), "Avatar"))),
+                   
+                                    // Interupts
                                     Spell.CastInterupt("Pummel", ret => true, "Pummel"),
-                                    Spell.CastSelfSpell("Recklessness", ret => CLUSettings.Instance.Warrior.UseRecklessness && Unit.UseCooldowns() && Me.CurrentTarget != null && ((Buff.TargetDebuffTimeLeft("Colossus Smash").TotalSeconds >= 5 || Spell.SpellCooldown("Colossus Smash").TotalSeconds <= 4) && ((!SpellManager.HasSpell("Avatar") || !Item.Has4PcTeirBonus(ItemSetId))) && ((Me.CurrentTarget.HealthPercent < 20 || Unit.TimeToDeath(Me.CurrentTarget) > 315 || (Unit.TimeToDeath(Me.CurrentTarget) > 165 && Item.Has4PcTeirBonus(ItemSetId)))) || (SpellManager.HasSpell("Avatar") && Item.Has4PcTeirBonus(ItemSetId) && Buff.PlayerHasBuff("Avatar"))), "Recklessness"),
-                                    Spell.CastSelfSpell("Avatar", ret => Me.CurrentTarget != null && (Unit.UseCooldowns() && SpellManager.HasSpell("Avatar") && (((Spell.SpellCooldown("Recklessness").TotalSeconds >= 180 || Buff.PlayerHasBuff("Recklessness")) || (Me.CurrentTarget.HealthPercent >= 20 && Unit.TimeToDeath(Me.CurrentTarget) > 195) || (Me.CurrentTarget.HealthPercent < 20 && Item.Has4PcTeirBonus(ItemSetId))) || Unit.TimeToDeath(Me.CurrentTarget) <= 20)), "Avatar"),
+                                  
+                                    //Key Spells
+                                    Spell.CastSelfSpell("Berserker Rage", ret => !(Me.HasAura(12880) || (Buff.PlayerCountBuff("Raging Blow!") == 2 && Me.CurrentTarget.HealthPercent >= 20)) && Me.CurrentTarget.IsWithinMeleeRange, "Berserker Rage"),
                                     Spell.CastSelfSpell("Bloodbath", ret => Me.CurrentTarget != null && (SpellManager.HasSpell("Bloodbath") && (((Spell.SpellCooldown("Recklessness").TotalSeconds >= 10 || Buff.PlayerHasBuff("Recklessness")) || (Me.CurrentTarget.HealthPercent >= 20 && (Unit.TimeToDeath(Me.CurrentTarget) <= 165 || (Unit.TimeToDeath(Me.CurrentTarget) <= 315 & !Item.Has4PcTeirBonus(ItemSetId))) && Unit.TimeToDeath(Me.CurrentTarget) > 75)) || Unit.TimeToDeath(Me.CurrentTarget) <= 19)), "Bloodbath"),
-                                    Spell.CastSelfSpell("Berserker Rage", ret => Me.CurrentTarget != null && !(Buff.PlayerHasActiveBuff("Enrage") || (Buff.PlayerCountBuff("Raging Blow!") == 2 && Me.CurrentTarget.HealthPercent >= 20)) && Me.CurrentTarget.IsWithinMeleeRange, "Berserker Rage"),
-                                    Spell.CastSelfSpell("Deadly Calm", ret => CLUSettings.Instance.Warrior.UseDeadlyCalm && Unit.UseCooldowns() && Me.CurrentRage >= 40 && (CLUSettings.Instance.UseAoEAbilities && Unit.EnemyMeleeUnits.Count() < 3 || !CLUSettings.Instance.UseAoEAbilities), "Deadly Calm"),
-                                    Spell.CastSelfSpell("Skull Banner", ret => Me.CurrentTarget != null && !Me.HasAura(114206) && Unit.UseCooldowns(), "Skull Banner"),
-                    //AoE
-                                    Spell.CastSpell("Raging Blow", ret => Me.HasAura(131116) && ((Unit.EnemyMeleeUnits.Count() == 2 && Buff.PlayerCountBuff("Meat Cleaver") == 1) || (Unit.EnemyMeleeUnits.Count() == 3 && Buff.PlayerCountBuff("Meat Cleaver") == 2) || (Unit.EnemyMeleeUnits.Count() > 3 && Buff.PlayerCountBuff("Meat Cleaver") > 2)), "Raging Blow AoE"),
-                                    Spell.CastSpell("Whirlwind", ret => Unit.EnemyMeleeUnits.Count() > 1 && !Buff.PlayerHasBuff("Deadly Calm") && ColossusSmashBloodthirstCooldown && Me.CurrentRage >= (TalentManager.HasGlyph("Unending Rage") ? 60 : 80) && (Buff.PlayerCountBuff("Meat Cleaver") < 3 || Buff.PlayerCountBuff("Meat Cleaver") > 2 && !Buff.PlayerHasActiveBuff("Raging Blow!")), "Whirlwind"),
-                                    Spell.CastSpell("Cleave", ret => Me.CurrentTarget != null && Unit.EnemyMeleeUnits.Count() == 2 && CLUSettings.Instance.UseAoEAbilities && ColossusSmashBloodthirstCooldown && Buff.PlayerHasBuff("Deadly Calm") && Me.CurrentRage >= (TalentManager.HasGlyph("Unending Rage") ? 60 : 40), "Cleave"),
-                    //Single Target
                                     Spell.CastSpell("Bloodthirst", ret => true, "Bloodthirst"),
                                     Spell.CastSpell("Colossus Smash", ret => true, "Colossus Smash"),
-                                    Spell.CastSpell("Execute", ret => Me.CurrentTarget != null && Me.CurrentTarget.HealthPercent <= 20, "Execute"),
-                                    Spell.CastSpell("Raging Blow", ret => CLUSettings.Instance.UseAoEAbilities && Unit.EnemyMeleeUnits.Count() < 3 && Buff.PlayerHasActiveBuff("Raging Blow!") || !CLUSettings.Instance.UseAoEAbilities && Buff.PlayerHasActiveBuff("Raging Blow!"), "Raging Blow"),
-                                    Spell.CastSpell("Wild Strike", ret => Me.HasAura(46916) && Me.CurrentTarget.HealthPercent >= 20 && Spell.SpellOnCooldown("Bloodthirst") && (CLUSettings.Instance.UseAoEAbilities && Unit.EnemyMeleeUnits.Count() < 3 || !CLUSettings.Instance.UseAoEAbilities), "Wild Strike"),
-                                    Spell.CastSpell("Heroic Strike", ret => Me.CurrentTarget != null && Unit.EnemyMeleeUnits.Count() < 2 && (Me.CurrentRage >= (TalentManager.HasGlyph("Unending Rage") ? 60 : 80) || Buff.PlayerHasBuff("Deadly Calm") && Me.CurrentRage >= (TalentManager.HasGlyph("Unending Rage") ? 60 : 40)), "Heroic Strike"),
-                                    Spell.CastSpell("Heroic Strike", ret => Me.CurrentTarget != null && !CLUSettings.Instance.UseAoEAbilities && (Me.CurrentRage >= (TalentManager.HasGlyph("Unending Rage") ? 60 : 80) || Buff.PlayerHasBuff("Deadly Calm") && Me.CurrentRage >= (TalentManager.HasGlyph("Unending Rage") ? 60 : 40)), "Heroic Strike"),
+                                    Spell.CastSelfSpell("Bloodbath", ret => SpellManager.HasSpell("Bloodbath") && Spell.SpellCooldown("Colossus Smash").TotalSeconds >= 5 && !Buff.TargetHasDebuff("Colossus Smash") && Spell.SpellCooldown("Bloodthirst").TotalSeconds >= 2 && Me.CurrentTarget.HealthPercent >= 20, "Bloodbath"),
+                                
+                                //AoE
+                                new Decorator(
+                                    ret => CLUSettings.Instance.UseAoEAbilities && Me.CurrentTarget != null && Unit.EnemyMeleeUnits.Count() > 1,
+                                        new PrioritySelector(
+                                    Spell.CastSpell("Bladestorm", ret => Buff.PlayerHasActiveBuff("Bloodbath") || Spell.SpellCooldown("Bloodbath").TotalSeconds >= 10, "Bladestorm with Bloodbath"), 
+                                    Spell.CastSpell("Bladestorm", ret => SpellManager.HasSpell("Bladestorm") && !SpellManager.HasSpell("Bloodbath") && Spell.SpellCooldown("Colossus Smash").TotalSeconds >= 5 && !Buff.TargetHasDebuff("Colossus Smash") && Spell.SpellCooldown("Bloodthirst").TotalSeconds >= 2 && Me.CurrentTarget.HealthPercent >= 20, "Bladestorm"),
+                                    Spell.CastSpell("Dragon Roar", ret => CLUSettings.Instance.Warrior.UseDragonRoar && Me.CurrentTarget.IsWithinMeleeRange && TalentManager.HasTalent(12), "Dragon Roar"),
+                                    Spell.CastSelfSpell("Deadly Calm", ret => CLUSettings.Instance.Warrior.UseDeadlyCalm && Me.CurrentRage >= 40 && Unit.EnemyMeleeUnits.Count() == 2, "Deadly Calm"),
+                                    Spell.CastSpell("Raging Blow", ret => Me.HasAura(131116) && ((Unit.EnemyMeleeUnits.Count() == 2 && Buff.PlayerCountBuff("Meat Cleaver") == 1) || (Unit.EnemyMeleeUnits.Count() == 3 && Buff.PlayerCountBuff("Meat Cleaver") == 2) || (Unit.EnemyMeleeUnits.Count() > 3 && Buff.PlayerCountBuff("Meat Cleaver") > 2)), "Raging Blow AoE"),
+                                    Spell.CastSpell("Wild Strike", ret => Me.HasAura(46916) && Me.CurrentTarget.HealthPercent >= 20 && Unit.EnemyMeleeUnits.Count() < 3 && Spell.SpellOnCooldown("Bloodthirst"), "Wild Strike"),
+                                    Spell.CastSpell("Whirlwind", ret => !Buff.PlayerHasBuff("Deadly Calm") && ColossusSmashBloodthirstCooldown && Me.CurrentRage >= (TalentManager.HasGlyph("Unending Rage") ? 60 : 80) && (Buff.PlayerCountBuff("Meat Cleaver") < 3 || Buff.PlayerCountBuff("Meat Cleaver") > 2 && !Buff.PlayerHasActiveBuff("Raging Blow!")), "Whirlwind"),
+                                    Spell.CastSpell("Cleave", ret => Unit.EnemyMeleeUnits.Count() == 2 && ColossusSmashBloodthirstCooldown && Buff.PlayerHasBuff("Deadly Calm") && Me.CurrentRage >= (TalentManager.HasGlyph("Unending Rage") ? 60 : 40), "Cleave"))),
+                                    
+                                //Single Target
+                                new Decorator(
+                                    ret => Me.CurrentTarget != null && (!CLUSettings.Instance.UseAoEAbilities || Unit.EnemyMeleeUnits.Count() < 2),
+                                        new PrioritySelector(
+                                    Spell.CastSpell("Execute", ret => Me.CurrentTarget.HealthPercent <= 20, "Execute"),
+                                    Spell.CastSpell("Raging Blow", ret => Buff.PlayerHasActiveBuff("Raging Blow!"), "Raging Blow"),
+                                    Spell.CastSpell("Wild Strike", ret => Me.HasAura(46916) && Me.CurrentTarget.HealthPercent >= 20 && Spell.SpellOnCooldown("Bloodthirst"), "Wild Strike"),
+                                    Spell.CastSpell("Heroic Strike", ret => Me.CurrentTarget.HealthPercent >= 20 && Me.CurrentRage >= (TalentManager.HasGlyph("Unending Rage") ? 60 : 80) || Buff.PlayerHasBuff("Deadly Calm") && Me.CurrentRage >= (TalentManager.HasGlyph("Unending Rage") ? 60 : 40), "Heroic Strike"),
                                     Spell.CastSpell("Storm Bolt", ret => SpellManager.HasSpell("Storm Bolt"), "Storm Bolt"),
                                     Spell.CastConicSpell("Shockwave", 11f, 33f, ret => CLUSettings.Instance.Warrior.UseShockwave, "Shockwave"),
                                     Spell.CastSpell("Dragon Roar", ret => CLUSettings.Instance.Warrior.UseDragonRoar && Me.CurrentTarget.IsWithinMeleeRange && TalentManager.HasTalent(12), "Dragon Roar"),
                                     Spell.CastSpell("Heroic Throw", ret => StyxWoW.Me.Inventory.Equipped.MainHand != null, "Heroic Throw"),
-                                    Spell.CastSpell("Bladestorm", ret => Me.CurrentTarget != null && (SpellManager.HasSpell("Bladestorm") && Spell.SpellCooldown("Colossus Smash").TotalSeconds >= 5 && !Buff.TargetHasDebuff("Colossus Smash") && Spell.SpellCooldown("Bloodthirst").TotalSeconds >= 2 && Me.CurrentTarget.HealthPercent >= 20), "Bladestorm"),
                                     Spell.CastSpell("Commanding Shout", ret => Me.RagePercent < 70 && !WoWSpell.FromId(469).Cooldown && CLUSettings.Instance.Warrior.ShoutSelection == WarriorShout.Commanding, "Commanding Shout for Rage"),
-                                    Spell.CastSpell("Battle Shout", ret => Me.RagePercent < 70 && !WoWSpell.FromId(6673).Cooldown && CLUSettings.Instance.Warrior.ShoutSelection == WarriorShout.Battle, "Battle Shout for Rage"));
+                                    Spell.CastSpell("Battle Shout", ret => Me.RagePercent < 70 && !WoWSpell.FromId(6673).Cooldown && CLUSettings.Instance.Warrior.ShoutSelection == WarriorShout.Battle, "Battle Shout for Rage"))));
             }
         }
 

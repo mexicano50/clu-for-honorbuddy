@@ -132,7 +132,7 @@ namespace CLU.Classes.Warlock
                                         ),
                     // lets get our pet back
                             PetManager.CastPetSummonSpell("Summon Felguard", ret => (!Me.IsMoving || Me.ActiveAuras.ContainsKey("Demonic Rebirth")) && !Me.GotAlivePet && !Me.ActiveAuras.ContainsKey(WoWSpell.FromId(108503).Name), "Summon Pet"),
-                            Common.WarlockGrimoire,
+                            //Common.WarlockGrimoire,
 
 
                     //Raid Debuff
@@ -140,11 +140,12 @@ namespace CLU.Classes.Warlock
                             Spell.CastSpell("Curse of the Elements", ret => Me.CurrentTarget != null && Me.HasMyAura(103965) && !Me.HasMyAura(116202), "Aura of the Elements"), //buff under Meta
                     //Cooldowns                            
 
-                            new Decorator(ret => Unit.UseCooldowns(),
+                            new Decorator(ret => CLUSettings.Instance.UseCooldowns && Unit.UseCooldowns(),
                                 new PrioritySelector(
-                                    Item.UseBagItem("Jade Serpent Potion", ret => (Buff.UnitHasHasteBuff(Me) || Me.CurrentTarget.HealthPercent < 20) && Unit.UseCooldowns(), "Jade Serpent Potion"),
-                                    Item.UseBagItem("Volcanic Potion", ret => (Buff.UnitHasHasteBuff(Me) || Me.CurrentTarget.HealthPercent < 20) && Unit.UseCooldowns(), "Volcanic Potion"),
+                                    Item.UseBagItem("Jade Serpent Potion", ret => (Buff.UnitHasHasteBuff(Me) || Me.CurrentTarget.HealthPercent < 20), "Jade Serpent Potion"),
+                                    Item.UseBagItem("Volcanic Potion", ret => (Buff.UnitHasHasteBuff(Me) || Me.CurrentTarget.HealthPercent < 20), "Volcanic Potion"),
                                     Spell.CastSelfSpell("Dark Soul", ret => !WoWSpell.FromId(103958).Cooldown && !WoWSpell.FromId(113861).Cooldown && !Me.HasAnyAura(Common.DarkSoul) && (Me.GetPowerInfo(Styx.WoWPowerType.DemonicFury).CurrentI >= 900 || Unit.IsBoss(Me.CurrentTarget) && Me.GetPowerInfo(Styx.WoWPowerType.DemonicFury).CurrentI >= (Unit.TimeToDeath(Me.CurrentTarget) * 30)), "Dark Soul"),
+                                    Spell.CastSpell("Summon Doomguard", ret => !WoWSpell.FromId(18540).Cooldown && Me.CurrentTarget != null, "Summon Doomguard"),
                                     Spell.CastSpell("Grimore: Felguard", ret => true, "Grimore: Felguard")
                                     )),
                             Spell.CastSelfSpell("Command Demon", ret => Me.CurrentTarget != null && (TalentManager.HasTalent(13) && !WoWSpell.FromId(119915).Cooldown || !TalentManager.HasTalent(13) && !WoWSpell.FromId(89751).Cooldown) && Me.Pet.Location.Distance(Me.CurrentTarget.Location) < Spell.MeleeRange, "Command Demon"),
@@ -166,11 +167,6 @@ namespace CLU.Classes.Warlock
                                    Spell.ChannelSpell("Drain Life", ret => !Me.HasMyAura(103965) && Me.HealthPercent < 50, "Harvest Life"),
                                    Spell.CastSelfSpell("Life Tap", ret => Me.ManaPercent < 15 && Me.HealthPercent > 50, "Life tap - mana < 15%")
                                )),
-
-                            new Decorator(ret => CLUSettings.Instance.UseCooldowns,
-                                new PrioritySelector(
-                                    Spell.CastSpell("Summon Doomguard", ret => !WoWSpell.FromId(18540).Cooldown && Me.CurrentTarget != null && Unit.UseCooldowns(), "Summon Doomguard")
-                                    )),
 
                            //Single Target
                            new Decorator(ret => Me.CurrentTarget != null && !CLUSettings.Instance.Warlock.ImTheFuckingBoss && (Unit.EnemyMeleeUnits.Count() <= 3 || !CLUSettings.Instance.UseAoEAbilities),
