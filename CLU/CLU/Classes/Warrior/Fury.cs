@@ -111,7 +111,7 @@ Credits: kbrebel04
                                     Spell.CastSelfSpell("Bloodbath", ret => Me.CurrentTarget != null && (SpellManager.HasSpell("Bloodbath") && (((Spell.SpellCooldown("Recklessness").TotalSeconds >= 10 || Buff.PlayerHasBuff("Recklessness")) || (Me.CurrentTarget.HealthPercent >= 20 && (Unit.TimeToDeath(Me.CurrentTarget) <= 165 || (Unit.TimeToDeath(Me.CurrentTarget) <= 315 & !Item.Has4PcTeirBonus(ItemSetId))) && Unit.TimeToDeath(Me.CurrentTarget) > 75)) || Unit.TimeToDeath(Me.CurrentTarget) <= 19)), "Bloodbath"),
                                     Spell.CastSelfSpell("Berserker Rage", ret => Me.CurrentTarget != null && !(Buff.PlayerHasActiveBuff("Enrage") || (Buff.PlayerCountBuff("Raging Blow!") == 2 && Me.CurrentTarget.HealthPercent >= 20)) && Me.CurrentTarget.IsWithinMeleeRange, "Berserker Rage"),
                                     Spell.CastSelfSpell("Deadly Calm", ret => CLUSettings.Instance.Warrior.UseDeadlyCalm && Unit.UseCooldowns() && Me.CurrentRage >= 40 && (CLUSettings.Instance.UseAoEAbilities && Unit.EnemyMeleeUnits.Count() < 3 || !CLUSettings.Instance.UseAoEAbilities), "Deadly Calm"),
-                                    Spell.CastSelfSpell("Skull Banner", ret => Me.CurrentTarget != null && Unit.UseCooldowns(), "Skull Banner"),
+                                    Spell.CastSelfSpell("Skull Banner", ret => Me.CurrentTarget != null && !Me.HasAura(114206) && Unit.UseCooldowns(), "Skull Banner"),
                     //AoE
                                     Spell.CastSpell("Raging Blow", ret => Me.HasAura(131116) && ((Unit.EnemyMeleeUnits.Count() == 2 && Buff.PlayerCountBuff("Meat Cleaver") == 1) || (Unit.EnemyMeleeUnits.Count() == 3 && Buff.PlayerCountBuff("Meat Cleaver") == 2) || (Unit.EnemyMeleeUnits.Count() > 3 && Buff.PlayerCountBuff("Meat Cleaver") > 2)), "Raging Blow AoE"),
                                     Spell.CastSpell("Whirlwind", ret => Unit.EnemyMeleeUnits.Count() > 1 && !Buff.PlayerHasBuff("Deadly Calm") && ColossusSmashBloodthirstCooldown && Me.CurrentRage >= (TalentManager.HasGlyph("Unending Rage") ? 60 : 80) && (Buff.PlayerCountBuff("Meat Cleaver") < 3 || Buff.PlayerCountBuff("Meat Cleaver") > 2 && !Buff.PlayerHasActiveBuff("Raging Blow!")), "Whirlwind"),
@@ -146,7 +146,7 @@ Credits: kbrebel04
                 return new Decorator(
                     ret => Me.HealthPercent < 100 && CLUSettings.Instance.EnableSelfHealing,
                     new PrioritySelector(
-                    //Spell.CastSpell("Impending Victory",            ret => Me.CurrentTarget != null && !WoWSpell.FromId(103840).Cooldown && TalentManager.HasTalent(6) && Me.CurrentTarget.HealthPercent >= 20, "Impending Victory"),
+                        Spell.CastSpell("Victory Rush", onUnit => Me, ret => Buff.PlayerHasActiveBuff("Victorious") && Me.HealthPercent < CLUSettings.Instance.Warrior.ImpendingVictoryPercent, "Victory Rush or Impending Victory"),    
                         Spell.CastSelfSpell("Enraged Regeneration", ret => Me.HealthPercent < 45 && !Buff.PlayerHasBuff("Rallying Cry"), "Enraged Regeneration"),
                         Spell.CastSelfSpell("Rallying Cry", ret => Me.HealthPercent < 45 && !Buff.PlayerHasBuff("Enraged Regeneration"), "Rallying Cry"),
                         Item.UseBagItem("Healthstone", ret => Me.HealthPercent < 40 && !Buff.PlayerHasBuff("Rallying Cry") && !Buff.PlayerHasBuff("Enraged Regeneration"), "Healthstone")));

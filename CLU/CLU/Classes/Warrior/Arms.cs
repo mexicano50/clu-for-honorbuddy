@@ -109,7 +109,7 @@ namespace CLU.Classes.Warrior
                                         Item.UseEngineerGloves(),
                                         Spell.CastSelfSpell("Recklessness", ret => (HasColossusSmash || IsColossusSmashOnCooldown) && CLUSettings.Instance.Warrior.UseRecklessness, "Recklessness"),
                                         Spell.CastSelfSpell("Avatar", ret => SpellManager.HasSpell("Avatar") && (SpellManager.HasSpell("Avatar") && (((Spell.SpellCooldown("Recklessness").TotalSeconds >= 180 || Buff.PlayerHasBuff("Recklessness")) || (Me.CurrentTarget.HealthPercent >= 20 && Unit.TimeToDeath(Me.CurrentTarget) > 195) || (Me.CurrentTarget.HealthPercent < 20 && Item.Has4PcTeirBonus(ItemSetId))) || Unit.TimeToDeath(Me.CurrentTarget) <= 20)), "Avatar"),
-                                        Spell.CastSelfSpell("Skull Banner", ret => true, "Skull Banner"))),
+                                        Spell.CastSelfSpell("Skull Banner", ret => Me.CurrentTarget != null && !Me.HasAura(114206), "Skull Banner"))),
                     // Interupts
                                     Spell.CastInterupt("Pummel", ret => CLUSettings.Instance.Warrior.UsePummel, "Pummel"),
                                     Spell.CastInterupt("Spell Reflection", ret => Me.CurrentTarget != null && Me.CurrentTarget.CurrentTarget == Me, "Spell Reflection"),
@@ -215,7 +215,6 @@ namespace CLU.Classes.Warrior
                         Buff.CastBuff("Battle Shout", ret => Me.CurrentRage < 70 && !Buff.TargetHasDebuff("Colossus Smash"), "Battle Shout"),
                         Spell.CastSpell("Bladestorm", ret => Me.CurrentTarget != null && TalentManager.HasTalent(10) && SpellManager.Spells["Colossus Smash"].CooldownTimeLeft.Seconds >= 5 && !Buff.TargetHasDebuff("Colossus Smash") && SpellManager.Spells["Bloodthirst"].CooldownTimeLeft.Seconds >= 2 && Me.CurrentTarget.HealthPercent >= 20, "Bladestorm"),//<~ add GUI option for user descretion
                     //Spell.CastSpell("Slam",                     ret => Me.CurrentTarget != null && Me.CurrentTarget.HealthPercent >= 20, "Slam"),
-                        Spell.CastSpell("Impending Victory", ret => Me.CurrentTarget != null && TalentManager.HasTalent(6) && Me.CurrentTarget.HealthPercent >= 20, "Impending Victory"),
                         Buff.CastBuff("Battle Shout", ret => Me.CurrentRage < 70, "Battle Shout")
                 ));
             }
@@ -233,7 +232,7 @@ namespace CLU.Classes.Warrior
                 return (
                     new Decorator(ret => Me.HealthPercent < 100 && CLUSettings.Instance.EnableSelfHealing,
                         new PrioritySelector(
-                    //Spell.CastSelfSpell("Impending Victory",        ret => Me.CurrentTarget != null && !WoWSpell.FromId(103840).Cooldown && TalentManager.HasTalent(6) && Me.CurrentTarget.HealthPercent <= 20, "Impending Victory"),
+                            Spell.CastSpell("Victory Rush", onUnit => Me, ret => Buff.PlayerHasActiveBuff("Victorious") && Me.HealthPercent < CLUSettings.Instance.Warrior.ImpendingVictoryPercent, "Victory Rush or Impending Victory"),  
                             Spell.CastSelfSpell("Enraged Regeneration", ret => Me.HealthPercent < 45 && !Buff.PlayerHasBuff("Rallying Cry"), "Enraged Regeneration"),
                             Spell.CastSelfSpell("Rallying Cry", ret => Me.HealthPercent < 45 && !Buff.PlayerHasBuff("Enraged Regeneration"), "Rallying Cry"),
                             Item.UseBagItem("Healthstone", ret => Me.HealthPercent < 40 && !Buff.PlayerHasBuff("Rallying Cry") && !Buff.PlayerHasBuff("Enraged Regeneration"), "Healthstone")
