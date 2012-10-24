@@ -17,6 +17,7 @@ using Styx.TreeSharp;
 using CommonBehaviors.Actions;
 using CLU.Settings;
 using CLU.Base;
+using Styx.WoWInternals;
 using Rest = CLU.Base.Rest;
 
 namespace CLU.Classes.Paladin
@@ -165,7 +166,7 @@ NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagr
                            ret => Me.HealthPercent < 100 && CLUSettings.Instance.EnableSelfHealing,
                            new PrioritySelector(
                                Spell.CastSpell("Word of Glory",            ret => Me, ret => Me.HealthPercent < CLUSettings.Instance.Paladin.WordofGloryPercent && (Me.CurrentHolyPower > 1 || Buff.PlayerHasBuff("Divine Purpose")) && CLUSettings.Instance.EnableSelfHealing && CLUSettings.Instance.EnableMovement, "Word of Glory"),
-                               Buff.CastBuff("Hand of Freedom",            ret => Me.MovementInfo.ForwardSpeed < 8.05 && CLUSettings.Instance.Paladin.UseHandofFreedom, "Hand of Freedom"),
+                               Buff.CastBuff("Hand of Freedom", ret => (Buff.PlayerHasCrowdControl(WoWSpellMechanic.Snared) || Buff.PlayerHasCrowdControl(WoWSpellMechanic.Slowed) || Buff.PlayerHasCrowdControl(WoWSpellMechanic.Rooted) || Buff.PlayerHasCrowdControl(WoWSpellMechanic.Slowed) || Buff.PlayerHasCrowdControl(WoWSpellMechanic.Frozen) || Buff.PlayerHasCrowdControl(WoWSpellMechanic.Dazed)) && CLUSettings.Instance.Paladin.UseHandofFreedom, "Hand of Freedom"),
                                Buff.CastBuff("Cleanse",                    ret => Unit.UnitIsControlled(Me, false), "Cleanse"),
                                Item.UseBagItem("Healthstone",              ret => Me.HealthPercent < CLUSettings.Instance.Paladin.HealthstonePercent, "Healthstone"),
                                Buff.CastBuff("Divine Protection",          ret => Me.HealthPercent < CLUSettings.Instance.Paladin.RetributionDPPercent, "Divine Protection"),
