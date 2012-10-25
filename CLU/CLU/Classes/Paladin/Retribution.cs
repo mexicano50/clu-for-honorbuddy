@@ -155,7 +155,9 @@ NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagr
 
         public override Composite Pull
         {
-             get { return this.SingleRotation; }
+             get { return new PrioritySelector(
+                    Spell.CastSpell("Judgment",ret => true, "Pull Judgment"),
+                    Spell.CastSpell("Exorcism",ret => true, "Pull Excorcism")); }
         }
 
         public override Composite Medic

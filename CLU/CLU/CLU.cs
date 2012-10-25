@@ -230,15 +230,15 @@ namespace CLU
 
             _rotationBase = null;
 
-            if (_combatBehavior != null) this._combatBehavior = new Decorator(ret => AllowPulse, this.Rotation);
+            if (_combatBehavior != null) this._combatBehavior = new Decorator(ret => AllowPulse, new LockSelector(this.Rotation));
 
-            if (_combatBuffBehavior != null) this._combatBuffBehavior = new Decorator(ret => AllowPulse, this.Medic);
+            if (_combatBuffBehavior != null) this._combatBuffBehavior = new Decorator(ret => AllowPulse, new LockSelector(this.Medic));
 
-            if (_preCombatBuffBehavior != null) this._preCombatBuffBehavior = new Decorator(ret => AllowPulse, this.PreCombat);
+            if (_preCombatBuffBehavior != null) this._preCombatBuffBehavior = new Decorator(ret => AllowPulse, new LockSelector(this.PreCombat));
 
-            if (_restBehavior != null) this._restBehavior = new Decorator(ret => !(CLUSettings.Instance.NeverDismount && IsMounted) && !Me.IsFlying, this.Resting);
+            if (_restBehavior != null) this._restBehavior = new Decorator(ret => !(CLUSettings.Instance.NeverDismount && IsMounted) && !Me.IsFlying, new LockSelector(_restBehavior));
 
-            if (_pullBehavior != null) this._pullBehavior = new Decorator(ret => AllowPulse, this.Pulling);
+            if (_pullBehavior != null) this._pullBehavior = new Decorator(ret => AllowPulse,  new LockSelector(this.Pulling));
 
             return true;
         }
@@ -644,34 +644,25 @@ namespace CLU
             }
         }
         #endregion
+        /* LockSelector taken from Singular to test some stuff and maybe fix some weird behavior - done by Stormchasing */
+        /// <summary>
+        /// This behavior wraps the child behaviors in a 'FrameLock' which can provide a big performance improvement 
+        /// if the child behaviors makes multiple api calls that internally run off a frame in WoW in one CC pulse.
+        /// </summary>
+        private class LockSelector : PrioritySelector
+        {
+            public LockSelector(params Composite[] children)
+                : base(children)
+            {
+            }
 
-        //private const OracleWatchMode OracleWatchFlags = OracleWatchMode.Tank;
-
-        //private static void ManageOracle()
-        //{
-        //    switch (OracleWatchFlags) {
-        //    case OracleWatchMode.Healer:
-        //        UnitOracle.WatchUnit(StyxWoW.Me, UnitOracle.Watch.HealthVariance);
-        //        if (Me.GroupInfo.IsInRaid) {
-        //            StyxWoW.Me.RaidMembers.ForEach(x => UnitOracle.WatchUnit(x, UnitOracle.Watch.HealthVariance));
-        //        } else if (StyxWoW.Me.GroupInfo.IsInParty) {
-        //            StyxWoW.Me.PartyMembers.ForEach(x => UnitOracle.WatchUnit(x, UnitOracle.Watch.HealthVariance));
-        //        }
-        //        break;
-        //    case OracleWatchMode.DPS:
-        //        UnitOracle.WatchUnit(StyxWoW.Me, UnitOracle.Watch.HealthVariance);
-        //        break;
-        //    case OracleWatchMode.Tank:
-        //        UnitOracle.WatchUnit(StyxWoW.Me, UnitOracle.Watch.HealthVariance);
-        //        if (Me.GroupInfo.IsInRaid) {
-        //            StyxWoW.Me.RaidMembers.ForEach(x => UnitOracle.WatchUnit(x, UnitOracle.Watch.HealthVariance));
-        //        } else if (StyxWoW.Me.GroupInfo.IsInParty) {
-        //            StyxWoW.Me.PartyMembers.ForEach(x => UnitOracle.WatchUnit(x, UnitOracle.Watch.HealthVariance));
-        //        }
-        //        break;
-        //    }
-        //    // tick
-        //    UnitOracle.Pulse();
-        //}
+            public override RunStatus Tick(object context)
+            {
+                using (StyxWoW.Memory.AcquireFrame())
+                {
+                    return base.Tick(context);
+                }
+            }
+        }
     }
 }
