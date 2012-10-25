@@ -87,7 +87,10 @@ namespace CLU.CombatLog
 
             DetachCombatLogEvent();
         }
-
+        public void BotBaseChange(object o)
+        {
+            BotChecker.Initialize();
+        }
         private static void AttachCombatLogEvent()
         {
             if (_combatLogAttached)

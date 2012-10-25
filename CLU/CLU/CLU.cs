@@ -340,6 +340,7 @@ namespace CLU
             CLULogger.TroubleshootLog("Attatching BotEvents");
             BotEvents.OnBotStarted += CombatLogEvents.Instance.CombatLogEventsOnStarted;
             BotEvents.OnBotStopped += CombatLogEvents.Instance.CombatLogEventsOnStopped;
+            BotEvents.OnBotChanged += CombatLogEvents.Instance.BotBaseChange;
             BotEvents.Player.OnMapChanged += CombatLogEvents.Instance.Player_OnMapChanged;
             RoutineManager.Reloaded += RoutineManagerReloaded;
 
