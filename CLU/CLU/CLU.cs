@@ -659,6 +659,10 @@ namespace CLU
 
             public override RunStatus Tick(object context)
             {
+                if (!CLUSettings.Instance.EnableFrameLock)
+                {
+                    return base.Tick(context);
+                }
                 using (StyxWoW.Memory.AcquireFrame())
                 {
                     return base.Tick(context);

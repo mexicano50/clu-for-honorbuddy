@@ -180,7 +180,16 @@ namespace CLU.Settings
             set;
         }
 
-
+        [Setting]
+        [DefaultValue(false)]
+        [Category("General")]
+        [DisplayName("Enable FrameLock")]
+        [Description("Disabled by default. When this is enabled all behaviors will be executed within a FrameLock.")]
+        public bool EnableFrameLock
+        {
+            get;
+            set;
+        }
 
         //[Setting]
         //[DefaultValue(30)]
