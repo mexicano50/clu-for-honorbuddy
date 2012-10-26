@@ -253,7 +253,8 @@ namespace CLU.Base
         /// <returns>Nothing but win</returns>
         public static Composite UseTrinkets()
         {
-            return new PrioritySelector(delegate {
+            return UseEquippedTrinket();
+            /*return new PrioritySelector(delegate {
                 foreach (WoWItem trinket in Trinkets.CurrentTrinkets.Where(trinket => CanUseEquippedItem(trinket) && TrinketUsageSatisfied(trinket) && !HasItemInBag(trinket) && HasCarriedItem(trinket)))
                 {
                     if (trinket != null) {
@@ -263,9 +264,35 @@ namespace CLU.Base
                 }
 
                 return RunStatus.Success;
-            });
+            });*/
         }
 
+
+        private static Composite UseEquippedTrinket()
+        {
+            return new PrioritySelector(
+                new Decorator(
+                    ret => Me.Inventory.GetItemBySlot((uint)WoWInventorySlot.Trinket1)!=null,
+                    new PrioritySelector(
+                        ctx => Me.Inventory.GetItemBySlot((uint)WoWInventorySlot.Trinket1),
+                        new Decorator(
+                            ctx => ctx != null && CanUseEquippedItem((WoWItem)ctx) && TrinketUsageSatisfied((WoWItem)ctx),
+                            new Action(ctx => UseItem((WoWItem)ctx))
+                            )
+                        )
+                    ),
+                new Decorator(
+                    ret => Me.Inventory.GetItemBySlot((uint)WoWInventorySlot.Trinket2) != null,
+                    new PrioritySelector(
+                        ctx => Me.Inventory.GetItemBySlot((uint)WoWInventorySlot.Trinket2),
+                        new Decorator(
+                            ctx => ctx != null && CanUseEquippedItem((WoWItem)ctx) && TrinketUsageSatisfied((WoWItem)ctx),
+                            new Action(ctx => UseItem((WoWItem)ctx))
+                            )
+                        )
+                    )
+                );
+        }
         /// <summary>
         /// Returns true if the trinkets conditions are met
         /// </summary>
