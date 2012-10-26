@@ -199,7 +199,7 @@ namespace CLU
             {
                 return new Sequence(
                     //new Action(x => CLULogger.TroubleshootLog(" Pull Behavior pulsed")),
-                    new DecoratorContinue(x => CLUSettings.Instance.EnableMovement, Movement.MovingFacingBehavior()),
+                    new DecoratorContinue(x => CLUSettings.Instance.EnableMovement && (!Me.IsCasting || !Spell.PlayerIsChanneling), Movement.MovingFacingBehavior()),
                     new DecoratorContinue(x => true, ActiveRotation.Pull));
             }
         }
