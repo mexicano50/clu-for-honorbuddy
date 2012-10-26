@@ -18,6 +18,7 @@ using CLU.Base;
 using Styx.CommonBot;
 using Rest = CLU.Base.Rest;
 using Styx;
+using Styx.Pathing;
 using Styx.WoWInternals;
 using global::CLU.Managers;
 
@@ -190,7 +191,7 @@ namespace CLU.Classes.Warrior
                     //PvP Utilities
                         Buff.CastBuff("Battle Stance", ret => !Macro.weaponSwap && Me.Shapeshift != ShapeshiftForm.BattleStance, "Battle Stance"),
                         Buff.CastBuff("Defensive Stance", ret => Macro.weaponSwap && Me.Shapeshift != ShapeshiftForm.DefensiveStance, "Defensive Stance"),
-                        Spell.CastSpell("Charge", ret => Me.CurrentTarget != null && Me.CurrentTarget.DistanceSqr >= 8 * 8 && Me.CurrentTarget.DistanceSqr <= 25 * 25, "Charge"),
+                        Spell.CastSpell("Charge", ret => Me.CurrentTarget != null && Me.CurrentTarget.DistanceSqr >= 8 * 8 && Me.CurrentTarget.DistanceSqr <= 25 * 25 && Navigator.CanNavigateFully(Me.Location, Me.CurrentTarget.Location), "Charge"),
                     //Spell.CastOnUnitLocation("Heroic Leap",     ret => Me.CurrentTarget != null && && Me.CurrentTarget.DistanceSqr >= 8 * 8 && Me.CurrentTarget.DistanceSqr <= 40 * 40 &&  SpellManager.Spells["Charge"].CooldownTimeLeft.Seconds > 1 && SpellManager.Spells["Charge"].CooldownTimeLeft.Seconds < 18, "Heroic Leap"),
                         Spell.CastSpell("Hamstring", ret => !Buff.TargetHasDebuff("Hamstring"), "Hamstring"),
 
@@ -232,7 +233,7 @@ namespace CLU.Classes.Warrior
                 return (
                     new Decorator(ret => Me.HealthPercent < 100 && CLUSettings.Instance.EnableSelfHealing,
                         new PrioritySelector(
-                            Spell.CastSpell("Victory Rush", ret => Buff.PlayerHasActiveBuff("Victorious") && Me.HealthPercent < CLUSettings.Instance.Warrior.ImpendingVictoryPercent, "Victory Rush or Impending Victory"),  
+                            Spell.CastSpell("Victory Rush", ret => Buff.PlayerHasActiveBuff("Victorious") && Me.HealthPercent < CLUSettings.Instance.Warrior.ImpendingVictoryPercent, "Victory Rush or Impending Victory"),
                             Spell.CastSelfSpell("Enraged Regeneration", ret => Me.HealthPercent < 45 && !Buff.PlayerHasBuff("Rallying Cry"), "Enraged Regeneration"),
                             Spell.CastSelfSpell("Rallying Cry", ret => Me.HealthPercent < 45 && !Buff.PlayerHasBuff("Enraged Regeneration"), "Rallying Cry"),
                             Item.UseBagItem("Healthstone", ret => Me.HealthPercent < 40 && !Buff.PlayerHasBuff("Rallying Cry") && !Buff.PlayerHasBuff("Enraged Regeneration"), "Healthstone")
