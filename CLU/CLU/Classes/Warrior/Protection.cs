@@ -110,6 +110,7 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
                      Spell.CastInterupt("Spell Reflection",     ret => Me.CurrentTarget != null && Me.CurrentTarget.CurrentTarget == Me && CLUSettings.Instance.Warrior.UseSpellReflection, "Spell Reflection"),
                      Spell.CastAreaSpell("Intimidating Shout", 8, false, 1, 0.0, 0.0, ret => CLUSettings.Instance.Warrior.UseIntimidatingShout, "Intimidating Shout"),
                      Buff.CastDebuff("Demoralizing Shout",       ret => Me.CurrentTarget != null && !Buff.UnitHasWeakenedBlows(Me.CurrentTarget) && CLUSettings.Instance.Warrior.UseDemoralizingShout, "Demoralizing Shout"),
+                     Spell.CastSelfSpell("Avatar", ret => Me.CurrentTarget!=null && Unit.UseCooldowns() && TalentManager.HasTalent(16) && !WoWSpell.FromId(107574).Cooldown, "Victory Rush or Impending Victory"),
                      // START AoE
                      new Decorator(
                          ret => Unit.CountEnnemiesInRange(Me.Location, 12) >= CLUSettings.Instance.Warrior.ProtAoECount,
@@ -124,6 +125,7 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
                      Spell.CastSpell("Shield Slam",         ret => true, "Shield Slam on CD"),
                      Spell.CastSpell("Revenge",             ret => true, "Revenge on CD"),
                      Spell.CastSelfSpell("Deadly Calm", ret => CLUSettings.Instance.Warrior.UseDeadlyCalm && Unit.UseCooldowns(), "Deadly Calm"),
+                     Spell.CastSpell("Execute", ret => Me.CurrentTarget != null && Me.CurrentTarget.HealthPercent < 20, "Execute"),
                      Spell.CastSelfSpell("Berserker Rage", ret => Me.CurrentTarget != null && (CLUSettings.Instance.Warrior.UseBerserkerRage && Unit.UseCooldowns() && Me.CurrentTarget.IsWithinMeleeRange), "Berserker Rage"),
                      Spell.CastAreaSpell("Thunder Clap", 8, false, 1, 0.0, 0.0, ret => !Buff.UnitHasWeakenedBlows(Me.CurrentTarget) && Me.CurrentTarget != null && Me.CurrentTarget.IsWithinMeleeRange, "Thunder Clap for Weakened Blows"),
                      Buff.CastDebuff("Demoralizing Shout",  ret => Me.CurrentTarget != null && !Buff.UnitHasWeakenedBlows(Me.CurrentTarget) && CLUSettings.Instance.Warrior.UseDemoralizingShout, "Demoralizing Shout"),
