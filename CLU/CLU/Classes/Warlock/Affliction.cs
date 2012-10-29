@@ -107,17 +107,17 @@ namespace CLU.Classes.Warlock
                     //Cooldowns
                     new Decorator(ret=> CLUSettings.Instance.UseCooldowns,
                         new PrioritySelector(
-                            Buff.CastBuff("Dark Soul", ret => !WoWSpell.FromId(113860).Cooldown && Me.CurrentTarget != null && Unit.UseCooldowns() && !Me.IsMoving && !Me.HasAnyAura(Common.DarkSoul), "Dark Soul"),
-                            Spell.CastSpell("Summon Doomguard", ret => !WoWSpell.FromId(18540).Cooldown && Me.CurrentTarget != null && Unit.UseCooldowns(), "Summon Doomguard"),
-                            Spell.CastSelfSpell("Unending Resolve", ret => Me.CurrentTarget != null && Unit.UseCooldowns() && Me.HealthPercent < 40, "Unending Resolve (Save my life)"),
-                            Spell.CastSelfSpell("Twilight Warden", ret => Me.CurrentTarget != null && Me.CurrentTarget.IsCasting && Unit.UseCooldowns() && Me.HealthPercent < 80, "Twilight Warden (Protect me from magical damage)"))),
+                            Buff.CastBuff("Dark Soul", ret => !WoWSpell.FromId(113860).Cooldown && Me.CurrentTarget != null && !Me.IsMoving && !Me.HasAnyAura(Common.DarkSoul), "Dark Soul"),
+                            Spell.CastSpell("Summon Doomguard", ret => !WoWSpell.FromId(18540).Cooldown && Me.CurrentTarget != null, "Summon Doomguard"),
+                            Spell.CastSelfSpell("Unending Resolve", ret => Me.CurrentTarget != null && Me.HealthPercent < 40, "Unending Resolve (Save my life)"),
+                            Spell.CastSelfSpell("Twilight Warden", ret => Me.CurrentTarget != null && Me.CurrentTarget.IsCasting && Me.HealthPercent < 80, "Twilight Warden (Protect me from magical damage)"))),
                     //Basic DPSing
-                    Buff.CastDebuff("Curse of the Elements", ret => Me.CurrentTarget != null && Unit.UseCooldowns() && Me.CurrentTarget.HealthPercent > 70 && !Buff.UnitHasMagicVulnerabilityDeBuffs(Me.CurrentTarget), "Curse of the Elements"),
+                    Buff.CastDebuff("Curse of the Elements", ret => Me.CurrentTarget != null && Me.CurrentTarget.HealthPercent > 70 && !Buff.UnitHasMagicVulnerabilityDeBuffs(Me.CurrentTarget), "Curse of the Elements"),
                     //fast application of debuffs
-                    new Decorator(ret => Me.CurrentTarget != null && !Me.CurrentTarget.HasAnyAura(Common.Debuffs) && Unit.UseCooldowns(),
+                    new Decorator(ret => Me.CurrentTarget != null && !Me.CurrentTarget.HasAnyAura(Common.Debuffs),
                         new PrioritySelector(
                     Buff.CastBuff("Soulburn", ret => !Buff.PlayerHasBuff("Soulburn"), "Soulburn"),
-                    Spell.CastSpell(86121, ret => Buff.PlayerHasBuff("Soulburn"), "Soul Swap"))),
+                    Spell.CastSpell("Soul Swap", ret => Buff.PlayerHasBuff("Soulburn"), "Soul Swap"))),
                     //Slow Application
                     Buff.CastDebuff("Agony", ret => !Buff.PlayerHasActiveBuff("Soulburn"), "Agony"), //Should never met in regular situations
                     Buff.CastDebuff("Corruption", ret => !Buff.PlayerHasActiveBuff("Soulburn"), "Corruption"), //Should never met in regular situations
