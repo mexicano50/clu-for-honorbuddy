@@ -69,7 +69,7 @@ namespace CLU
     {
         #region Constants and Fields
 
-        public static readonly Version Version = new Version(3, 3, 6);
+        public static readonly Version Version = new Version(3, 3, 7);
         private readonly Timer _clupulsetimer = new Timer(10000); // A timer for keybinds
         private RotationBase _rotationBase;
         private List<RotationBase> _rotations; // list of Rotations
@@ -114,7 +114,7 @@ namespace CLU
         public override WoWClass Class { get { return StyxWoW.Me.Class; } }
 
         public override string Name { get { return "CLU (Codified Likeness Utility) " + Version; } }
-
+        public static ulong LastTargetGuid = 0;
         /// <summary>
         /// If we havnt loaded a rotation for our character then do so by querying our character's class tree based on a Keyspell.
         /// </summary>
@@ -216,8 +216,6 @@ namespace CLU
         public override Composite PullBehavior { get { return this._pullBehavior; } }
 
         public override Composite RestBehavior { get { return this._restBehavior; } }
-
-
         public bool CreateBehaviors()
         {
             CLULogger.TroubleshootLog("CreateBehaviors called.");

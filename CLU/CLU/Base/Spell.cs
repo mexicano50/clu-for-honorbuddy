@@ -320,9 +320,38 @@ namespace CLU.Base
                 },
                  new Sequence
                      (new Action(a => CLULogger.Log(" [Casting] {0} on {1}", label, CLULogger.SafeName(onUnit(a)))),
+                      new Action(a => PrintTarget(onUnit(a))),
                       new Action(a => SpellManager.Cast(spell, onUnit(a)))));
         }
+        private static void PrintTarget(WoWUnit tar)
+        {
+            if (tar == null)
+            {
+               CLU.LastTargetGuid = 0;
+               return;
+            }
+            CLULogger.DiagnosticLog("[Targetting] New Target:");
+            CLULogger.DiagnosticLog("[Targetting] Guid: ", tar.Guid);
+            CLULogger.DiagnosticLog("[Targetting] ID: ", tar.Entry);
+            CLULogger.DiagnosticLog("[Targetting] Name: ", tar.Name);
+            CLULogger.DiagnosticLog("[Targetting] MaxHealth: ", tar.MaxHealth);
+            CLULogger.DiagnosticLog("[Targetting] CurrentHealth: ", tar.CurrentHealth);
+            CLULogger.DiagnosticLog("[Targetting] Location: ", tar.Location);
+            CLULogger.DiagnosticLog("[Targetting] Unit.IsBoss: ", Unit.IsBoss(tar));
+            CLULogger.DiagnosticLog("[Targetting] BossList.BossIds: ", BossList.BossIds.Contains(tar.Entry));
+            CLULogger.DiagnosticLog("[Targetting] BossList.IgnoreRangeCheck: ", BossList.IgnoreRangeCheck.Contains(tar.Entry));
+            CLULogger.DiagnosticLog("[Targetting] Unit.IsAttackable: ", Unit.IsAttackable(tar));
+            CLULogger.DiagnosticLog("[Targetting] Unit.IgnoreAoE: ", BossList.IgnoreAoE.Contains(tar.Entry));
+            CLULogger.DiagnosticLog("[Targetting] tar.Distance: ", tar.Distance);
+            CLULogger.DiagnosticLog("[Targetting] tar.Distance2D: ", tar.Distance2D);
+            CLULogger.DiagnosticLog("[Targetting] tar.DistanceSqr: ", tar.DistanceSqr);
+            CLULogger.DiagnosticLog("[Targetting] General Use of Cooldowns: ", CLUSettings.Instance.UseCooldowns);
+            CLULogger.DiagnosticLog("[Targetting] Use Cooldowns on Me.CurrentTarget: ", Unit.UseCooldowns());
+            CLULogger.DiagnosticLog("[Targetting] Use Cooldowns on tar: ", Unit.UseCooldowns(tar));
 
+           
+            CLU.LastTargetGuid = tar.Guid;
+        }
         #endregion
 
         #region CastSpell - by name
@@ -401,6 +430,7 @@ namespace CLU.Base
                 },
             new Sequence(
                 new Action(a => CLULogger.Log(" [Casting] {0} on {1}", label, CLULogger.SafeName(onUnit(a)))),
+                new Action(a => PrintTarget(onUnit(a))),
                 new Action(a => SpellManager.Cast(name, onUnit(a))),
                 new Action(a => LastspellCast = name)));
         }
@@ -436,6 +466,7 @@ namespace CLU.Base
                 },
             new Sequence(
                 new Action(a => CLULogger.Log(" [Casting] {0} on {1}", label, CLULogger.SafeName(onUnit(a)))),
+                new Action(a => PrintTarget(onUnit(a))),
                 new Action(a => SpellManager.Cast(spell, onUnit(a))),
                 new Action(a => LastspellCast = spell.Name)));
         }
@@ -470,7 +501,7 @@ namespace CLU.Base
                     return true;
                 },
             new Sequence(
-                new Action(a => CLULogger.Log(" [Casting] {0} ", label)), new Action(a => SpellManager.Cast(name))));
+                new Action(a => CLULogger.Log(" [CastingSpecial] {0} ", label)), new Action(a => SpellManager.Cast(name))));
         }
 
         /// <summary>Casts a spell on a specified unit (used primarily for healing)</summary>
@@ -594,6 +625,7 @@ namespace CLU.Base
                 },
             new Sequence(
                 new Action(a => CLULogger.Log(" [Casting] {0} on {1}", label, CLULogger.SafeName(onUnit(a).CurrentTarget))),
+                new Action(a => PrintTarget(onUnit(a).CurrentTarget)),
                 new DecoratorContinue(x => faceTarget, new Action(a => WoWMovement.Face(onUnit(a).CurrentTarget.Guid))),
                 new Action(a => SpellManager.Cast(name, onUnit(a).CurrentTarget))));
         }
@@ -625,6 +657,7 @@ namespace CLU.Base
                 },
             new Sequence(
                 new Action(a => CLULogger.Log(" [Casting] {0} on {1}", label, CLULogger.SafeName(onUnit(a)))),
+                new Action(a => PrintTarget(onUnit(a))),
                 new DecoratorContinue(x => faceTarget, new Action(a => WoWMovement.Face(onUnit(a).Guid))),
                 new Action(a => SpellManager.Cast(name, onUnit(a)))));
         }
@@ -704,6 +737,7 @@ namespace CLU.Base
                 },
             new Sequence(
                 new Action(a => CLULogger.Log(" [Interupt] {0} on {1}", label, CLULogger.SafeName(onUnit(a)))),
+                new Action(a => PrintTarget(onUnit(a))),
                 new Action(a => SpellManager.Cast(name, onUnit(a)))));
         }
 
