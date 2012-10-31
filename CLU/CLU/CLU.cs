@@ -475,8 +475,17 @@ namespace CLU
             {
                 HealableUnit.Pulse(); //
             }
-
-            //ManageOracle();
+            else
+            {
+                // Make sure we have the proper target from Targeting. 
+                // The Botbase should give us the best target in targeting.
+                var firstUnit = Targeting.Instance.FirstUnit;
+                if (CLUSettings.Instance.EnableTargeting && firstUnit != null)
+                {
+                    if (StyxWoW.Me.CurrentTarget != firstUnit)
+                        firstUnit.Target();
+                }
+            }
         }
 
         /// <summary>This will: loop assemblies,
