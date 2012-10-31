@@ -213,7 +213,7 @@ namespace CLU
 
         public override Composite PreCombatBuffBehavior { get { return this._preCombatBuffBehavior; } }
 
-        public override Composite PullBehavior { get { return new Action(a => CLULogger.Log("hb finally pulsed me")); } }
+        public override Composite PullBehavior { get { return this._pullBehavior; } }
 
         public override Composite RestBehavior { get { return this._restBehavior; } }
         public bool CreateBehaviors()
