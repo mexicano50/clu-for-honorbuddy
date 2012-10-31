@@ -325,9 +325,11 @@ namespace CLU.Base
         }
         private static void PrintTarget(WoWUnit tar)
         {
+            if (tar != null && (tar.IsMe || tar.Guid == CLU.LastTargetGuid)) return;
+
             if (tar == null)
             {
-                CLULogger.DiagnosticLog("[PrintTarget] tar is null...im outa here!");
+               CLULogger.DiagnosticLog("[PrintTarget] tar is null...im outa here!");
                CLU.LastTargetGuid = 0;
                return;
             }
