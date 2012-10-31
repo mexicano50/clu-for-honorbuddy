@@ -234,7 +234,7 @@ namespace CLU
 
             if (_preCombatBuffBehavior != null) this._preCombatBuffBehavior = new Decorator(ret => AllowPulse, new LockSelector(this.PreCombat));
 
-            if (_restBehavior != null) this._restBehavior = new Decorator(ret => !(CLUSettings.Instance.NeverDismount && IsMounted) && !Me.IsFlying, new LockSelector(_restBehavior));
+            if (_restBehavior != null) this._restBehavior = new Decorator(ret => !(CLUSettings.Instance.NeverDismount && IsMounted) && !Me.IsFlying, new LockSelector(this.Resting));
 
             if (_pullBehavior != null) this._pullBehavior = new Decorator(ret => AllowPulse,  new LockSelector(this.Pulling));
 
