@@ -75,7 +75,7 @@ namespace CLU.Base
                                                  new Action(ret => Navigator.MoveTo(WoWMovement.CalculatePointFrom(onUnit(ret).Location,CharacterSettings.Instance.PullDistance))))),
                        new DecoratorContinue(ret => onUnit(ret) != null && onUnit(ret).Distance < CharacterSettings.Instance.PullDistance,
                                              new Sequence(
-                                                 new Action(ret => CLULogger.MovementLog(" [CLU Movement] Target not in Pullrange. Movement Stopped.")),
+                                                 new Action(ret => CLULogger.MovementLog(" [CLU Movement] Target in Pullrange. Movement Stopped.")),
                                                  new Action(ret => WoWMovement.MoveStop()))));
         }
 

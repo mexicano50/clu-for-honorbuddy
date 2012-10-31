@@ -198,7 +198,6 @@ namespace CLU
             get
             {
                 return new Sequence(
-                    new Action(x => CLULogger.TroubleshootLog("Pull Behavior pulsed")),
                     new DecoratorContinue(x => CLUSettings.Instance.EnableMovement && (!Me.IsCasting || !Spell.PlayerIsChanneling), Movement.MoveToPull()),
                     new DecoratorContinue(x => true, ActiveRotation.Pull));
             }

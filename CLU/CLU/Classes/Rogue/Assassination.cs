@@ -75,7 +75,7 @@ namespace CLU.Classes.Rogue
 
         public override Composite Pull
         {
-            get { return this.SingleRotation; }
+            get { return new PrioritySelector(Spell.CastSpell("Throw", ret => Me.CurrentTarget.Distance <= 30, "Throw for Pull")); }
         }
 
         /// <summary>
