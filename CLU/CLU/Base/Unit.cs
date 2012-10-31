@@ -1226,10 +1226,10 @@ namespace CLU.Base
                                         && x.Location.Distance2DSqr(fromLocation) < maxDistance2).ToList();
             }
 
-            CLULogger.DiagnosticLog("CountEnnemiesInRange");
-            foreach (var u in hostile)
-                CLULogger.DiagnosticLog(" -> " + CLULogger.SafeName(u) + " " + u.Level);
-            CLULogger.DiagnosticLog("---------------------");
+            //CLULogger.DiagnosticLog("CountEnnemiesInRange");
+            //foreach (var u in hostile)
+            //    CLULogger.DiagnosticLog(" -> " + CLULogger.SafeName(u) + " " + u.Level);
+            //CLULogger.DiagnosticLog("---------------------");
             return hostile;
         }
 
@@ -1365,10 +1365,10 @@ namespace CLU.Base
                     {
                         best = spot;
                         score = hits;
-                        CLULogger.DiagnosticLog("ClusteredTargets(range=" + minDistance + "-" + maxDistance + ", radius=" + radius + ") => SCORE=" + score + " at " + spot);
-                        foreach (var u in hostile.Where(t => t.Location.DistanceSqr(spot) < radius * radius))
-                            CLULogger.DiagnosticLog(" -> " + CLULogger.SafeName(u) + " " + u.Level);
-                        CLULogger.DiagnosticLog("---------------------");
+                        //CLULogger.DiagnosticLog("ClusteredTargets(range=" + minDistance + "-" + maxDistance + ", radius=" + radius + ") => SCORE=" + score + " at " + spot);
+                        //foreach (var u in hostile.Where(t => t.Location.DistanceSqr(spot) < radius * radius))
+                        //    CLULogger.DiagnosticLog(" -> " + CLULogger.SafeName(u) + " " + u.Level);
+                        //CLULogger.DiagnosticLog("---------------------");
                     }
                 }
             }
