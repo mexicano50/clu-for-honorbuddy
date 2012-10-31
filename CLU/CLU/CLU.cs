@@ -198,14 +198,11 @@ namespace CLU
             get
             {
                 return new Sequence(
-                    //new Action(x => CLULogger.TroubleshootLog(" Pull Behavior pulsed")),
-                    new DecoratorContinue(x => CLUSettings.Instance.EnableMovement && (!Me.IsCasting || !Spell.PlayerIsChanneling), Movement.MovingFacingBehavior()),
+                    new Action(x => CLULogger.TroubleshootLog("Pull Behavior pulsed")),
+                    new DecoratorContinue(x => CLUSettings.Instance.EnableMovement && (!Me.IsCasting || !Spell.PlayerIsChanneling), Movement.MoveToPull()),
                     new DecoratorContinue(x => true, ActiveRotation.Pull));
             }
         }
-
-
-        //public override double? PullDistance { get { return this.ActiveRotation.CombatMaxDistance; } }
 
         public override Composite CombatBehavior { get { return this._combatBehavior; } }
 

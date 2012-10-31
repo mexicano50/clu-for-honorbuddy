@@ -35,19 +35,21 @@ namespace CLU.Base
 
         private const bool EnableBotTargetingOveride = false;
 
-        private static bool IsFlyingUnit 
+        private static bool IsFlyingUnit
         {
-            get{
-                return StyxWoW.Me.CurrentTarget != null && (StyxWoW.Me.CurrentTarget.IsFlying || StyxWoW.Me.CurrentTarget.Distance2DSqr < 5 * 5 && Math.Abs(StyxWoW.Me.Z - StyxWoW.Me.CurrentTarget.Z) >= 5);
+            get
+            {
+                return StyxWoW.Me.CurrentTarget != null &&
+                       (StyxWoW.Me.CurrentTarget.IsFlying ||
+                        StyxWoW.Me.CurrentTarget.Distance2DSqr < 5*5 &&
+                        Math.Abs(StyxWoW.Me.Z - StyxWoW.Me.CurrentTarget.Z) >= 5);
             }
         }
 
 
         private static LocalPlayer Me
         {
-            get {
-                return StyxWoW.Me;
-            }
+            get { return StyxWoW.Me; }
         }
 
         /// <summary>
@@ -56,6 +58,25 @@ namespace CLU.Base
         public static Composite MovingFacingBehavior()
         {
             return MovingFacingBehavior(ret => StyxWoW.Me.CurrentTarget);
+        }
+
+        public static Composite MoveToPull()
+        {
+            return MoveToPull(RetrieveBotPoiDelegate => StyxWoW.Me.CurrentTarget);
+        }
+
+        private static Composite MoveToPull(CLU.UnitSelection onUnit)
+        {
+            return new Sequence(
+                // Move to Location
+                       new DecoratorContinue(ret => onUnit(ret) != null && onUnit(ret).Distance > CharacterSettings.Instance.PullDistance,
+                                             new Sequence(
+                                                 new Action(ret => CLULogger.MovementLog(" [CLU Movement] Target not in Pullrange. Moving closer.")),
+                                                 new Action(ret => Navigator.MoveTo(WoWMovement.CalculatePointFrom(onUnit(ret).Location,CharacterSettings.Instance.PullDistance))))),
+                       new DecoratorContinue(ret => onUnit(ret) != null && onUnit(ret).Distance < CharacterSettings.Instance.PullDistance,
+                                             new Sequence(
+                                                 new Action(ret => CLULogger.MovementLog(" [CLU Movement] Target not in Pullrange. Movement Stopped.")),
+                                                 new Action(ret => WoWMovement.MoveStop()))));
         }
 
         private static Composite MovingFacingBehavior(CLU.UnitSelection onUnit)
