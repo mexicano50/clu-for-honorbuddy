@@ -1395,6 +1395,8 @@ namespace CLU.Lists
             61427, // Subetai the Swift
             60397, // Emperor's Strength
             60410, // Elegon
+            60913, // Energyspark at Elegon
+            60776, // Empyreal Focus at Elegon
             60400, // Jan-xi <Emperor's Open Hand>
             60399, // Qin-xi
 
