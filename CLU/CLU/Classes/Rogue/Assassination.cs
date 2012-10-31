@@ -197,11 +197,11 @@ namespace CLU.Classes.Rogue
                           SpellManager.HasSpell(14185) && Unit.UseCooldowns() &&
                           SpellManager.Spells["Vanish"].Cooldown,
                           "Preparation"),
+                     Envenom,
                      Spell.CastSpell
                          (DispatchOverride,
                           ret => Buff.PlayerCountBuff("Anticipation") < 5 && Buff.PlayerHasBuff("Blindside"),
                           "Dispatch @ Blindside"),
-                     Envenom,
                      Spell.CastSpell
                          (DispatchOverride,
                           ret => Me.ComboPoints < ReqCmbPts && Me.CurrentTarget.HealthPercent < 35,
