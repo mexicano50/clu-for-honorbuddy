@@ -575,6 +575,50 @@ namespace CLU.Base
                 new Action(a => CombatLogEvents.Locks[name] = DateTime.Now.AddSeconds(Spell.CastTime(name) * 1.5 + CombatLogEvents.ClientLag))));
         }
 
+        public static Composite CastMyDebuff(string name, CanRunDecoratorDelegate cond, string label)
+        {
+            return new Decorator(
+                delegate(object a)
+                {
+                    if (StyxWoW.Me.CastingSpell != null && lastdebuffcast == StyxWoW.Me.CastingSpell.Name)
+                    {
+                        return false;
+                    }
+
+                    if (!cond(a))
+                    {
+                        return false;
+                    }
+
+                    if (TargetMyDebuffTimeLeft(name).TotalSeconds > DotDelta(name))
+                    {
+                        return false;
+                    }
+
+                    var lockstatus = true;
+                    try
+                    {
+                        lockstatus = DateTime.Now.Subtract(CombatLogEvents.Locks[name]).TotalSeconds > 0;
+                    }
+                    catch(Exception ex)
+                    {
+                        CLULogger.Log("Exception thrown in Buff.CastMyDebuff: {0}",ex);
+                    }
+
+                    if (!Spell.CanCast(name, Me.CurrentTarget))
+                    {
+                        return false;
+                    }
+
+                    return lockstatus;
+                },
+            new Sequence(
+                new Action(a => CLULogger.Log(" [Casting Debuff] {0} : (RefreshTime={1}) had {2} second(s) left : {0} cast time = {3}", label, DotDelta(name), TargetDebuffTimeLeft(name).TotalSeconds, Spell.CastTime(name))),
+                new Action(a => SpellManager.Cast(name)),
+                new Action(a => lastdebuffcast = name),
+                new Action(a => CombatLogEvents.Locks[name] = DateTime.Now.AddSeconds(Spell.CastTime(name) * 1.5 + CombatLogEvents.ClientLag))));
+        }
+
         /// <summary>
         /// Overload for Castdebuff to take the actuall debuff name when using HB spell overides like Mage Bomb -> Living Bomb
         /// </summary>
@@ -1032,6 +1076,13 @@ namespace CLU.Base
         public static TimeSpan TargetDebuffTimeLeft(string name)
         {
             return GetAuraTimeLeft(Me.CurrentTarget, name, false);
+        }
+        /// <summary>Returns the debuff time left on the target</summary>
+        /// <param name="name">the name of the buff to check for</param>
+        /// <returns>The target debuff time left.</returns>
+        public static TimeSpan TargetMyDebuffTimeLeft(string name)
+        {
+            return GetAuraTimeLeft(Me.CurrentTarget, name, true);
         }
         public static TimeSpan TargetDebuffTimeLeft(string name, WoWUnit tar)
         {

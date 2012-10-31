@@ -202,6 +202,7 @@ namespace CLU.Classes.Rogue
                            ret => Me.HealthPercent < 100 && CLUSettings.Instance.EnableSelfHealing,
                            new PrioritySelector(
                                Item.UseBagItem("Healthstone", ret => Me.HealthPercent < 40, "Healthstone"),
+                               Spell.CastSpell("Recuperate", ret =>Me.CurrentTarget!=null && Me.ComboPoints>=2 && Me.HealthPercent < CLUSettings.Instance.MinHealth,"Recuperate (Medic)"),
                                Spell.CastSelfSpell("Smoke Bomb", ret => Me.CurrentTarget != null && Me.HealthPercent < 30 && Me.CurrentTarget.IsTargetingMeOrPet, "Smoke Bomb"),
                                Spell.CastSelfSpell("Combat Readiness", ret => Me.CurrentTarget != null && Me.HealthPercent < 40 && Me.CurrentTarget.IsTargetingMeOrPet, "Combat Readiness"),
                                Spell.CastSelfSpell("Evasion", ret => Me.HealthPercent < 35 && Unit.EnemyMeleeUnits.Count(u => u.DistanceSqr < 6 * 6 && u.IsTargetingMeOrPet) >= 1, "Evasion"),

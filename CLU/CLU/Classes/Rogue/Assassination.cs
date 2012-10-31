@@ -179,6 +179,7 @@ namespace CLU.Classes.Rogue
                      Spell.CastSelfSpell
                          ("Slice and Dice", ret => !Buff.PlayerHasActiveBuff("Slice and Dice"), "Slice and Dice"),
                      Vanish,
+                     Buff.CastMyDebuff("Rupture", ret => true,"Rupture default"),
                      Rupture,
                      Spell.CastSpell
                          ("Vendetta",
@@ -414,7 +415,7 @@ namespace CLU.Classes.Rogue
                 return new Decorator
                     (x =>
                      Buff.PlayerActiveBuffTimeLeft("Slice and Dice").TotalSeconds > 6 &&
-                     Buff.TargetDebuffTimeLeft("Rupture").TotalSeconds <= 2,
+                     Buff.TargetMyDebuffTimeLeft("Rupture").TotalSeconds <= 2,
                     // Do not rupture if SnD is about to come down.
                      new PrioritySelector
                          (Spell.CastSpell("Rupture", ret => !Buff.TargetHasDebuff("Rupture"), "Rupture @ Down"),
