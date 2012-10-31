@@ -485,18 +485,6 @@ namespace CLU.Settings
         [Setting]
         [DefaultValue(false)]
         [Category("Misc")]
-        [DisplayName("Debug Logging")]
-        [Description("Enables debug logging from CLU. This will cause quite a bit of spam. Use it for diagnostics only.")]
-        public bool EnableDebugLogging
-        {
-            get;
-            set;
-        }
-
-
-        [Setting]
-        [DefaultValue(false)]
-        [Category("Misc")]
         [DisplayName("Enable Movement/Targeting Logging")]
         [Description("Enable movement/Targeting  logging to HB output")]
         public bool MovementLogging

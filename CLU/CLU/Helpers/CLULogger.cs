@@ -13,7 +13,7 @@ namespace CLU.Helpers
         /// <param name="args">the arguments that accompany the message</param>
         public static void DiagnosticLog(string msg, params object[] args)
         {
-            if (msg != null && CLUSettings.Instance.EnableDebugLogging)
+            if (msg != null)
             {
                 Logging.Write(LogLevel.Diagnostic, Colors.White, "[CLU] " + CLU.Version + ": " + msg, args);
             }

@@ -1256,13 +1256,11 @@ namespace CLU.Base
                                         && x.Location.Distance2DSqr(fromLocation) < maxDistance2).ToList();
             }
 
-            if (CLUSettings.Instance.EnableDebugLogging)
-            {
+
                 CLULogger.DiagnosticLog("CountControlledEnemiesInRange");
                 foreach (var u in hostile)
                     CLULogger.DiagnosticLog(" -> " + CLULogger.SafeName(u) + " " + u.Level);
                 CLULogger.DiagnosticLog("---------------------");
-            }
 
             return hostile;
         }
@@ -1291,13 +1289,11 @@ namespace CLU.Base
                                         && (x.IsTargetingMeOrPet || x.IsTargetingMyPartyMember)).ToList();
             }
 
-            if (CLUSettings.Instance.EnableDebugLogging)
-            {
+
                 CLULogger.DiagnosticLog("CountNonControlledEnemiesInRange");
                 foreach (var u in hostile)
                     CLULogger.DiagnosticLog(" -> " + CLULogger.SafeName(u) + " " + u.Level);
                 CLULogger.DiagnosticLog("---------------------");
-            }
 
             return hostile;
         }

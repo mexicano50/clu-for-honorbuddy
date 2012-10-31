@@ -327,6 +327,7 @@ namespace CLU.Base
         {
             if (tar == null)
             {
+                CLULogger.DiagnosticLog("[PrintTarget] tar is null...im outa here!");
                CLU.LastTargetGuid = 0;
                return;
             }
