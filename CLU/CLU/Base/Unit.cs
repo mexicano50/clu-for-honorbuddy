@@ -1257,10 +1257,10 @@ namespace CLU.Base
             }
 
 
-                CLULogger.DiagnosticLog("CountControlledEnemiesInRange");
-                foreach (var u in hostile)
-                    CLULogger.DiagnosticLog(" -> " + CLULogger.SafeName(u) + " " + u.Level);
-                CLULogger.DiagnosticLog("---------------------");
+                //CLULogger.DiagnosticLog("CountControlledEnemiesInRange");
+                //foreach (var u in hostile)
+                //    CLULogger.DiagnosticLog(" -> " + CLULogger.SafeName(u) + " " + u.Level);
+                //CLULogger.DiagnosticLog("---------------------");
 
             return hostile;
         }
@@ -1290,10 +1290,10 @@ namespace CLU.Base
             }
 
 
-                CLULogger.DiagnosticLog("CountNonControlledEnemiesInRange");
-                foreach (var u in hostile)
-                    CLULogger.DiagnosticLog(" -> " + CLULogger.SafeName(u) + " " + u.Level);
-                CLULogger.DiagnosticLog("---------------------");
+                //CLULogger.DiagnosticLog("CountNonControlledEnemiesInRange");
+                //foreach (var u in hostile)
+                //    CLULogger.DiagnosticLog(" -> " + CLULogger.SafeName(u) + " " + u.Level);
+                //CLULogger.DiagnosticLog("---------------------");
 
             return hostile;
         }
