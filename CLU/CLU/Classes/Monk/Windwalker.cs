@@ -198,10 +198,11 @@ Credits: alxaw , Kbrebel04
                 return new PrioritySelector(
                     new Decorator(ret => CLUSettings.Instance.EnableMovement,
                         new PrioritySelector(
-                            Spell.CastSpell("Flying Serpent Kick", ret => !CLU.IsMounted && (Me.CurrentTarget != null && Me.CurrentTarget.DistanceSqr >= 10 * 10), "Flying Serpent Kick"),
-                            Spell.CastSpell("Provoke", ret => !CLU.IsMounted && (Me.CurrentTarget != null && Me.CurrentTarget.DistanceSqr >= 8 * 8), "Provoke"),
-                            Spell.CastSpell("Roll", ret => !CLU.IsMounted && (Me.CurrentTarget != null && Me.CurrentTarget.DistanceSqr >= 10 * 10), "Roll"),
-                            this.SingleRotation)),
+                            Spell.CastSpell("Flying Serpent Kick", ret => Me.CurrentTarget != null && Me.CurrentTarget.DistanceSqr >= 10 * 10, "Flying Serpent Kick"),
+                            Spell.CastSpell("Provoke", ret => Me.CurrentTarget != null && Me.CurrentTarget.DistanceSqr >= 8 * 8 && Spell.SpellOnCooldown("Flying Serpent Kick"), "Provoke"),
+                            Spell.CastSpell("Crackling Jade Lightning", ret => Me.CurrentTarget != null && Me.CurrentTarget.DistanceSqr >= 10 * 10 && Spell.SpellOnCooldown("Roll"), "Crackling Jade Lightning"),
+                            Spell.CastSpell("Roll", ret => Me.CurrentTarget != null && Me.CurrentTarget.DistanceSqr >= 10 * 10 && Spell.SpellOnCooldown("Provoke"), "Roll")                            
+                            )),
                     this.SingleRotation
                     );
             }
