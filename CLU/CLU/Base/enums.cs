@@ -1,4 +1,5 @@
 ﻿#region Revision info
+
 /*
  * $Author$
  * $Date$
@@ -8,13 +9,15 @@
  * $LastChangedBy$
  * $ChangesMade$
  */
-#endregion
+
+#endregion Revision info
 
 namespace CLU.Base
 {
     using System;
 
-    public enum TrinketUsage {
+    public enum TrinketUsage
+    {
         Never,
         OnCooldown,
         OnCooldownInCombat,
@@ -24,7 +27,8 @@ namespace CLU.Base
         CrowdControlledSilenced
     }
 
-    public enum PetSlot {
+    public enum PetSlot
+    {
         FirstSlot = 1,
         SecondSlot,
         ThirdSlot,
@@ -40,8 +44,8 @@ namespace CLU.Base
 
     public enum Ascendance
     {
-       OnBoss,
-       OnCooldown
+        OnBoss,
+        OnCooldown
     }
 
     public enum ElementalMastery
@@ -56,72 +60,81 @@ namespace CLU.Base
         OnCooldown,
     }
 
-    public enum Burst {
+    public enum Burst
+    {
         never,
         onBoss,
         onMob,
     }
 
-     public enum StormlashTotem
-     {
+    public enum StormlashTotem
+    {
         OnCooldown,
         OnHaste,
         Never
-     }
+    }
 
-    public enum DeathKnightTierOneTalent {
+    public enum DeathKnightTierOneTalent
+    {
         PlagueLeech,
         UnholyBlight,
         RoilingBlood,
         None
     }
 
-    public enum HealingAquisitionMethod {
+    public enum HealingAquisitionMethod
+    {
         Proximity,
         RaidParty
     }
 
-
-    public enum PaladinBlessing {
+    public enum PaladinBlessing
+    {
         Kings,
         Might
     }
 
-    public enum MonkLegacy {
+    public enum MonkLegacy
+    {
         Tiger,
         Emperor
     }
 
-    public enum WarriorShout {
+    public enum WarriorShout
+    {
         Battle,
         Commanding
     }
 
-    public enum DruidForm {
+    public enum DruidForm
+    {
         None,
         Bear,
         Cat,
         Moonkin
     }
 
-
-    public enum ShadowPriestRotation {
+    public enum ShadowPriestRotation
+    {
         Leveling,
         Default,
     }
 
-    public enum SubtletyRogueRotation {
+    public enum SubtletyRogueRotation
+    {
         Default,
         ImprovedTestVersion
     }
 
-    public enum ChakraStance {
+    public enum ChakraStance
+    {
         None,
         Serenity,
         Sanctuary
     }
 
-    public enum MHPoisonType {
+    public enum MHPoisonType
+    {
         Wound,
         Deadly
     }
@@ -132,12 +145,13 @@ namespace CLU.Base
         Crippling,
         Leeching,
         Paralytic
-       
     }
 
-    public enum PetType {
+    public enum PetType
+    {
         // These are CreatureFamily IDs. See 'CurrentPet' for usage.
         None = 0,
+
         Imp = 23,
         Felguard = 29,
         Voidwalker = 16,
@@ -145,26 +159,30 @@ namespace CLU.Base
         Succubus = 17,
     }
 
-    public enum OracleWatchMode {
+    public enum OracleWatchMode
+    {
         Healer,
         DPS,
         Tank
     }
 
-    public enum GroupType {
+    public enum GroupType
+    {
         Solo,
         Party,
         Raid
     }
 
-    public enum GroupLogic {
+    public enum GroupLogic
+    {
         PVE,
         Battleground,
         Solo
     }
 
     [Flags]
-    public enum TargetFilter {
+    public enum TargetFilter
+    {
         None = 0,
         Tanks = 1,
         Healers = 2,
@@ -176,7 +194,8 @@ namespace CLU.Base
         MostFocused = 9
     }
 
-    public enum Keyboardfunctions {
+    public enum Keyboardfunctions
+    {
         Nothing,                // - default
         IsAltKeyDown,           // - Returns whether an Alt key on the keyboard is held down.
         IsControlKeyDown,       // - Returns whether a Control key on the keyboard is held down

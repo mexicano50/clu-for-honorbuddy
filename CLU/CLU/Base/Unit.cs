@@ -1,4 +1,5 @@
 ﻿#region Revision info
+
 /*
  * $Author$
  * $Date$
@@ -8,23 +9,23 @@
  * $LastChangedBy$
  * $ChangesMade$
  */
-#endregion
+
+#endregion Revision info
 
 namespace CLU.Base
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
-
-    using Styx;
-    using Styx.CommonBot;
-    using Styx.CommonBot.POI;
-    using Styx.WoWInternals;
-    using Styx.WoWInternals.WoWObjects;
-    using Styx.TreeSharp;
     using global::CLU.Helpers;
     using global::CLU.Lists;
     using global::CLU.Settings;
+    using Styx;
+    using Styx.CommonBot;
+    using Styx.CommonBot.POI;
+    using Styx.TreeSharp;
+    using Styx.WoWInternals;
+    using Styx.WoWInternals.WoWObjects;
     using Action = Styx.TreeSharp.Action;
 
     internal static class Unit
@@ -40,9 +41,13 @@ namespace CLU.Base
         }
 
         public static LocalPlayer Me { get { return StyxWoW.Me; } }
+
         internal static bool IsInDungeonParty { get { return Me.GroupInfo.IsInParty && !Me.GroupInfo.IsInRaid; } }
+
         internal static bool IsInGroup { get { return Me.GroupInfo.IsInRaid || Me.GroupInfo.IsInParty; } }
+
         internal static readonly IEnumerable<WoWPartyMember> Groupofplayers = (Me.GroupInfo.IsInRaid ? Me.GroupInfo.RaidMembers : Me.GroupInfo.PartyMembers);
+
         internal static IEnumerable<WoWPartyMember> GroupMembers { get { return !Me.GroupInfo.IsInRaid ? Me.GroupInfo.PartyMembers : Me.GroupInfo.RaidMembers; } }
 
         private static readonly string[] ControlDebuffs = new[] {
@@ -53,6 +58,7 @@ namespace CLU.Base
         private static readonly string[] ControlUnbreakableDebuffs = new[] { "Cyclone", "Mind Control", "Banish" };
 
         private static readonly string[] HealerSpells = new[] {
+
             // -- Priests
             "Penance",                  // [47540] = "PRIEST", -- Penance
             "Holy Word: Chastise",      // [88625] = "PRIEST", -- Holy Word: Chastise
@@ -66,6 +72,7 @@ namespace CLU.Base
             "Chakra",                   // [14751] = "PRIEST", -- Chakra
             "Circle of Healing",        // [34861] = "PRIEST", -- Circle of Healing
             "Guardian Spirit",          // [47788] = "PRIEST", -- Guardian Spirit
+
             // -- Druids
             "Swiftmend",                // [18562] = "DRUID", -- Swiftmend
             "Nourish",                  // [50464] = "DRUID", -- Nourish
@@ -74,6 +81,7 @@ namespace CLU.Base
             "Tree of Life",             // [33891] = "DRUID", -- Tree of Life
             "Regrowth",                 // [8936] = "DRUID", -- Regrowth
             "Healing Touch",            // [5185] = "DRUID", -- Healing Touch
+
             // -- Shamans
             "Earth Shield",             // [974]   = "SHAMAN", -- Earth Shield
             "Healing Wave",             // [331]   = "SHAMAN", -- Healing Wave
@@ -84,6 +92,7 @@ namespace CLU.Base
             "Mana Tide Totem",          // [16190] = "SHAMAN", -- Mana Tide Totem
             "Riptide",                  // [61295] = "SHAMAN", -- Riptide
             "Chain Heal",               // [1064]   = "SHAMAN", -- Chain Heal
+
             // -- Paladins
             "Holy Shock",               // [20473] = "PALADIN", -- Holy Shock
             "Divine Favor",             // [31842] = "PALADIN", -- Divine Favor
@@ -285,8 +294,6 @@ namespace CLU.Base
                 }
             }
         }
-
-
 
         /// <summary>
         ///     Check for players to resurrect
@@ -637,7 +644,7 @@ namespace CLU.Base
         /// <returns>True if the target is valid to pop cooldowns</returns>
         public static bool UseCooldowns(WoWUnit onUnit)
         {
-            return UseCooldowns(onUnit, 0,0,0);
+            return UseCooldowns(onUnit, 0, 0, 0);
         }
 
         /// <summary>
@@ -650,13 +657,13 @@ namespace CLU.Base
         /// <returns>returns true if the healing conditions are met or the target is a valid target to pop cooldowns on.</returns>
         public static bool UseCooldowns(WoWUnit onUnit, double singleTargetHp, double aoeHp, double aoeCount)
         {
-            
             // if user wants control of cooldowns gtfo...
             if (!CLUSettings.Instance.UseCooldowns) return false;
             if (CLUSettings.Instance.BurstOn == Burst.never) return false;
+
             // Deal with Healers...
             if (CLU.IsHealerRotationActive)
-            {                
+            {
                 HealableUnit singleUnit = HealableUnit.ListofHealableUnits.FirstOrDefault(unit => unit.HealthPercent <= singleTargetHp && !unit.ToUnit().IsDead);
                 IEnumerable<HealableUnit> AoEUnit = HealableUnit.ListofHealableUnits.Where(unit => unit.HealthPercent <= aoeHp && !unit.ToUnit().IsDead);
                 if (AoEUnit.Count() > aoeCount) return true;
@@ -674,8 +681,11 @@ namespace CLU.Base
             if ((IsBoss(onUnit) || IsTrainingDummy(onUnit)) && (CLUSettings.Instance.BurstOn == Burst.onBoss || CLUSettings.Instance.BurstOn == Burst.onMob)) return true;
 
             // Mob count is correct and we have it SET in the Settings then proceed and we are..
+            if (CLUSettings.Instance.BurstOn == Burst.onMob && CLUSettings.Instance.BurstOnMobCount == 1) return true; //We don't need to check anything else!
+
+            // this uses the Setting AOE too!
             if (CLUSettings.Instance.BurstOn == Burst.onMob && CountEnnemiesInRange(Me.Location, CLU.Instance.ActiveRotation.CombatMaxDistance <= 10 ? 15 : 30) >= CLUSettings.Instance.BurstOnMobCount) return true;
-            
+
             return false;
         }
 
@@ -791,8 +801,6 @@ namespace CLU.Base
             return (float)(FacingTowardsUnitRadians(me, target) * 180.0 / Math.PI);
         }
 
-
-
         // returns list of most focused mobs by players
         public struct FocusedUnit
         {
@@ -807,12 +815,13 @@ namespace CLU.Base
         {
             var hostile = ObjectManager.GetObjectsOfType<WoWUnit>(true, false).Where(
                               x => IsAttackable(x) &&
+
                                   // check for controlled units, like sheep etc
                               !UnitIsControlled(x, true));
 
             if (CLU.GroupType == GroupType.Solo)
             {
-                hostile = hostile.Where(x => x.DistanceSqr <= 70 * 70 && !x.IsPlayer); //&& x.Combat x.IsHostile && 
+                hostile = hostile.Where(x => x.DistanceSqr <= 70 * 70 && !x.IsPlayer); //&& x.Combat x.IsHostile &&
                 var ret = hostile.Select(h => new FocusedUnit { Unit = h }).ToList();
                 mostFocusedUnits = ret.OrderBy(x => x.Unit.DistanceSqr).ToList();
             }
@@ -955,47 +964,12 @@ namespace CLU.Base
                 if (!CLUSettings.Instance.Rogue.UseTricksOfTheTrade && BotChecker.BotBaseInUse("Questing") && BotChecker.BotBaseInUse("PartyBot")) return null;
                 if (StyxWoW.Me.GroupInfo.IsInParty)
                 {
-
                     // If the player has a focus target set, use it instead.
                     if (StyxWoW.Me.FocusedUnitGuid != 0 && StyxWoW.Me.FocusedUnit.IsAlive && !StyxWoW.Me.FocusedUnit.HasAura("Tricks of the Trade"))
                     {
                         CLULogger.TroubleshootLog("StyxWoW.Me.FocusedUnit is {0} - {1}", StyxWoW.Me.FocusedUnit.Name, StyxWoW.Me.FocusedUnit.Class);
                         return StyxWoW.Me.FocusedUnit;
                     }
-
-                    //// Leader first, always. Otherwise, pick a rogue/DK/War pref. Fall back to others just in case.
-                    //if (RaFHelper.Leader != null && !RaFHelper.Leader.IsMe && RaFHelper.Leader.IsAlive)
-                    //{
-                    //    SysLog.TroubleshootLog("RaFHelper.Leader is {0} - {1}", RaFHelper.Leader.Name, RaFHelper.Leader.Class);
-                    //    return RaFHelper.Leader;
-                    //}
-
-                    //// Gets the Tank if RaF fails
-                    //var bestTank = Tanks.OrderBy(t => t.DistanceSqr).FirstOrDefault(t => t.IsAlive);
-                    //if (bestTank != null)
-                    //{
-                    //    SysLog.TroubleshootLog("bestTank is {0} - {1}", bestTank.Name, bestTank.Class);
-                    //    return bestTank;
-                    //}
-
-                    //var bestPlayer = GetPlayerByClassPrio(100f, false,
-                    //                                      WoWClass.Rogue,
-                    //                                      WoWClass.DeathKnight,
-                    //                                      WoWClass.Warrior,
-                    //                                      WoWClass.Hunter,
-                    //                                      WoWClass.Mage,
-                    //                                      WoWClass.Warlock,
-                    //                                      WoWClass.Shaman,
-                    //                                      WoWClass.Druid,
-                    //                                      WoWClass.Paladin,
-                    //                                      WoWClass.Priest,
-                    //                                      WoWClass.Monk
-                    //    );
-                    //if (bestPlayer != null)
-                    //{
-                    //    SysLog.TroubleshootLog("bestPlayer is {0} - {1}", bestPlayer.Name, bestPlayer.Class);
-                    //    return bestPlayer;
-                    //}
                 }
                 CLULogger.TroubleshootLog("returned null; IsInParty {0}; ForceTotT {1}", StyxWoW.Me.GroupInfo.IsInParty, CLUSettings.Instance.Rogue.UseTricksOfTheTradeForce);
                 return null;
@@ -1062,9 +1036,6 @@ namespace CLU.Base
                 if (!CLUSettings.Instance.Warlock.ApplyBaneOfHavoc)
                     return null;
 
-                //if (!IsInGroup)
-                //return null;
-
                 // If the player has a focus target set, use it instead.
                 if (Me.CurrentTarget != null && (Me.CurrentTarget != StyxWoW.Me.FocusedUnit) && StyxWoW.Me.FocusedUnitGuid != 0 && Me.FocusedUnit.InLineOfSpellSight && Me.FocusedUnit.IsAlive && !Me.FocusedUnit.GetAllAuras().Any(a => a.Name == "Havoc"))
                     return StyxWoW.Me.FocusedUnit;
@@ -1091,7 +1062,6 @@ namespace CLU.Base
         {
             return (from woWClass in classes select StyxWoW.Me.GroupInfo.PartyMembers.FirstOrDefault(p => p.ToPlayer() != null && p.ToPlayer().DistanceSqr < range * range && p.ToPlayer().Class == woWClass) into unit where unit != null where !includeDead && unit.Dead || unit.Ghost select unit.ToPlayer()).FirstOrDefault();
         }
-
 
         /// <summary>
         /// Returns a number for priority based on class and spec.
@@ -1177,6 +1147,7 @@ namespace CLU.Base
             return new Decorator(
                        cond,
                        new Sequence(
+
                 // get a target
                            new Action(
                             delegate
@@ -1197,6 +1168,7 @@ namespace CLU.Base
                                 return RunStatus.Failure;
                             }),
                            new Action(a => StyxWoW.SleepForLagDuration()),
+
                 // if success, keep going. Else quit
                            new PrioritySelector(Buff.CastDebuff(spell, cond, spell))));
         }
@@ -1223,11 +1195,6 @@ namespace CLU.Base
                                         !x.IsPlayer && IsAttackable(x)
                                         && x.Location.Distance2DSqr(fromLocation) < maxDistance2).ToList();
             }
-
-            //CLULogger.DiagnosticLog("CountEnnemiesInRange");
-            //foreach (var u in hostile)
-            //    CLULogger.DiagnosticLog(" -> " + CLULogger.SafeName(u) + " " + u.Level);
-            //CLULogger.DiagnosticLog("---------------------");
             return hostile;
         }
 
@@ -1253,13 +1220,6 @@ namespace CLU.Base
                                         !x.IsPlayer && IsAttackable(x) && IsCrowdControlled(x)
                                         && x.Location.Distance2DSqr(fromLocation) < maxDistance2).ToList();
             }
-
-
-                //CLULogger.DiagnosticLog("CountControlledEnemiesInRange");
-                //foreach (var u in hostile)
-                //    CLULogger.DiagnosticLog(" -> " + CLULogger.SafeName(u) + " " + u.Level);
-                //CLULogger.DiagnosticLog("---------------------");
-
             return hostile;
         }
 
@@ -1286,13 +1246,6 @@ namespace CLU.Base
                                         && x.Location.Distance2DSqr(fromLocation) < maxDistance2
                                         && (x.IsTargetingMeOrPet || x.IsTargetingMyPartyMember)).ToList();
             }
-
-
-                //CLULogger.DiagnosticLog("CountNonControlledEnemiesInRange");
-                //foreach (var u in hostile)
-                //    CLULogger.DiagnosticLog(" -> " + CLULogger.SafeName(u) + " " + u.Level);
-                //CLULogger.DiagnosticLog("---------------------");
-
             return hostile;
         }
 
@@ -1363,6 +1316,7 @@ namespace CLU.Base
                     {
                         best = spot;
                         score = hits;
+
                         //CLULogger.DiagnosticLog("ClusteredTargets(range=" + minDistance + "-" + maxDistance + ", radius=" + radius + ") => SCORE=" + score + " at " + spot);
                         //foreach (var u in hostile.Where(t => t.Location.DistanceSqr(spot) < radius * radius))
                         //    CLULogger.DiagnosticLog(" -> " + CLULogger.SafeName(u) + " " + u.Level);
@@ -1381,7 +1335,6 @@ namespace CLU.Base
         {
             try
             {
-
                 CLULogger.TroubleshootLog("Dumping List of Known group Information");
                 CLULogger.TroubleshootLog("Me.GroupInfo.IsInRaid: {0} Me.GroupInfo.IsInParty: {1}", Me.GroupInfo.IsInRaid, Me.GroupInfo.IsInParty && !Me.GroupInfo.IsInRaid);
                 CLULogger.TroubleshootLog("End group Information");
@@ -1394,6 +1347,7 @@ namespace CLU.Base
         /// credits to Stormchasing for providing this code
         /// </summary>
         private static uint first_life;
+
         private static uint first_life_max;
         private static int first_time;
         private static uint current_life;
@@ -1406,6 +1360,7 @@ namespace CLU.Base
             var date1 = new DateTime(1970, 1, 1); // Reference (Set)
             DateTime date2 = _time; // date / time
             var ts = new TimeSpan(date2.Ticks - date1.Ticks); // Calculate the delta
+
             // The Delta as a whole number of seconds, the timestamp
             return (Convert.ToInt32(ts.TotalSeconds));
         }
@@ -1418,6 +1373,7 @@ namespace CLU.Base
             {
                 return 0;
             }
+
             // Fill variables on new target or on target switch, this will loose all calculations from last target
             if (guid != target.Guid)
             {
@@ -1444,6 +1400,7 @@ namespace CLU.Base
                 var past_first_time = (first_life_max - first_life) * time_diff / hp_diff;
                 var calc_time = first_time - past_first_time + full_time - current_time;
                 if (calc_time < 1) calc_time = 99;
+
                 // commented out - caused exceptions when time_diff is 0 and does take no effect while calculating!
                 // var dps = hp_diff / time_diff;
                 var time_to_die = calc_time;

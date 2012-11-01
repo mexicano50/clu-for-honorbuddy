@@ -1,4 +1,5 @@
 ﻿#region Revision info
+
 /*
  * $Author$
  * $Date$
@@ -8,7 +9,8 @@
  * $LastChangedBy$
  * $ChangesMade$
  */
-#endregion
+
+#endregion Revision info
 
 using System;
 using System.Collections.Generic;
@@ -17,13 +19,13 @@ namespace CLU.Helpers
 {
     public class CircularBuffer<T> : IEnumerable<T>
     {
-        readonly int size;
-        readonly object locker;
+        private readonly int size;
+        private readonly object locker;
 
-        int count;
-        int head;
-        int rear;
-        T[] values;
+        private int count;
+        private int head;
+        private int rear;
+        private T[] values;
 
         public CircularBuffer(int max)
         {
@@ -35,7 +37,7 @@ namespace CLU.Helpers
             values = new T[size];
         }
 
-        static int Incr(int index, int size)
+        private static int Incr(int index, int size)
         {
             return (index + 1) % size;
         }
@@ -48,34 +50,43 @@ namespace CLU.Helpers
 
         public int Size
         {
-            get {
+            get
+            {
                 return size;
             }
         }
+
         public object SyncRoot
         {
-            get {
+            get
+            {
                 return locker;
             }
         }
 
         public int Count
         {
-            get {
+            get
+            {
                 return UnsafeCount;
             }
         }
+
         public int SafeCount
         {
-            get {
-                lock (locker) {
+            get
+            {
+                lock (locker)
+                {
                     return UnsafeCount;
                 }
             }
         }
+
         public int UnsafeCount
         {
-            get {
+            get
+            {
                 return count;
             }
         }
@@ -87,7 +98,8 @@ namespace CLU.Helpers
 
         public void SafeEnqueue(T obj)
         {
-            lock (locker) {
+            lock (locker)
+            {
                 UnsafeEnqueue(obj);
             }
         }
@@ -109,7 +121,8 @@ namespace CLU.Helpers
 
         public T SafeDequeue()
         {
-            lock (locker) {
+            lock (locker)
+            {
                 return UnsafeDequeue();
             }
         }
@@ -133,7 +146,8 @@ namespace CLU.Helpers
 
         public T SafePeek()
         {
-            lock (locker) {
+            lock (locker)
+            {
                 return UnsafePeek();
             }
         }
@@ -152,7 +166,8 @@ namespace CLU.Helpers
 
         public IEnumerator<T> SafeGetEnumerator()
         {
-            lock (locker) {
+            lock (locker)
+            {
                 var res = new List<T>(count);
                 var enumerator = UnsafeGetEnumerator();
                 while (enumerator.MoveNext())
@@ -164,7 +179,8 @@ namespace CLU.Helpers
         public IEnumerator<T> UnsafeGetEnumerator()
         {
             int index = head;
-            for (int i = 0; i < count; i++) {
+            for (int i = 0; i < count; i++)
+            {
                 yield return values[index];
                 index = Incr(index, size);
             }
@@ -177,13 +193,15 @@ namespace CLU.Helpers
 
         public T[] SafeGetLastValues(int N)
         {
-            lock (locker) {
+            lock (locker)
+            {
                 if (N > count)
                     N = count;
                 var ret = new T[N];
 
                 int index = rear - 1;
-                for (int i = 0; i < N; i++) {
+                for (int i = 0; i < N; i++)
+                {
                     if (index < 0) index = size - 1;
                     ret[ret.Length - 1 - i] = values[index];
                     index--;

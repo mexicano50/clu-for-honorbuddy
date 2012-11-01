@@ -1,4 +1,5 @@
 ﻿#region Revision info
+
 /*
  * $Author$
  * $Date$
@@ -8,7 +9,8 @@
  * $LastChangedBy$
  * $ChangesMade$
  */
-#endregion
+
+#endregion Revision info
 
 using CLU.Helpers;
 
@@ -16,28 +18,28 @@ namespace CLU.CombatLog
 {
     using System;
     using System.Collections.Generic;
-    using Styx.Common;
-    using Styx.WoWInternals;
-
     using System.Globalization;
     using Styx;
+    using Styx.Common;
+    using Styx.WoWInternals;
     using Styx.WoWInternals.WoWObjects;
 
     public class WoWStats
     {
-
         private ulong spellCasts;
         private Dictionary<string, int> spellList;
         private Dictionary<string, List<DateTime>> spellInterval;
         private Dictionary<DateTime, string> healingStats;
         private DateTime start;
+
         private static LocalPlayer Me
         {
-            get {
+            get
+            {
                 return StyxWoW.Me;
             }
         }
-        
+
         private WoWStats()
         {
             CLULogger.TroubleshootLog("WoWStats: Connected to the Grid");
@@ -48,11 +50,13 @@ namespace CLU.CombatLog
             this.start = DateTime.Now;
         }
 
-		private static WoWStats instance;
+        private static WoWStats instance;
+
         public static WoWStats Instance
         {
-            get {
-        		return instance ?? (instance = new WoWStats());
+            get
+            {
+                return instance ?? (instance = new WoWStats());
             }
         }
 
@@ -76,19 +80,20 @@ namespace CLU.CombatLog
             var player = Convert.ToString(args[0]);
 
             // Not me ... Im out!
-            if (player != "player") {
+            if (player != "player")
+            {
                 return;
             }
 
             // get the english spell name, not the localized one!
             var spellID = Convert.ToInt32(args[4]);
-            var spell = WoWSpell.FromId(spellID).Name;           
+            var spell = WoWSpell.FromId(spellID).Name;
 
-            // increments or decrements 
+            // increments or decrements
             int value;
             if (spellList.TryGetValue(spell, out value))
             {
-               spellList[spell] = value + 1;
+                spellList[spell] = value + 1;
             }
 
             this.spellCasts++;
@@ -97,16 +102,20 @@ namespace CLU.CombatLog
             if (!this.spellInterval.ContainsKey(spell))
                 this.spellInterval[spell] = new List<DateTime>();
 
-            if (!this.spellInterval[spell].Contains(DateTime.Now)) {
+            if (!this.spellInterval[spell].Contains(DateTime.Now))
+            {
                 CLULogger.DiagnosticLog("Adding " + DateTime.Now + " for " + spell);
                 this.spellInterval[spell].Add(DateTime.Now);
             }
 
             // initialize or increment the count for this item
-            try {
+            try
+            {
                 this.healingStats[DateTime.Now] = CLULogger.SafeName(Me.CurrentTarget) + ", " + spell + ", MaxHealth: " + Me.CurrentTarget.MaxHealth + ", CurrentHealth: " + Me.CurrentTarget.CurrentHealth + ", Deficit: " + (Me.CurrentTarget.MaxHealth - Me.CurrentTarget.CurrentHealth);
                 CLULogger.DiagnosticLog("[CLU SUCCEED] " + CLU.Version + ": " + CLULogger.SafeName(Me.CurrentTarget) + ", " + spell + ", MaxHealth: " + Me.CurrentTarget.MaxHealth + ", CurrentHealth: " + Me.CurrentTarget.CurrentHealth + ", Deficit: " + (Me.CurrentTarget.MaxHealth - Me.CurrentTarget.CurrentHealth) + ", HealthPercent: " + Math.Round(Me.CurrentTarget.HealthPercent * 10.0) / 10.0);
-            } catch {
+            }
+            catch
+            {
                 this.healingStats[DateTime.Now] = this.healingStats.ContainsKey(DateTime.Now) ? this.healingStats[DateTime.Now] = CLULogger.SafeName(Me.CurrentTarget) + ", " + spell + ", MaxHealth: " + Me.CurrentTarget.MaxHealth + ", CurrentHealth: " + Me.CurrentTarget.CurrentHealth + ", Deficit: " + (Me.CurrentTarget.MaxHealth - Me.CurrentTarget.CurrentHealth) : "blank";
                 CLULogger.DiagnosticLog("[CLU SUCCEED] " + CLU.Version + ": " + CLULogger.SafeName(Me.CurrentTarget) + ", " + spell + ", MaxHealth: " + Me.CurrentTarget.MaxHealth + ", CurrentHealth: " + Me.CurrentTarget.CurrentHealth + ", Deficit: " + (Me.CurrentTarget.MaxHealth - Me.CurrentTarget.CurrentHealth) + ", HealthPercent: " + Math.Round(Me.CurrentTarget.HealthPercent * 10.0) / 10.0);
             }
@@ -125,17 +134,20 @@ namespace CLU.CombatLog
             CLULogger.Log("Spells cast: {0}", this.spellCasts > 1000 ? ((Math.Round(this.spellCasts / 100.0) * 10) + "k") : this.spellCasts.ToString(CultureInfo.InvariantCulture));
             CLULogger.Log("Average APM: {0}", apm);
             CLULogger.Log("------------------------------------------");
-            foreach (KeyValuePair<string, int> spell in this.spellList) {
+            foreach (KeyValuePair<string, int> spell in this.spellList)
+            {
                 CLULogger.Log(spell.Key + " was cast " + spell.Value + " time(s).");
             }
 
             CLULogger.Log("------------------------------------------");
 
-            foreach (KeyValuePair<string, List<DateTime>> spell in this.spellInterval) {
+            foreach (KeyValuePair<string, List<DateTime>> spell in this.spellInterval)
+            {
                 var lastInterval = this.start;
                 var output = "0 ";
 
-                for (int x = 0; x < spell.Value.Count - 1; ++x) {
+                for (int x = 0; x < spell.Value.Count - 1; ++x)
+                {
                     var interval = spell.Value[x];
                     var difference = interval - lastInterval;
                     output = output + string.Format(", {0} ", Math.Round(difference.TotalSeconds * 100.0) / 100.0);
@@ -153,11 +165,11 @@ namespace CLU.CombatLog
             CLULogger.Log("------------------------------------------");
             CLULogger.Log("These are the spells from UNIT_SPELLCAST_SUCCEEDED");
             CLULogger.Log("------------------------------------------");
-            foreach (KeyValuePair<DateTime, string> entry in this.healingStats) {
+            foreach (KeyValuePair<DateTime, string> entry in this.healingStats)
+            {
                 CLULogger.Log("[" + entry.Key + "] " + entry.Value);
             }
             CLULogger.Log("------------------------------------------");
         }
     }
 }
-

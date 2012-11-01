@@ -1,4 +1,5 @@
 ﻿#region Revision info
+
 /*
  * $Author$
  * $Date$
@@ -8,17 +9,17 @@
  * $LastChangedBy$
  * $ChangesMade$
  */
-#endregion
 
-using System.Collections.Generic;
-using System.Linq;
-using Styx.WoWInternals;
-using Styx.WoWInternals.WoWObjects;
+#endregion Revision info
+
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
+using CLU.Base;
 using CLU.Settings;
 using Styx;
-using CLU.Base;
+using Styx.WoWInternals.WoWObjects;
 
 namespace CLU.Helpers
 {
@@ -26,23 +27,26 @@ namespace CLU.Helpers
 
     public class HealableUnit
     {
-    	private bool beaconUnit;
+        private bool beaconUnit;
 
-        
         private bool lifeBloomUnit;
         private bool earthShieldUnit;
         private bool mainTank;
         private bool offTank;
 
         public static LocalPlayer Me { get { return StyxWoW.Me; } }
-        internal static bool IsInDungeonParty { get { return Me.GroupInfo.IsInParty && !Me.GroupInfo.IsInRaid; } }
-        internal static bool IsInGroup { get { return Me.GroupInfo.IsInRaid || Me.GroupInfo.IsInParty; } }
-        internal static readonly IEnumerable<WoWPartyMember> Groupofplayers = (Me.GroupInfo.IsInRaid ? Me.GroupInfo.RaidMembers : Me.GroupInfo.PartyMembers);
-        internal static IEnumerable<WoWPartyMember> GroupMembers { get { return !Me.GroupInfo.IsInRaid ? Me.GroupInfo.PartyMembers : Me.GroupInfo.RaidMembers; } }
 
+        internal static bool IsInDungeonParty { get { return Me.GroupInfo.IsInParty && !Me.GroupInfo.IsInRaid; } }
+
+        internal static bool IsInGroup { get { return Me.GroupInfo.IsInRaid || Me.GroupInfo.IsInParty; } }
+
+        internal static readonly IEnumerable<WoWPartyMember> Groupofplayers = (Me.GroupInfo.IsInRaid ? Me.GroupInfo.RaidMembers : Me.GroupInfo.PartyMembers);
+
+        internal static IEnumerable<WoWPartyMember> GroupMembers { get { return !Me.GroupInfo.IsInRaid ? Me.GroupInfo.PartyMembers : Me.GroupInfo.RaidMembers; } }
 
         // This will be the primary heal target set from TargetBase.
         private static HealableUnit healtarget;
+
         public static HealableUnit HealTarget
         {
             get
@@ -64,7 +68,7 @@ namespace CLU.Helpers
         private HealableUnit()
         {
         }
-        
+
         /// <summary>
         /// CLU's Unit to heal
         /// </summary>
@@ -73,11 +77,13 @@ namespace CLU.Helpers
         {
             UnitObject = unit;
         }
-        
+
         private static HealableUnit instance;
+
         public static HealableUnit Instance
         {
-            get {
+            get
+            {
                 return instance ?? (instance = new HealableUnit());
             }
         }
@@ -88,6 +94,7 @@ namespace CLU.Helpers
             get;
             set;
         }
+
         private static bool Removing
         {
             get;
@@ -96,27 +103,34 @@ namespace CLU.Helpers
 
         // Declare a new List with the HealableUnit object.
         private static List<HealableUnit> listofHealableUnits;
+
         public static List<HealableUnit> ListofHealableUnits
         {
-            get {
+            get
+            {
                 return listofHealableUnits ?? (listofHealableUnits = new List<HealableUnit>());
-            } set {
+            }
+            set
+            {
                 listofHealableUnits = value;
             }
         }
-        
+
         /// <summary>
         /// Pulse
         /// </summary>
         public static void Pulse()
         {
-
-            try {
-                if (CLU.IsHealerRotationActive && StyxWoW.IsInGame) {
+            try
+            {
+                if (CLU.IsHealerRotationActive && StyxWoW.IsInGame)
+                {
                     Add();
                     Remove();
                 }
-            } catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 CLULogger.DiagnosticLog("HealableUnit Pulse : {0}", ex);
             }
         }
@@ -133,7 +147,8 @@ namespace CLU.Helpers
 
         public int TimeToLive
         {
-            get {
+            get
+            {
                 return timeToLive(CLUSettings.Instance.TTLDelta);
             }
         }
@@ -141,7 +156,8 @@ namespace CLU.Helpers
         private int timeToLive(double deltaSeconds)
         {
             var oracle = UnitOracle.FindUnit(this.UnitObject);
-            if (oracle == null) {
+            if (oracle == null)
+            {
                 UnitOracle.WatchUnit(this.UnitObject, UnitOracle.Watch.HealthVariance);
                 return 999999;
             }
@@ -157,7 +173,7 @@ namespace CLU.Helpers
             get;
             set;
         }
-        
+
         /// <summary>
         /// Unit requiring Urgent Dispels.
         /// </summary>
@@ -172,14 +188,17 @@ namespace CLU.Helpers
         /// </summary>
         public bool Beacon
         {
-            get {
-                if (CLUSettings.Instance.Paladin.HandlePaliBeaconTarget) {
+            get
+            {
+                if (CLUSettings.Instance.Paladin.HandlePaliBeaconTarget)
+                {
                     return beaconUnit = MainTank;
                 }
                 return this.beaconUnit;
             }
 
-            set {
+            set
+            {
                 this.beaconUnit = value;
             }
         }
@@ -189,14 +208,17 @@ namespace CLU.Helpers
         /// </summary>
         public bool LifeBloom
         {
-            get {
-                if (CLUSettings.Instance.Druid.HandleLifeBloomTarget) {
+            get
+            {
+                if (CLUSettings.Instance.Druid.HandleLifeBloomTarget)
+                {
                     return lifeBloomUnit = MainTank;
                 }
                 return this.lifeBloomUnit;
             }
 
-            set {
+            set
+            {
                 this.lifeBloomUnit = value;
             }
         }
@@ -206,14 +228,17 @@ namespace CLU.Helpers
         /// </summary>
         public bool EarthShield
         {
-            get {
-                if (CLUSettings.Instance.Shaman.HandleEarthShieldTarget) {
+            get
+            {
+                if (CLUSettings.Instance.Shaman.HandleEarthShieldTarget)
+                {
                     return earthShieldUnit = MainTank;
                 }
                 return this.earthShieldUnit;
             }
 
-            set {
+            set
+            {
                 this.earthShieldUnit = value;
             }
         }
@@ -223,7 +248,8 @@ namespace CLU.Helpers
         /// </summary>
         public bool MainTank
         {
-            get {
+            get
+            {
                 //// Retrieve our main tank.
                 //var result = GetMaintank;
                 //if (result != null && (result.ToUnit().Guid == this.UnitObject.Guid))
@@ -233,7 +259,8 @@ namespace CLU.Helpers
                 return this.mainTank;
             }
 
-            set {
+            set
+            {
                 this.mainTank = value;
             }
         }
@@ -243,7 +270,8 @@ namespace CLU.Helpers
         /// </summary>
         public bool OffTank
         {
-            get {
+            get
+            {
                 // Retrieve our off tank.
                 var result = listofHealableUnits.Where(x => x != null && x.Tank);
                 if (result.Any(x => x != null && (x.ToUnit().Guid == this.UnitObject.Guid && !this.MainTank)))
@@ -253,7 +281,8 @@ namespace CLU.Helpers
                 return this.offTank;
             }
 
-            set {
+            set
+            {
                 this.offTank = value;
             }
         }
@@ -263,7 +292,8 @@ namespace CLU.Helpers
         /// </summary>
         public string Name
         {
-            get {
+            get
+            {
                 return this.UnitObject.Name;
             }
         }
@@ -273,7 +303,8 @@ namespace CLU.Helpers
         /// </summary>
         public int CurrentHealth
         {
-            get {
+            get
+            {
                 return this.UnitObject.IsDead ? 0 : (int)this.UnitObject.CurrentHealth;
             }
         }
@@ -283,7 +314,8 @@ namespace CLU.Helpers
         /// </summary>
         public int MaxHealth
         {
-            get {
+            get
+            {
                 return (int)this.UnitObject.MaxHealth;
             }
         }
@@ -293,7 +325,8 @@ namespace CLU.Helpers
         /// </summary>
         public int HealthPercent
         {
-            get {
+            get
+            {
                 return this.UnitObject.IsDead ? 0 : (int)this.UnitObject.HealthPercent;
             }
         }
@@ -303,7 +336,8 @@ namespace CLU.Helpers
         /// </summary>
         public int MissingHealth
         {
-            get {
+            get
+            {
                 return MaxHealth - CurrentHealth;
             }
         }
@@ -313,7 +347,8 @@ namespace CLU.Helpers
         /// </summary>
         public double Distance
         {
-            get {
+            get
+            {
                 return Math.Round(this.UnitObject.Distance, 3);
             }
         }
@@ -323,10 +358,14 @@ namespace CLU.Helpers
         /// </summary>
         public WoWPoint Location
         {
-            get {
-                try {
+            get
+            {
+                try
+                {
                     return this.UnitObject.Location;
-                } catch (Exception ex) {
+                }
+                catch (Exception ex)
+                {
                     CLULogger.DiagnosticLog("Error with Healable Unit Location : {0}", ex);
                 }
                 return new WoWPoint();
@@ -338,7 +377,7 @@ namespace CLU.Helpers
         /// </summary>
         public uint GroupNumber
         {
-        	get;
+            get;
             private set;
         }
 
@@ -374,7 +413,8 @@ namespace CLU.Helpers
         /// </summary>
         public bool IsMe
         {
-            get {
+            get
+            {
                 return this.UnitObject.IsMe;
             }
         }
@@ -393,16 +433,18 @@ namespace CLU.Helpers
         /// </summary>
         private static IEnumerable<HealableUnit> HealableUnits
         {
-            get {
+            get
+            {
                 var result = new List<HealableUnit>();
-                try {
-
+                try
+                {
                     var grps = GroupMembers.Where(p => !HealableUnit.Contains(p.ToPlayer()) && HealableUnit.Filter(p.ToPlayer())).Select(g => g);
 
                     var list = new List<HealableUnit>();
 
-                    if (!HealableUnit.Contains(Me)) {
-                        CLULogger.TroubleshootLog( "Adding: {0} to list of Healable Units", CLULogger.SafeName(Me.ToPlayer()));
+                    if (!HealableUnit.Contains(Me))
+                    {
+                        CLULogger.TroubleshootLog("Adding: {0} to list of Healable Units", CLULogger.SafeName(Me.ToPlayer()));
                         list.Add(new HealableUnit(Me));
                     }
 
@@ -410,7 +452,7 @@ namespace CLU.Helpers
 
                     foreach (WoWPartyMember p in grps)
                     {
-                        CLULogger.TroubleshootLog( "Adding Group Member: {0} to list of Healable Units", CLULogger.SafeName(p.ToPlayer()));
+                        CLULogger.TroubleshootLog("Adding Group Member: {0} to list of Healable Units", CLULogger.SafeName(p.ToPlayer()));
                         var role = p.Role;
                         bool tank = false;
                         bool healer = ((role & WoWPartyMember.GroupRole.Healer) != 0);
@@ -418,22 +460,23 @@ namespace CLU.Helpers
                         uint groupnumber = Me.GroupInfo.IsInRaid ? p.GroupNumber : 0;
 
                         // Set tank by role
-                        if ((role & WoWPartyMember.GroupRole.Tank) != 0) {
-                            CLULogger.TroubleshootLog( " Setting {0} as tank based on Raid Role.", CLULogger.SafeName(p.ToPlayer()) + " " + p.ToPlayer().Level);
+                        if ((role & WoWPartyMember.GroupRole.Tank) != 0)
+                        {
+                            CLULogger.TroubleshootLog(" Setting {0} as tank based on Raid Role.", CLULogger.SafeName(p.ToPlayer()) + " " + p.ToPlayer().Level);
                             tank = true;
                         }
 
                         // If the user has a focus target set, use it instead.
                         if (StyxWoW.Me.FocusedUnitGuid != 0 && StyxWoW.Me.FocusedUnit.Guid == p.ToPlayer().Guid)
                         {
-                            CLULogger.TroubleshootLog( "Setting {0} as tank based on FocusedUnit.", CLULogger.SafeName(p.ToPlayer()) + " " + p.ToPlayer().Level);
+                            CLULogger.TroubleshootLog("Setting {0} as tank based on FocusedUnit.", CLULogger.SafeName(p.ToPlayer()) + " " + p.ToPlayer().Level);
                             tank = true;
                         }
 
                         // RaF
                         if (RaFHelper.Leader != null && RaFHelper.Leader.CurrentHealth > 1 && RaFHelper.Leader != Me && RaFHelper.Leader.Guid == p.ToPlayer().Guid)
                         {
-                            CLULogger.TroubleshootLog( "Setting {0} as tank based on RaFHelper.Leader.", CLULogger.SafeName(Me) + " " + p.ToPlayer().Level);
+                            CLULogger.TroubleshootLog("Setting {0} as tank based on RaFHelper.Leader.", CLULogger.SafeName(Me) + " " + p.ToPlayer().Level);
                             tank = true;
                         }
 
@@ -441,11 +484,12 @@ namespace CLU.Helpers
                         bool offtank = p.IsMainAssist;
 
                         list.Add(new HealableUnit { UnitObject = p.ToPlayer(), Tank = tank, Healer = healer, Damage = damage, GroupNumber = groupnumber, MainTank = maintank, OffTank = offtank, });
-
                     }
 
                     result = list;
-                } catch (Exception ex) {
+                }
+                catch (Exception ex)
+                {
                     CLULogger.DiagnosticLog("HealableUnits : {0}", ex);
                 }
 
@@ -458,103 +502,119 @@ namespace CLU.Helpers
         /// </summary>
         private static IEnumerable<HealableUnit> HealableUnitsProx
         {
-            get {
+            get
+            {
                 var result = new List<HealableUnit>();
-                try {
+                try
+                {
                     var list = new List<HealableUnit>();
                     var proximitylist = Unit.HealList.Where(p => !HealableUnit.Contains(p.ToPlayer()) && HealableUnit.Filter(p.ToPlayer()));
 
-                    if (!HealableUnit.Contains(Me)) {
-                        CLULogger.TroubleshootLog( "Adding: {0} to list of Healable Units", CLULogger.SafeName(Me.ToPlayer()));
+                    if (!HealableUnit.Contains(Me))
+                    {
+                        CLULogger.TroubleshootLog("Adding: {0} to list of Healable Units", CLULogger.SafeName(Me.ToPlayer()));
                         list.Add(new HealableUnit(Me));
                     }
 
-                    foreach (WoWUnit p in proximitylist) {
-                        CLULogger.TroubleshootLog( "Adding Unit by Proximity: {0} to list of Healable Units", CLULogger.SafeName(p.ToPlayer()));
+                    foreach (WoWUnit p in proximitylist)
+                    {
+                        CLULogger.TroubleshootLog("Adding Unit by Proximity: {0} to list of Healable Units", CLULogger.SafeName(p.ToPlayer()));
                         bool tank = false;
 
                         // If the user has a focus target set, use it instead.
-                        if (StyxWoW.Me.FocusedUnitGuid != 0 && StyxWoW.Me.FocusedUnit.Guid == p.ToPlayer().Guid) {
-                            CLULogger.TroubleshootLog( "Setting {0} as tank based on FocusedUnit.", CLULogger.SafeName(p.ToPlayer()) + " " + p.ToPlayer().Level);
+                        if (StyxWoW.Me.FocusedUnitGuid != 0 && StyxWoW.Me.FocusedUnit.Guid == p.ToPlayer().Guid)
+                        {
+                            CLULogger.TroubleshootLog("Setting {0} as tank based on FocusedUnit.", CLULogger.SafeName(p.ToPlayer()) + " " + p.ToPlayer().Level);
                             tank = true;
                         }
 
                         // RaF
-                        if (RaFHelper.Leader != null && RaFHelper.Leader.CurrentHealth > 1 && RaFHelper.Leader != Me && RaFHelper.Leader.Guid == p.ToPlayer().Guid) {
-                            CLULogger.TroubleshootLog( "Setting {0} as tank based on RaFHelper.Leader.", CLULogger.SafeName(Me) + " " + p.ToPlayer().Level);
+                        if (RaFHelper.Leader != null && RaFHelper.Leader.CurrentHealth > 1 && RaFHelper.Leader != Me && RaFHelper.Leader.Guid == p.ToPlayer().Guid)
+                        {
+                            CLULogger.TroubleshootLog("Setting {0} as tank based on RaFHelper.Leader.", CLULogger.SafeName(Me) + " " + p.ToPlayer().Level);
                             tank = true;
                         }
 
                         list.Add(new HealableUnit { UnitObject = p.ToPlayer(), Tank = tank, });
                     }
                     result = list;
-                } catch (Exception ex) {
+                }
+                catch (Exception ex)
+                {
                     CLULogger.DiagnosticLog("HealableUnitsByProximity : {0}", ex);
                 }
                 return result;
             }
         }
-        
-		/// <summary>
+
+        /// <summary>
         /// Add HealableUnits that meet a criteria
         /// </summary>
-		private static void Add()
+        private static void Add()
         {
-            try {
+            try
+            {
                 if (Removing) return;
-                
+
                 Adding = true;
-                
-                switch (CLUSettings.Instance.SelectedHealingAquisition) {
-                case HealingAquisitionMethod.Proximity:
-                    HealableUnitsByProximity();
-                    break;
-                case HealingAquisitionMethod.RaidParty:
-                    HealableUnitsByPartyorRaid();
-                    break;
+
+                switch (CLUSettings.Instance.SelectedHealingAquisition)
+                {
+                    case HealingAquisitionMethod.Proximity:
+                        HealableUnitsByProximity();
+                        break;
+
+                    case HealingAquisitionMethod.RaidParty:
+                        HealableUnitsByPartyorRaid();
+                        break;
                 }
-                
+
                 Adding = false;
-            } catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 CLULogger.DiagnosticLog("AddHealableUnits : {0}", ex);
             }
         }
-        
-        
+
         /// <summary>
         /// Remove invalid healableunits.
         /// </summary>
         public static void Remove()
         {
-            try {
+            try
+            {
                 if (Adding) return;
-                
+
                 Removing = true;
-                
+
                 var grp = ListofHealableUnits.Where(n => !HealableUnit.Filter(n.ToUnit())).ToList();
-                foreach (var unit in grp.Where(unit => ListofHealableUnits.IndexOf(unit) != -1)) {
+                foreach (var unit in grp.Where(unit => ListofHealableUnits.IndexOf(unit) != -1))
+                {
                     ListofHealableUnits.RemoveAt(ListofHealableUnits.IndexOf(unit)); // remove
                     CLULogger.TroubleshootLog(" Success Removed: {0} no longer a valid healableunit.", CLULogger.SafeName(unit.ToUnit()));
                 }
-                
+
                 Removing = false;
-            } catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 CLULogger.DiagnosticLog("Remove : {0}", ex);
             }
         }
-
 
         /// <summary>
         /// Add HealableUnits to our List of HealableUnits given their current location
         /// </summary>
         public static void HealableUnitsByProximity()
         {
-            try {
-
+            try
+            {
                 var result = HealableUnitsProx;
                 listofHealableUnits.AddRange(result.Where(t => t != null).Select(t => t));
-
-            } catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 CLULogger.DiagnosticLog("Initialize HealableUnitsByProximity : {0}", ex);
             }
         }
@@ -564,11 +624,13 @@ namespace CLU.Helpers
         /// </summary>
         public static void HealableUnitsByPartyorRaid()
         {
-            try {
+            try
+            {
                 var result = HealableUnits;
                 listofHealableUnits.AddRange(result.Where(t => t != null).Select(t => t));
-
-            } catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 CLULogger.DiagnosticLog("InitializeHealing HealableUnitsByPartyorRaid : {0}", ex);
             }
         }
@@ -579,10 +641,13 @@ namespace CLU.Helpers
         /// <param name="unit">the unit to check for</param>
         public static bool Contains(WoWUnit unit)
         {
-            try {
+            try
+            {
                 var grp = ListofHealableUnits.ToList();
                 return grp.Any(n => n != null && (unit != null && n.ToUnit().Guid == unit.Guid));
-            } catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 CLULogger.DiagnosticLog("Contains : {0}", ex);
             }
             return false;
@@ -595,9 +660,10 @@ namespace CLU.Helpers
         /// <returns>returns true if the unit meets the requirements to be a HealableUnit</returns>
         public static bool Filter(WoWUnit unit)
         {
-            try {
+            try
+            {
                 if (unit != null && unit.IsMe) return true; // im always valid..bazinga :P
-                return unit != null && (unit.IsValid && 
+                return unit != null && (unit.IsValid &&
                                         unit.ToPlayer().IsAlive &&
                                         !unit.ToPlayer().IsGhost &&
                                         unit.ToPlayer().IsPlayer &&
@@ -605,23 +671,26 @@ namespace CLU.Helpers
                                         !unit.ToPlayer().IsFlying &&
                                         !unit.ToPlayer().OnTaxi &&
                                         unit.Distance2DSqr < 40 * 40);
-            } catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 CLULogger.DiagnosticLog("Filter : {0}", ex);
             }
             return false;
         }
-        
+
         /// <summary>
         /// Prints the contents of teh List of HealableUnits
         /// </summary>
         private static void Print()
         {
             CLULogger.TroubleshootLog("HealableUnit List has {0} elements.", ListofHealableUnits.Count);
-            for (int i = 0; i < ListofHealableUnits.Count; i++) {
+            for (int i = 0; i < ListofHealableUnits.Count; i++)
+            {
                 CLULogger.TroubleshootLog(" {0} : {1} Tank: {2}", ListofHealableUnits[i].Name, i, ListofHealableUnits[i].Tank);
             }
         }
-        
+
         /// <summary>
         /// Selects the most appropriate tank based on blizzards method (MainTank/MainAssist) or Max Health
         /// </summary>
@@ -663,7 +732,7 @@ namespace CLU.Helpers
             {
                 var result = new List<HealableUnit>();
                 try
-                {                  
+                {
                     if (!StyxWoW.Me.GroupInfo.IsInParty)
                         return result;
 

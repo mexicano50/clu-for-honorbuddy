@@ -1,4 +1,5 @@
 ﻿#region Revision info
+
 /*
  * $Author$
  * $Date$
@@ -8,7 +9,8 @@
  * $LastChangedBy$
  * $ChangesMade$
  */
-#endregion
+
+#endregion Revision info
 
 using System.Globalization;
 
@@ -16,30 +18,30 @@ namespace CLU.CombatLog
 {
     using System;
     using System.Collections.Generic;
+    using Base;
+    using Helpers;
+    using Managers;
+    using Settings;
     using Styx;
     using Styx.CommonBot;
     using Styx.CommonBot.POI;
     using Styx.WoWInternals;
     using Styx.WoWInternals.WoWObjects;
-    using Base;
-    using Helpers;
-    using Managers;
-    using Settings;
 
     public class CombatLogEvents
     {
+        private static CombatLogEvents instance;
 
-
-		private static CombatLogEvents instance;
         public static CombatLogEvents Instance
         {
-            get {
-        		return instance ?? (instance = new CombatLogEvents());
+            get
+            {
+                return instance ?? (instance = new CombatLogEvents());
             }
         }
 
         private static bool _combatLogAttached;
-       
+
         public static readonly Dictionary<string, DateTime> Locks = new Dictionary<string, DateTime>();
 
         public static readonly double ClientLag = CLUSettings.Instance.EnableClientLagDetection ? StyxWoW.WoWClient.Latency * 2 / 1000.0 : 1;
@@ -49,12 +51,15 @@ namespace CLU.CombatLog
             try
             {
                 CLULogger.TroubleshootLog("CombatLogEvents: Connected to the Grid");
+
                 // means spell was cast (did not hit target yet)
                 CLULogger.TroubleshootLog("CombatLogEvents: Connect UNIT_SPELLCAST_SUCCEEDED");
                 Lua.Events.AttachEvent("UNIT_SPELLCAST_SUCCEEDED", this.OnSpellFired_ACK);
+
                 // user got stunned, silenced, kicked...
                 CLULogger.TroubleshootLog("CombatLogEvents: Connect UNIT_SPELLCAST_INTERRUPTED");
                 Lua.Events.AttachEvent("UNIT_SPELLCAST_INTERRUPTED", this.OnSpellFired_NACK);
+
                 // misc fails, due to stopcast, spell spam, etc.
                 CLULogger.TroubleshootLog("CombatLogEvents: Connect UNIT_SPELLCAST_FAILED");
                 Lua.Events.AttachEvent("UNIT_SPELLCAST_FAILED", this.OnSpellFired_FAIL);
@@ -69,7 +74,7 @@ namespace CLU.CombatLog
                     AttachCombatLogEvent();
             }
             catch (Exception ex)
-            { 
+            {
                 CLULogger.DiagnosticLog("HandlePartyMembersChanged : {0}", ex);
             }
         }
@@ -87,10 +92,12 @@ namespace CLU.CombatLog
 
             DetachCombatLogEvent();
         }
+
         public void BotBaseChange(object o)
         {
             BotChecker.Initialize();
         }
+
         private static void AttachCombatLogEvent()
         {
             if (_combatLogAttached)
@@ -125,28 +132,33 @@ namespace CLU.CombatLog
 
         private void HandlePartyMembersChanged(object sender, LuaEventArgs args)
         {
-            try {
-                if (CLU.IsHealerRotationActive && StyxWoW.IsInGame) {
-                    CLULogger.TroubleshootLog( "CombatLogEvents: Party Members Changed - Re-Initialize list Of HealableUnits");
-                    switch (CLUSettings.Instance.SelectedHealingAquisition) {
-                    case HealingAquisitionMethod.Proximity:
-                        HealableUnit.HealableUnitsByProximity();
-                        break;
-                    case HealingAquisitionMethod.RaidParty:
-                        HealableUnit.HealableUnitsByPartyorRaid();
-                        break;
+            try
+            {
+                if (CLU.IsHealerRotationActive && StyxWoW.IsInGame)
+                {
+                    CLULogger.TroubleshootLog("CombatLogEvents: Party Members Changed - Re-Initialize list Of HealableUnits");
+                    switch (CLUSettings.Instance.SelectedHealingAquisition)
+                    {
+                        case HealingAquisitionMethod.Proximity:
+                            HealableUnit.HealableUnitsByProximity();
+                            break;
+
+                        case HealingAquisitionMethod.RaidParty:
+                            HealableUnit.HealableUnitsByPartyorRaid();
+                            break;
                     }
                 }
-            } catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 CLULogger.DiagnosticLog("HandlePartyMembersChanged : {0}", ex);
             }
-
         }
 
         public void Player_OnMapChanged(BotEvents.Player.MapChangedEventArgs args)
         {
-            try {
-
+            try
+            {
                 if ((CLU.LocationContext == GroupLogic.Battleground || CLU.LocationContext == GroupLogic.PVE) && TalentManager.CurrentSpec != WoWSpec.DruidFeral)
                     DetachCombatLogEvent();
                 else
@@ -161,18 +173,23 @@ namespace CLU.CombatLog
                 CLULogger.TroubleshootLog("Context changed. New context: " + CLU.LocationContext + ". Rebuilding behaviors.");
                 CLU.Instance.CreateBehaviors();
 
-                if (CLU.IsHealerRotationActive && StyxWoW.IsInGame) {
-                    CLULogger.TroubleshootLog( "CombatLogEvents: Party Members Changed - Re-Initialize list Of HealableUnits");
-                    switch (CLUSettings.Instance.SelectedHealingAquisition) {
-                    case HealingAquisitionMethod.Proximity:
-                        HealableUnit.HealableUnitsByProximity();
-                        break;
-                    case HealingAquisitionMethod.RaidParty:
-                        HealableUnit.HealableUnitsByPartyorRaid();
-                        break;
+                if (CLU.IsHealerRotationActive && StyxWoW.IsInGame)
+                {
+                    CLULogger.TroubleshootLog("CombatLogEvents: Party Members Changed - Re-Initialize list Of HealableUnits");
+                    switch (CLUSettings.Instance.SelectedHealingAquisition)
+                    {
+                        case HealingAquisitionMethod.Proximity:
+                            HealableUnit.HealableUnitsByProximity();
+                            break;
+
+                        case HealingAquisitionMethod.RaidParty:
+                            HealableUnit.HealableUnitsByPartyorRaid();
+                            break;
                     }
                 }
-            } catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 CLULogger.DiagnosticLog("Player_OnMapChanged : {0}", ex);
             }
         }
@@ -193,12 +210,13 @@ namespace CLU.CombatLog
             this.OnSpellFired(false, false, raw);
         }
 
-        private void OnSpellFired (bool success, bool spellCast, LuaEventArgs raw)
+        private void OnSpellFired(bool success, bool spellCast, LuaEventArgs raw)
         {
             var args = raw.Args;
             var player = Convert.ToString(args[0]);
 
-            if (player != "player") {
+            if (player != "player")
+            {
                 return;
             }
 
@@ -207,7 +225,8 @@ namespace CLU.CombatLog
             var spellName = WoWSpell.FromId(spellId).Name;
             var sourceGuid = ulong.Parse(args[3].ToString().Replace("0x", string.Empty), NumberStyles.HexNumber);
 
-            if (!success && spellCast) {
+            if (!success && spellCast)
+            {
                 CLULogger.DiagnosticLog("Woops, '{0}' cast failed: {1}", spellName, raw.EventName);
             }
 
@@ -250,6 +269,7 @@ namespace CLU.CombatLog
                     CLULogger.DiagnosticLog("Sleeping for heal success. ({0})", spellName);
                     StyxWoW.SleepForLagDuration();
                     break;
+
                 case "Nature's Swiftness":
                     CLULogger.DiagnosticLog("PrevNaturesSwiftness. ({0})", spellName);
                     if (sourceGuid == StyxWoW.Me.Guid)
@@ -264,6 +284,7 @@ namespace CLU.CombatLog
         private static void HandleCombatLog(object sender, LuaEventArgs args)
         {
             var e = new CombatLogEventArgs(args.EventName, args.FireTimeStamp, args.Args);
+
             //var missType = Convert.ToString(e.Args[14]);
 
             switch (e.Event)
@@ -316,84 +337,99 @@ namespace CLU.CombatLog
                         }
                     }
                     break;
-            case "SPELL_AURA_REFRESH":
-            if (e.SourceGuid == StyxWoW.Me.Guid)
-                {
-                    if (e.SpellId == 1822)
+
+                case "SPELL_AURA_REFRESH":
+                    if (e.SourceGuid == StyxWoW.Me.Guid)
                     {
-                        Classes.Druid.Common.RakeMultiplier = 1;
-                        //TF
-                        if (StyxWoW.Me.HasAura(5217))
-                            Classes.Druid.Common.RakeMultiplier = Classes.Druid.Common.RakeMultiplier * 1.15;
-                        //Savage Roar
-                        if (StyxWoW.Me.HasAura(127538))
-                            Classes.Druid.Common.RakeMultiplier = Classes.Druid.Common.RakeMultiplier * 1.3;
-                        //Doc
-                        if (StyxWoW.Me.HasAura(108373))
-                            Classes.Druid.Common.RakeMultiplier = Classes.Druid.Common.RakeMultiplier * 1.25;
+                        if (e.SpellId == 1822)
+                        {
+                            Classes.Druid.Common.RakeMultiplier = 1;
+
+                            //TF
+                            if (StyxWoW.Me.HasAura(5217))
+                                Classes.Druid.Common.RakeMultiplier = Classes.Druid.Common.RakeMultiplier * 1.15;
+
+                            //Savage Roar
+                            if (StyxWoW.Me.HasAura(127538))
+                                Classes.Druid.Common.RakeMultiplier = Classes.Druid.Common.RakeMultiplier * 1.3;
+
+                            //Doc
+                            if (StyxWoW.Me.HasAura(108373))
+                                Classes.Druid.Common.RakeMultiplier = Classes.Druid.Common.RakeMultiplier * 1.25;
+                        }
+                        if (e.SpellId == 1079)
+                        {
+                            Classes.Druid.Common.ExtendedRip = 0;
+                            Classes.Druid.Common.RipMultiplier = 1;
+
+                            //TF
+                            if (StyxWoW.Me.HasAura(5217))
+                                Classes.Druid.Common.RipMultiplier = Classes.Druid.Common.RipMultiplier * 1.15;
+
+                            //Savage Roar
+                            if (StyxWoW.Me.HasAura(127538))
+                                Classes.Druid.Common.RipMultiplier = Classes.Druid.Common.RipMultiplier * 1.3;
+
+                            //Doc
+                            if (StyxWoW.Me.HasAura(108373))
+                                Classes.Druid.Common.RipMultiplier = Classes.Druid.Common.RipMultiplier * 1.25;
+                        }
                     }
-                    if (e.SpellId == 1079)
+                    break;
+
+                case "SPELL_AURA_APPLIED":
+                    if (e.SourceGuid == StyxWoW.Me.Guid)
                     {
-                        Classes.Druid.Common.ExtendedRip = 0;
-                        Classes.Druid.Common.RipMultiplier = 1;
-                        //TF
-                        if (StyxWoW.Me.HasAura(5217))
-                            Classes.Druid.Common.RipMultiplier = Classes.Druid.Common.RipMultiplier * 1.15;
-                        //Savage Roar
-                        if (StyxWoW.Me.HasAura(127538))
-                            Classes.Druid.Common.RipMultiplier = Classes.Druid.Common.RipMultiplier * 1.3;
-                        //Doc
-                        if (StyxWoW.Me.HasAura(108373))
-                            Classes.Druid.Common.RipMultiplier = Classes.Druid.Common.RipMultiplier * 1.25;
+                        if (e.SpellId == 1822)
+                        {
+                            Classes.Druid.Common.RakeMultiplier = 1;
+
+                            //TF
+                            if (StyxWoW.Me.HasAura(5217))
+                                Classes.Druid.Common.RakeMultiplier = Classes.Druid.Common.RakeMultiplier * 1.15;
+
+                            //Savage Roar
+                            if (StyxWoW.Me.HasAura(127538))
+                                Classes.Druid.Common.RakeMultiplier = Classes.Druid.Common.RakeMultiplier * 1.3;
+
+                            //Doc
+                            if (StyxWoW.Me.HasAura(108373))
+                                Classes.Druid.Common.RakeMultiplier = Classes.Druid.Common.RakeMultiplier * 1.25;
+                        }
+                        if (e.SpellId == 1079)
+                        {
+                            Classes.Druid.Common.ExtendedRip = 0;
+                            Classes.Druid.Common.RipMultiplier = 1;
+
+                            //TF
+                            if (StyxWoW.Me.HasAura(5217))
+                                Classes.Druid.Common.RipMultiplier = Classes.Druid.Common.RipMultiplier * 1.15;
+
+                            //Savage Roar
+                            if (StyxWoW.Me.HasAura(127538))
+                                Classes.Druid.Common.RipMultiplier = Classes.Druid.Common.RipMultiplier * 1.3;
+
+                            //Doc
+                            if (StyxWoW.Me.HasAura(108373))
+                                Classes.Druid.Common.RipMultiplier = Classes.Druid.Common.RipMultiplier * 1.25;
+                        }
                     }
-                }
-                break;
-            case "SPELL_AURA_APPLIED":
-                if (e.SourceGuid == StyxWoW.Me.Guid)
-                {
-                    if (e.SpellId == 1822)
+                    break;
+
+                case "SPELL_AURA_REMOVED":
+                    if (e.SourceGuid == StyxWoW.Me.Guid)
                     {
-                        Classes.Druid.Common.RakeMultiplier = 1;
-                        //TF
-                        if (StyxWoW.Me.HasAura(5217))
-                            Classes.Druid.Common.RakeMultiplier = Classes.Druid.Common.RakeMultiplier * 1.15;
-                        //Savage Roar
-                        if (StyxWoW.Me.HasAura(127538))
-                            Classes.Druid.Common.RakeMultiplier = Classes.Druid.Common.RakeMultiplier * 1.3;
-                        //Doc
-                        if (StyxWoW.Me.HasAura(108373))
-                            Classes.Druid.Common.RakeMultiplier = Classes.Druid.Common.RakeMultiplier * 1.25;
+                        if (e.SpellId == 1822)
+                        {
+                            Classes.Druid.Common.RakeMultiplier = 0;
+                        }
+                        if (e.SpellId == 1079)
+                        {
+                            Classes.Druid.Common.ExtendedRip = 0;
+                            Classes.Druid.Common.RipMultiplier = 0;
+                        }
                     }
-                    if (e.SpellId == 1079)
-                    {
-                        Classes.Druid.Common.ExtendedRip = 0;
-                        Classes.Druid.Common.RipMultiplier = 1;
-                        //TF
-                        if (StyxWoW.Me.HasAura(5217))
-                            Classes.Druid.Common.RipMultiplier = Classes.Druid.Common.RipMultiplier * 1.15;
-                        //Savage Roar
-                        if (StyxWoW.Me.HasAura(127538))
-                            Classes.Druid.Common.RipMultiplier = Classes.Druid.Common.RipMultiplier * 1.3;
-                        //Doc
-                        if (StyxWoW.Me.HasAura(108373))
-                            Classes.Druid.Common.RipMultiplier = Classes.Druid.Common.RipMultiplier * 1.25;
-                    }
-                }
-                break;
-            case "SPELL_AURA_REMOVED":
-                if (e.SourceGuid == StyxWoW.Me.Guid)
-                {
-                    if (e.SpellId == 1822)
-                    {
-                        Classes.Druid.Common.RakeMultiplier = 0;
-                    }
-                    if (e.SpellId == 1079)
-                    {
-                        Classes.Druid.Common.ExtendedRip = 0;
-                        Classes.Druid.Common.RipMultiplier = 0;
-                    }
-                }
-                break;
+                    break;
             }
         }
 
@@ -406,7 +442,8 @@ namespace CLU.CombatLog
             var ret = new Dictionary<string, double>();
             var now = DateTime.Now;
 
-            foreach (var x in Locks) {
+            foreach (var x in Locks)
+            {
                 var s = x.Value.Subtract(now).TotalSeconds;
                 if (s < 0) s = 0;
                 s = Math.Round(s, 3);

@@ -1,4 +1,5 @@
 ﻿#region Revision info
+
 /*
  * $Author$
  * $Date$
@@ -8,7 +9,8 @@
  * $LastChangedBy$
  * $ChangesMade$
  */
-#endregion
+
+#endregion Revision info
 
 // Credits to Apoc
 // I have added:
@@ -57,7 +59,7 @@ namespace CLU.Lists
             57962, // Deathwing ----- Madness of DW (his head)
             55294, // Ultraxion
             56575, // Burning Tendons
-            56341, // Burning Tendons 
+            56341, // Burning Tendons
             54432, // Murozond <The Lord of the Infinite>
             54191, // Risen Ghoul - This NPC can be found in End Time
             56471, // Mutated Corruption -- Dragon Soul: The MaelstromDragon
@@ -105,10 +107,9 @@ namespace CLU.Lists
             56168, // Wing Tentacle - Madness of DW
             57962, // Deathwing ----- Madness of DW (his head)
             56575, // Burning Tendons
-            56341, // Burning Tendons 
+            56341, // Burning Tendons
             54432, // Murozond <The Lord of the Infinite>
         };
-
 
         /// <summary>
         /// Ignore Backstab for These Bosses
@@ -167,7 +168,8 @@ namespace CLU.Lists
             57962, // Deathwing ----- Madness of DW (his head)
             55294, // Ultraxion
             56575, // Burning Tendons
-            56341, // Burning Tendons 
+            56341, // Burning Tendons
+
             // 54432, // Murozond <The Lord of the Infinite>
             56471, // Mutated Corruption -- Dragon Soul: The MaelstromDragon
             52409, // Ragnaros (Firelands)
@@ -198,8 +200,8 @@ namespace CLU.Lists
             67127, // MoP Trainings Dummy
         };
 
-
         private static readonly HashSet<uint> _bosses = new HashSet<uint> {
+
             //Ragefire Chasm
             11517, //Oggleflint
             11520, //Taragaman the Hungerer
@@ -495,6 +497,7 @@ namespace CLU.Lists
             //Stratholme: Scarlet Stratholme
             10393, //Skul
             14684, //Balzaphon (Scourge Invasion)
+
             //11082, //Stratholme Courier
             11058, //Fras Siabi
             10558, //Hearthsinger Forresten
@@ -659,7 +662,6 @@ namespace CLU.Lists
             15990, //Kel'Thuzad
             25465, //Kel'Thuzad
 
-
             //Hellfire Citadel: Hellfire Ramparts
             17306, //Watchkeeper Gargolmar
             17308, //Omor the Unscarred
@@ -768,6 +770,7 @@ namespace CLU.Lists
             15690, //Prince Malchezaar
             17225, //Nightbane
             17229, //Kil'rek
+
             //Chess event
 
             //Karazhan: Servants' Quarters Beasts
@@ -878,7 +881,6 @@ namespace CLU.Lists
             25315, //Kil'jaeden
             25840, //Entropius
             24892, //Sathrovarr the Corruptor
-
 
             //Utgarde Keep: Main Bosses
             23953, //Prince Keleseth (Utgarde Keep)
@@ -1302,14 +1304,14 @@ namespace CLU.Lists
             56168, // Wing Tentacle - Madness of DW
             57962, // Deathwing ----- Madness of DW (his head)
             56575, // Burning Tendons
-            56341, // Burning Tendons 
+            56341, // Burning Tendons
 
             56710, // Elementium terror
             56262, // Elementium bolt
             56471, // Mutated Corruption
-            
+
             // Patch 5.0 - MoP Bosses ============================
-            
+
             // Temple of the Jade Serpent http://mop.wowhead.com/zone=5956#npcs
             56448, // Wise Mari <Waterspeaker>
             58826, // Zao Sunseeker <Champion of the Five Suns>
@@ -1318,19 +1320,19 @@ namespace CLU.Lists
             56732, // Liu Flameheart <Priestess of the Jade Serpent>
             56762, // Yu'lon <The Jade Serpent>
             56439, // Sha of Doubt
-                       
+
             // Stormstout Brewery http://mop.wowhead.com/zone=5963#npcs
-            56637, // Ook-Ook 
+            56637, // Ook-Ook
             56717, // Hoptallus
             59479, // Yan-Zhu the Uncasked
-            
+
             // Shado-Pan Monastery http://mop.wowhead.com/zone=5918#npcs
             56747, // Gu Cloudstrike
             56754, // Azure Serpent, Phase 2 of Gu Cloudstrike
             56541, // Master Snowdrift
             56719, // Sha of Violence
             56884, // Taran Zhu <Lord of the Shado-Pan>
-            
+
             // Gate of the Setting Sun http://mop.wowhead.com/zone=5976#npcs
             56906, // Saboteur Kip'tilak
             56589, // Striker Ga'dok
@@ -1338,7 +1340,7 @@ namespace CLU.Lists
             61177, // Raigonn
             56877, // Raigonn
             56895, // Raigonn
-            
+
             // Mogu'shan Palace http://www.wowhead.com/zone=6182
             61442, // Kuai the Brute
             61444, // Ming the Cunning
@@ -1349,7 +1351,7 @@ namespace CLU.Lists
             61339, // Glintrok Oracle
             61340, // Glintrok Hexxer
             61398, // Xin the Weaponmaster <King of the Clans>
-            
+
             // Siege of Niuzao Temple http://mop.wowhead.com/zone=6214#npcs
             61567, // Vizier Jin'bak
             61634, // Commander Vo'jak
@@ -1374,14 +1376,12 @@ namespace CLU.Lists
             58722, // Lilian Moss
             59080, // Darkmaster Gandling
 
-
-            
             // POSSIBLE DUNGEONS
             // Crypt of Forgotten Kings
             // The Perfect Storm
             // Temple of the Red Crane
             // Temple of the White Tiger
-            
+
             // Mogu'shan Vaults
             60047, // Amethyst Guardian
             60051, // Cobalt Guardian
@@ -1401,7 +1401,6 @@ namespace CLU.Lists
             60400, // Jan-xi <Emperor's Open Hand>
             60399, // Qin-xi
 
-            
             // Heart of Fear
             66791, // Imperial Vizier Zor'lok <Voice of the Empress>
             62543, // Blade Lord Ta'yak
@@ -1409,7 +1408,7 @@ namespace CLU.Lists
             65501, // Wind Lord Mel'jarak
             63666, // Amber-Shaper Un'sok
             62837, // Grand Empress Shek'zeer
-            
+
             // Terrace of Endless Spring
             60583, // Protector Kaolan
             60586, // Elder Asani

@@ -19,13 +19,9 @@ namespace CLU.Helpers
             }
         }
 
-        //private static string lastLine { get; set; }
-
         public static void Log(string msg, params object[] args)
         {
-            //if (msg == lastLine) return;
             Logging.Write(LogLevel.Normal, Colors.Yellow, "[CLU] " + CLU.Version + ": " + msg, args);
-            //lastLine = msg;
         }
 
         /// <summary>writes debug messages to the log file. Only enable movement/Targeting  logs.</summary>

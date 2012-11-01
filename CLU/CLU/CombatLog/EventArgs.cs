@@ -1,4 +1,5 @@
 ﻿#region Revision info
+
 /*
  * $Author$
  * $Date$
@@ -8,7 +9,8 @@
  * $LastChangedBy$
  * $ChangesMade$
  */
-#endregion
+
+#endregion Revision info
 
 namespace CLU.CombatLog
 {
@@ -21,20 +23,22 @@ namespace CLU.CombatLog
     internal class CombatLogEventArgs : LuaEventArgs
     {
         public CombatLogEventArgs(string eventName, uint fireTimeStamp, object[] args)
-        : base(eventName, fireTimeStamp, args)
+            : base(eventName, fireTimeStamp, args)
         {
         }
 
         public double Timestamp
         {
-            get {
+            get
+            {
                 return (double)this.Args[0];
             }
         }
 
         public string Event
         {
-            get {
+            get
+            {
                 return this.Args[1].ToString();
             }
         }
@@ -43,21 +47,24 @@ namespace CLU.CombatLog
         // it's a boolean, and it doesn't look like it has any real impact codewise apart from maybe to break old addons? - exemplar 4.1
         public string HideCaster
         {
-            get {
+            get
+            {
                 return this.Args[2].ToString();
             }
         }
 
         public ulong SourceGuid
         {
-            get {
+            get
+            {
                 return ulong.Parse(this.Args[3].ToString().Replace("0x", string.Empty), NumberStyles.HexNumber);
             }
         }
 
         public WoWUnit SourceUnit
         {
-            get {
+            get
+            {
                 return
                     ObjectManager.GetObjectsOfType<WoWUnit>(true, true).FirstOrDefault(
                         o => o.IsValid && (o.Guid == this.SourceGuid || o.DescriptorGuid == this.SourceGuid));
@@ -66,28 +73,32 @@ namespace CLU.CombatLog
 
         public string SourceName
         {
-            get {
+            get
+            {
                 return this.Args[4].ToString();
             }
         }
 
         public int SourceFlags
         {
-            get {
+            get
+            {
                 return (int)(double)this.Args[5];
             }
         }
 
         public ulong DestGuid
         {
-            get {
+            get
+            {
                 return ulong.Parse(this.Args[7].ToString().Replace("0x", string.Empty), NumberStyles.HexNumber);
             }
         }
 
         public WoWUnit DestUnit
         {
-            get {
+            get
+            {
                 return
                     ObjectManager.GetObjectsOfType<WoWUnit>(true, true).FirstOrDefault(
                         o => o.IsValid && (o.Guid == this.DestGuid || o.DescriptorGuid == this.DestGuid));
@@ -96,52 +107,61 @@ namespace CLU.CombatLog
 
         public string DestName
         {
-            get {
+            get
+            {
                 return this.Args[8].ToString();
             }
         }
 
         public int DestFlags
         {
-            get {
+            get
+            {
                 return (int)(double)this.Args[9];
             }
         }
 
         public int SpellId
         {
-            get {
+            get
+            {
                 return (int)(double)this.Args[11];
             }
         }
 
         public WoWSpell Spell
         {
-            get {
+            get
+            {
                 return WoWSpell.FromId(this.SpellId);
             }
         }
 
         public string SpellName
         {
-            get {
+            get
+            {
                 return this.Args[12].ToString();
             }
         }
 
         public WoWSpellSchool SpellSchool
         {
-            get {
+            get
+            {
                 return (WoWSpellSchool)(int)(double)this.Args[13];
             }
         }
 
         public object[] SuffixParams
         {
-            get {
+            get
+            {
                 var args = new List<object>();
-                for (int i = 11; i < this.Args.Length; i++) {
-                    if (this.Args[i] != null) {
+                for (int i = 11; i < this.Args.Length; i++)
+                {
+                    if (this.Args[i] != null)
+                    {
                         args.Add(args[i]);
                     }
                 }

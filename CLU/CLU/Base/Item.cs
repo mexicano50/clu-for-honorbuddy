@@ -1,4 +1,5 @@
 ﻿#region Revision info
+
 /*
  * $Author$
  * $Date$
@@ -8,23 +9,20 @@
  * $LastChangedBy$
  * $ChangesMade$
  */
-#endregion
+
+#endregion Revision info
 
 using CLU.Helpers;
 using CLU.Managers;
 
 namespace CLU.Base
 {
-    using CommonBehaviors.Actions;
     using System.Linq;
+    using System.Text;
     using Styx;
-    using Styx.CommonBot;
+    using Styx.TreeSharp;
     using Styx.WoWInternals;
     using Styx.WoWInternals.WoWObjects;
-    using Styx.TreeSharp;
-    using System;
-    using System.Text;
-    using global::CLU.Lists;
     using Action = Styx.TreeSharp.Action;
 
     internal static class Item
@@ -36,7 +34,8 @@ namespace CLU.Base
         /// </summary>
         private static LocalPlayer Me
         {
-            get {
+            get
+            {
                 return StyxWoW.Me;
             }
         }
@@ -93,20 +92,22 @@ namespace CLU.Base
 
             //SysLog.DiagnosticLog( "Checking Weapon Imbue on " + slot + " for " + imbueName);
             var item = StyxWoW.Me.Inventory.Equipped.GetEquippedItem(slot);
-            if (item == null) {
-                CLULogger.TroubleshootLog( "We have no " + slot + " equipped!");
+            if (item == null)
+            {
+                CLULogger.TroubleshootLog("We have no " + slot + " equipped!");
                 return true;
             }
 
             var enchant = item.TemporaryEnchantment;
-            if (enchant != null) {
+            if (enchant != null)
+            {
                 //SysLog.DiagnosticLog( "Enchantment Name: " + enchant.Name);
                 //SysLog.DiagnosticLog("Enchantment ID: " + enchant.Id);
                 //SysLog.DiagnosticLog("ImbueName: " + imbueName);
                 //SysLog.DiagnosticLog("Enchant: " + enchant.Name + " - " + (enchant.Name == imbueName));
             }
 
-            return enchant != null && (imbueId == enchant.Id);  //enchant.Name == imbueName || 
+            return enchant != null && (imbueId == enchant.Id);  //enchant.Name == imbueName ||
         }
 
         /// <summary>
@@ -116,28 +117,31 @@ namespace CLU.Base
         /// <returns>true if the weapon is suitable</returns>
         public static bool HasSuitableWeapon(WoWInventorySlot slot)
         {
-            switch (slot) {
-            case WoWInventorySlot.OffHand: {
-                var suitableOffhand = Me.Inventory.Equipped.OffHand != null
-                                      && Me.Inventory.Equipped.OffHand.ItemInfo.ItemClass == WoWItemClass.Weapon
-                                      && Me.Inventory.Equipped.MainHand != null
-                                      && StyxWoW.Me.Inventory.Equipped.MainHand.TemporaryEnchantment != null;
+            switch (slot)
+            {
+                case WoWInventorySlot.OffHand:
+                    {
+                        var suitableOffhand = Me.Inventory.Equipped.OffHand != null
+                                              && Me.Inventory.Equipped.OffHand.ItemInfo.ItemClass == WoWItemClass.Weapon
+                                              && Me.Inventory.Equipped.MainHand != null
+                                              && StyxWoW.Me.Inventory.Equipped.MainHand.TemporaryEnchantment != null;
 
-                if (!suitableOffhand)
-                    CLULogger.Log("Please Ensure your weapons are correct for the TalentSpec you are using");
+                        if (!suitableOffhand)
+                            CLULogger.Log("Please Ensure your weapons are correct for the TalentSpec you are using");
 
-                return suitableOffhand;
-            }
+                        return suitableOffhand;
+                    }
 
-            case WoWInventorySlot.MainHand: {
-                var suitableMainhand = Me.Inventory.Equipped.MainHand.ItemInfo.ItemClass == WoWItemClass.Weapon
-                                       && Me.Inventory.Equipped.MainHand != null;
+                case WoWInventorySlot.MainHand:
+                    {
+                        var suitableMainhand = Me.Inventory.Equipped.MainHand.ItemInfo.ItemClass == WoWItemClass.Weapon
+                                               && Me.Inventory.Equipped.MainHand != null;
 
-                if (!suitableMainhand)
-                    CLULogger.Log("Please Ensure your weapons are correct for the TalentSpec you are using");
+                        if (!suitableMainhand)
+                            CLULogger.Log("Please Ensure your weapons are correct for the TalentSpec you are using");
 
-                return suitableMainhand;
-            }
+                        return suitableMainhand;
+                    }
             }
 
             return false;
@@ -166,12 +170,13 @@ namespace CLU.Base
         {
             WoWItem item = null;
             return new Decorator(
-            	delegate(object a) {
-            		if (!cond(a))
-            			return false;
-            		item = Me.BagItems.FirstOrDefault(x => x.Name == name && x.Usable && x.Cooldown <= 0);
-            		return item != null;
-            },
+                delegate(object a)
+                {
+                    if (!cond(a))
+                        return false;
+                    item = Me.BagItems.FirstOrDefault(x => x.Name == name && x.Usable && x.Cooldown <= 0);
+                    return item != null;
+                },
             new Sequence(
                 new Action(a => CLULogger.Log(" [BagItem] {0} ", label)),
                 new Action(a => item.UseContainerItem())));
@@ -234,7 +239,6 @@ namespace CLU.Base
                 CLULogger.DiagnosticLog("Lua failed in CanUseEquippedItem");
                 return false;
             }
-
         }
 
         /// <summary>
@@ -243,7 +247,8 @@ namespace CLU.Base
         /// <param name="item">The item to use</param>
         private static void UseItem(WoWItem item)
         {
-            if (item != null) {
+            if (item != null)
+            {
                 CLULogger.Log(" [UseItem] {0} ", item.Name);
                 item.Use();
             }
@@ -258,13 +263,11 @@ namespace CLU.Base
             return UseEquippedTrinket();
         }
 
-
         private static Composite UseEquippedTrinket()
         {
-            
             return new PrioritySelector(
                 new Decorator(
-                    ret => Unit.UseCooldowns() && Me.Inventory.GetItemBySlot((uint)WoWInventorySlot.Trinket1)!=null,
+                    ret => Unit.UseCooldowns() && Me.Inventory.GetItemBySlot((uint)WoWInventorySlot.Trinket1) != null,
                     new PrioritySelector(
                         ctx => Me.Inventory.GetItemBySlot((uint)WoWInventorySlot.Trinket1),
                         new Decorator(
@@ -293,32 +296,34 @@ namespace CLU.Base
         /// <returns>true if we can use the trinket</returns>
         private static bool TrinketUsageSatisfied(WoWItem trinket)
         {
-            if (trinket != null) {
-                switch (trinket.Name) {
-                case "Apparatus of Khaz'goroth":
-                    return StyxWoW.Me.ActiveAuras["Titanic Power"].StackCount == 5;
-                case "Fury of Angerforge":
-                    return StyxWoW.Me.ActiveAuras["Raw Fury"].StackCount == 5;
-                case "Scales of Life":
-                    return Buff.PlayerHasBuff("Weight of a Feather") && Me.HealthPercent <= 90;
-                case "Moonwell Phial":
-                    return Me.CurrentTarget != null && !Me.CurrentTarget.IsMoving && !Me.IsMoving && Me.HealthPercent <= 90;
-                case "Rotting Skull":
-                    if (TalentManager.CurrentSpec == WoWSpec.WarriorArms) return Buff.PlayerCountBuff("Slaughter") == 3;
-                    return true;
-                case "Eye of Unmaking":
-                    if (Me.Class == WoWClass.DeathKnight) return Buff.PlayerCountBuff("Titanic Strength") == 10;
-                    return true;
-                case "Darkmoon Card: Earthquake":
-                    return Me.HealthPercent <= 90;
-                case "Rosary of Light": //Unusable in Combat!
-                    return false;
+            if (trinket != null)
+            {
+                switch (trinket.Name)
+                {
+                    case "Apparatus of Khaz'goroth":
+                        return StyxWoW.Me.ActiveAuras["Titanic Power"].StackCount == 5;
+                    case "Fury of Angerforge":
+                        return StyxWoW.Me.ActiveAuras["Raw Fury"].StackCount == 5;
+                    case "Scales of Life":
+                        return Buff.PlayerHasBuff("Weight of a Feather") && Me.HealthPercent <= 90;
+                    case "Moonwell Phial":
+                        return Me.CurrentTarget != null && !Me.CurrentTarget.IsMoving && !Me.IsMoving && Me.HealthPercent <= 90;
+                    case "Rotting Skull":
+                        if (TalentManager.CurrentSpec == WoWSpec.WarriorArms) return Buff.PlayerCountBuff("Slaughter") == 3;
+                        return true;
+                    case "Eye of Unmaking":
+                        if (Me.Class == WoWClass.DeathKnight) return Buff.PlayerCountBuff("Titanic Strength") == 10;
+                        return true;
+                    case "Darkmoon Card: Earthquake":
+                        return Me.HealthPercent <= 90;
+                    case "Rosary of Light": //Unusable in Combat!
+                        return false;
 
                     // Encounter Specific (Uncomment the lines below for HC Deathwing) thanks to gniegsch fo his input!
                     // case "Stay of Execution":
                     //    return Me.CurrentTarget != null && Me.CurrentTarget.ChanneledCastingSpellId == 109632 && Me.CurrentTarget.IsTargetingMeOrPet && Me.CurrentTarget.CurrentCastTimeLeft.TotalMilliseconds <= 1000;
-                default:
-                    return true;
+                    default:
+                        return true;
                 }
             }
 
@@ -367,8 +372,10 @@ namespace CLU.Base
         public static string CamelToSpaced(this string str)
         {
             var sb = new StringBuilder();
-            foreach (char c in str) {
-                if (char.IsUpper(c)) {
+            foreach (char c in str)
+            {
+                if (char.IsUpper(c))
+                {
                     sb.Append(' ');
                 }
                 sb.Append(c);

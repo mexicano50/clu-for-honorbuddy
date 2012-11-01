@@ -1,4 +1,5 @@
 #region Revision info
+
 /*
  * $Author$
  * $Date$
@@ -8,8 +9,8 @@
  * $LastChangedBy$
  * $ChangesMade$
  */
-#endregion
 
+#endregion Revision info
 
 using System;
 using System.Collections.Generic;
@@ -34,7 +35,6 @@ using Styx.TreeSharp;
 using Styx.WoWInternals;
 using Styx.WoWInternals.DBC;
 using Styx.WoWInternals.WoWObjects;
-using Action = Styx.TreeSharp.Action;
 using Timer = System.Timers.Timer;
 
 /*Credits
@@ -78,9 +78,12 @@ namespace CLU
         private Composite _preCombatBuffBehavior;
         private Composite _pullBehavior;
         private Composite _restBehavior;
+
         internal static event EventHandler<LocationContextEventArg> OnLocationContextChanged;
+
         internal static GroupLogic LastLocationContext { get; set; }
-        #endregion
+
+        #endregion Constants and Fields
 
         #region Constructors and Destructors
 
@@ -89,19 +92,19 @@ namespace CLU
             Instance = this;
         }
 
-        #endregion
+        #endregion Constructors and Destructors
 
         #region Delegates
 
         public delegate WoWUnit UnitSelection(object context);
 
-        #endregion
+        #endregion Delegates
 
         #region Events
 
         internal event PulseHander PulseEvent;
 
-        #endregion
+        #endregion Events
 
         #region Public Properties
 
@@ -114,7 +117,9 @@ namespace CLU
         public override WoWClass Class { get { return StyxWoW.Me.Class; } }
 
         public override string Name { get { return "CLU (Codified Likeness Utility) " + Version; } }
+
         public static ulong LastTargetGuid = 0;
+
         /// <summary>
         /// If we havnt loaded a rotation for our character then do so by querying our character's class tree based on a Keyspell.
         /// </summary>
@@ -153,25 +158,26 @@ namespace CLU
             get
             {
                 Composite currentrotation = null;
-                        switch (LocationContext)
-                        {
-                           
-                            case GroupLogic.PVE:
-                                currentrotation = this.ActiveRotation.PVERotation;
-                                CLULogger.TroubleshootLog(" Setting Current rotation to {0}", GroupLogic.PVE.ToString());
-                                break;
-                            case GroupLogic.Battleground:
-                                currentrotation = this.ActiveRotation.PVPRotation;
-                                CLULogger.TroubleshootLog(" Setting Current rotation to {0}", GroupLogic.Battleground.ToString());
-                                break;
-                            default:
-                                currentrotation = this.ActiveRotation.SingleRotation;
-                                CLULogger.TroubleshootLog(" Setting Current rotation to {0}", GroupLogic.Solo.ToString());
-                                break;
-                        }
+                switch (LocationContext)
+                {
+                    case GroupLogic.PVE:
+                        currentrotation = this.ActiveRotation.PVERotation;
+                        CLULogger.TroubleshootLog(" Setting Current rotation to {0}", GroupLogic.PVE.ToString());
+                        break;
+
+                    case GroupLogic.Battleground:
+                        currentrotation = this.ActiveRotation.PVPRotation;
+                        CLULogger.TroubleshootLog(" Setting Current rotation to {0}", GroupLogic.Battleground.ToString());
+                        break;
+
+                    default:
+                        currentrotation = this.ActiveRotation.SingleRotation;
+                        CLULogger.TroubleshootLog(" Setting Current rotation to {0}", GroupLogic.Solo.ToString());
+                        break;
+                }
                 return new Sequence
                     (new DecoratorContinue(x => CLUSettings.Instance.EnableMovement && (!Me.IsCasting || !Spell.PlayerIsChanneling), Movement.MovingFacingBehavior()),
-                     new DecoratorContinue(x => Me.CurrentTarget != null || IsHealerRotationActive, currentrotation)); 
+                     new DecoratorContinue(x => Me.CurrentTarget != null || IsHealerRotationActive, currentrotation));
             }
         }
 
@@ -212,9 +218,11 @@ namespace CLU
         public override Composite PullBehavior { get { return this._pullBehavior; } }
 
         public override Composite RestBehavior { get { return this._restBehavior; } }
+
         public bool CreateBehaviors()
         {
             CLULogger.TroubleshootLog("CreateBehaviors called.");
+
             // let behaviors be notified if context changes.
             if (OnLocationContextChanged != null)
                 OnLocationContextChanged(this, new LocationContextEventArg(LocationContext, LastLocationContext));
@@ -232,12 +240,12 @@ namespace CLU
 
             if (_restBehavior != null) this._restBehavior = new Decorator(ret => !(CLUSettings.Instance.NeverDismount && IsMounted) && !Me.IsFlying, new LockSelector(this.Resting));
 
-            if (_pullBehavior != null) this._pullBehavior = new Decorator(ret => AllowPulse,  new LockSelector(this.Pulling));
+            if (_pullBehavior != null) this._pullBehavior = new Decorator(ret => AllowPulse, new LockSelector(this.Pulling));
 
             return true;
         }
 
-        #endregion
+        #endregion Public Properties
 
         #region Properties
 
@@ -254,13 +262,12 @@ namespace CLU
             }
         }
 
-
         internal static GroupLogic LocationContext
         {
             get
             {
                 // setting to overide the LocationContext so that you can test and PvP, PvE, Single rotation without being in the normal correct context
-                if (CLUSettings.Instance.EnableRotationOveride) return CLUSettings.Instance.RotationOveride; 
+                if (CLUSettings.Instance.EnableRotationOveride) return CLUSettings.Instance.RotationOveride;
 
                 Map map = StyxWoW.Me.CurrentMap;
 
@@ -288,6 +295,7 @@ namespace CLU
                 {
                     return false;
                 }
+
                 // if (Buff.PlayerBuffTimeLeft("Cannibalize") > 1) return false;
                 if (Buff.PlayerHasBuff("Health Funnel"))
                 {
@@ -301,7 +309,7 @@ namespace CLU
         {
             get
             {
-                 //[Aquatic Form] [Bear Form] [Cat Form] [Flight Form] [Swift Flight Form] [Travel Form]
+                //[Aquatic Form] [Bear Form] [Cat Form] [Flight Form] [Swift Flight Form] [Travel Form]
                 //switch (StyxWoW.Me.Shapeshift)
                 //{
                 //    case ShapeshiftForm.FlightForm:
@@ -322,12 +330,9 @@ namespace CLU
             get { return StyxWoW.Me; }
         }
 
-        #endregion
+        #endregion Properties
 
         #region Public Methods
-
-       
-        
 
         public override void Initialize()
         {
@@ -347,6 +352,7 @@ namespace CLU
             CLULogger.TroubleshootLog("Character Mapname: {0}", Me.MapName);
             CLULogger.TroubleshootLog("GroupType: {0}", GroupType.ToString());
             CLULogger.TroubleshootLog("LocationContext: {0}", LocationContext.ToString());
+
             // Talents
             CLULogger.TroubleshootLog("Retrieving Talent Spec");
             try
@@ -375,13 +381,13 @@ namespace CLU
             if (_restBehavior == null)
                 _restBehavior = new PrioritySelector();
 
-
             // Behaviors
             if (!CreateBehaviors())
             {
                 return;
             }
             CLULogger.TroubleshootLog(" Behaviors created!");
+
             // Racials
             CLULogger.TroubleshootLog("Retrieving Racial Abilities");
             foreach (WoWSpell racial in Racials.CurrentRacials)
@@ -404,6 +410,7 @@ namespace CLU
                 case HealingAquisitionMethod.Proximity:
                     HealableUnit.HealableUnitsByProximity();
                     break;
+
                 case HealingAquisitionMethod.RaidParty:
                     HealableUnit.HealableUnitsByPartyorRaid();
                     break;
@@ -437,6 +444,7 @@ namespace CLU
         }
 
         private static ConfigurationForm _a = null;
+
         public override void OnButtonPress()
         {
             if (_a == null) _a = new ConfigurationForm();
@@ -473,7 +481,7 @@ namespace CLU
             }
             else
             {
-                // Make sure we have the proper target from Targeting. 
+                // Make sure we have the proper target from Targeting.
                 // The Botbase should give us the best target in targeting.
                 var firstUnit = Targeting.Instance.FirstUnit;
                 if (CLUSettings.Instance.EnableTargeting && firstUnit != null)
@@ -495,8 +503,10 @@ namespace CLU
             try
             {
                 Type type = typeof(RotationBase);
+
                 //no need to get ALL Assemblies, need only the executed ones
                 IEnumerable<Type> types = Assembly.GetExecutingAssembly().GetTypes().Where(p => p.IsSubclassOf(type));
+
                 //_rotations.AddRange(new TypeLoader<RotationBase>(null));
 
                 this._rotations = new List<RotationBase>();
@@ -520,6 +530,7 @@ namespace CLU
                         }
                     }
                 }
+
                 // If there is more than one rotation then display the selector for the user, otherwise just load the one and only.
 
                 if (this._rotations.Count > 1)
@@ -575,7 +586,7 @@ namespace CLU
             }
         }
 
-        #endregion
+        #endregion Public Methods
 
         #region Methods
 
@@ -633,9 +644,10 @@ namespace CLU
             }
         }
 
-        #endregion
+        #endregion Methods
 
         #region Nested type: LocationContextEventArg
+
         public class LocationContextEventArg : EventArgs
         {
             public readonly GroupLogic CurrentLocationContext;
@@ -647,10 +659,13 @@ namespace CLU
                 PreviousLocationContext = prevLocationContext;
             }
         }
-        #endregion
+
+        #endregion Nested type: LocationContextEventArg
+
         /* LockSelector taken from Singular to test some stuff and maybe fix some weird behavior - done by Stormchasing */
+
         /// <summary>
-        /// This behavior wraps the child behaviors in a 'FrameLock' which can provide a big performance improvement 
+        /// This behavior wraps the child behaviors in a 'FrameLock' which can provide a big performance improvement
         /// if the child behaviors makes multiple api calls that internally run off a frame in WoW in one CC pulse.
         /// </summary>
         private class LockSelector : PrioritySelector

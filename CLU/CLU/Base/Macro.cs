@@ -1,4 +1,5 @@
 ﻿#region Revision info
+
 /*
  * $Author$
  * $Date$
@@ -8,18 +9,18 @@
  * $LastChangedBy$
  * $ChangesMade$
  */
-#endregion
+
+#endregion Revision info
 
 using System;
 using CLU.Helpers;
-using Styx.WoWInternals;
+using CommonBehaviors.Actions;
 using Styx;
 using Styx.CommonBot;
-using Styx.WoWInternals.WoWObjects;
 using Styx.TreeSharp;
-using CLU.Settings;
+using Styx.WoWInternals;
+using Styx.WoWInternals.WoWObjects;
 using Action = Styx.TreeSharp.Action;
-using CommonBehaviors.Actions;
 
 namespace CLU.Base
 {
@@ -50,7 +51,7 @@ namespace CLU.Base
                 {
                     CLULogger.DiagnosticLog("Lua failed in Macro.Manual");
                     return false;
-                } 
+                }
             }
         }
 
@@ -69,7 +70,7 @@ namespace CLU.Base
                 {
                     CLULogger.DiagnosticLog("Lua failed in Macro.Burst");
                     return false;
-                }  
+                }
             }
         }
 
@@ -88,7 +89,7 @@ namespace CLU.Base
                 {
                     CLULogger.DiagnosticLog("Lua failed in Macro.rotationSwap");
                     return false;
-                }                
+                }
             }
         }
 
@@ -107,8 +108,7 @@ namespace CLU.Base
                 {
                     CLULogger.DiagnosticLog("Lua failed in Macro.weaponSwap");
                     return false;
-                } 
-                
+                }
             }
         }
 
@@ -125,8 +125,7 @@ namespace CLU.Base
             catch
             {
                 CLULogger.DiagnosticLog("Lua failed in Macro.resetMacro");
-            } 
-            
+            }
         }
 
         /// <summary>
@@ -141,10 +140,10 @@ namespace CLU.Base
             }
         }
 
-        static int MultiCastMacroMT = 0;
-        static int MultiCastMacroFT = 0;
-        static string whatSpell;
-        static WoWSpell _Spell;
+        private static int MultiCastMacroMT = 0;
+        private static int MultiCastMacroFT = 0;
+        private static string whatSpell;
+        private static WoWSpell _Spell;
 
         /// <summary>
         /// Main MultiCastMacro call: checks if MultiCastMacro MT or FT is active, also checks for LoS and if we can cast the specified spell
@@ -165,7 +164,6 @@ namespace CLU.Base
                 {
                     CLULogger.DiagnosticLog("Lua failed in Macro.isMultiCastMacroInUse");
                 }
-             
             }
             if (MultiCastMacroMT > 0 || MultiCastMacroFT > 0)
             {
@@ -205,7 +203,7 @@ namespace CLU.Base
                         {
                             CLULogger.DiagnosticLog("Lua failed in Macro.isMultiCastMacroInUse");
                         }
-                        
+
                         SpellManager.ClickRemoteLocation(Me.CurrentTarget.Location);
                         CLULogger.Log("Casting " + whatSpell);
                         resetMacro("MultiCastMT");
@@ -232,7 +230,7 @@ namespace CLU.Base
                         {
                             CLULogger.DiagnosticLog("Lua failed in Macro.isMultiCastMacroInUse");
                         }
-                        
+
                         SpellManager.ClickRemoteLocation(Me.FocusedUnit.Location);
                         CLULogger.Log("Casting " + whatSpell);
                         resetMacro("MultiCastFT");

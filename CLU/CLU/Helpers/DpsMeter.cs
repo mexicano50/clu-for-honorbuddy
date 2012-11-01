@@ -1,4 +1,5 @@
 ﻿#region Revision info
+
 /*
  * $Author: Apoc $
  * $Date$
@@ -8,7 +9,8 @@
  * $LastChangedBy: clutwopointzero@gmail.com $
  * $ChangesMade$
  */
-#endregion
+
+#endregion Revision info
 
 using System;
 using System.Collections.Generic;
@@ -95,6 +97,7 @@ namespace CLU.Helpers
             {
                 return DpsInfos[u.Guid].CurrentDps;
             }
+
             // -1 is a fail case.
             return -1;
         }
@@ -125,6 +128,6 @@ namespace CLU.Helpers
             public WoWUnit Unit;
         }
 
-        #endregion
+        #endregion Nested type: DpsInfo
     }
 }

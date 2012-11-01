@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace CLU.Helpers
 {
@@ -11,6 +10,7 @@ namespace CLU.Helpers
         public List<ReportItem> Reports;
 
         private static CrabbyProfiler instance;
+
         public static CrabbyProfiler Instance
         {
             get
@@ -21,7 +21,6 @@ namespace CLU.Helpers
 
         public CrabbyProfiler()
         {
-
             Runs = new List<Run>();
             Reports = new List<ReportItem>();
         }
@@ -33,7 +32,6 @@ namespace CLU.Helpers
 
         public void Report()
         {
-            
             foreach (Run r in Runs)
             {
                 if (NeedStartReport(r.Name))
@@ -41,7 +39,7 @@ namespace CLU.Helpers
                     Reports.Add(new ReportItem(r));
                 }
                 else
-                    getReport(r).UpdateReportItem(r);                    
+                    getReport(r).UpdateReportItem(r);
             }
 
             foreach (ReportItem r in Reports)
@@ -54,23 +52,22 @@ namespace CLU.Helpers
                         r.totalCalls + "\t" +
                         r.aggregateTime);
             }
-
         }
 
         public bool NeedStartReport(string name)
         {
             return !Reports.Any(r => r.Name == name);
         }
+
         public ReportItem getReport(Run r)
         {
             return (from ReportItem rep in Reports
                     where rep.Name == r.Name
                     select rep).FirstOrDefault();
         }
-
     }
 
-    public class ReportItem    
+    public class ReportItem
     {
         public string Name;
         public double totalCalls = 0;
@@ -87,6 +84,7 @@ namespace CLU.Helpers
             lowTime = r.totalMs;
             highTime = r.totalMs;
         }
+
         public void UpdateReportItem(Run r)
         {
             totalCalls++;
@@ -97,8 +95,8 @@ namespace CLU.Helpers
 
             if (r.totalMs > highTime)
                 highTime = r.totalMs;
-
         }
+
         public void CloseReportItem()
         {
             averageTime = aggregateTime / totalCalls;
@@ -118,12 +116,12 @@ namespace CLU.Helpers
             start = DateTime.Now;
             Styx.Common.Logging.Write("New Run created: " + name);
         }
+
         public void End()
         {
             finish = DateTime.Now;
             totalMs = finish.Subtract(start).Milliseconds;
             Styx.Common.Logging.Write("Ended Run: " + Name + " " + totalMs);
         }
-
     }
 }

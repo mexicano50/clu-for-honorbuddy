@@ -1,4 +1,5 @@
 ﻿#region Revision info
+
 /*
  * $Author$
  * $Date$
@@ -8,19 +9,19 @@
  * $LastChangedBy$
  * $ChangesMade$
  */
-#endregion
+
+#endregion Revision info
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using CLU.Base;
 using Styx;
+using Styx.TreeSharp;
 using Styx.WoWInternals;
 using Styx.WoWInternals.WoWObjects;
-using Styx.TreeSharp;
-using System.Diagnostics;
-using CLU.Base;
 using Action = Styx.TreeSharp.Action;
-
 
 namespace CLU.Helpers
 {
@@ -55,7 +56,9 @@ namespace CLU.Helpers
             }
         }
 
-        private TargetBase() { }
+        private TargetBase()
+        {
+        }
 
         private static bool IsPlayingWoW()
         {
@@ -99,7 +102,6 @@ namespace CLU.Helpers
 
                     case TargetFilter.Healers:
                         {
-
                             return grp.Where(x => x != null && (x.Healer && !x.Blacklisted)).Select(h => h);
                         }
 
@@ -145,7 +147,8 @@ namespace CLU.Helpers
             return new Decorator(
                        cond,
                        new Sequence(
-                         // get a target
+
+                // get a target
                            new Action(
                             delegate
                             {
@@ -153,14 +156,13 @@ namespace CLU.Helpers
                                 targetPerformanceTimer.Start(); // lets see if we can get some performance on this one.
 
                                 //CrabbyProfiler.Instance.Runs.Add(new Run("FindTarget"));
-                                
+
                                 // Nothing to filter against
                                 if (!UnitsFilter(filter).Any())
                                 {
                                     HealableUnit.HealTarget = null;
                                     return RunStatus.Failure;
                                 }
-
 
                                 // Filter the Healable Units
                                 var raid = UnitsFilter(filter).Where(x => x != null && (ObjectManager.ObjectList.Any(y => y.Guid == x.ToUnit().Guid) && refineFilter(x)) && x.ToUnit().Distance2DSqr < 40 * 40 && !x.ToUnit().ToPlayer().IsGhost && !x.ToUnit().HasAura("Deep Corruption")).ToList();
@@ -189,10 +191,12 @@ namespace CLU.Helpers
                                     return RunStatus.Success;
                                 }
                                 HealableUnit.HealTarget = null;
+
                                 //CrabbyProfiler.Instance.EndLast();
                                 return RunStatus.Failure;
                             }),
                            new Action(a => StyxWoW.SleepForLagDuration()),
+
                 // if success, keep going. Else quit sub routine
                            new PrioritySelector(children)));
         }
@@ -264,6 +268,7 @@ namespace CLU.Helpers
                                FindPartySubroutine(7, minAverageHealth, maxAverageHealth, maxDistanceBetweenPlayers, minUnits, "[CLU TARGETING] " + CLU.Version + ": " + "Target PARTY 8 MEMBER: {0} REASON: " + reason)
                            ),
                            new Action(a => StyxWoW.SleepForLagDuration()),
+
                 // if success, keep going. Else quit sub routine
                            new PrioritySelector(children)
                        )
@@ -290,6 +295,7 @@ namespace CLU.Helpers
                                FindAreaHealSubroutine(minAverageHealth, maxAverageHealth, maxDistanceBetweenPlayers, minUnits, "[CLU TARGETING] " + CLU.Version + ": " + "Target AREA MEMBER: {0} REASON: " + reason)
                            ),
                            new Action(a => StyxWoW.SleepForLagDuration()),
+
                 // if success, keep going. Else quit sub routine
                            new PrioritySelector(children)
                        )
@@ -308,7 +314,6 @@ namespace CLU.Helpers
         /// <returns>A party member</returns>
         private Composite FindPartySubroutine(int partyIndex, int minAverageHealth, int maxAverageHealth, float maxDistanceBetweenPlayers, int minUnits, string label)
         {
-
             return new Action(a =>
             {
                 var targetPartyPerformanceTimer = new Stopwatch(); // lets see if we can get some performance on this one.
@@ -323,6 +328,7 @@ namespace CLU.Helpers
                     HealableUnit.HealTarget = null;
                     return RunStatus.Failure;
                 }
+
                 // setup a quick filter and exctract our players.
                 RefineFilter refineFilter = x => x.ToUnit().Distance2DSqr < 40 * 40 && ObjectManager.ObjectList.Any(y => y.Guid == x.ToUnit().Guid) && x.ToUnit().IsAlive && !x.ToUnit().ToPlayer().IsGhost && x.ToUnit().IsPlayer && x.ToUnit().ToPlayer() != null && !x.ToUnit().IsFlying && !x.ToUnit().OnTaxi;
 
@@ -360,6 +366,7 @@ namespace CLU.Helpers
                 if (best != null)
                 {
                     Logparty(label + " Time Taken: " + targetPartyPerformanceTimer.ElapsedMilliseconds + " ms", CLULogger.SafeName(best.ToUnit()));
+
                     //best.ToUnit().Target();
                     HealableUnit.HealTarget = best;
                     return RunStatus.Success;
@@ -383,7 +390,6 @@ namespace CLU.Helpers
         {
             return new Action(a =>
             {
-
                 var targetAreaPerformanceTimer = new Stopwatch(); // lets see if we can get some performance on this one.
                 targetAreaPerformanceTimer.Start(); // lets see if we can get some performance on this one
 
@@ -432,6 +438,7 @@ namespace CLU.Helpers
                 if (best != null)
                 {
                     Logparty(label + " Time Taken: " + targetAreaPerformanceTimer.ElapsedMilliseconds + " ms", CLULogger.SafeName(best.ToUnit()));
+
                     //best.ToUnit().Target();
                     HealableUnit.HealTarget = best;
                     return RunStatus.Success;

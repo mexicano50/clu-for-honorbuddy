@@ -1,4 +1,5 @@
 ﻿#region Revision info
+
 /*
  * $Author$
  * $Date$
@@ -8,7 +9,8 @@
  * $LastChangedBy$
  * $ChangesMade$
  */
-#endregion
+
+#endregion Revision info
 
 using CLU.Helpers;
 
@@ -18,14 +20,14 @@ namespace CLU.Managers
     using System.Collections.Generic;
     using System.Linq;
     using CommonBehaviors.Actions;
+    using global::CLU.Base;
+    using global::CLU.Settings;
     using Styx;
     using Styx.Common.Helpers;
     using Styx.CommonBot;
+    using Styx.TreeSharp;
     using Styx.WoWInternals;
     using Styx.WoWInternals.WoWObjects;
-    using Styx.TreeSharp;
-    using global::CLU.Base;
-    using global::CLU.Settings;
     using Action = Styx.TreeSharp.Action;
 
     internal class PetManager
@@ -42,7 +44,8 @@ namespace CLU.Managers
 
         private static LocalPlayer Me
         {
-            get {
+            get
+            {
                 return StyxWoW.Me;
             }
         }
@@ -54,19 +57,22 @@ namespace CLU.Managers
         /// </summary>
         public static PetManager Instance
         {
-            get {
+            get
+            {
                 return PetsInstance;
             }
         }
 
         internal static void Pulse()
         {
-            if (!StyxWoW.Me.GotAlivePet) {
+            if (!StyxWoW.Me.GotAlivePet)
+            {
                 PetSpells.Clear();
                 return;
             }
 
-            if (StyxWoW.Me.Pet != null && petGuid != StyxWoW.Me.Pet.Guid) {
+            if (StyxWoW.Me.Pet != null && petGuid != StyxWoW.Me.Pet.Guid)
+            {
                 petGuid = StyxWoW.Me.Pet.Guid;
                 PetSpells.Clear();
                 PetSpells.AddRange(StyxWoW.Me.PetSpells);
@@ -85,7 +91,8 @@ namespace CLU.Managers
         public static TimeSpan PetSpellCooldown(string name)
         {
             WoWPetSpell petAction = PetSpells.FirstOrDefault(p => p.ToString() == name);
-            if (petAction == null || petAction.Spell == null) {
+            if (petAction == null || petAction.Spell == null)
+            {
                 return TimeSpan.Zero;
             }
 
@@ -131,12 +138,11 @@ namespace CLU.Managers
             }
             catch
             {
-                CLULogger.DiagnosticLog("Summon Spell {0} not supported for your Class / Specc ({1}/{2})",name,Me.Class,Me.Specialization);
+                CLULogger.DiagnosticLog("Summon Spell {0} not supported for your Class / Specc ({1}/{2})", name, Me.Class, Me.Specialization);
                 return null;
-            } 
-
-
+            }
         }
+
         /// <summary>Returns a summoned pet</summary>
         /// <param name="nameID">the id of the spell</param>
         /// <param name="cond">The conditions that must be true</param>
@@ -194,6 +200,7 @@ namespace CLU.Managers
                     {
                         CLULogger.DiagnosticLog(string.Format("[Pet] Calling out my {0}", petName));
                         bool result = SpellManager.Cast("Summon " + petName);
+
                         //if (result)
                         //    StyxWoW.SleepForLagDuration();
                         return result;
@@ -205,7 +212,8 @@ namespace CLU.Managers
                     {
                         CLULogger.DiagnosticLog("[Pet] Calling out Water Elemental");
                         bool result = SpellManager.Cast("Summon Water Elemental");
-                        //if (result)   - All calls to this method are now placed in a sequence that uses WaitContinue 
+
+                        //if (result)   - All calls to this method are now placed in a sequence that uses WaitContinue
                         //    StyxWoW.SleepForLagDuration();
                         return result;
                     }
@@ -218,6 +226,7 @@ namespace CLU.Managers
                         {
                             CLULogger.DiagnosticLog(string.Format("[Pet] Calling out pet #{0}", petName));
                             bool result = SpellManager.Cast("Call Pet " + petName);
+
                             //if (result)
                             //    StyxWoW.SleepForLagDuration();
                             return result;
@@ -247,7 +256,8 @@ namespace CLU.Managers
         public static bool CanCastPetSpell(string name)
         {
             WoWPetSpell petAction = Me.PetSpells.FirstOrDefault(p => p.ToString() == name);
-            if (petAction == null || petAction.Spell == null) {
+            if (petAction == null || petAction.Spell == null)
+            {
                 return false;
             }
             return !petAction.Spell.Cooldown;
@@ -261,8 +271,9 @@ namespace CLU.Managers
         public static bool HasSpellPet(string name)
         {
             WoWPetSpell petAction = Me.PetSpells.FirstOrDefault(p => p.ToString() == name);
-            if (petAction == null || petAction.Spell == null) {
-                CLULogger.TroubleshootLog( String.Format("[PetManager] Pet does not have the spell {0}", name));
+            if (petAction == null || petAction.Spell == null)
+            {
+                CLULogger.TroubleshootLog(String.Format("[PetManager] Pet does not have the spell {0}", name));
                 return false;
             }
             return true;
@@ -284,8 +295,7 @@ namespace CLU.Managers
             catch
             {
                 CLULogger.DiagnosticLog("Lua failed in CastMyPetSpell");
-            } 
-            
+            }
         }
 
         /// <summary>Casts a Pet spell at the units location</summary>
@@ -298,28 +308,30 @@ namespace CLU.Managers
         {
             // CLU.DebugLog(" [CastSpellAtLocation] name = {0} location = {1} and can we cast it? {2}", name, SysLog.SafeName(unit), CanCast(name));
             return new Decorator(
-            	delegate(object a) {
-            		if (!CLUSettings.Instance.UseAoEAbilities)
-            			return false;
+                delegate(object a)
+                {
+                    if (!CLUSettings.Instance.UseAoEAbilities)
+                        return false;
 
-            		if (Me.CurrentTarget == null)
-            			return false;
+                    if (Me.CurrentTarget == null)
+                        return false;
 
-            		WoWPoint currTargetLocation = Me.CurrentTarget.Location;
-            		if (Unit.NearbyControlledUnits(currTargetLocation, 20, false).Any())
-            			return false;
+                    WoWPoint currTargetLocation = Me.CurrentTarget.Location;
+                    if (Unit.NearbyControlledUnits(currTargetLocation, 20, false).Any())
+                        return false;
 
-            		if (!cond(a))
-            			return false;
+                    if (!cond(a))
+                        return false;
 
-            		if (!CanCastPetSpell(name))
-            			return false;
+                    if (!CanCastPetSpell(name))
+                        return false;
 
-            		return onUnit != null;
-            },
+                    return onUnit != null;
+                },
             new Sequence(
                 new Action(a => CLULogger.Log(" [Pet Casting at location] {0} ", label)),
                 new Action(a => CastMyPetSpell(name)),
+
                 // new WaitContinue(
                 //    0,
                 //    ret => StyxWoW.Me.CurrentPendingCursorSpell != null &&

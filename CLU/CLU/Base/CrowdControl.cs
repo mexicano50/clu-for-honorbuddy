@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using CLU.Helpers;
-using Styx.TreeSharp;
-using Styx.WoWInternals;
+using global::CLU.Lists;
 using Styx;
 using Styx.CommonBot;
-using global::CLU.Lists;
+using Styx.TreeSharp;
+using Styx.WoWInternals;
 
 namespace CLU.Base
 {
@@ -19,7 +17,7 @@ namespace CLU.Base
         /// <returns>More win then Wulf's UseRacial call</returns>
         public static Composite freeMe()
         {
-            return(
+            return (
                 new PrioritySelector(delegate
                     {
                         foreach (WoWSpell s in freeMeSpellList.Where(spell => Spell.CanCast(spell.Name, StyxWoW.Me) && freeMeSpellUsage(spell)))

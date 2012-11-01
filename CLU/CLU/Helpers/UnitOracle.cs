@@ -1,4 +1,5 @@
 ﻿#region Revision info
+
 /*
  * $Author$
  * $Date$
@@ -8,7 +9,8 @@
  * $LastChangedBy$
  * $ChangesMade$
  */
-#endregion
+
+#endregion Revision info
 
 using System;
 using System.Collections.Generic;
@@ -23,9 +25,11 @@ namespace CLU.Helpers
         private const int TICKS_PER_SECOND = 4;
 
         [Flags]
-        public enum Watch {
+        public enum Watch
+        {
             None = 0,
             HealthVariance = 1
+
             //...2, 4, 8, 16...
         }
 
@@ -38,16 +42,20 @@ namespace CLU.Helpers
 
         public static UnitOracle WatchUnit(WoWUnit unit, Watch watchFlags)
         {
-            try {
+            try
+            {
                 return new UnitOracle(unit, watchFlags);
-            } catch (NotSupportedException) {
+            }
+            catch (NotSupportedException)
+            {
                 return instances[unit.Guid];
             }
         }
 
         private UnitOracle(WoWUnit unit, Watch watchFlags)
         {
-            if (unit != null) {
+            if (unit != null)
+            {
                 this.Unit = unit;
 
                 Flags = watchFlags;
@@ -57,7 +65,8 @@ namespace CLU.Helpers
 
                 instances[unit.Guid] = this;
 
-                if ((Flags & Watch.HealthVariance) == Watch.HealthVariance) {
+                if ((Flags & Watch.HealthVariance) == Watch.HealthVariance)
+                {
                     health = new CircularBuffer<double>(WINDOW_SIZE);
                     for (var i = 0; i < WINDOW_SIZE; i++)
                         health.Enqueue((double)Unit.CurrentHealth);
@@ -67,37 +76,46 @@ namespace CLU.Helpers
 
         private static DateTime lastPulse = DateTime.MinValue;
         private static int realTicksPerSeconds = TICKS_PER_SECOND;
+
         public static void Pulse()
         {
             double dt = lastPulse == DateTime.MinValue ? TICKS_PER_SECOND : DateTime.Now.Subtract(lastPulse).TotalSeconds;
-            if (dt == 0.0) {
+            if (dt == 0.0)
+            {
                 dt = 1.0 / (double)TICKS_PER_SECOND;
             }
 
-            foreach (var instance in instances.Values) {
+            foreach (var instance in instances.Values)
+            {
                 var unit = instance.Unit;
                 var flags = instance.Flags;
 
                 // cleanup
-                if (!unit.IsValid) {
+                if (!unit.IsValid)
+                {
                     instance.Dispose();
                     continue;
                 }
 
                 // health variance
-                switch (flags & Watch.HealthVariance) {
-                case Watch.HealthVariance:
-                    try {
-                        instance.health.SafeEnqueue((double)unit.CurrentHealth);
-                    } catch {
-                        instance.health.SafeEnqueue(0.0);
-                    }
-                    break;
+                switch (flags & Watch.HealthVariance)
+                {
+                    case Watch.HealthVariance:
+                        try
+                        {
+                            instance.health.SafeEnqueue((double)unit.CurrentHealth);
+                        }
+                        catch
+                        {
+                            instance.health.SafeEnqueue(0.0);
+                        }
+                        break;
                 }
             }
 
             lastPulse = DateTime.Now;
             realTicksPerSeconds = (int)(realTicksPerSeconds * 0.9 + 1.0 / dt * 0.1);
+
             //  CLU.DebugLog(Color.GreenYellow, "[CLU-ORACLE] " + CLU.Version + ": realTicksPerSeconds_pulse = " + realTicksPerSeconds + " dt = " + dt + " lastpulse = " + lastPulse);
         }
 
@@ -115,11 +133,15 @@ namespace CLU.Helpers
                 ticks = 2;
 
             var lastValues = health.SafeGetLastValues(ticks);
-            try {
+            try
+            {
                 var dh = lastValues[lastValues.Length - 1] - lastValues[0];
+
                 // CLU.DebugLog(Color.GreenYellow, "[CLU-ORACLE] " + CLU.Version + ": health.SafeGetLastValues(ticks) = [" + ticks + "] realTicksPerSeconds * [" + realTicksPerSeconds + "] deltaSeconds;"+ deltaSeconds+ " HealthDelta [" + (int)dh + "]");
                 return (int)dh;
-            } catch {
+            }
+            catch
+            {
                 //  CLU.DebugLog(Color.GreenYellow, "[CLU-ORACLE] " + CLU.Version + ": Woops, error in oracle's health delta...");
                 return 0;
             }
@@ -129,11 +151,13 @@ namespace CLU.Helpers
         public int TimeToDie(double deltaSeconds)
         {
             var dhealth = HealthDelta(deltaSeconds);
-            if (dhealth >= 0) {
+            if (dhealth >= 0)
+            {
                 return 999999999;
             }
             var ticks = -this.Unit.CurrentHealth / dhealth;
             var seconds = ticks * realTicksPerSeconds;
+
             // CLU.DebugLog(Color.GreenYellow, "[CLU-ORACLE] " + CLU.Version + ": ticks [" + ticks + "] = -unit.CurrentHealth [" + -this.Unit.CurrentHealth + "] / dhealth [" + dhealth + "]");
             // CLU.DebugLog(Color.GreenYellow, "[CLU-ORACLE] " + CLU.Version + ": seconds [" + seconds + "] = ticks [" + ticks + "] * realTicksPerSeconds [" + realTicksPerSeconds + "]");
             return (int)seconds;
@@ -141,10 +165,13 @@ namespace CLU.Helpers
 
         public static UnitOracle FindUnit(WoWUnit unit)
         {
-            try {
+            try
+            {
                 // CLU.DebugLog(Color.GreenYellow, "[CLU-ORACLE] " + CLU.Version + ": FindUnit [" + unit + "] = [" + unit.Guid + "]");
                 return instances[unit.Guid];
-            } catch {
+            }
+            catch
+            {
                 return null;
             }
         }

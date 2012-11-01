@@ -1,4 +1,5 @@
 ﻿#region Revision info
+
 /*
  * $Author$
  * $Date$
@@ -8,7 +9,8 @@
  * $LastChangedBy$
  * $ChangesMade$
  */
-#endregion
+
+#endregion Revision info
 
 // This was part of Singular - A community driven Honorbuddy CC
 
@@ -19,11 +21,10 @@ namespace CLU.Managers
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using Styx;
-    using Styx.WoWInternals;
-
     using Base;
     using Settings;
+    using Styx;
+    using Styx.WoWInternals;
 
     internal static class TalentManager
     {
@@ -42,12 +43,12 @@ namespace CLU.Managers
 
         private static HashSet<string> Glyphs { get; set; }
 
-/*
-        public static int GetCount(int index)
-        {
-            return Talents.FirstOrDefault(t => t.Index == index).Count;
-        }
-*/
+        /*
+                public static int GetCount(int index)
+                {
+                    return Talents.FirstOrDefault(t => t.Index == index).Count;
+                }
+        */
 
         /// <summary>
         ///   Checks if we have a glyph or not
@@ -69,8 +70,6 @@ namespace CLU.Managers
             return Talents.FirstOrDefault(t => t.Index == index).Count != 0;
         }
 
-
-
         private static void UpdateTalentManager(object sender, LuaEventArgs args)
         {
             WoWSpec oldSpec = CurrentSpec;
@@ -80,6 +79,7 @@ namespace CLU.Managers
             if (CurrentSpec != oldSpec)
             {
                 CLULogger.TroubleshootLog("Your spec has been changed. Rebuilding rotation");
+
                 //SpellManager.Update();
                 CLU.Instance.CreateBehaviors();
             }
@@ -104,7 +104,6 @@ namespace CLU.Managers
                 var numTalents = Lua.GetReturnVal<int>("return GetNumTalents()", 0);
                 for (int index = 0; index <= numTalents; index++)
                 {
-
                     var selected = Lua.GetReturnVal<int>(string.Format("return GetTalentInfo({0})", index), 4);
                     switch (selected)
                     {
@@ -128,10 +127,12 @@ namespace CLU.Managers
                                 CLUSettings.Instance.DeathKnight.DeathKnightTierOneTalent = DeathKnightTierOneTalent.RoilingBlood;
                                 CLULogger.TroubleshootLog("TalentManager - Setting DeathKnightTierOneTalent to {0}", DeathKnightTierOneTalent.RoilingBlood);
                                 break;
+
                             case 2:
                                 CLUSettings.Instance.DeathKnight.DeathKnightTierOneTalent = DeathKnightTierOneTalent.PlagueLeech;
                                 CLULogger.TroubleshootLog("TalentManager - Setting DeathKnightTierOneTalent to {0}", DeathKnightTierOneTalent.PlagueLeech);
                                 break;
+
                             case 3:
                                 CLUSettings.Instance.DeathKnight.DeathKnightTierOneTalent = DeathKnightTierOneTalent.UnholyBlight;
                                 CLULogger.TroubleshootLog("TalentManager - Setting DeathKnightTierOneTalent to {0}", DeathKnightTierOneTalent.UnholyBlight);
@@ -148,12 +149,11 @@ namespace CLU.Managers
 
                 if (glyphCount != 0)
                 {
-
                     for (int i = 1; i <= glyphCount; i++)
                     {
-                        List<string> glyphInfo = Lua.GetReturnValues(String.Format("return GetGlyphSocketInfo({0})", i),"glyphs.lua");
-                        var lua = String.Format("local enabled, glyphType, glyphTooltipIndex, glyphSpellID, icon = GetGlyphSocketInfo({0});if (enabled) then return glyphSpellID else return 0 end",i);
-                        var glyphSpellId = Lua.GetReturnVal<int>(lua,0);
+                        List<string> glyphInfo = Lua.GetReturnValues(String.Format("return GetGlyphSocketInfo({0})", i), "glyphs.lua");
+                        var lua = String.Format("local enabled, glyphType, glyphTooltipIndex, glyphSpellID, icon = GetGlyphSocketInfo({0});if (enabled) then return glyphSpellID else return 0 end", i);
+                        var glyphSpellId = Lua.GetReturnVal<int>(lua, 0);
                         try
                         {
                             if (glyphSpellId > 0)
@@ -174,7 +174,6 @@ namespace CLU.Managers
                     }
                 }
             }
-
         }
 
         public static void Dumpglyphs()

@@ -1,4 +1,5 @@
 #region Revision info
+
 /*
  * $Author$
  * $Date$
@@ -8,26 +9,23 @@
  * $LastChangedBy$
  * $ChangesMade$
  */
-#endregion
+
+#endregion Revision info
 
 namespace CLU.Base
 {
-
     using System;
-
+    using System.Collections.Generic;
+    using System.Linq;
+    using CombatLog;
+    using global::CLU.Helpers;
+    using Managers;
+    using Settings;
     using Styx;
     using Styx.CommonBot;
     using Styx.TreeSharp;
-    using Styx.WoWInternals.WoWObjects;
-    using System.Collections.Generic;
-    using System.Linq;
     using Styx.WoWInternals;
-    using CombatLog;
-    using Managers;
-    using Settings;
-
-    using global::CLU.Helpers;
-
+    using Styx.WoWInternals.WoWObjects;
     using Action = Styx.TreeSharp.Action;
 
     internal static class Buff
@@ -76,7 +74,7 @@ namespace CLU.Base
             77747,      //Burning Wrath
             109773,     //Dark Intent
             61316,      //Dalaran Brilliance
-            1459,       //Arcane Brilliance 
+            1459,       //Arcane Brilliance
             126309,     //Still Water
         };
 
@@ -86,7 +84,6 @@ namespace CLU.Base
             55610,      //Improved Icy Talons
             128432,     //Cackling Howl
             50498,      //Tear Armor
-
         };
 
         private static readonly HashSet<int> SpellHaste = new HashSet<int> {
@@ -105,7 +102,6 @@ namespace CLU.Base
             90309,    //Terrifying Roar
             126373,   //Fearless Roar
             126309,   //Still Water
-
         };
 
         private static readonly HashSet<int> Mastery = new HashSet<int> {
@@ -117,15 +113,16 @@ namespace CLU.Base
 
         // ==================== Debuffs ====================
         private static readonly HashSet<int> MagicVulnerability = new HashSet<int> {
+
             //58410,      //Master Poisoner
             1490,       //Curse of the Elements TODO: Probably the better of the lot as it affects all targets within 15yrds..Soulburn: Curse ??
+
             //34889,      //Fire Breath (pet) the only 8% debuff..TODO: Do we want to overwrite the pets 8% with the 5% ?? --wulf
             //24844,      //Lightning Breath
         };
 
         private static readonly HashSet<int> WeakenedBlows = new HashSet<int> {
             115798, // Weakened Blows
-
         };
 
         private static readonly HashSet<int> WeakenedArmor = new HashSet<int> {
@@ -150,108 +147,105 @@ namespace CLU.Base
         // ===================== Interuptable Spells =====================================
 
         private static readonly HashSet<int> InteruptableSpells = new HashSet<int> {
-            30451, // Arcane Blast, // 
-            32546, // Binding Heal, // 
-            1064, // Chain Heal, // 
-            421, // Chain Lightning, // 
-            50796, // Chaos Bolt, // 
-            693, // Create Healthstone, // 
-            6201, // Create Healthstone, // 
-            33786, // Cyclone, // 
-            82326, // Divine Light, // 
-            61882, // Earthquake, // 
-            339, // Entangling Roots, // 
-            12051, // Evocation, // 
-            879, // Exorcism, // 
-            5782, // Fear, // 
-            133, // Fireball, // 
-            2120, // Flamestrike, // 
-            2061, // Flash Heal, // 
-            19750, // Flash of Light, // 
-            116, // Frostbolt, // 
-            44614, // Frostfire Bolt, // 
-            2060, // Greater Heal, // 
-            77472, // Greater Healing Wave, // 
-            71521, // Hand of Gul'dan, // 
-            48181, // Haunt, // 
-            2050, // Heal, // 
-            73920, // Healing Rain, // 
-            8004, // Healing Surge, // 
-            5185, // Healing Touch, // 
-            331, // Healing Wave, // 
-            51514, // Hex, // 
-            2637, // Hibernate, // 
-            14914, // Holy Fire, // 
-            635, // Holy Light, // 
-            82327, // Holy Radiance, // 
-            5484, // Howl of Terror, // 
-            49203, // Hungering Cold, // 
-            348, // Immolate, // 
-            29722, // Incinerate, // 
-            51505, // Lava Burst, // 
-            403, // Lightning Bolt, // 
-            8129, // Mana Burn, // 
-            32375, // Mass Dispel, // 
-            8092, // Mind Blast, // 
-            605, // Mind Control, // 
-            73510, // Mind Spike, // 
-            50464, // Nourish, // 
-            118, // Polymorph, // 
-            28272, // Polymorph, // 
-            61721, // Polymorph, // 
-            61305, // Polymorph, // 
-            61780, // Polymorph, // 
-            28271, // Polymorph, // 
-            596, // Prayer of Healing, // 
-            11366, // Pyroblast, // 
-            20484, // Rebirth, // 
-            8936, // Regrowth, // 
-            1513, // Scare Beast, // 
-            2948, // Scorch, // 
-            5676, // Searing Pain, // 
-            27243, // Seed of Corruption, // 
-            9484, // Shackle Undead, // 
-            686, // Shadow Bolt, // 
-            585, // Smite, // 
-            6353, // Soul Fire, // 
-            2912, // Starfire, // 
-            78674, // Starsurge, // 
-            30146, // Summon Felguard, // 
-            691, // Summon Felhunter, // 
-            688, // Summon Imp, // 
-            1122, // Summon Infernal, // 
-            712, // Summon Succubus, // 
-            697, // Summon Voidwalker, // 
-            30108, // Unstable Affliction, // 
-            34914, // Vampiric Touch, // 
+            30451, // Arcane Blast, //
+            32546, // Binding Heal, //
+            1064, // Chain Heal, //
+            421, // Chain Lightning, //
+            50796, // Chaos Bolt, //
+            693, // Create Healthstone, //
+            6201, // Create Healthstone, //
+            33786, // Cyclone, //
+            82326, // Divine Light, //
+            61882, // Earthquake, //
+            339, // Entangling Roots, //
+            12051, // Evocation, //
+            879, // Exorcism, //
+            5782, // Fear, //
+            133, // Fireball, //
+            2120, // Flamestrike, //
+            2061, // Flash Heal, //
+            19750, // Flash of Light, //
+            116, // Frostbolt, //
+            44614, // Frostfire Bolt, //
+            2060, // Greater Heal, //
+            77472, // Greater Healing Wave, //
+            71521, // Hand of Gul'dan, //
+            48181, // Haunt, //
+            2050, // Heal, //
+            73920, // Healing Rain, //
+            8004, // Healing Surge, //
+            5185, // Healing Touch, //
+            331, // Healing Wave, //
+            51514, // Hex, //
+            2637, // Hibernate, //
+            14914, // Holy Fire, //
+            635, // Holy Light, //
+            82327, // Holy Radiance, //
+            5484, // Howl of Terror, //
+            49203, // Hungering Cold, //
+            348, // Immolate, //
+            29722, // Incinerate, //
+            51505, // Lava Burst, //
+            403, // Lightning Bolt, //
+            8129, // Mana Burn, //
+            32375, // Mass Dispel, //
+            8092, // Mind Blast, //
+            605, // Mind Control, //
+            73510, // Mind Spike, //
+            50464, // Nourish, //
+            118, // Polymorph, //
+            28272, // Polymorph, //
+            61721, // Polymorph, //
+            61305, // Polymorph, //
+            61780, // Polymorph, //
+            28271, // Polymorph, //
+            596, // Prayer of Healing, //
+            11366, // Pyroblast, //
+            20484, // Rebirth, //
+            8936, // Regrowth, //
+            1513, // Scare Beast, //
+            2948, // Scorch, //
+            5676, // Searing Pain, //
+            27243, // Seed of Corruption, //
+            9484, // Shackle Undead, //
+            686, // Shadow Bolt, //
+            585, // Smite, //
+            6353, // Soul Fire, //
+            2912, // Starfire, //
+            78674, // Starsurge, //
+            30146, // Summon Felguard, //
+            691, // Summon Felhunter, //
+            688, // Summon Imp, //
+            1122, // Summon Infernal, //
+            712, // Summon Succubus, //
+            697, // Summon Voidwalker, //
+            30108, // Unstable Affliction, //
+            34914, // Vampiric Touch, //
             5176, // Wrath, //
 
             //MoP Instances
             113134, // Mass Resurrection High Inquisitor Whitemane, //
-
-
         };
 
         private static readonly HashSet<int> ChanneledInteruptableSpells = new HashSet<int> {
-           5143, // Arcane Missiles, // 
-           42650, // Army of the Dead, // 
-           10, // Blizzard, // 
-           64843, // Divine Hymn, // 
-           689, // Drain Life, // 
-           89420, // Drain Life, // 
-           1120, // Drain Soul, // 
-           755, // Health Funnel, // 
-           1949, // Hellfire, // 
-           85403, // Hellfire, // 
-           16914, // Hurricane, // 
-           64901, // Hymn of Hope, // 
-           50589, // Immolation Aura, // 
-           15407, // Mind Flay, // 
-           47540, // Penance, // 
-           5740, // Rain of Fire, // 
-           740, // Tranquility, // 
+           5143, // Arcane Missiles, //
+           42650, // Army of the Dead, //
+           10, // Blizzard, //
+           64843, // Divine Hymn, //
+           689, // Drain Life, //
+           89420, // Drain Life, //
+           1120, // Drain Soul, //
+           755, // Health Funnel, //
+           1949, // Hellfire, //
+           85403, // Hellfire, //
+           16914, // Hurricane, //
+           64901, // Hymn of Hope, //
+           50589, // Immolation Aura, //
+           15407, // Mind Flay, //
+           47540, // Penance, //
+           5740, // Rain of Fire, //
+           740, // Tranquility, //
            103103, // Malefic Grasp //
-
         };
 
         // ============================ Dispel shit.============================
@@ -279,14 +273,13 @@ namespace CLU.Base
             "Arcane Bomb",              // Magic
             "Shriek of the Highborne",  // Magic
             "Frost Corruption",         // Magic
-            "Static Cling",             // Magic           
+            "Static Cling",             // Magic
             "Static Discharge",         // Magic
             "Consuming Darkness",       // ???
             "Lash of Anguish",          // Magic
             "Static Disruption",        // Magic
             "Accelerated Corruption"    // Magic
         };
-
 
         /// <summary>
         /// Use this to print all auras
@@ -331,6 +324,7 @@ namespace CLU.Base
         {
             return HasAura(unit, aura, Me);
         }
+
         /// <summary>Check the aura thats created by yourself by the name on specified unit</summary>
         /// <param name="unit">The unit to check auras for. </param>
         /// <param name="spellId">The name of the aura in English. </param>
@@ -339,6 +333,7 @@ namespace CLU.Base
         {
             return HasAura(unit, spellId, Me);
         }
+
         /// <summary>Checks for the auras on a specified unit. Returns true if the unit has any aura in the auraNames list.</summary>
         /// <param name="unit">The unit to check auras for.</param>
         /// <param name="aura">Aura names to be checked.</param>
@@ -348,6 +343,7 @@ namespace CLU.Base
         {
             return unit != null && unit.GetAllAuras().Any(a => a.Name == aura && (creator == null || a.CreatorGuid == creator.Guid));
         }
+
         /// <summary>Checks for the auras on a specified unit. Returns true if the unit has any aura in the auraNames list.</summary>
         /// <param name="unit">The unit to check auras for.</param>
         /// <param name="spellId">Aura names to be checked.</param>
@@ -357,6 +353,7 @@ namespace CLU.Base
         {
             return unit != null && unit.GetAllAuras().Any(a => a.SpellId == spellId && (creator == null || a.CreatorGuid == creator.Guid));
         }
+
         /// <summary>
         ///  Checks for the auras on a specified unit. Returns true if the unit has any aura in the auraNames list.
         /// </summary>
@@ -412,6 +409,7 @@ namespace CLU.Base
                     var holyPaladin = TalentManager.HasTalent(14);                               // Are we a Holy Paladin with Sacred Cleansing?
                     return HasAuraToDispel(unit, true, holyPaladin, true, false, isUrgent);
                 case WoWClass.Priest:
+
                     // var holyPriest = TalentManager.HasTalent(14);                             // Are we a Holy Priest with Body and Soul?
                     return HasAuraToDispel(unit, true, true, false, false, isUrgent);
                 default:
@@ -534,6 +532,7 @@ namespace CLU.Base
         /// <param name="label">A descriptive label for the clients GUI logging output</param>
         /// <returns>true or false</returns>
         private static string lastdebuffcast;
+
         public static Composite CastDebuff(string name, CanRunDecoratorDelegate cond, string label)
         {
             return new Decorator(
@@ -600,9 +599,9 @@ namespace CLU.Base
                     {
                         lockstatus = DateTime.Now.Subtract(CombatLogEvents.Locks[name]).TotalSeconds > 0;
                     }
-                    catch(Exception ex)
+                    catch (Exception ex)
                     {
-                        CLULogger.Log("Exception thrown in Buff.CastMyDebuff: {0}",ex);
+                        CLULogger.Log("Exception thrown in Buff.CastMyDebuff: {0}", ex);
                     }
 
                     if (!Spell.CanCast(name, Me.CurrentTarget))
@@ -703,6 +702,7 @@ namespace CLU.Base
                 new Action(a => SpellManager.Cast(name, HealableUnit.HealTarget.ToUnit())),
                 new Action(a => CombatLogEvents.Locks[name] = DateTime.Now.AddSeconds(Spell.CastTime(name) * 1.5 + CombatLogEvents.ClientLag))));
         }
+
         public static Composite CastTargetBuff(string name, CanRunDecoratorDelegate cond, string label)
         {
             return new Decorator(
@@ -751,14 +751,12 @@ namespace CLU.Base
             return new Decorator(
                 delegate
                 {
-
                     var lockstatus = true;
                     try
                     {
                         lockstatus = DateTime.Now.Subtract(CombatLogEvents.Locks[spell]).TotalSeconds > 0;
                     }
                     catch { }
-
 
                     if (PlayerActiveBuffTimeLeft(buff).Seconds > maxTimeLeft)
                     {
@@ -795,7 +793,6 @@ namespace CLU.Base
             return new Decorator(
                 delegate(object a)
                 {
-
                     if (!CLUSettings.Instance.EnableRaidPartyBuffing)
                         return false;
 
@@ -835,30 +832,36 @@ namespace CLU.Base
                             ProvidablePlayerBuffs.UnionWith(AttackPower);
 
                             break;
+
                         case WoWClass.Paladin:
                             ProvidablePlayerBuffs.UnionWith(Stats);
                             ProvidablePlayerBuffs.UnionWith(Mastery);
 
                             break;
+
                         case WoWClass.Hunter:
                             ProvidablePlayerBuffs.UnionWith(AttackPower);
                             ProvidablePlayerBuffs.UnionWith(CriticalStrike);
 
                             break;
+
                         case WoWClass.Rogue:
                             ProvidablePlayerBuffs.UnionWith(AttackSpeed);
 
                             break;
+
                         case WoWClass.Priest:
                             ProvidablePlayerBuffs.UnionWith(Stamina);
                             ProvidablePlayerBuffs.UnionWith(SpellHaste);
 
                             break;
+
                         case WoWClass.DeathKnight:
                             ProvidablePlayerBuffs.UnionWith(AttackPower);
                             ProvidablePlayerBuffs.UnionWith(AttackSpeed);
 
                             break;
+
                         case WoWClass.Shaman:
                             ProvidablePlayerBuffs.UnionWith(AttackSpeed);
                             ProvidablePlayerBuffs.UnionWith(SpellPower);
@@ -866,16 +869,19 @@ namespace CLU.Base
                             ProvidablePlayerBuffs.UnionWith(Mastery);
 
                             break;
+
                         case WoWClass.Mage:
                             ProvidablePlayerBuffs.UnionWith(SpellPower);
                             ProvidablePlayerBuffs.UnionWith(CriticalStrike);
 
                             break;
+
                         case WoWClass.Warlock:
                             ProvidablePlayerBuffs.UnionWith(Stamina);
                             ProvidablePlayerBuffs.UnionWith(SpellPower);
 
                             break;
+
                         case WoWClass.Druid:
                             ProvidablePlayerBuffs.UnionWith(Stats);
                             ProvidablePlayerBuffs.UnionWith(CriticalStrike);
@@ -920,12 +926,11 @@ namespace CLU.Base
 
                         return true;
                     }
-                    catch(Exception ex)
+                    catch (Exception ex)
                     {
-                        CLULogger.TroubleshootLog("[Buff] Failed to cast {0} for {1}, Exception thrown:: {2}",name,label,ex.ToString());
+                        CLULogger.TroubleshootLog("[Buff] Failed to cast {0} for {1}, Exception thrown:: {2}", name, label, ex.ToString());
                         return false;
                     }
-
                 },
             new Sequence(
                 new Action(a => CLULogger.Log(" [Buff] {0} ", label)),
@@ -987,7 +992,6 @@ namespace CLU.Base
                 new Action(a => CLULogger.Log(" [Casting] {0} on {1}", label, CLULogger.SafeName(onUnit(a)))),
                 new Action(a => SpellManager.Cast(name, onUnit(a)))));
         }
-
 
         /// <summary>
         ///     Returns an integer value of Units with MY debuff / Buff
@@ -1061,12 +1065,12 @@ namespace CLU.Base
         {
             return Me.ActiveAuras.ContainsKey(name);
         }
+
         /// <summary>Returns true if the player has the ACTIVE buff. Good for checking procs.</summary>
         /// <param name="spellId">the spellId of the active buff to check for</param>
         /// <returns>The player has active buff.</returns>
         public static bool PlayerHasActiveBuff(int spellId)
         {
-
             return Me.ActiveAuras.Any(q => q.Value.SpellId == spellId);
         }
 
@@ -1077,6 +1081,7 @@ namespace CLU.Base
         {
             return GetAuraTimeLeft(Me.CurrentTarget, name, false);
         }
+
         /// <summary>Returns the debuff time left on the target</summary>
         /// <param name="name">the name of the buff to check for</param>
         /// <returns>The target debuff time left.</returns>
@@ -1084,6 +1089,7 @@ namespace CLU.Base
         {
             return GetAuraTimeLeft(Me.CurrentTarget, name, true);
         }
+
         public static TimeSpan TargetDebuffTimeLeft(string name, WoWUnit tar)
         {
             return GetAuraTimeLeft(tar, name, false);
@@ -1096,6 +1102,7 @@ namespace CLU.Base
         {
             return GetAuraTimeLeft(Me.CurrentTarget, name, true);
         }
+
         private static TimeSpan TargetBuffTimeLeft(string name, WoWUnit tar)
         {
             return GetAuraTimeLeft(tar, name, true);
@@ -1128,6 +1135,7 @@ namespace CLU.Base
         {
             return GetAuraStack(Me.CurrentTarget, name, false);
         }
+
         public static uint TargetCountBuff(string name, WoWUnit tar)
         {
             return GetAuraStack(tar, name, false);
@@ -1148,6 +1156,7 @@ namespace CLU.Base
         {
             return HasAura(Me.CurrentTarget, name, Me);
         }
+
         public static bool TargetHasBuff(string name, WoWUnit tar)
         {
             return HasAura(tar, name, Me);
@@ -1224,6 +1233,5 @@ namespace CLU.Base
         {
             return StyxWoW.Me.GetAllAuras().Any(a => a.Spell.Mechanic == cc);
         }
-
     }
 }

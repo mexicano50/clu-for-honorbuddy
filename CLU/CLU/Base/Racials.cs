@@ -1,4 +1,5 @@
 ﻿#region Revision info
+
 /*
  * $Author: clutwopointzero@gmail.com $
  * $Date$
@@ -8,7 +9,8 @@
  * $LastChangedBy$
  * $ChangesMade$
  */
-#endregion
+
+#endregion Revision info
 
 using CLU.Helpers;
 using CLU.Settings;
@@ -17,13 +19,11 @@ namespace CLU.Base
 {
     using System.Collections.Generic;
     using System.Linq;
-
+    using global::CLU.Lists;
     using Styx;
     using Styx.CommonBot;
     using Styx.TreeSharp;
     using Styx.WoWInternals;
-
-    using global::CLU.Lists;
 
     internal static class Racials
     {
@@ -63,7 +63,7 @@ namespace CLU.Base
                     case "Escape Artist":
                         return StyxWoW.Me.Rooted;
                     case "Every Man for Himself":
-                        return Unit.UnitIsControlled(StyxWoW.Me,false);
+                        return Unit.UnitIsControlled(StyxWoW.Me, false);
                     case "Shadowmeld":
                         return false;
                     case "Gift of the Naaru":
@@ -105,6 +105,5 @@ namespace CLU.Base
                 return listPairs.Select(s => s.Value).ToList();
             }
         }
-
     }
 }

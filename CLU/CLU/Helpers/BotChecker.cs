@@ -1,4 +1,5 @@
 ﻿#region Revision info
+
 /*
  * $Author$
  * $Date$
@@ -8,7 +9,8 @@
  * $LastChangedBy$
  * $ChangesMade$
  */
-#endregion
+
+#endregion Revision info
 
 using System.Collections.Generic;
 using CLU.Base;
@@ -147,7 +149,6 @@ namespace CLU.Helpers
                 CLULogger.Log(" [BotChecker] *BURST ON MOB SET*");
                 CLULogger.Log(" [BotChecker] *BURST ON MOB COUNT = " + CLUSettings.Instance.BurstOnMobCount + "*");
             }
-           
         }
 
         /// <summary>
