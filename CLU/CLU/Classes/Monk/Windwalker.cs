@@ -136,7 +136,7 @@ Credits: alxaw , Kbrebel04
 
 
                     //Interupts
-                    Spell.CastInterupt("Spear Hand Strike", ret => true, "Spear Hand Strike"),
+                    Spell.CastInterupt("Spear Hand Strike", ret => Me.CurrentTarget.IsWithinMeleeRange, "Spear Hand Strike"),
                     //Spell.CastInterupt("Grapple Weapon", ret => true, "Grapple Weapon"),
 
                     // AoE
@@ -200,8 +200,8 @@ Credits: alxaw , Kbrebel04
                         new PrioritySelector(
                             Spell.CastSpell("Flying Serpent Kick", ret => Me.CurrentTarget != null && Me.CurrentTarget.DistanceSqr >= 10 * 10, "Flying Serpent Kick"),
                             Spell.CastSpell("Provoke", ret => Me.CurrentTarget != null && Me.CurrentTarget.DistanceSqr >= 8 * 8 && Spell.SpellOnCooldown("Flying Serpent Kick"), "Provoke"),
-                            Spell.CastSpell("Crackling Jade Lightning", ret => Me.CurrentTarget != null && Me.CurrentTarget.DistanceSqr >= 10 * 10 && Spell.SpellOnCooldown("Roll"), "Crackling Jade Lightning"),
-                            Spell.CastSpell("Roll", ret => Me.CurrentTarget != null && Me.CurrentTarget.DistanceSqr >= 10 * 10 && Spell.SpellOnCooldown("Provoke"), "Roll")                            
+                            Spell.CastSpell("Crackling Jade Lightning", ret => Me.CurrentTarget != null && Me.CurrentTarget.DistanceSqr >= 8 * 8 && Spell.SpellOnCooldown("Roll"), "Crackling Jade Lightning"),
+                            Spell.CastSpell("Roll", ret => Me.CurrentTarget != null && Me.CurrentTarget.DistanceSqr >= 8 * 8 && Spell.SpellOnCooldown("Provoke"), "Roll")                            
                             )),
                     this.SingleRotation
                     );

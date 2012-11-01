@@ -31,6 +31,7 @@ using CLU.Sound;
 using Styx;
 using Styx.CommonBot;
 using Styx.CommonBot.Routines;
+using Styx.Helpers;
 using Styx.TreeSharp;
 using Styx.WoWInternals;
 using Styx.WoWInternals.DBC;
@@ -204,7 +205,7 @@ namespace CLU
             get
             {
                 return new Sequence(
-                    new DecoratorContinue(x => CLUSettings.Instance.EnableMovement && (!Me.IsCasting || !Spell.PlayerIsChanneling), Movement.MoveToPull()),
+                    new DecoratorContinue(x => CLUSettings.Instance.EnableMovement && (!Me.IsCasting || !Spell.PlayerIsChanneling) && Me.CurrentTarget.DistanceSqr <= CharacterSettings.Instance.PullDistance * CharacterSettings.Instance.PullDistance, Movement.MoveToPull()),
                     new DecoratorContinue(x => true, ActiveRotation.Pull));
             }
         }
