@@ -15,8 +15,10 @@ using CLU.Managers;
 
 namespace CLU.Base
 {
+    using CommonBehaviors.Actions;
     using System.Linq;
     using Styx;
+    using Styx.CommonBot;
     using Styx.WoWInternals;
     using Styx.WoWInternals.WoWObjects;
     using Styx.TreeSharp;
@@ -254,25 +256,15 @@ namespace CLU.Base
         public static Composite UseTrinkets()
         {
             return UseEquippedTrinket();
-            /*return new PrioritySelector(delegate {
-                foreach (WoWItem trinket in Trinkets.CurrentTrinkets.Where(trinket => CanUseEquippedItem(trinket) && TrinketUsageSatisfied(trinket) && !HasItemInBag(trinket) && HasCarriedItem(trinket)))
-                {
-                    if (trinket != null) {
-                        CLULogger.Log(" [Trinket] {0} ", trinket.Name);
-                        trinket.Use();
-                    }
-                }
-
-                return RunStatus.Success;
-            });*/
         }
 
 
         private static Composite UseEquippedTrinket()
         {
+            
             return new PrioritySelector(
                 new Decorator(
-                    ret => Me.Inventory.GetItemBySlot((uint)WoWInventorySlot.Trinket1)!=null,
+                    ret => Unit.UseCooldowns() && Me.Inventory.GetItemBySlot((uint)WoWInventorySlot.Trinket1)!=null,
                     new PrioritySelector(
                         ctx => Me.Inventory.GetItemBySlot((uint)WoWInventorySlot.Trinket1),
                         new Decorator(
@@ -282,7 +274,7 @@ namespace CLU.Base
                         )
                     ),
                 new Decorator(
-                    ret => Me.Inventory.GetItemBySlot((uint)WoWInventorySlot.Trinket2) != null,
+                    ret => Unit.UseCooldowns() && Me.Inventory.GetItemBySlot((uint)WoWInventorySlot.Trinket2) != null,
                     new PrioritySelector(
                         ctx => Me.Inventory.GetItemBySlot((uint)WoWInventorySlot.Trinket2),
                         new Decorator(
@@ -293,6 +285,7 @@ namespace CLU.Base
                     )
                 );
         }
+
         /// <summary>
         /// Returns true if the trinkets conditions are met
         /// </summary>

@@ -653,7 +653,7 @@ namespace CLU.Base
             
             // if user wants control of cooldowns gtfo...
             if (!CLUSettings.Instance.UseCooldowns) return false;
-
+            if (CLUSettings.Instance.BurstOn == Burst.never) return false;
             // Deal with Healers...
             if (CLU.IsHealerRotationActive)
             {                
@@ -669,11 +669,9 @@ namespace CLU.Base
             // PvP Players are always valid rawr!
             if (onUnit.IsPlayer && CLU.LocationContext == GroupLogic.Battleground) return true;
 
-            // Miniboss not a big boss =)
-            //if ((onUnit.Level >= Me.Level + 2) && onUnit.Elite) return true; //TODO: this isnt really useful anymore i dont think -- wulf
-
             // Boss or training Dummy and we have it SET in the Settings then proceed..
-            if ((IsBoss(onUnit) || IsTrainingDummy(onUnit)) && CLUSettings.Instance.BurstOn == Burst.onBoss) return true;
+            /* Burst.onMob = fire trinkets on Bosses too */
+            if ((IsBoss(onUnit) || IsTrainingDummy(onUnit)) && (CLUSettings.Instance.BurstOn == Burst.onBoss || CLUSettings.Instance.BurstOn == Burst.onMob)) return true;
 
             // Mob count is correct and we have it SET in the Settings then proceed and we are..
             if (CLUSettings.Instance.BurstOn == Burst.onMob && CountEnnemiesInRange(Me.Location, CLU.Instance.ActiveRotation.CombatMaxDistance <= 10 ? 15 : 30) >= CLUSettings.Instance.BurstOnMobCount) return true;

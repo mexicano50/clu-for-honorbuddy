@@ -57,6 +57,7 @@ namespace CLU.Base
     }
 
     public enum Burst {
+        never,
         onBoss,
         onMob,
     }

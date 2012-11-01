@@ -1397,6 +1397,7 @@ namespace CLU.Lists
             60410, // Elegon
             60913, // Energyspark at Elegon
             60776, // Empyreal Focus at Elegon
+            62618, // Cosmic Spark
             60400, // Jan-xi <Emperor's Open Hand>
             60399, // Qin-xi
 
