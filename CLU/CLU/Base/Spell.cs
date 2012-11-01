@@ -85,12 +85,12 @@ namespace CLU.Base
 
         public static bool CanCast(string name, WoWUnit target)
         {
-            return SpellManager.CanCast(name, target, !BossList.IgnoreRangeCheck.Contains(target.Entry)) || CanCastGCDFree(name);
+            return SpellManager.CanCast(name, target,target.IsPlayer ? true : !BossList.IgnoreRangeCheck.Contains(target.Entry)) || CanCastGCDFree(name);
         }
 
         public static bool CanCast(string name, WoWUnit target, bool checkmovement)
         {
-            return SpellManager.CanCast(name, target, !BossList.IgnoreRangeCheck.Contains(target.Entry), checkmovement) || CanCastGCDFree(name);
+            return SpellManager.CanCast(name, target, target.IsPlayer ? true : !BossList.IgnoreRangeCheck.Contains(target.Entry), checkmovement) || CanCastGCDFree(name);
         }
 
         public static bool CanCast(string name, WoWUnit target, bool checkrange, bool checkmovement)
@@ -427,7 +427,7 @@ namespace CLU.Base
                     if (!cond(a))
                         return false;
 
-                    if (!Spell.CanCast(name, onUnit(a), !BossList.IgnoreRangeCheck.Contains(onUnit(a).Entry), checkmovement)) return false; //This is checking spell, unit, Range, Movement
+                    if (!Spell.CanCast(name, onUnit(a), onUnit(a).IsPlayer ? true : !BossList.IgnoreRangeCheck.Contains(onUnit(a).Entry), checkmovement)) return false; //This is checking spell, unit, Range, Movement
 
                     return onUnit(a) != null;
                 },
@@ -463,7 +463,7 @@ namespace CLU.Base
                     if (!cond(a))
                         return false;
 
-                    if (!Spell.CanCast(spell.ToString(), onUnit(a), !BossList.IgnoreRangeCheck.Contains(onUnit(a).Entry), checkmovement)) return false; //This is checking spell, unit, Range, Movement
+                    if (!Spell.CanCast(spell.ToString(), onUnit(a), onUnit(a).IsPlayer ? true : !BossList.IgnoreRangeCheck.Contains(onUnit(a).Entry), checkmovement)) return false; //This is checking spell, unit, Range, Movement
                    
                     return onUnit(a) != null;
                 },
@@ -619,7 +619,7 @@ namespace CLU.Base
                     if (onUnit(a).Guid == Me.Guid)
                         return false;
 
-                    if (!Spell.CanCast(name, onUnit(a).CurrentTarget, !BossList.IgnoreRangeCheck.Contains(onUnit(a).Entry), checkmovement)) return false; //This is checking spell, unit, Range, Movement
+                    if (!Spell.CanCast(name, onUnit(a).CurrentTarget, onUnit(a).IsPlayer ? true : !BossList.IgnoreRangeCheck.Contains(onUnit(a).Entry), checkmovement)) return false; //This is checking spell, unit, Range, Movement
 
                     // if (Unit.TimeToDeath(onUnit(a).CurrentTarget) < 5)
                     // return false;
@@ -651,7 +651,7 @@ namespace CLU.Base
 
                     if (!cond(a))
                         return false;
-                    if (!Spell.CanCast(name, onUnit(a), !BossList.IgnoreRangeCheck.Contains(onUnit(a).Entry), checkmovement)) return false; //This is checking spell, unit, Range, Movement
+                    if (!Spell.CanCast(name, onUnit(a), onUnit(a).IsPlayer ? true : !BossList.IgnoreRangeCheck.Contains(onUnit(a).Entry), checkmovement)) return false; //This is checking spell, unit, Range, Movement
 
                     // if (Unit.TimeToDeath(onUnit(a).CurrentTarget) < 5)
                     // return false;
@@ -733,7 +733,7 @@ namespace CLU.Base
                     if (onUnit != null && onUnit(a) != null && !(onUnit(a).IsCasting && onUnit(a).CanInterruptCurrentSpellCast))
                         return false;
 
-                    if (onUnit != null && Spell.CanCast(name, onUnit(a), !BossList.IgnoreRangeCheck.Contains(onUnit(a).Entry), true))
+                    if (onUnit != null && Spell.CanCast(name, onUnit(a),onUnit(a).IsPlayer?true:!BossList.IgnoreRangeCheck.Contains(onUnit(a).Entry), true))
                         return false;
 
                     return true;
