@@ -133,6 +133,45 @@ namespace CLU.Classes.DeathKnight
             }
         }
 
+        internal static bool HasBothDis
+        {
+            get
+            {
+                if (!Me.GotTarget)
+                    return false;
+                WoWAura frostFever =
+                    Me.CurrentTarget.GetAllAuras().FirstOrDefault(
+                        u => u.CreatorGuid == Me.Guid && u.SpellId == 55095);
+                WoWAura bloodPlague =
+                    Me.CurrentTarget.GetAllAuras().FirstOrDefault(
+                        u => u.CreatorGuid == Me.Guid && u.SpellId == 55078);
+                return frostFever != null && frostFever.TimeLeft >= TimeSpan.FromSeconds(2) ||
+                       (bloodPlague != null && bloodPlague.TimeLeft >= TimeSpan.FromSeconds(2));
+            }
+        }
+
+        internal static bool HasffDis
+        {
+            get
+            {
+                if (!Me.GotTarget)
+                    return false;
+                WoWAura frostFever = Me.CurrentTarget.GetAllAuras().FirstOrDefault(u => u.CreatorGuid == Me.Guid && u.SpellId == 55095);
+                return frostFever != null && frostFever.TimeLeft >= TimeSpan.FromSeconds(2);
+            }
+        }
+
+        internal static bool HasbpDis
+        {
+            get
+            {
+                if (!Me.GotTarget)
+                    return false;
+                WoWAura bloodPlague = Me.CurrentTarget.GetAllAuras().FirstOrDefault(u => u.CreatorGuid == Me.Guid && u.SpellId == 55078);
+                return bloodPlague != null && bloodPlague.TimeLeft >= TimeSpan.FromSeconds(2);
+            }
+        }
+
         /// <summary>
         /// Spreads your Diseases depending on what Tier One Talent you have
         /// </summary>

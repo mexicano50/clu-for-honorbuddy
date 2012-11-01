@@ -127,10 +127,15 @@ namespace CLU.Classes.DeathKnight
                            //Operation: Two-hander bitches!
                            new Decorator(ret => Common.IsWieldingTwoHandedWeapon(),
                                new PrioritySelector(
-                                   Spell.CastSpell("Howling Blast", ret => Me.HasMyAura(59052), "Howling Blast"),
-                                   Spell.CastSpell("Obliterate", ret => Me.HasMyAura(51124) || Me.CurrentRunicPower < 85, "Obliterate")
+                    Spell.CastSpell("Outbreak", ret => !Common.HasbpDis || !Common.HasffDis, "Outbreak"),
+                    Spell.CastSpell("Plague Strike", ret => !Common.HasbpDis && Spell.SpellOnCooldown("Outbreak"), "Blood Plague"),
+                    Spell.CastSpell("Soul Reaper", ret => Me.CurrentTarget.HealthPercent < 35, "Soul Reaper"),
+                    Spell.CastSpell("Obliterate", ret => (Common.HasBothDis && Me.HasAura(51124) && Me.RunicPowerPercent <= 76) || (Common.HasBothDis && Me.RunicPowerPercent <= 76), "Obliterate"),
+                    Spell.CastSpell("Howling Blast", ret => StyxWoW.Me.HasAura(59052), "Howling Blast"),
+                    Spell.CastSpell("Frost Strike", ret => (!StyxWoW.Me.HasAura(51124) && Me.RunicPowerPercent >= 70) || Me.MaxRunicPower == 100 || (Me.RunicPowerPercent >= 60 && Common.FrostRuneSlotsActive + Common.BloodRuneSlotsActive == 0), "Frost Strike")
                                    )
                                ),
+
                            //Operation: DUAL WIELD BITCHES!
                            new Decorator(ret => !Common.IsWieldingTwoHandedWeapon(),
                                new PrioritySelector(
