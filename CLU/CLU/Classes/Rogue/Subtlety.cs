@@ -120,11 +120,11 @@ namespace CLU.Classes.Rogue
                              "Evasion",
                              ret =>
                              Me.HealthPercent < 35 &&
-                             Unit.EnemyUnits.Count(u => u.DistanceSqr < 6 * 6 && u.IsTargetingMeOrPet) >= 1, "Evasion"),
+                             Unit.EnemyMeleeUnits.Count(u => u.DistanceSqr < 6 * 6 && u.IsTargetingMeOrPet) >= 1, "Evasion"),
                         Spell.CastSelfSpell
                             (
                              "Cloak of Shadows",
-                             ret => Unit.EnemyUnits.Count(u => u.IsTargetingMeOrPet && u.IsCasting) >= 1,
+                             ret => Unit.EnemyMeleeUnits.Count(u => u.IsTargetingMeOrPet && u.IsCasting) >= 1,
                              "Cloak of Shadows"), Poisons.CreateApplyPoisons()));
             }
         }

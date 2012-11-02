@@ -46,18 +46,6 @@ namespace CLU.Classes.Rogue
 
         private static bool _tricksTargetChecked;
 
-        private static readonly HashSet<WoWSpellMechanic> CcMechanics = new HashSet<WoWSpellMechanic> {
-            WoWSpellMechanic.Banished,
-            WoWSpellMechanic.Charmed,
-            WoWSpellMechanic.Horrified,
-            WoWSpellMechanic.Incapacitated,
-            WoWSpellMechanic.Polymorphed,
-            WoWSpellMechanic.Sapped,
-            WoWSpellMechanic.Shackled,
-            WoWSpellMechanic.Asleep,
-            WoWSpellMechanic.Frozen
-        };
-
         #endregion
 
         #region Public Properties
@@ -161,11 +149,12 @@ namespace CLU.Classes.Rogue
             get
             {
                 return new Decorator
-                    (ret =>
-                     !Me.Mounted && !Me.IsDead && !Me.IsFlying && !Me.IsOnTransport && !Me.HasAura("Food") &&
-                     !Me.HasAura("Drink"),
-                     new PrioritySelector(OutOfCombat));
+                    (
+                    ret =>
+                    !Me.Mounted && !Me.IsDead && !Me.IsFlying && !Me.IsOnTransport && !Me.HasAura("Food") &&
+                    !Me.HasAura("Drink"), new PrioritySelector(OutOfCombat));
             }
+        }
 
         public override Composite Pull
         {
