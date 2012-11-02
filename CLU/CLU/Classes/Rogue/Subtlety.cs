@@ -41,20 +41,9 @@ namespace CLU.Classes.Rogue
 
         private const string HemorrhageSubstitute = "Sinister Strike";
 
-        private static readonly HashSet<WoWSpellMechanic> CcMechanics = new HashSet<WoWSpellMechanic>
-            {
-                WoWSpellMechanic.Banished,
-                WoWSpellMechanic.Charmed,
-                WoWSpellMechanic.Horrified,
-                WoWSpellMechanic.Incapacitated,
-                WoWSpellMechanic.Polymorphed,
-                WoWSpellMechanic.Sapped,
-                WoWSpellMechanic.Shackled,
-                WoWSpellMechanic.Asleep,
-                WoWSpellMechanic.Frozen
-            };
-
         private static IEnumerable<WoWUnit> _aoeTargets;
+        private static bool _tricksTargetChecked;
+        private static WoWUnit _tricksTarget;
 
         #endregion
 
@@ -266,7 +255,7 @@ namespace CLU.Classes.Rogue
                              "Fan of Knives",
                              ret =>
                              AoETargets.All(FoKSafe) &&
-                             AoETargets.Count() > CLUSettings.Instance.Rogue.SubtletyFanOfKnivesCount &&
+                             AoETargets.Count() >= CLUSettings.Instance.Rogue.SubtletyFanOfKnivesCount &&
                              CLUSettings.Instance.UseAoEAbilities, "Fan of Knives"),
                         Spell.CastSpell
                             (
@@ -366,9 +355,13 @@ namespace CLU.Classes.Rogue
         }
 
         private static Composite NotStealthed
+        {
+            get
             {
-            get { return new Decorator(cond => !AmStealthed, new PrioritySelector(Cooldowns, Finishers, ComboPointGen)); }
+                return new Decorator
+                    (cond => !AmStealthed, new PrioritySelector(Situationals, Cooldowns, Finishers, ComboPointGen));
             }
+        }
 
         private static bool RuptureSafe
         {
@@ -381,6 +374,18 @@ namespace CLU.Classes.Rogue
             {
                 return (Me.Combat || Me.RaidMembers.Any(rm => rm.Combat) || Unit.IsTrainingDummy(Me.CurrentTarget)) &&
                        Unit.UseCooldowns();
+            }
+        }
+
+        private static Composite Situationals
+        {
+            get
+            {
+                return new PrioritySelector
+                    (Spell.CastSelfSpell("Feint", ret => Me.CurrentTarget != null && ( EncounterSpecific.IsMorchokStomp() ), "Feint"),
+                     Spell.CastSpell("Tricks of the Trade", u => TricksTarget, ret => TricksTarget != null, "Tricks of the Trade"),
+                     Spell.CastInterupt("Kick", ret => Me.IsWithinMeleeRange, "Kick"),
+                     Spell.CastSpell("Redirect", ret => Me.RawComboPoints > 0 && Me.ComboPoints < 1, "Redirect"));
             }
         }
 
@@ -419,6 +424,26 @@ namespace CLU.Classes.Rogue
                         (Spell.CastSpell(14183, ret => Me.ComboPoints < 4, "Premeditation"), Finishers, StealthCPGen));
             }
         }
+
+        private static WoWUnit TricksTarget
+        {
+            get
+            {
+                if (_tricksTargetChecked)
+                {
+                    return _tricksTarget;
+                }
+
+                if (_tricksTarget == null)
+                {
+                    _tricksTarget = Unit.BestTricksTarget;
+                    _tricksTargetChecked = true;
+                }
+
+                return _tricksTarget;
+            }
+        }
+
 
         #endregion
 
