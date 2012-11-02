@@ -156,7 +156,13 @@ namespace CLU.Classes.Rogue
 
         public override Composite Pull
         {
-            get { return new PrioritySelector(Spell.CastSpell("Throw", ret => Me.CurrentTarget.Distance <= 30, "Throw for Pull")); }
+            get
+            {
+                return new PrioritySelector
+                    (
+                    Spell.CastSpell("Garrote", cond => Me.IsStealthed, "Garrote for pull"),
+                    Spell.CastSpell("Throw", ret => Me.CurrentTarget.Distance <= 30, "Throw for Pull"));
+            }
         }
 
         public override Composite Resting

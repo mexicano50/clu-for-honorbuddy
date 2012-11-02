@@ -86,7 +86,13 @@ namespace CLU.Classes.Rogue
 
         public override Composite Pull
         {
-            get { return new PrioritySelector(Spell.CastSpell("Throw", ret => Me.CurrentTarget.Distance <= 30, "Throw for Pull")); }
+            get
+            {
+                return new PrioritySelector
+                    (
+                    Spell.CastSpell("Garrote", cond => Me.IsStealthed, "Garrote for pull"),
+                    Spell.CastSpell("Throw", ret => Me.CurrentTarget.Distance <= 30, "Throw for Pull"));
+            }
         }
 
         /// <summary>
@@ -156,11 +162,6 @@ namespace CLU.Classes.Rogue
                     !Me.Mounted && !Me.IsDead && !Me.IsFlying && !Me.IsOnTransport && !Me.HasAura("Food") &&
                     !Me.HasAura("Drink"), new PrioritySelector(OutOfCombat));
             }
-        }
-
-        public override Composite Pull
-        {
-            get { return this.SingleRotation; }
         }
 
         /// <summary>
