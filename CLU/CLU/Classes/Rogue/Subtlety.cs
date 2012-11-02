@@ -280,12 +280,9 @@ namespace CLU.Classes.Rogue
                         (
                         Spell.CastSpell("Shadow Dance", ret => BuffsSafeForSD, "Shadow Dance"),
                         Spell.CastSpell("Shadow Blades", ret => BuffsSafeForSB, "Shadow Blades"),
-                        Spell.CastSpell
-                            (
-                             "Vanish",
-                             ret =>
-                             SnDSafe && RuptureSafe && !AmStealthed && !Me.CurrentTarget.IsTargetingMeOrPet &&
-                             Buff.PlayerActiveBuffTimeLeft("Shadow Dance") == TimeSpan.Zero, "Vanish"),
+                        Spell.CastSpell("Vanish", ret => SnDSafe && RuptureSafe && !AmStealthed
+                            && !Me.CurrentTarget.IsTargetingMeOrPet && Me.IsInMyPartyOrRaid
+                            && Buff.PlayerActiveBuffTimeLeft("Shadow Dance") == TimeSpan.Zero, "Vanish"),
                         Spell.CastSpell
                             (
                              "Preparation",
