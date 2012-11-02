@@ -27,6 +27,7 @@ using JetBrains.Annotations;
 using Styx;
 using Styx.CommonBot;
 using Styx.TreeSharp;
+using Styx.WoWInternals;
 using Styx.WoWInternals.WoWObjects;
 
 using Rest = CLU.Base.Rest;
@@ -36,8 +37,16 @@ namespace CLU.Classes.Rogue
     [UsedImplicitly]
     public class Assassination : RotationBase
     {
+        #region Constants and Fields
+
         private const string DispatchOverride = "Sinister Strike";
         private const string EnvenomOverride = "Eviscerate";
+        private static IEnumerable<WoWUnit> _aoeTargets;
+        private static WoWUnit _tricksTarget;
+
+        private static bool _tricksTargetChecked;
+
+        #endregion
 
         #region Public Properties
 
@@ -108,7 +117,8 @@ namespace CLU.Classes.Rogue
                           Spell.CastSelfSpell
                               ("Cloak of Shadows",
                                ret => Unit.EnemyMeleeUnits.Count(u => u.IsTargetingMeOrPet && u.IsCasting) >= 1,
-                               "Cloak of Shadows"), Poisons.CreateApplyPoisons()));
+                               "Cloak of Shadows"),
+                          Poisons.CreateApplyPoisons()));
             }
         }
 
@@ -138,8 +148,14 @@ namespace CLU.Classes.Rogue
                 return new Decorator
                     (ret =>
                      !Me.Mounted && !Me.IsDead && !Me.IsFlying && !Me.IsOnTransport && !Me.HasAura("Food") &&
-                     !Me.HasAura("Drink"), new PrioritySelector(OutOfCombat));
+                     !Me.HasAura("Drink"),
+                     new PrioritySelector(OutOfCombat));
             }
+            }
+
+        public override Composite Pull
+        {
+            get { return this.SingleRotation; }
         }
 
         /// <summary>
@@ -169,13 +185,11 @@ namespace CLU.Classes.Rogue
                      Spell.CastSelfSpell
                          ("Feint", ret => Me.CurrentTarget != null && (EncounterSpecific.IsMorchokStomp()), "Feint"),
                      Spell.CastSpell
-                         ("Tricks of the Trade",
-                          u => TricksTarget,
-                          ret => TricksTarget != null,
-                          "Tricks of the Trade"),
+                         ("Tricks of the Trade", u => TricksTarget, ret => TricksTarget != null, "Tricks of the Trade"),
                      Spell.CastInterupt("Kick", ret => Me.IsWithinMeleeRange, "Kick"),
                      Spell.CastSpell("Redirect", ret => Me.RawComboPoints > 0 && Me.ComboPoints < 1, "Redirect"),
-                     AoE,
+                     //AoEDebug,
+                     //AoE,
                      Spell.CastSelfSpell
                          ("Slice and Dice", ret => !Buff.PlayerHasActiveBuff("Slice and Dice"), "Slice and Dice"),
                      Vanish,
@@ -200,7 +214,7 @@ namespace CLU.Classes.Rogue
                      Envenom,
                      Spell.CastSpell
                          (DispatchOverride,
-                          ret => Buff.PlayerCountBuff("Anticipation") < 5 && Buff.PlayerHasBuff("Blindside"),
+                          ret => ( Me.ComboPoints < 5 || AnticipationSafe ) && Me.CurrentTarget.HealthPercent >= 35,
                           "Dispatch @ Blindside"),
                      Spell.CastSpell
                          (DispatchOverride,
@@ -213,23 +227,14 @@ namespace CLU.Classes.Rogue
             }
         }
 
-        private static Action Reset
-        {
-            get
-            {
-                return new Action(delegate
-                {
-                    _aoeTargets = null;
-                    _tricksTarget = null;
-                    _tricksTargetChecked = false;
-                    return RunStatus.Failure;
-                });
-            }
-        }
-
         #endregion
 
         #region Properties
+
+        private static bool AnticipationSafe
+        {
+            get { return ( HasAnticipation && Me.Auras["Anticipation"].StackCount < 4 ); }
+        }
 
         /// <summary>
         /// Gets the area of effect rotaion.
@@ -240,56 +245,68 @@ namespace CLU.Classes.Rogue
             get
             {
                 return new Decorator
-                    (ret => AoETargets.All(x => x.Combat),
+                    (ret =>
+                     AoETargets.All(x => FoKSafe(x) && x.Combat) &&
+                     AoETargets.Count() >= CLUSettings.Instance.Rogue.AssasinationFanOfKnivesCount,
                      new PrioritySelector
-                         (Spell.CastAreaSpell
+                         (Spell.CastSelfSpell
                               ("Crimson Tempest",
-                               8,
-                               false,
-                               CLUSettings.Instance.Rogue.AssasinationFanOfKnivesCount,
-                               0,
-                               0,
                                ret => AoETargets.Any(a => !a.HasMyAura("Crimson Tempest")) && Me.ComboPoints > 3,
                                "Crimson Tempest"),
-                          Spell.CastAreaSpell
-                              ("Fan of Knives",
-                               8,
-                               false,
-                               CLUSettings.Instance.Rogue.AssasinationFanOfKnivesCount,
-                               0.0,
-                               0.0,
-                               ret => Me.ComboPoints < 5,
-                               "Fan of Knives")));
+                          Spell.CastSelfSpell
+                              ("Fan of Knives", ret => Me.ComboPoints < 5 || AnticipationSafe, "Fan of Knives"),
+                          new ActionAlwaysSucceed()));
             }
         }
 
-        private static IEnumerable<WoWUnit> _aoeTargets;
+        //private static Action AoEDebug
+        //{
+        //    get
+        //    {
+        //        return new Action
+        //            (delegate
+        //                {
+        //                    CLU.Log("AoETargets != null: {0}", AoETargets != null);
+                            
+        //                    if(AoETargets == null)
+        //                        return RunStatus.Failure;
+
+        //                    CLU.Log("AoETargets.Count(): {0}", AoETargets.Count());
+
+        //                    foreach ( var aoeTarget in AoETargets.Where(x => !FoKSafe(x)))
+        //                    {
+        //                        var spell = aoeTarget.Debuffs.First(x => IsCcMechanic(x.Value.Spell)).Value;
+        //                        CLU.Log("Target {0} affected by {1} which is {2}", aoeTarget.Name, spell.Name, spell.Spell.Mechanic);
+        //                    }
+
+        //                    CLU.Log("AoETargets in combat: {0}", AoETargets.All(x => x.Combat));
+
+        //                    return RunStatus.Failure;
+        //                });
+
+        //        //(ret => AoETargets.All(x => !Unit.IsCrowdControlled(x)) && AoETargets.Count() >= CLUSettings.Instance.Rogue.AssasinationFanOfKnivesCount,
+        //    }
+        //}
 
         private static IEnumerable<WoWUnit> AoETargets
         {
-            get { return _aoeTargets ?? (_aoeTargets = Unit.EnemyMeleeUnits.Where(x => x.DistanceSqr <= 100)); }
-        }
-
-        private static WoWUnit _tricksTarget;
-
-        private static bool _tricksTargetChecked;
-
-        private static WoWUnit TricksTarget
-        {
             get
             {
-                if (_tricksTargetChecked)
-                    return _tricksTarget;
-
-                if (_tricksTarget == null)
-                {
-                    _tricksTarget = Unit.BestTricksTarget;
-                    _tricksTargetChecked = true;
+                return _aoeTargets ??
+                       ( _aoeTargets =
+                         ObjectManager.GetObjectsOfType<WoWUnit>(true, false).Where
+                             (unit => unit.Attackable && unit.DistanceSqr <= 100 && unit.IsAlive) );
+            }
                 }
 
-                return _tricksTarget;
-            }
-        }
+        //private static bool BleedSafe
+        //{
+        //    get
+        //    {
+        //        return Buff.TargetDebuffTimeLeft("Rupture").TotalSeconds > 4 ||
+        //               Buff.TargetDebuffTimeLeft("Garrote").TotalSeconds > 2;
+        //    }
+        //}
 
         private static bool BuffsSafeForVanish
         {
@@ -310,10 +327,24 @@ namespace CLU.Classes.Rogue
                      ((Unit.UseCooldowns() || Buff.TargetHasDebuff("Vendetta"))),
                     //Switched to || instead of &&, we want to use trinkets on Cd and not every 2min
                      new PrioritySelector
-                         (Item.UseTrinkets(), Racials.UseRacials(), Buff.CastBuff("Lifeblood", ret => true, "Lifeblood"),
-                        // Thanks Kink
+                         (Item.UseTrinkets(),
+                          Racials.UseRacials(),
+                          Buff.CastBuff("Lifeblood", ret => true, "Lifeblood"),
+                    // Thanks Kink
                           Item.UseEngineerGloves()));
             }
+        }
+
+        /// <summary>
+        /// If we have Shadow Focus, spells cost 0 energy.  Thus, we should vanish only when there's no fear of capping.
+        /// If we do not have Shadow Focus, we should Vanish only if we have enough energy for Mutilate.
+        /// </summary>
+        /// <value>
+        /// 	<c>true</c> if [vanish with shadow focus]; otherwise, <c>false</c>.
+        /// </value>
+        private static bool EnergySafeForVanish
+        {
+            get { return ( ( HasShadowFocus && Me.EnergyPercent < 50 ) || !HasShadowFocus && Me.CurrentEnergy >= 60 ); }
         }
 
         private static Composite Envenom
@@ -326,28 +357,29 @@ namespace CLU.Classes.Rogue
                          (Spell.CastSpell
                               (EnvenomOverride,
                                ret =>
-                               Me.ComboPoints >= ReqCmbPts && Me.CurrentEnergy > 70 &&
-                               Buff.TargetDebuffTimeLeft("Rupture").TotalSeconds > 2 && Me.CurrentTarget.HealthPercent >= 35, "Pooling Envenom"),
-                           // Envenom if we have enough combo points, Rupture is safe and we're about to cap.
-                          Spell.CastSpell
-                              (EnvenomOverride,
-                               ret =>
                                Me.ComboPoints > 0 && Buff.PlayerActiveBuffTimeLeft("Slice and Dice").TotalSeconds < 2,
                                "SnD Refresh Envenom"),
-                            // Envenom if SnD is about to fall off. This should never happen.
                           Spell.CastSpell
                               (EnvenomOverride,
                                ret =>
                                Me.ComboPoints == 5 && Buff.TargetDebuffTimeLeft("Rupture").TotalSeconds > 2 && (!Unit.UseCooldowns() && Me.CurrentTarget.HealthPercent < 35 || Unit.UseCooldowns() && Spell.SpellOnCooldown("Shadow Blades") && Me.CurrentTarget.HealthPercent < 35 || Buff.PlayerHasBuff("Shadow Blades")),
                                "Execute Envenom"),
-                          // Envenom if SnD is about to fall off. This should never happen.
                           Spell.CastSpell
                               (EnvenomOverride,
                                ret =>
-                               Me.ComboPoints >= 1 && Buff.PlayerHasBuff("Fury of the Destroyer") && Buff.TargetDebuffTimeLeft("Rupture").TotalSeconds > 2,
-                               "FoTF Envenom")
-                         ));
+                               Me.ComboPoints >= ReqCmbPts && RuptureSafe &&
+                               ( HasAnticipation || Me.CurrentEnergy > 70 ),
+                               "Pooling Envenom"),
+                          Spell.CastSpell
+                              (EnvenomOverride,
+                               ret => Me.ComboPoints >= 1 && Buff.PlayerHasBuff("Fury of the Destroyer") && RuptureSafe,
+                               "FoTF Envenom")));
             }
+            }
+
+        private static bool HasAnticipation
+        {
+            get { return TalentManager.HasTalent(18); }
         }
 
         private static bool HasShadowFocus
@@ -372,7 +404,8 @@ namespace CLU.Classes.Rogue
                              ("Cheap Shot",
                               ret =>
                               Me.CurrentTarget != null && !SpellManager.HasSpell("Garrote") ||
-                              !StyxWoW.Me.IsBehind(Me.CurrentTarget), "Cheap Shot"),
+                              !StyxWoW.Me.IsBehind(Me.CurrentTarget),
+                              "Cheap Shot"),
                          Spell.CastSpell
                              ("Mutilate",
                               ret => !SpellManager.HasSpell("Cheap Shot") && StyxWoW.Me.IsBehind(Me.CurrentTarget),
@@ -392,8 +425,11 @@ namespace CLU.Classes.Rogue
                      new PrioritySelector
                          (Spell.CastSelfSpell
                               ("Stealth",
-                               ret => !Buff.PlayerHasBuff("Stealth") && CLUSettings.Instance.Rogue.EnableAlwaysStealth && !CLU.IsMounted,
-                               "Stealth"), Poisons.CreateApplyPoisons()));
+                               ret =>
+                               !Buff.PlayerHasBuff("Stealth") && CLUSettings.Instance.Rogue.EnableAlwaysStealth &&
+                               !CLU.IsMounted,
+                               "Stealth"),
+                          Poisons.CreateApplyPoisons()));
             }
         }
 
@@ -401,10 +437,27 @@ namespace CLU.Classes.Rogue
         {
             get
             {
-                if (TalentManager.HasTalent(18))
+                if ( HasAnticipation )
+                {
                     return 5;
+                }
 
-                return (Me.CurrentTarget != null) && (Me.CurrentTarget.HealthPercent < 35) ? 5 : 4;
+                return ( Me.CurrentTarget.HealthPercent < 35 ) ? 5 : 4;
+            }
+        }
+
+        private static Action Reset
+        {
+            get
+            {
+                return new Action
+                    (delegate
+                        {
+                            _aoeTargets = null;
+                            _tricksTarget = null;
+                            _tricksTargetChecked = false;
+                            return RunStatus.Failure;
+                        });
             }
         }
 
@@ -413,16 +466,22 @@ namespace CLU.Classes.Rogue
             get
             {
                 return new Decorator
-                    (x =>
-                     Buff.PlayerActiveBuffTimeLeft("Slice and Dice").TotalSeconds > 6 &&
-                     Buff.TargetMyDebuffTimeLeft("Rupture").TotalSeconds <= 2,
+                    (x => SnDSafe && !RuptureSafe,
                     // Do not rupture if SnD is about to come down.
                      new PrioritySelector
-                         (Spell.CastSpell("Rupture", ret => !Buff.TargetHasDebuff("Rupture"), "Rupture @ Down"),
-                    // Rupture if it's down.
+                         (Spell.CastSpell
+                              ("Rupture",
+                               ret => !Buff.TargetHasDebuff("Rupture") && !Buff.TargetHasDebuff("Garrote"),
+                               "Rupture @ Down"),
+                          // Rupture if it's down.  Rupture is not considered down if Garrote is up, since it follows the same energy benefits, but does not stack.
                           Spell.CastSpell("Rupture", ret => Me.ComboPoints >= ReqCmbPts, "Rupture @ Low")));
-                    // Rupture if it's about to fall off and we have 4 or 5 combo points.
+                // Rupture if it's about to fall off and we have 4 or 5 combo points.
             }
+        }
+
+        private static bool RuptureSafe
+        {
+            get { return Buff.TargetDebuffTimeLeft("Rupture").TotalSeconds > 4; }
         }
 
         private static bool SafeToBreakStealth
@@ -431,6 +490,30 @@ namespace CLU.Classes.Rogue
             {
                 return ((Me.Combat || Me.RaidMembers.Any(rm => rm.Combat) || Unit.IsTrainingDummy(Me.CurrentTarget)) &&
                          Unit.UseCooldowns());
+            }
+        }
+
+        private static bool SnDSafe
+        {
+            get { return Buff.PlayerActiveBuffTimeLeft("Slice and Dice").TotalSeconds > 6; }
+        }
+
+        private static WoWUnit TricksTarget
+        {
+            get
+            {
+                if ( _tricksTargetChecked )
+                {
+                    return _tricksTarget;
+                }
+
+                if ( _tricksTarget == null )
+                {
+                    _tricksTarget = Unit.BestTricksTarget;
+                    _tricksTargetChecked = true;
+                }
+
+                return _tricksTarget;
             }
         }
 
@@ -446,22 +529,11 @@ namespace CLU.Classes.Rogue
                 // Only Do this if SnD is up, Rupture is up, Target is CD-worthy and we've got spare points.
                 return new Decorator
                     (x =>
-                     BuffsSafeForVanish && Unit.UseCooldowns() && Me.ComboPoints < 4 &&
-                     EnergySafeForVanish && Me.CurrentTarget.IsWithinMeleeRange && !Buff.PlayerHasActiveBuff("Blindside"),
+                     BuffsSafeForVanish && Unit.UseCooldowns() &&
+                     ( Me.ComboPoints < 4 || AnticipationSafe ) && EnergySafeForVanish &&
+                     Me.CurrentTarget.IsWithinMeleeRange && !Buff.PlayerHasActiveBuff("Blindside"),
                      Spell.CastSelfSpell("Vanish", x => true, "Vanish"));
             }
-        }
-
-        /// <summary>
-        /// If we have Shadow Focus, spells cost 0 energy.  Thus, we should vanish only when there's no fear of capping.
-        /// If we do not have Shadow Focus, we should Vanish only if we have enough energy for Mutilate.
-        /// </summary>
-        /// <value>
-        /// 	<c>true</c> if [vanish with shadow focus]; otherwise, <c>false</c>.
-        /// </value>
-        private static bool EnergySafeForVanish
-        {
-            get { return ((HasShadowFocus && Me.EnergyPercent < 50) || !HasShadowFocus && Me.CurrentEnergy >= 60); }
         }
 
         #endregion
@@ -472,6 +544,28 @@ namespace CLU.Classes.Rogue
         {
             StealthedCombat();
         }
+
+        private static bool FoKSafe(WoWUnit unit)
+        {
+            return
+                !unit.Debuffs.Select(kvp => kvp.Value).Any
+                     (x =>
+                      x.Spell.Mechanic == WoWSpellMechanic.Banished || x.Spell.Mechanic == WoWSpellMechanic.Charmed ||
+                      x.Spell.Mechanic == WoWSpellMechanic.Horrified ||
+                      x.Spell.Mechanic == WoWSpellMechanic.Incapacitated ||
+                      x.Spell.Mechanic == WoWSpellMechanic.Polymorphed || x.Spell.Mechanic == WoWSpellMechanic.Sapped ||
+                      x.Spell.Mechanic == WoWSpellMechanic.Shackled || x.Spell.Mechanic == WoWSpellMechanic.Asleep ||
+                      x.Spell.Mechanic == WoWSpellMechanic.Frozen);
+        }
+
+        //private static bool IsCcMechanic(WoWSpell spell)
+        //{
+        //    return spell.Mechanic == WoWSpellMechanic.Banished || spell.Mechanic == WoWSpellMechanic.Charmed ||
+        //           spell.Mechanic == WoWSpellMechanic.Horrified || spell.Mechanic == WoWSpellMechanic.Incapacitated ||
+        //           spell.Mechanic == WoWSpellMechanic.Polymorphed || spell.Mechanic == WoWSpellMechanic.Sapped ||
+        //           spell.Mechanic == WoWSpellMechanic.Shackled || spell.Mechanic == WoWSpellMechanic.Asleep ||
+        //           spell.Mechanic == WoWSpellMechanic.Frozen;
+        //}
 
         private static void StealthedCombat()
         {
