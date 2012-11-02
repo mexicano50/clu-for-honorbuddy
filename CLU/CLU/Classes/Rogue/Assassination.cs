@@ -12,6 +12,7 @@
 
 #endregion
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -30,6 +31,7 @@ using Styx.TreeSharp;
 using Styx.WoWInternals;
 using Styx.WoWInternals.WoWObjects;
 
+using Action = Styx.TreeSharp.Action;
 using Rest = CLU.Base.Rest;
 
 namespace CLU.Classes.Rogue
@@ -238,6 +240,17 @@ namespace CLU.Classes.Rogue
             get { return ( HasAnticipation && Me.Auras["Anticipation"].StackCount < 4 ); }
         }
 
+        private static bool CrimsonTempestDown
+        {
+            get
+            {
+                return AoETargets.Any
+                    (
+                     x =>
+                     !x.Debuffs.Any(y => y.Key.Equals("Crimson Tempest", StringComparison.InvariantCultureIgnoreCase)));
+            }
+        }
+
         /// <summary>
         /// Gets the area of effect rotaion.
         /// Rotation by Wulf.
@@ -253,7 +266,7 @@ namespace CLU.Classes.Rogue
                      new PrioritySelector
                          (Spell.CastSelfSpell
                               ("Crimson Tempest",
-                               ret => AoETargets.Any(a => !a.HasMyAura("Crimson Tempest")) && Me.ComboPoints > 3,
+                               ret => CrimsonTempestDown && Me.ComboPoints > 3,
                                "Crimson Tempest"),
                           Spell.CastSelfSpell
                               ("Fan of Knives", ret => Me.ComboPoints < 5 || AnticipationSafe, "Fan of Knives"),
@@ -294,10 +307,23 @@ namespace CLU.Classes.Rogue
         {
             get
             {
-                return _aoeTargets ??
-                       ( _aoeTargets =
-                         ObjectManager.GetObjectsOfType<WoWUnit>(true, false).Where
-                             (unit => unit.Attackable && unit.DistanceSqr <= 100 && unit.IsAlive) );
+                if (_aoeTargets == null)
+                {
+                    try
+                    {
+                        _aoeTargets = ObjectManager.GetObjectsOfType<WoWUnit>(false, false).Where
+                            (
+                             unit =>
+                             !unit.IsFriendly && !unit.IsCritter && !unit.IsNonCombatPet && !unit.IsPlayer && unit.Attackable &&
+                             unit.DistanceSqr <= 8 * 8 && !unit.IsDead);
+                    }
+                    catch (Exception)
+                    {
+
+                        _aoeTargets = new HashSet<WoWUnit>();
+                    }
+                }
+                return _aoeTargets;
             }
         }
 

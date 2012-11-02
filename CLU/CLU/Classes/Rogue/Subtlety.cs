@@ -431,8 +431,9 @@ namespace CLU.Classes.Rogue
 
         private static bool FoKSafe(WoWUnit unit)
         {
-            return !unit.Debuffs.Select(kvp => kvp.Value).Any(x => CcMechanics.Contains(x.Spell.Mechanic));
+            return !Unit.UnitIsControlled(unit, true);
         }
+
 
         private static void StealthedCombat()
         {
