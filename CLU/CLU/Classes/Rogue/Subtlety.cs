@@ -158,10 +158,25 @@ namespace CLU.Classes.Rogue
         {
             get
             {
-                return new PrioritySelector
-                    (
-                    Spell.CastSpell("Garrote", cond => Me.IsStealthed, "Garrote for pull"),
-                    Spell.CastSpell("Throw", ret => Me.CurrentTarget.Distance <= 30, "Throw for Pull"));
+                return new Decorator
+                    (cond => Me.GotTarget,
+                     new PrioritySelector
+                         (new Decorator
+                              (cond => !Me.IsStealthed,
+                               new PrioritySelector
+                                   (new Decorator
+                                        (cond =>
+                                         Me.CurrentTarget.DistanceSqr > 30 * 30 ||
+                                         !Me.IsSafelyFacing(Me.CurrentTarget, 45f),
+                                         Movement.MovingFacingBehavior()),
+                                    Spell.CastSpell
+                                        ("Throw", cond => Me.CurrentTarget.DistanceSqr < 30 * 30, "Throw to Pull"))),
+                          new Decorator
+                              (cond =>
+                               Me.CurrentTarget.DistanceSqr > Spell.MeleeRange ||
+                               !Me.IsSafelyFacing(Me.CurrentTarget, 45f),
+                               Movement.MovingFacingBehavior()),
+                          Spell.CastSpell("Garrote", cond => true, "Garrote to pull")));
             }
         }
 
