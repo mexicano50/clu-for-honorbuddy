@@ -282,7 +282,8 @@ namespace CLU.Classes.Rogue
                         Spell.CastSpell("Shadow Blades", ret => BuffsSafeForSB, "Shadow Blades"),
                         Spell.CastSpell("Vanish", ret => SnDSafe && RuptureSafe && !AmStealthed
                             && !Me.CurrentTarget.IsTargetingMeOrPet && Me.IsInMyPartyOrRaid
-                            && Buff.PlayerActiveBuffTimeLeft("Shadow Dance") == TimeSpan.Zero, "Vanish"),
+                            && Buff.PlayerActiveBuffTimeLeft("Shadow Dance") == TimeSpan.Zero
+                            && Me.CurrentEnergy > 60, "Vanish"),
                         Spell.CastSpell
                             (
                              "Preparation",
@@ -382,8 +383,14 @@ namespace CLU.Classes.Rogue
                     (Spell.CastSelfSpell("Feint", ret => Me.CurrentTarget != null && ( EncounterSpecific.IsMorchokStomp() ), "Feint"),
                      Spell.CastSpell("Tricks of the Trade", u => TricksTarget, ret => TricksTarget != null, "Tricks of the Trade"),
                      Spell.CastInterupt("Kick", ret => Me.IsWithinMeleeRange, "Kick"),
-                     Spell.CastSpell("Redirect", ret => Me.RawComboPoints > 0 && Me.ComboPoints < 1, "Redirect"));
+                     Spell.CastSpell("Redirect", ret => Me.RawComboPoints > 0 && Me.ComboPoints < 1, "Redirect"),
+                     Spell.CastSpell("Shive", cond => TargetEnraged, "Shiv"));
             }
+        }
+
+        private static bool TargetEnraged
+        {
+            get { return Me.CurrentTarget.Auras.Any(x => x.Value.Spell.Mechanic == WoWSpellMechanic.Enraged); }
         }
 
         private static bool SnDSafe
