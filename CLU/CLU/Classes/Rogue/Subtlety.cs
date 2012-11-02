@@ -1,4 +1,5 @@
 ﻿#region Revision info
+
 /*
  * $Author$
  * $Date$
@@ -8,59 +9,60 @@
  * $LastChangedBy$
  * $ChangesMade$
  */
+
 #endregion
 
-using Styx.TreeSharp;
+using System;
+using System.Collections.Generic;
 using System.Linq;
-using CommonBehaviors.Actions;
 
-using CLU.Helpers;
-using CLU.Lists;
-using Styx.WoWInternals.WoWObjects;
-using CLU.Settings;
 using CLU.Base;
+using CLU.Helpers;
+using CLU.Managers;
+using CLU.Settings;
 
+using JetBrains.Annotations;
+
+using Styx;
 using Styx.CommonBot;
+using Styx.TreeSharp;
+using Styx.WoWInternals;
+using Styx.WoWInternals.WoWObjects;
+
+using Action = Styx.TreeSharp.Action;
 using Rest = CLU.Base.Rest;
 
 namespace CLU.Classes.Rogue
 {
-    class Subtlety : RotationBase
+    [UsedImplicitly]
+    public class Subtlety : RotationBase
     {
+        #region Constants and Fields
 
-        public override string Name
-        {
-            get
-            {
-                return "Subtlety Rogue";
-            }
-        }
+        private const string HemorrhageSubstitute = "Sinister Strike";
 
-        public override string Revision
-        {
-            get
+        private static readonly HashSet<WoWSpellMechanic> CcMechanics = new HashSet<WoWSpellMechanic>
             {
-                return "$Rev$";
-            }
-        }
+                WoWSpellMechanic.Banished,
+                WoWSpellMechanic.Charmed,
+                WoWSpellMechanic.Horrified,
+                WoWSpellMechanic.Incapacitated,
+                WoWSpellMechanic.Polymorphed,
+                WoWSpellMechanic.Sapped,
+                WoWSpellMechanic.Shackled,
+                WoWSpellMechanic.Asleep,
+                WoWSpellMechanic.Frozen
+            };
 
-        public override string KeySpell
-        {
-            get
-            {
-                return "Hemorrhage";
-            }
-        }
-        public override int KeySpellId
-        {
-            get { return 16511; }
-        }
+        private static IEnumerable<WoWUnit> _aoeTargets;
+
+        #endregion
+
+        #region Public Properties
+
         public override float CombatMaxDistance
-        {
-            get
-            {
-                return 3.2f;
-            }
+    {
+            get { return 3.2f; }
         }
 
         // adding some help
@@ -68,18 +70,12 @@ namespace CLU.Classes.Rogue
         {
             get
             {
-                return "\n" +
-                       "----------------------------------------------------------------------\n" +
+                return "\n" + "----------------------------------------------------------------------\n" +
                        "This Rotation will:\n" +
                        "1. Attempt to evade/escape crowd control with Evasion, Cloak of Shadows, Smoke Bomb, Combat Readiness.\n" +
-                       "2. Rotation is set up for Hemorrhage\n" +
-                       "3. AutomaticCooldowns has: \n" +
-                       "==> UseTrinkets \n" +
-                       "==> UseRacials \n" +
-                       "==> UseEngineerGloves \n" +
-                       "4. Attempt to reduce threat with Feint\n" +
-                       "5. Will interupt with Kick\n" +
-                       "6. Tricks of the Trade on best target (tank, then class)\n" +
+                       "2. Rotation is set up for Hemorrhage\n" + "3. AutomaticCooldowns has: \n" + "==> UseTrinkets \n" +
+                       "==> UseRacials \n" + "==> UseEngineerGloves \n" + "4. Attempt to reduce threat with Feint\n" +
+                       "5. Will interupt with Kick\n" + "6. Tricks of the Trade on best target (tank, then class)\n" +
                        "7. Will heal with Recuperate and a Healthstone\n" +
                        "NOTE: PvP uses single target rotation - It's not designed for PvP use. \n" +
                        "Credits to cowdude, kbrebel04\n" +
@@ -87,109 +83,85 @@ namespace CLU.Classes.Rogue
             }
         }
 
-        private static bool IsBehind(WoWUnit target)
+        public override string KeySpell
         {
-            // WoWMathHelper.this.IsBehind(Me.Location, target.Location, target.Rotation, (float)Math.PI * 5 / 6)
-            return target != null && target.MeIsBehind;
+            get { return HemorrhageSubstitute; }
+            }
+
+        public override int KeySpellId
+        {
+            get { return 16511; }
         }
 
-        public override Composite SingleRotation
+        public override Composite Medic
         {
             get
             {
-                WoWPlayer TricksTarget = null;
-                return new PrioritySelector(
-                    ctx => TricksTarget = Unit.BestTricksTarget as WoWPlayer,
-                            // Pause Rotation
-                           new Decorator(ret => CLUSettings.Instance.PauseRotation, new ActionAlwaysSucceed()),
+                return new Decorator
+                    (
+                    ret => Me.HealthPercent < 100 && CLUSettings.Instance.EnableSelfHealing,
+                    new PrioritySelector
+                        (
+                        Item.UseBagItem("Healthstone", ret => Me.HealthPercent < 40, "Healthstone"),
+                        Spell.CastSelfSpell
+                            (
+                             "Smoke Bomb",
+                             ret =>
+                             Me.CurrentTarget != null && Me.HealthPercent < 30 && Me.CurrentTarget.IsTargetingMeOrPet,
+                             "Smoke Bomb"),
+                        Spell.CastSelfSpell
+                            (
+                             "Combat Readiness",
+                             ret =>
+                             Me.CurrentTarget != null && Me.HealthPercent < 40 && Me.CurrentTarget.IsTargetingMeOrPet,
+                             "Combat Readiness"),
+                        Spell.CastSelfSpell
+                            (
+                             "Evasion",
+                             ret =>
+                             Me.HealthPercent < 35 &&
+                             Unit.EnemyUnits.Count(u => u.DistanceSqr < 6 * 6 && u.IsTargetingMeOrPet) >= 1, "Evasion"),
+                        Spell.CastSelfSpell
+                            (
+                             "Cloak of Shadows",
+                             ret => Unit.EnemyUnits.Count(u => u.IsTargetingMeOrPet && u.IsCasting) >= 1,
+                             "Cloak of Shadows"), Poisons.CreateApplyPoisons()));
+            }
+        }
 
-                           // For DS Encounters.
-                           EncounterSpecific.ExtraActionButton(),
+        public override string Name
+        {
+            get { return "Subtlety Rogue"; }
+        }
 
-                           // Don't do anything if we have cast vanish
-                            // new Decorator( ret => Buff.PlayerHasActiveBuff("Vanish"), new ActionAlwaysSucceed()),
+        public override Composite PVERotation
+        {
+            get { return this.SingleRotation; }
+            }
 
-                           // Stealth
-                           Buff.CastBuff("Stealth", ret => CLUSettings.Instance.Rogue.EnableAlwaysStealth && !CLU.IsMounted, "Stealth"),
+        public override Composite PVPRotation
+        {
+            get { return this.SingleRotation; }
+        }
 
-                           // Questing and PvP helpers
-                           new Decorator(
-                               ret => CLUSettings.Instance.EnableMovement,
-                               new PrioritySelector(
-                                   Spell.CastSpell("Premeditation", ret => Buff.PlayerHasBuff("Stealth"), "Premeditation"),
-                                   Spell.CastSpell("Shadowstep",    ret => Me.CurrentTarget != null && !Me.CurrentTarget.IsWithinMeleeRange && !BossList.IgnoreShadowStep.Contains(Unit.CurrentTargetEntry) && !Buff.PlayerHasBuff("Sprint"), "Shadowstep"),
-                                   Spell.CastSelfSpell("Sprint",    ret => Me.IsMoving && Unit.DistanceToTargetBoundingBox() >= 15, "Sprint"),
-                                   Spell.CastSpell("Garrote",       ret => Me.CurrentTarget != null && IsBehind(Me.CurrentTarget) && Buff.PlayerHasBuff("Stealth"), "Garrote"),
-                                   Spell.CastSpell("Cheap Shot",    ret => Me.CurrentTarget != null && !SpellManager.HasSpell("Garrote") || !IsBehind(Me.CurrentTarget) && Buff.PlayerHasBuff("Stealth"), "Cheap Shot"),
-                                   Spell.CastSpell("Ambush",        ret => !SpellManager.HasSpell("Cheap Shot") && IsBehind(Me.CurrentTarget) && Buff.PlayerHasBuff("Stealth"), "Ambush"))),
-
-                           // Trinkets & Cooldowns
-                           new Decorator(
-                               ret => Me.CurrentTarget != null && (Unit.UseCooldowns()),
-                               new PrioritySelector(
-                                   Item.UseTrinkets(),
-                                   Racials.UseRacials(),
-                                   Buff.CastBuff("Lifeblood", ret => true, "Lifeblood"), // Thanks Kink
-                                   Item.UseEngineerGloves())),
-
-                           // Experimental Rotation
-                           new Decorator(
-                               ret => CLUSettings.Instance.Rogue.SubtletyRogueRotationSelection == SubtletyRogueRotation.ImprovedTestVersion,
-                               new PrioritySelector(
-                                    //Spell.CastSpell("Feint", ret => Me.CurrentTarget != null && (Me.CurrentTarget.ThreatInfo.RawPercent > 80 || EncounterSpecific.IsMorchokStomp()) && CLUSettings.Instance.EnableSelfHealing, "Feint"),
-                                   Spell.CastInterupt("Kick",               ret => true, "Kick"),
-                                   Spell.CastSpell("Arcane Torrent",        ret => Me.CurrentEnergy <= 50, "Arcane Torrent"),
-                                   Spell.CastSpell("Redirect",              ret => Me.RawComboPoints > 0 && Me.ComboPoints < 1, "Redirect"),
-                                   Spell.CastSpell("Tricks of the Trade", u => TricksTarget, ret => TricksTarget != null && TricksTarget.IsAlive && !TricksTarget.IsHostile && TricksTarget.IsInMyParty && CLUSettings.Instance.Rogue.UseTricksOfTheTrade && Me.CurrentEnergy >= 60 && Me.ComboPoints < 5 && (!Buff.PlayerHasBuff("Stealth") && Spell.SpellCooldown("Premeditation").TotalSeconds < 4 && !Spell.SpellOnCooldown("Shadow Dance") || !Buff.PlayerHasBuff("Stealth") && !Spell.SpellOnCooldown("Premeditation") && !Spell.SpellOnCooldown("Shadow Dance")), "Tricks of the Trade"),
-                                   Spell.CastSpell("Garrote",               ret => Me.CurrentTarget != null && Me.ComboPoints <= 4 && Buff.PlayerHasBuff("Stealth") && !Buff.TargetHasDebuff("Rupture") && !Buff.TargetHasDebuff("Garrote"), "Garrote"),
-                                   Spell.CastSpell("Shadow Dance",          ret => Me.CurrentEnergy >= 60 && Me.ComboPoints < 5 && (!Buff.PlayerHasBuff("Stealth") && Spell.SpellCooldown("Premeditation").TotalSeconds < 4 || !Buff.PlayerHasBuff("Stealth") && Spell.SpellCooldown("Premeditation").TotalSeconds < 4), "Shadow Dance"),
-                                   Spell.CastSpell("Vanish",                ret => Me.CurrentEnergy >= 60 && Me.ComboPoints <= 1 && !Buff.PlayerHasActiveBuff("Shadow Dance") && !Buff.PlayerHasActiveBuff("Master of Subtlety") && !Buff.TargetHasDebuff("Find Weakness") && !Buff.PlayerHasActiveBuff("Vanish") && !Spell.SpellOnCooldown("Premeditation"), "Vanish"),
-                                   Spell.CastSpell("Preparation",           ret => Spell.SpellCooldown("Vanish").TotalSeconds > 60 && !Buff.PlayerHasActiveBuff("Vanish") && !Buff.PlayerHasActiveBuff("Shadow Dance"), "Preparation"),
-                                   Spell.CastSpell("Rupture",               ret => Me.ComboPoints == 5 && !Buff.TargetHasDebuff("Rupture") && Buff.PlayerHasActiveBuff("Master of Subtlety"), "Rupture"),
-                                   Spell.CastSelfSpell("Slice and Dice",    ret => !Buff.PlayerHasBuff("Slice and Dice"), "Slice and Dice"),
-                                   Spell.CastSelfSpell("Slice and Dice",    ret => Buff.PlayerBuffTimeLeft("Slice and Dice") <= 3 && Me.ComboPoints == 5, "Slice and Dice"),
-                                   Spell.CastSpell("Rupture",               ret => Me.ComboPoints == 5 && !Buff.TargetHasDebuff("Rupture") || Me.ComboPoints == 5 && Buff.TargetDebuffTimeLeft("Rupture").TotalSeconds <= 4, "Rupture"),
-                                   Spell.CastSpell("Eviscerate",            ret => Me.ComboPoints == 5 && Buff.TargetDebuffTimeLeft("Rupture").TotalSeconds > 4 && Buff.PlayerBuffTimeLeft("Slice and Dice") > 3, "Eviscerate"),
-                                   Spell.CastSpell("Premeditation",         ret => Me.ComboPoints <= 2 || Buff.PlayerHasActiveBuff("Stealth") || Me.ComboPoints <= 2 || Buff.PlayerHasActiveBuff("Shadow Dance"), "Premeditation"),
-                                   Spell.CastSpell("Ambush",                ret => Me.CurrentTarget != null && (IsBehind(Me.CurrentTarget) || BossList.BackstabIds.Contains(Unit.CurrentTargetEntry)) && Me.ComboPoints <= 4, "Ambush"),
-                                   Spell.CastSpell("Ambush",                ret => Me.CurrentTarget != null && Buff.PlayerHasBuff("Stealth"), "Ambush"),
-                                   Spell.CastSpell("Hemorrhage",            ret => Me.ComboPoints <= 4 && !Buff.PlayerHasActiveBuff("Shadow Dance") && !Buff.PlayerHasBuff("Stealth") && Buff.TargetDebuffTimeLeft("Hemorrhage").TotalSeconds < 2 || Me.ComboPoints <= 4 && !Buff.PlayerHasActiveBuff("Shadow Dance") && !Buff.PlayerHasBuff("Stealth") && !Buff.TargetHasDebuff("Hemorrhage"), "Hemorrhage"),
-                                   Spell.CastSpell("Backstab",              ret => Me.CurrentTarget != null && (IsBehind(Me.CurrentTarget) || BossList.BackstabIds.Contains(Unit.CurrentTargetEntry)) && !Buff.PlayerHasActiveBuff("Shadow Dance") && !Buff.PlayerHasBuff("Stealth") && Me.ComboPoints < 4 && Spell.SpellOnCooldown("Shadow Dance") && !Spell.SpellOnCooldown("Vanish") && Spell.SpellOnCooldown("Premeditation"), "Backstab"),
-                                   Spell.CastSpell("Backstab",              ret => Me.CurrentTarget != null && (IsBehind(Me.CurrentTarget) || BossList.BackstabIds.Contains(Unit.CurrentTargetEntry)) && !Buff.PlayerHasActiveBuff("Shadow Dance") && !Buff.PlayerHasBuff("Stealth") && Me.ComboPoints < 4 && !Spell.SpellOnCooldown("Shadow Dance") && Spell.SpellOnCooldown("Vanish") && Spell.SpellOnCooldown("Premeditation"), "Backstab"),
-                                   Spell.CastSpell("Backstab",              ret => Me.CurrentTarget != null && (IsBehind(Me.CurrentTarget) || BossList.BackstabIds.Contains(Unit.CurrentTargetEntry)) && !Buff.PlayerHasActiveBuff("Shadow Dance") && !Buff.PlayerHasBuff("Stealth") && Me.ComboPoints < 4 && !Spell.SpellOnCooldown("Shadow Dance") && !Spell.SpellOnCooldown("Vanish") && Spell.SpellOnCooldown("Premeditation"), "Backstab"),
-                                   Spell.CastSpell("Backstab",              ret => Me.CurrentTarget != null && (IsBehind(Me.CurrentTarget) || BossList.BackstabIds.Contains(Unit.CurrentTargetEntry)) && !Buff.PlayerHasActiveBuff("Shadow Dance") && !Buff.PlayerHasBuff("Stealth") && Me.ComboPoints >= 2 && Me.ComboPoints < 4 && Spell.SpellOnCooldown("Shadow Dance") && !Spell.SpellOnCooldown("Vanish") && !Spell.SpellOnCooldown("Premeditation"), "Backstab"),
-                                   Spell.CastSpell("Backstab",              ret => Me.CurrentTarget != null && (IsBehind(Me.CurrentTarget) || BossList.BackstabIds.Contains(Unit.CurrentTargetEntry)) && !Buff.PlayerHasActiveBuff("Shadow Dance") && !Buff.PlayerHasBuff("Stealth") && Me.ComboPoints < 4 && Spell.SpellOnCooldown("Shadow Dance") && Spell.SpellOnCooldown("Vanish"), "Backstab"),
-                                   Spell.CastSpell("Backstab",              ret => Me.CurrentTarget != null && (IsBehind(Me.CurrentTarget) || BossList.BackstabIds.Contains(Unit.CurrentTargetEntry)) && !Buff.PlayerHasActiveBuff("Shadow Dance") && !Buff.PlayerHasBuff("Stealth") && Me.ComboPoints == 4 && Me.CurrentEnergy > 70 && Spell.SpellOnCooldown("Shadow Dance"), "Backstab"),
-                                   Spell.CastSpell("Backstab",              ret => Me.CurrentTarget != null && (IsBehind(Me.CurrentTarget) || BossList.BackstabIds.Contains(Unit.CurrentTargetEntry)) && !Buff.PlayerHasActiveBuff("Shadow Dance") && !Buff.PlayerHasBuff("Stealth") && Me.ComboPoints == 4 && Me.CurrentEnergy > 70 && !Spell.SpellOnCooldown("Shadow Dance") && Spell.SpellOnCooldown("Premeditation"), "Backstab"),
-                                   Spell.CastSpell("Backstab",              ret => Me.CurrentTarget != null && (IsBehind(Me.CurrentTarget) || BossList.BackstabIds.Contains(Unit.CurrentTargetEntry)) && !Buff.PlayerHasActiveBuff("Shadow Dance") && !Buff.PlayerHasBuff("Stealth") && Me.ComboPoints == 4 && Me.CurrentEnergy > 70 && !Spell.SpellOnCooldown("Shadow Dance") && !Spell.SpellOnCooldown("Premeditation"), "Backstab"),
-                                   Spell.CastSpell("Hemorrhage",            ret => Me.CurrentTarget != null && (!IsBehind(Me.CurrentTarget)) && Me.ComboPoints < 4, "Hemorrhage"),
-                                   Spell.CastSpell("Hemorrhage",            ret => Me.CurrentTarget != null && (!IsBehind(Me.CurrentTarget)) && Me.ComboPoints < 5 && Me.CurrentEnergy > 70, "Hemorrhage"))),
-
-                           // Default Rotation
-                           new Decorator(
-                               ret => CLUSettings.Instance.Rogue.SubtletyRogueRotationSelection == SubtletyRogueRotation.Default,
-                               new PrioritySelector(
-                                    //threat
-                                   Spell.CastSpell("Feint",                 ret => Me.CurrentTarget != null && (Me.CurrentTarget.ThreatInfo.RawPercent > 80 || EncounterSpecific.IsMorchokStomp()), "Feint"),
-                                   Spell.CastInterupt("Kick",               ret => true, "Kick"),
-                                   Spell.CastSpell("Redirect",              ret => Me.RawComboPoints > 0 && Me.ComboPoints < 1, "Redirect"),
-                                   // Spell.CastAreaSpell("Fan of Knives", 8, false, CLUSettings.Instance.Rogue.SubtletyFanOfKnivesCount, 0.0, 0.0, ret => true, "Fan of Knives"),
-                                   Spell.CastSpell("Tricks of the Trade", u => Unit.BestTricksTarget, ret => CLUSettings.Instance.Rogue.UseTricksOfTheTrade, "Tricks of the Trade"),
-                                   Spell.CastSpell("Shadow Dance",          ret => Me.CurrentEnergy > 85 && Me.ComboPoints < 5 && (!Buff.PlayerHasActiveBuff("Vanish") || !Buff.PlayerHasActiveBuff("Stealth")), "Shadow Dance"),
-                                   Spell.CastSpell("Vanish",                ret => Me.CurrentEnergy > 60 && Me.ComboPoints <= 1 && Spell.SpellCooldown("Shadowstep").TotalSeconds <= 0 && !Buff.PlayerHasActiveBuff("Shadow Dance") && !Buff.PlayerHasActiveBuff("Master of Subtlety") && !Buff.TargetHasDebuff("Find Weakness"), "Vanish"),
-                                   Spell.CastSpell("Shadowstep",            ret => ((Buff.PlayerHasActiveBuff("Shadow Dance") && Buff.TargetHasDebuff("Find Weakness")) || (Buff.PlayerHasActiveBuff("Vanish") || Buff.PlayerHasActiveBuff("Stealth"))) && !BossList.IgnoreShadowStep.Contains(Unit.CurrentTargetEntry), "Shadowstep"),
-                                   Spell.CastSpell("Premeditation",         ret => Me.ComboPoints <= 2, "Premeditation"),
-                                   Spell.CastSpell("Ambush",                ret => Me.CurrentTarget != null && (IsBehind(Me.CurrentTarget) || BossList.BackstabIds.Contains(Unit.CurrentTargetEntry)) && Me.ComboPoints <= 4, "Ambush"),
-                                   Spell.CastSpell("Preparation",           ret => Spell.SpellCooldown("Vanish").TotalSeconds > 60, "Preparation"),
-                                   Spell.CastSelfSpell("Slice and Dice",    ret => Buff.PlayerBuffTimeLeft("Slice and Dice") < 3 && Me.ComboPoints == 5, "Slice and Dice"),
-                                   Spell.CastSpell("Rupture",               ret => Me.ComboPoints == 5 && !Buff.TargetHasDebuff("Rupture"), "Rupture"),
-                                   Spell.CastSelfSpell("Recuperate",        ret => Me.ComboPoints == 5 && Buff.PlayerBuffTimeLeft("Recuperate") < 3, "Recuperate"),
-                                   Spell.CastSpell("Eviscerate",            ret => Me.ComboPoints == 5 && Buff.TargetDebuffTimeLeft("Rupture").TotalSeconds > 1, "Eviscerate"),
-                                   Spell.CastSpell("Hemorrhage",            ret => Me.CurrentTarget != null && Me.ComboPoints < 4 || !IsBehind(Me.CurrentTarget), "Hemorrhage"),
-                                   Spell.CastSpell("Hemorrhage",            ret => Me.CurrentTarget != null && ((Me.ComboPoints < 5 && Me.CurrentEnergy > 80) || !IsBehind(Me.CurrentTarget)), "Hemorrhage"),
-                                   Spell.CastSpell("Backstab",              ret => Me.CurrentTarget != null && (IsBehind(Me.CurrentTarget) || BossList.BackstabIds.Contains(Unit.CurrentTargetEntry)) && Me.ComboPoints < 4, "Backstab"),
-                                   Spell.CastSpell("Backstab",              ret => Me.CurrentTarget != null && (IsBehind(Me.CurrentTarget) || BossList.BackstabIds.Contains(Unit.CurrentTargetEntry)) && Me.ComboPoints < 5 && Me.CurrentEnergy > 80, "Backstab")
-                               )));
+        public override Composite PreCombat
+        {
+            get
+            {
+                return new Decorator
+                    (
+                    ret =>
+                    !Me.Mounted && !Me.IsDead && !Me.Combat && !Me.IsFlying && !Me.IsOnTransport && !Me.HasAura("Food") &&
+                    !Me.HasAura("Drink"), new PrioritySelector
+                                              (
+                                              // Stealth
+                                              Spell.CastSelfSpell
+                                                  (
+                                                   "Stealth",
+                                                   ret =>
+                                                   !Buff.PlayerHasBuff("Stealth") &&
+                                                   CLUSettings.Instance.Rogue.EnableAlwaysStealth && !CLU.IsMounted,
+                                                   "Stealth"), Poisons.CreateApplyPoisons()));
             }
         }
 
@@ -198,33 +170,209 @@ namespace CLU.Classes.Rogue
             get { return new PrioritySelector(Spell.CastSpell("Throw", ret => Me.CurrentTarget.Distance <= 30, "Throw for Pull")); }
         }
 
-        public override Composite Medic
+        public override Composite Resting
+        {
+            get { return Rest.CreateDefaultRestBehaviour(); }
+            }
+
+        public override string Revision
+        {
+            get { return "$Rev$"; }
+        }
+
+        private static Action Reset
         {
             get
             {
-                return new Decorator(
-                           ret => Me.HealthPercent < 100 && CLUSettings.Instance.EnableSelfHealing,
-                           new PrioritySelector(
-                               Item.UseBagItem("Healthstone",           ret => Me.HealthPercent < 40, "Healthstone"),
-                               Spell.CastSelfSpell("Smoke Bomb",        ret => Me.CurrentTarget != null && Me.HealthPercent < 30 && Me.CurrentTarget.IsTargetingMeOrPet, "Smoke Bomb"),
-                               Spell.CastSelfSpell("Combat Readiness",  ret => Me.CurrentTarget != null && Me.HealthPercent < 40 && Me.CurrentTarget.IsTargetingMeOrPet, "Combat Readiness"),
-                               Spell.CastSelfSpell("Evasion",           ret => Me.HealthPercent < 35 && Unit.EnemyMeleeUnits.Count(u => u.DistanceSqr < 6 * 6 && u.IsTargetingMeOrPet) >= 1, "Evasion"),
-                               Spell.CastSelfSpell("Cloak of Shadows",  ret => Unit.EnemyMeleeUnits.Count(u => u.IsTargetingMeOrPet && u.IsCasting) >= 1, "Cloak of Shadows"),
-                               Poisons.CreateApplyPoisons()));
+                return new Action
+                    (delegate
+        {
+                        _aoeTargets = null;
+                        return RunStatus.Failure;
+                    });
             }
         }
 
-        public override Composite PreCombat
+        public override Composite SingleRotation
         {
             get
             {
-                return new Decorator(
-                           ret => !Me.Mounted && !Me.IsDead && !Me.Combat && !Me.IsFlying && !Me.IsOnTransport && !Me.HasAura("Food") && !Me.HasAura("Drink"),
-                           new PrioritySelector(
-                                // Stealth
-                               Spell.CastSelfSpell("Stealth", ret => !Buff.PlayerHasBuff("Stealth") && CLUSettings.Instance.Rogue.EnableAlwaysStealth && !CLU.IsMounted, "Stealth"),
-                               Poisons.CreateApplyPoisons()));
+                return new Decorator
+                    (
+                    cond =>
+                    Me.CurrentTarget != null && Me.CurrentTarget.Attackable && Me.CurrentTarget.IsWithinMeleeRange,
+                    new PrioritySelector(Reset, Stealthed, NotStealthed));
             }
+        }
+
+        #endregion
+
+        #region Properties
+
+        private static bool AmStealthed
+        {
+            get
+            {
+                return Me.IsStealthed || Buff.PlayerActiveBuffTimeLeft("Subterfuge") > TimeSpan.Zero ||
+                       Buff.PlayerActiveBuffTimeLeft("Shadow Dance") > TimeSpan.Zero;
+            }
+        }
+
+        private static bool AnticipationSafe
+        {
+            get { return ( HasAnticipation && Me.Auras["Anticipation"].StackCount < 4 ); }
+        }
+
+        private static IEnumerable<WoWUnit> AoETargets
+        {
+            get
+            {
+                if ( _aoeTargets == null )
+                {
+                    try
+                    {
+                        _aoeTargets = ObjectManager.GetObjectsOfType<WoWUnit>(false, false).Where
+                            (
+                             unit =>
+                             !unit.IsFriendly && !unit.IsCritter && !unit.IsNonCombatPet && !unit.IsPlayer && unit.Attackable &&
+                             unit.DistanceSqr <= 8 * 8 && !unit.IsDead);
+                    }
+                    catch (Exception)
+                    {
+
+                        _aoeTargets = new HashSet<WoWUnit>();
+                    }
+                }
+                return _aoeTargets;
+            }
+        }
+
+        private static bool BehindTarget
+        {
+            get { return Me.CurrentTarget != null && Me.IsBehind(Me.CurrentTarget); }
+        }
+
+        private static Composite ComboPointGen
+        {
+            get
+            {
+                return new Decorator
+                    (
+                    cond => ( AnticipationSafe || HATSafe ) && !AmStealthed,
+                    new PrioritySelector
+                        (
+                        Spell.CastSpell
+                            (
+                             "Fan of Knives",
+                             ret =>
+                             AoETargets.All(FoKSafe) &&
+                             AoETargets.Count() > CLUSettings.Instance.Rogue.SubtletyFanOfKnivesCount &&
+                             CLUSettings.Instance.UseAoEAbilities, "Fan of Knives"),
+                        Spell.CastSpell
+                            (
+                             HemorrhageSubstitute,
+                             ret => Buff.TargetDebuffTimeLeft("Hemorrhage") < TimeSpan.FromSeconds(3), "Hemo Debuff"),
+                        Spell.CastSpell
+                            (
+                             "Backstab", ret => Buff.TargetDebuffTimeLeft("Hemorrhage") >= TimeSpan.FromSeconds(3) && BehindTarget,
+                             "Backstab"),
+                        Spell.CastSpell(HemorrhageSubstitute, ret => Me.CurrentEnergy > 35, "Hemorrhage")));
+            }
+        }
+
+        private static Composite Cooldowns
+        {
+            get
+            {
+                return new Decorator
+                    (
+                    cond => CLUSettings.Instance.UseCooldowns,
+                    new PrioritySelector
+                        (
+                        Spell.CastSpell("Shadow Dance", ret => BuffsSafeForSD, "Shadow Dance"),
+                        Spell.CastSpell("Shadow Blades", ret => BuffsSafeForSB, "Shadow Blades"),
+                        Spell.CastSpell
+                            (
+                             "Vanish",
+                             ret =>
+                             SnDSafe && RuptureSafe && !AmStealthed && !Me.CurrentTarget.IsTargetingMeOrPet &&
+                             Buff.PlayerActiveBuffTimeLeft("Shadow Dance") == TimeSpan.Zero, "Vanish"),
+                        Spell.CastSpell
+                            (
+                             "Preparation",
+                             ret => SpellManager.HasSpell(14185) && SpellManager.Spells["Vanish"].Cooldown,
+                             "Preparation")));
+            }
+        }
+
+        private static bool BuffsSafeForSB
+        {
+            get { return Buff.PlayerActiveBuffTimeLeft("Slice and Dice") > TimeSpan.FromSeconds(12) && Buff.PlayerActiveBuffTimeLeft("Rupture") > TimeSpan.FromSeconds(12); }
+        }
+
+        private static bool BuffsSafeForSD
+        {
+            get { return Buff.PlayerActiveBuffTimeLeft("Slice and Dice") > TimeSpan.FromSeconds(8) && Buff.PlayerActiveBuffTimeLeft("Rupture") > TimeSpan.FromSeconds(8); }
+        }
+
+        private static bool CrimsonTempestDown
+        {
+            get
+            {
+                return AoETargets.Any
+                    (
+                     x =>
+                     !x.Debuffs.Any(y => y.Key.Equals("Crimson Tempest", StringComparison.InvariantCultureIgnoreCase)));
+            }
+        }
+
+        private static Composite Finishers
+        {
+            get
+        {
+                return new Decorator
+                    (
+                    cond => Me.ComboPoints > 1,
+                    new PrioritySelector
+                        (
+                        Spell.CastSpell
+                            (
+                             "Crimson Tempest",
+                             ret =>
+                             AoETargets.Count() > 4 && AoETargets.All(FoKSafe) && CrimsonTempestDown &&
+                             CLUSettings.Instance.UseAoEAbilities, "Crimson Tempest"),
+                        Spell.CastSpell
+                            ("Eviscerate", ret => Me.ComboPoints >= 5 && SnDSafe && RuptureSafe, "Eviscerate"),
+                        Spell.CastSpell("Rupture", ret => Me.ComboPoints >= 5 && SnDSafe && !RuptureSafe, "Rupture"),
+                        Spell.CastSpell
+                            (
+                             "Slice and Dice", ret => Buff.PlayerActiveBuffTimeLeft("Slice and Dice").TotalSeconds < 2,
+                             "SnD")));
+            }
+        }
+
+        private static bool HATSafe
+        {
+            get
+            {
+                return ( Me.ComboPoints == 3 && Me.EnergyPercent > 40 ) ||
+                       ( Me.ComboPoints == 4 && Me.EnergyPercent > 70 );
+            }
+        }
+
+        private static bool HasAnticipation
+        {
+            get { return TalentManager.HasTalent(18); }
+        }
+
+        private static Composite NotStealthed
+            {
+            get { return new Decorator(cond => !AmStealthed, new PrioritySelector(Cooldowns, Finishers, ComboPointGen)); }
+            }
+
+        private static bool RuptureSafe
+        {
+            get { return Buff.TargetDebuffTimeLeft("Rupture") >= TimeSpan.FromSeconds(5); }
         }
 
         private static bool SafeToBreakStealth  
@@ -236,28 +384,96 @@ namespace CLU.Classes.Rogue
             }
         }
 
-        public override Composite Resting
+        private static bool SnDSafe
+        {
+            get { return Buff.PlayerActiveBuffTimeLeft("Slice and Dice") >= TimeSpan.FromSeconds(3); }
+        }
+
+        private static Composite StealthCPGen
         {
             get
             {
-                return Rest.CreateDefaultRestBehaviour();
+                return new Decorator
+                    (
+                    cond => AnticipationSafe || HATSafe,
+                    new PrioritySelector
+                        (
+                        Spell.CastSpell
+                            ("Garrote", ret => Buff.TargetDebuffTimeLeft("Garrote") == TimeSpan.Zero, "Garrote"),
+                        Spell.CastSpell("Ambush", ret => Me.ComboPoints < 4 || AnticipationSafe, "Ambush"),
+                        Spell.CastSpell
+                            (
+                             HemorrhageSubstitute, ret => ( Me.ComboPoints < 5 || AnticipationSafe ) && !BehindTarget,
+                             "Hemorrhage @ Stealthed")));
             }
         }
 
-        public override Composite PVPRotation
+        private static Composite Stealthed
         {
             get
             {
-                return this.SingleRotation;
+                return new Decorator
+                    (
+                    cond => AmStealthed,
+                    new PrioritySelector
+                        (Spell.CastSpell(14183, ret => Me.ComboPoints < 4, "Premeditation"), Finishers, StealthCPGen));
             }
         }
 
-        public override Composite PVERotation
+        #endregion
+
+        #region Methods
+
+        internal override void OnPulse()
         {
-            get
+            StealthedCombat();
+        }
+
+        private static bool FoKSafe(WoWUnit unit)
+        {
+            return !unit.Debuffs.Select(kvp => kvp.Value).Any(x => CcMechanics.Contains(x.Spell.Mechanic));
+        }
+
+        private static void StealthedCombat()
+        {
+            if ( Me.CurrentTarget == null || Me.CurrentTarget.IsDead ||
+                 ( !Me.CurrentTarget.IsHostile && !Unit.IsTrainingDummy(Me.CurrentTarget) ) ||
+                 !Me.CurrentTarget.Attackable )
             {
-                return this.SingleRotation;
+                return;
+            }
+
+            if ( ( !Me.IsStealthed && !Buff.PlayerHasActiveBuff("Vanish") ) || !SafeToBreakStealth ||
+                 Buff.PlayerActiveBuffTimeLeft("Subterfuge") > TimeSpan.Zero )
+            {
+                return;
+        }
+
+            // If we're not behind, attempt to shadowstep and wait for next pulse.
+            if ( SpellManager.HasSpell("Shadowstep") && !StyxWoW.Me.IsBehind(Me.CurrentTarget) &&
+                 SpellManager.CanCast("Shadowstep", Me.CurrentTarget) )
+            {
+                CLULogger.Log(" [Casting] Shadowstep on {0} @ StealthedCombat", CLULogger.SafeName(Me.CurrentTarget));
+                SpellManager.Cast("Shadowstep");
+            }
+            else if ( Buff.TargetDebuffTimeLeft("Garrote") ==
+                      TimeSpan.Zero )
+            {
+                CLULogger.Log(" [Casting] Garrote on {0} @ StealthCombat", CLULogger.SafeName(Me.CurrentTarget));
+                SpellManager.Cast("Garrote");
+            }
+            else if ( BehindTarget )
+        {
+                CLULogger.Log(" [Casting] Ambush on {0} @ StealthCombat", CLULogger.SafeName(Me.CurrentTarget));
+                SpellManager.Cast("Ambush");
+            }
+            else
+            {
+                CLULogger.Log(" [Casting] Hemorrhage on {0} @ StealthedCombat", CLULogger.SafeName(Me.CurrentTarget));
+                SpellManager.Cast(HemorrhageSubstitute);
             }
         }
+
+        #endregion
     }
 }

@@ -46,6 +46,18 @@ namespace CLU.Classes.Rogue
 
         private static bool _tricksTargetChecked;
 
+        private static readonly HashSet<WoWSpellMechanic> CcMechanics = new HashSet<WoWSpellMechanic> {
+            WoWSpellMechanic.Banished,
+            WoWSpellMechanic.Charmed,
+            WoWSpellMechanic.Horrified,
+            WoWSpellMechanic.Incapacitated,
+            WoWSpellMechanic.Polymorphed,
+            WoWSpellMechanic.Sapped,
+            WoWSpellMechanic.Shackled,
+            WoWSpellMechanic.Asleep,
+            WoWSpellMechanic.Frozen
+        };
+
         #endregion
 
         #region Public Properties
@@ -191,7 +203,7 @@ namespace CLU.Classes.Rogue
                      Spell.CastInterupt("Kick", ret => Me.IsWithinMeleeRange, "Kick"),
                      Spell.CastSpell("Redirect", ret => Me.RawComboPoints > 0 && Me.ComboPoints < 1, "Redirect"),
                      //AoEDebug,
-                     //AoE,
+                     AoE,
                      Spell.CastSelfSpell
                          ("Slice and Dice", ret => !Buff.PlayerHasActiveBuff("Slice and Dice"), "Slice and Dice"),
                      Vanish,
@@ -248,7 +260,7 @@ namespace CLU.Classes.Rogue
                 return new Decorator
                     (ret =>
                      AoETargets.All(x => FoKSafe(x) && x.Combat) &&
-                     AoETargets.Count() >= CLUSettings.Instance.Rogue.AssasinationFanOfKnivesCount,
+                     AoETargets.Count() >= CLUSettings.Instance.Rogue.AssasinationFanOfKnivesCount && CLUSettings.Instance.UseAoEAbilities,
                      new PrioritySelector
                          (Spell.CastSelfSpell
                               ("Crimson Tempest",
@@ -549,25 +561,8 @@ namespace CLU.Classes.Rogue
 
         private static bool FoKSafe(WoWUnit unit)
         {
-            return
-                !unit.Debuffs.Select(kvp => kvp.Value).Any
-                     (x =>
-                      x.Spell.Mechanic == WoWSpellMechanic.Banished || x.Spell.Mechanic == WoWSpellMechanic.Charmed ||
-                      x.Spell.Mechanic == WoWSpellMechanic.Horrified ||
-                      x.Spell.Mechanic == WoWSpellMechanic.Incapacitated ||
-                      x.Spell.Mechanic == WoWSpellMechanic.Polymorphed || x.Spell.Mechanic == WoWSpellMechanic.Sapped ||
-                      x.Spell.Mechanic == WoWSpellMechanic.Shackled || x.Spell.Mechanic == WoWSpellMechanic.Asleep ||
-                      x.Spell.Mechanic == WoWSpellMechanic.Frozen);
+            return !Unit.UnitIsControlled(unit, true);
         }
-
-        //private static bool IsCcMechanic(WoWSpell spell)
-        //{
-        //    return spell.Mechanic == WoWSpellMechanic.Banished || spell.Mechanic == WoWSpellMechanic.Charmed ||
-        //           spell.Mechanic == WoWSpellMechanic.Horrified || spell.Mechanic == WoWSpellMechanic.Incapacitated ||
-        //           spell.Mechanic == WoWSpellMechanic.Polymorphed || spell.Mechanic == WoWSpellMechanic.Sapped ||
-        //           spell.Mechanic == WoWSpellMechanic.Shackled || spell.Mechanic == WoWSpellMechanic.Asleep ||
-        //           spell.Mechanic == WoWSpellMechanic.Frozen;
-        //}
 
         private static void StealthedCombat()
         {

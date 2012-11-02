@@ -513,7 +513,7 @@ namespace CLU.Base
         /// <returns>true if a baws</returns>
         public static bool IsBoss(WoWUnit unit)
         {
-            return unit != null && BossList.BossIds.Contains(unit.Entry);
+            return unit != null && (BossList.BossIds.Contains(unit.Entry) || unit.IsBoss);
         }
 
         /// <summary>
