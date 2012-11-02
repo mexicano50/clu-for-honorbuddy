@@ -157,6 +157,7 @@ Credits: kbrebel04
                 return new PrioritySelector(
                     new Decorator(ret => CLUSettings.Instance.EnableMovement && CLU.LocationContext != GroupLogic.Battleground,
                         new PrioritySelector(
+                            new Decorator(ret=> !Me.IsSafelyFacing(Me.CurrentTarget), Me.CurrentTarget.Face()),
                             Spell.CastSpell("Charge", ret => Me.CurrentTarget != null && Me.CurrentTarget.DistanceSqr > 3.2 * 3.2 && Navigator.CanNavigateFully(Me.Location, Me.CurrentTarget.Location), "Charge"),
                            Spell.CastOnUnitLocation("Heroic Leap", ret => Me.CurrentTarget, ret => Me.CurrentTarget != null &&
                                 Me.CurrentTarget.DistanceSqr > 3.2 * 3.2 &&
