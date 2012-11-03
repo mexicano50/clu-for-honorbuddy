@@ -295,32 +295,33 @@ namespace CLU.Classes.Rogue
             get
             {
                 return new Decorator
-                    (
-                    cond => CLUSettings.Instance.UseCooldowns,
-                    new PrioritySelector
-                        (
-                        Spell.CastSpell("Shadow Dance", ret => BuffsSafeForSD, "Shadow Dance"),
-                        Spell.CastSpell("Shadow Blades", ret => BuffsSafeForSB, "Shadow Blades"),
-                        Spell.CastSpell("Vanish", ret => SnDSafe && RuptureSafe && !AmStealthed
-                            && !Me.CurrentTarget.IsTargetingMeOrPet && Me.IsInMyPartyOrRaid
-                            && Buff.PlayerActiveBuffTimeLeft("Shadow Dance") == TimeSpan.Zero
-                            && Me.CurrentEnergy > 40, "Vanish"),
-                        Spell.CastSpell
-                            (
-                             "Preparation",
-                             ret => SpellManager.HasSpell(14185) && SpellManager.Spells["Vanish"].Cooldown,
-                             "Preparation")));
+                    (cond => CLUSettings.Instance.UseCooldowns,
+                     new PrioritySelector
+                         (Spell.CastSpell("Shadow Dance", ret => BuffsSafeForSD, "Shadow Dance"),
+                          Spell.CastSpell("Shadow Blades", ret => BuffsSafeForSB, "Shadow Blades"),
+                          Spell.CastSpell
+                              ("Vanish",
+                               ret =>
+                               SnDSafe && RuptureSafe && !AmStealthed &&
+                               ( ( !Me.CurrentTarget.IsTargetingMeOrPet && Me.IsInMyPartyOrRaid ) ||
+                                 Unit.IsTrainingDummy(Me.CurrentTarget) ) &&
+                               Buff.PlayerActiveBuffTimeLeft("Shadow Dance") == TimeSpan.Zero && Me.CurrentEnergy > 30,
+                               "Vanish"),
+                          Spell.CastSpell
+                              ("Preparation",
+                               ret => SpellManager.HasSpell(14185) && SpellManager.Spells["Vanish"].Cooldown,
+                               "Preparation")));
             }
         }
 
         private static bool BuffsSafeForSB
         {
-            get { return Buff.PlayerActiveBuffTimeLeft("Slice and Dice") > TimeSpan.FromSeconds(12) && Buff.PlayerActiveBuffTimeLeft("Rupture") > TimeSpan.FromSeconds(12); }
+            get { return Buff.PlayerActiveBuffTimeLeft("Slice and Dice") > TimeSpan.FromSeconds(12) && Buff.TargetDebuffTimeLeft("Rupture") > TimeSpan.FromSeconds(12); }
         }
 
         private static bool BuffsSafeForSD
         {
-            get { return Buff.PlayerActiveBuffTimeLeft("Slice and Dice") > TimeSpan.FromSeconds(8) && Buff.PlayerActiveBuffTimeLeft("Rupture") > TimeSpan.FromSeconds(8); }
+            get { return Buff.PlayerActiveBuffTimeLeft("Slice and Dice") > TimeSpan.FromSeconds(8) && Buff.TargetDebuffTimeLeft("Rupture") > TimeSpan.FromSeconds(8); }
         }
 
         private static bool CrimsonTempestDown
