@@ -731,7 +731,7 @@ namespace CLU.Base
                     if (onUnit != null && onUnit(a) != null && !(onUnit(a).IsCasting && onUnit(a).CanInterruptCurrentSpellCast))
                         return false;
 
-                    if (onUnit != null && Spell.CanCast(name, onUnit(a), onUnit(a).IsPlayer ? true : !BossList.IgnoreRangeCheck.Contains(onUnit(a).Entry), true))
+                    if (onUnit != null && !Spell.CanCast(name, onUnit(a), onUnit(a).IsPlayer ? true : !BossList.IgnoreRangeCheck.Contains(onUnit(a).Entry), true))
                         return false;
 
                     return true;
