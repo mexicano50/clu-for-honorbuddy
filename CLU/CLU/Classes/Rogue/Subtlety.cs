@@ -25,6 +25,7 @@ using JetBrains.Annotations;
 
 using Styx;
 using Styx.CommonBot;
+using Styx.Patchables;
 using Styx.TreeSharp;
 using Styx.WoWInternals;
 using Styx.WoWInternals.WoWObjects;
@@ -159,18 +160,25 @@ namespace CLU.Classes.Rogue
             get
             {
                 return new Decorator
-                    (cond => Me.GotTarget,
+                    (cond => Me.CurrentTarget != null,
                      new PrioritySelector
                          (new Decorator
-                              (cond => !Me.IsStealthed,
+                              (cond => !AmStealthed,
                                new PrioritySelector
                                    (new Decorator
-                                        (cond =>
-                                         Me.CurrentTarget.DistanceSqr > 30 * 30 ||
-                                         !Me.IsSafelyFacing(Me.CurrentTarget, 45f),
-                                         Movement.MovingFacingBehavior()),
+                                        (cond => Me.CurrentTarget.DistanceSqr > 30 * 30, Movement.MovingFacingBehavior()),
+                                    new Decorator
+                                        (cond => !Me.IsSafelyFacing(Me.CurrentTarget, 45f),
+                                         new Action(run => Me.CurrentTarget.Face())),
                                     Spell.CastSpell
-                                        ("Throw", cond => Me.CurrentTarget.DistanceSqr < 30 * 30, "Throw to Pull"))),
+                                        ("Throw",
+                                         cond =>
+                                         Me.CurrentTarget.DistanceSqr < 30 * 30 && Me.CurrentTarget.DistanceSqr > 5 * 5,
+                                         "Throw to Pull"),
+                                    Spell.CastSpell
+                                        (HemorrhageSubstitute,
+                                         cond => Me.CurrentTarget.IsWithinMeleeRange,
+                                         "Hemo to pull"))),
                           new Decorator
                               (cond =>
                                Me.CurrentTarget.DistanceSqr > Spell.MeleeRange ||
@@ -224,7 +232,10 @@ namespace CLU.Classes.Rogue
             get
             {
                 return Me.IsStealthed || Buff.PlayerActiveBuffTimeLeft("Subterfuge") > TimeSpan.Zero ||
-                       Buff.PlayerActiveBuffTimeLeft("Shadow Dance") > TimeSpan.Zero;
+                       Buff.PlayerActiveBuffTimeLeft("Shadow Dance") > TimeSpan.Zero ||
+                       Me.Auras.Any(x => x.Value.SpellId == 115191) ||
+                       Me.Auras.Any
+                           (x => x.Key == "Master of Subtlety" && x.Value.TimeLeft == TimeSpan.Zero && !x.Value.IsActive);
             }
         }
 
@@ -495,7 +506,7 @@ namespace CLU.Classes.Rogue
                 return;
             }
 
-            if ( ( !Me.IsStealthed && !Buff.PlayerHasActiveBuff("Vanish") ) || !SafeToBreakStealth ||
+            if ( ( !AmStealthed && !Buff.PlayerHasActiveBuff("Vanish") ) || !SafeToBreakStealth ||
                  Buff.PlayerActiveBuffTimeLeft("Subterfuge") > TimeSpan.Zero )
             {
                 return;
