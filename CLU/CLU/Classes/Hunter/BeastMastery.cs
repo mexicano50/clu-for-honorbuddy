@@ -189,7 +189,7 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
                                    Buff.CastBuff("A Murder of Crows", ret => Unit.UseCooldowns(), "A Murder of Crows"), //reduced to 60sec cooldown if under 20%
                                    Spell.CastSpecialSpell("Arcane Shot", ret => Buff.PlayerHasActiveBuff("Thrill of the Hunt"), "Arcane Shot (Thrill of the Hunt)"),
                                    Spell.CastSpecialSpell("Arcane Shot", ret => (Me.FocusPercent >= CLUSettings.Instance.Hunter.BmArcaneShotFocusPercent || Buff.PlayerHasBuff("The Beast Within")), "Arcane Shot"),
-                                   Buff.CastBuff("Focus Fire", ret => Me.ActiveAuras["Frenzy"].StackCount == 5 && !Buff.PlayerHasBuff("The Beast Within") && Spell.SpellCooldown("Kill Command").TotalSeconds > 1 && Spell.SpellCooldown("Bestial Wrath").TotalSeconds > 10 && !Buff.PlayerHasBuff("Rapid Fire"), "Focus Fire"),
+                                   Buff.CastBuff("Focus Fire", ret => Buff.PlayerHasBuff("Frenzy") && Me.ActiveAuras["Frenzy"].StackCount == 5 && !Buff.PlayerHasBuff("The Beast Within") && Spell.SpellCooldown("Kill Command").TotalSeconds > 1 && Spell.SpellCooldown("Bestial Wrath").TotalSeconds > 10 && !Buff.PlayerHasBuff("Rapid Fire"), "Focus Fire"),
                                    Spell.CastSpecialSpell("Steady Shot", ret => Me.FocusPercent < CLUSettings.Instance.Hunter.BmArcaneShotFocusPercent && !Buff.PlayerHasBuff("The Beast Within") || Me.FocusPercent < 30 && Buff.PlayerHasBuff("The Beast Within"), "Cobra Shot"))));
             }
         }
