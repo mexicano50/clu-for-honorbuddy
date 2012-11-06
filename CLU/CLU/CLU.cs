@@ -484,8 +484,8 @@ namespace CLU
             {
                 // Make sure we have the proper target from Targeting.
                 // The Botbase should give us the best target in targeting.
-                var firstUnit = Targeting.Instance.FirstUnit;
-                if (CLUSettings.Instance.EnableTargeting && firstUnit != null)
+                var firstUnit = Targeting.Instance.TargetList.OrderBy(o=>o.Distance).FirstOrDefault(q=>q.IsHostile && q.IsAlive && !q.IsPet && !q.IsPetBattleCritter);
+                if (CLUSettings.Instance.EnableTargeting && firstUnit != null && (Me.CurrentTarget==null || Me.CurrentTarget.IsDead || !Me.CurrentTarget.IsAlive || !Me.CurrentTarget.IsHostile) && firstUnit.IsHostile)
                 {
                     if (StyxWoW.Me.CurrentTarget != firstUnit)
                         firstUnit.Target();
@@ -586,7 +586,6 @@ namespace CLU
                 StopBot(" Unable to find Active Rotation: " + ex);
             }
         }
-
         #endregion Public Methods
 
         #region Methods

@@ -318,6 +318,8 @@ namespace CLU.Base
                         return Me.HealthPercent <= 90;
                     case "Rosary of Light": //Unusable in Combat!
                         return false;
+                    case "Orange Painted Turnip": //Unusable in Combat!
+                        return false;
 
                     // Encounter Specific (Uncomment the lines below for HC Deathwing) thanks to gniegsch fo his input!
                     // case "Stay of Execution":
