@@ -25,7 +25,6 @@ using JetBrains.Annotations;
 
 using Styx;
 using Styx.CommonBot;
-using Styx.Patchables;
 using Styx.TreeSharp;
 using Styx.WoWInternals;
 using Styx.WoWInternals.WoWObjects;
@@ -442,7 +441,7 @@ namespace CLU.Classes.Rogue
                         (
                         Spell.CastSpell
                             ("Garrote", ret => Buff.TargetDebuffTimeLeft("Garrote") == TimeSpan.Zero, "Garrote"),
-                        Spell.CastSpell("Ambush", ret => Me.ComboPoints < 4 || AnticipationSafe, "Ambush"),
+                        Spell.CastSpell("Ambush", ret => Me.ComboPoints < 4 || AnticipationSafe && BehindTarget, "Ambush"),
                         Spell.CastSpell
                             (
                              HemorrhageSubstitute, ret => ( Me.ComboPoints < 5 || AnticipationSafe ) && !BehindTarget,
