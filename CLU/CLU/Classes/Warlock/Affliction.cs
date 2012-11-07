@@ -114,14 +114,14 @@ namespace CLU.Classes.Warlock
                     //Basic DPSing
                     Buff.CastDebuff("Curse of the Elements", ret => Me.CurrentTarget != null && Me.CurrentTarget.HealthPercent > 70 && !Buff.UnitHasMagicVulnerabilityDeBuffs(Me.CurrentTarget), "Curse of the Elements"),
                     //fast application of debuffs
-                    new Decorator(ret => Me.CurrentTarget != null && !Me.CurrentTarget.HasAnyAura(Common.Debuffs),
+                    new Decorator(ret => Me.CurrentTarget != null && !Me.CurrentTarget.HasMyAura("Corruption") && !Me.CurrentTarget.HasMyAura("Agony") && !Me.CurrentTarget.HasMyAura("Unstable Affliction"),
                         new PrioritySelector(
-                    Buff.CastBuff("Soulburn", ret => !Me.HasAura("Soulburn"), "Soulburn"),
-                    Spell.CastSpell("Soul Swap", ret => Me.HasAura("Soulburn"), "Soul Swap"))),
+                    Buff.CastBuff("Soulburn", ret => !Me.ActiveAuras.ContainsKey("Soulburn"), "Soulburn"),
+                    Spell.CastSpell("Soul Swap", ret => Me.ActiveAuras.ContainsKey("Soulburn"),false, "Soul Swap"))),
                     //Slow Application
-                    Buff.CastDebuff("Agony", ret => !Me.HasAura("Soulburn"), "Agony"), //Should never met in regular situations
-                    Buff.CastDebuff("Corruption", ret => !Me.HasAura("Soulburn"), "Corruption"), //Should never met in regular situations
-                    Buff.CastDebuff("Unstable Affliction", ret => !Me.HasAura("Soulburn"), "Unstable Affliction"),
+                    Buff.CastDebuff("Agony", ret => !Me.ActiveAuras.ContainsKey("Soulburn"), "Agony"),
+                    Buff.CastDebuff("Corruption", ret => !Me.ActiveAuras.ContainsKey("Soulburn"), "Corruption"),
+                    Buff.CastDebuff("Unstable Affliction", ret => !Me.ActiveAuras.ContainsKey("Soulburn"), "Unstable Affliction"),
                     //Basic DPSing
                     Buff.CastDebuff("Haunt", ret => !Spell.PlayerIsChanneling  , "Haunt"),
                     Spell.CastSelfSpell("Life Tap", ret => Me.ManaPercent < 20 && Me.HealthPercent > 40, "Life Tap"),
