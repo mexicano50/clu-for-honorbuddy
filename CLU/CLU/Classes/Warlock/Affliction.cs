@@ -116,12 +116,12 @@ namespace CLU.Classes.Warlock
                     //fast application of debuffs
                     new Decorator(ret => Me.CurrentTarget != null && !Me.CurrentTarget.HasAnyAura(Common.Debuffs),
                         new PrioritySelector(
-                    Buff.CastBuff("Soulburn", ret => !Buff.PlayerHasBuff("Soulburn"), "Soulburn"),
-                    Spell.CastSpell("Soul Swap", ret => Buff.PlayerHasBuff("Soulburn"), "Soul Swap"))),
+                    Buff.CastBuff("Soulburn", ret => !Me.HasAura("Soulburn"), "Soulburn"),
+                    Spell.CastSpell("Soul Swap", ret => Me.HasAura("Soulburn"), "Soul Swap"))),
                     //Slow Application
-                    Buff.CastDebuff("Agony", ret => !Buff.PlayerHasActiveBuff("Soulburn"), "Agony"), //Should never met in regular situations
-                    Buff.CastDebuff("Corruption", ret => !Buff.PlayerHasActiveBuff("Soulburn"), "Corruption"), //Should never met in regular situations
-                    Buff.CastDebuff("Unstable Affliction", ret => !Buff.PlayerHasActiveBuff("Soulburn"), "Unstable Affliction"),
+                    Buff.CastDebuff("Agony", ret => !Me.HasAura("Soulburn"), "Agony"), //Should never met in regular situations
+                    Buff.CastDebuff("Corruption", ret => !Me.HasAura("Soulburn"), "Corruption"), //Should never met in regular situations
+                    Buff.CastDebuff("Unstable Affliction", ret => !Me.HasAura("Soulburn"), "Unstable Affliction"),
                     //Basic DPSing
                     Buff.CastDebuff("Haunt", ret => !Spell.PlayerIsChanneling  , "Haunt"),
                     Spell.CastSelfSpell("Life Tap", ret => Me.ManaPercent < 20 && Me.HealthPercent > 40, "Life Tap"),
