@@ -17,13 +17,12 @@ using Styx.TreeSharp;
 using CLU.Settings;
 using CLU.Base;
 using Styx;
-using Rest = CLU.Base.Rest;
-
 
 namespace CLU.Classes.Hunter
 {
     using global::CLU.Managers;
     using Styx.CommonBot;
+    using Styx.WoWInternals;
 
     class BeastMastery : RotationBase
     {
@@ -151,7 +150,7 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
                     //Rotation
                                    Spell.ChannelSpell("Barrage", ret => Me.CurrentTarget != null, "Barrage"), //AoE? needs testing.
                                    Spell.ChannelSpell("Powershot", ret => Me.CurrentTarget != null, "Powershot"), //AoE? needs testing also has knockback!
-                                   Spell.CastSpell("Glaive Toss", ret => Me.CurrentTarget != null, "Glaive Toss"), //instant..with no apparent cooldown...needs checking.
+                                   Spell.CastSpell(117050, ret => TalentManager.HasTalent(16) && !WoWSpell.FromId(117050).Cooldown && Me.GetCurrentPower(WoWPowerType.Focus)>=15, "Glaive Toss"),
                                    Spell.CastSpell("Multi-Shot", ret => Me.CurrentTarget != null, "Multi-Shot"),
                                    Spell.CastSpell("Kill Shot", ret => Me.CurrentTarget != null && Me.CurrentTarget.HealthPercent < 20, "Kill Shot"),
                     //Spell.HunterTrapBehavior("Explosive Trap", ret => Me.CurrentTarget, ret => Me.CurrentTarget != null && !Lists.BossList.IgnoreAoE.Contains(Unit.CurrentTargetEntry) && Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 10) >= CLUSettings.Instance.Hunter.ExplosiveTrapCount),

@@ -110,6 +110,7 @@ namespace CLU.Managers
                         case 1:
                             {
                                 var t = new Talent { Index = index, Count = 1 }; //Name = talentName
+                                CLULogger.TroubleshootLog("[TalentManager] - Talent {0} chosen", index);
                                 Talents.Add(t);
                             }
                             break;

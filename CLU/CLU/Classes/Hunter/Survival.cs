@@ -12,11 +12,11 @@
 
 
 using CommonBehaviors.Actions;
+using Styx;
 using Styx.TreeSharp;
 using CLU.Helpers;
 using CLU.Settings;
 using CLU.Base;
-using Rest = CLU.Base.Rest;
 
 namespace CLU.Classes.Hunter
 {
@@ -198,7 +198,7 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
                         Spell.CastSpell("Blink Strike",             ret => Me.CurrentTarget != null && Me.Pet.Location.DistanceSqr(Me.CurrentTarget.Location) <= 40 * 40 && Me.GotAlivePet && TalentManager.HasTalent(14), "Blink Strike"),
                         Spell.CastSpell("Lynx Rush",                ret => Me.CurrentTarget != null && Me.Pet.Location.DistanceSqr(Me.CurrentTarget.Location) <= 10 * 10 && Me.GotAlivePet && TalentManager.HasTalent(15) && !SpellManager.Spells["Lynx Rush"].Cooldown, "Lynx Rush"),
                         Spell.CastSpell("Explosive Shot",           ret => Buff.PlayerHasActiveBuff("Lock and Load"), "Explosive Shot"),
-                        Spell.CastSpell("Glaive Toss",              ret => TalentManager.HasTalent(16), "Glaive Toss"),
+                        Spell.CastSpell(117050, ret => TalentManager.HasTalent(16) && !WoWSpell.FromId(117050).Cooldown && Me.GetCurrentPower(WoWPowerType.Focus) >= 15, "Glaive Toss"),
                         Spell.CastSpell("Powershot",                ret => TalentManager.HasTalent(17), "Powershot"),
                         Spell.CastSpell("Barrage",                  ret => TalentManager.HasTalent(18), "Barage"),
                         Spell.CastSpell("Multi Shot",               ret => Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 8) > 2, "Multi Shot"),

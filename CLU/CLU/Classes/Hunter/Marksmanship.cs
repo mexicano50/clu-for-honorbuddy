@@ -14,15 +14,15 @@
 using CLU.Helpers;
 using CLU.Settings;
 using CommonBehaviors.Actions;
+using Styx;
 using Styx.TreeSharp;
 using CLU.Base;
-using Rest = CLU.Base.Rest;
 
 namespace CLU.Classes.Hunter
 {
     using global::CLU.Managers;
     using Styx.CommonBot;
-
+    using Styx.WoWInternals;
     class Marksmanship : RotationBase
     {
         public override string Name
@@ -195,7 +195,7 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
                         Buff.CastBuff("Aspect of the Fox",             ret => Me.IsMoving && !Buff.PlayerHasBuff("Aspect of the Fox"), "Aspect of the Fox"),
                         Spell.HunterTrapBehavior("Explosive Trap",     ret => Me.CurrentTarget, ret => Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 10) > 0),
                         Racials.UseRacials(),
-                        Spell.CastSpell("Glaive Toss",                 ret => TalentManager.HasTalent(16), "Glaive Toss"),
+                        Spell.CastSpell(117050, ret => TalentManager.HasTalent(16) && !WoWSpell.FromId(117050).Cooldown && Me.GetCurrentPower(WoWPowerType.Focus) >= 15, "Glaive Toss"),
                         Spell.CastSpell("Powershot",                   ret => TalentManager.HasTalent(17), "Powershot"),
                         Spell.CastSpell("Barrage",                     ret => TalentManager.HasTalent(18), "Barage"),
                         Spell.CastSpell("Blink Strike",                ret => Me.CurrentTarget != null && Me.Pet.Location.DistanceSqr(Me.CurrentTarget.Location) <= 40 * 40 && Me.GotAlivePet && TalentManager.HasTalent(14), "Blink Strike"),
