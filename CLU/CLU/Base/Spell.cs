@@ -423,7 +423,7 @@ namespace CLU.Base
                     if (!cond(a))
                         return false;
 
-                    if (!Spell.CanCast(name, onUnit(a), onUnit(a).IsPlayer ? true : !BossList.IgnoreRangeCheck.Contains(onUnit(a).Entry), checkmovement)) return false; //This is checking spell, unit, Range, Movement
+                    if (!CanCast(name, onUnit(a), (onUnit(a).IsPlayer || !BossList.IgnoreRangeCheck.Contains(onUnit(a).Entry)), checkmovement)) return false; //This is checking spell, unit, Range, Movement
 
                     return onUnit(a) != null;
                 },
