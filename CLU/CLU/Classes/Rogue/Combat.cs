@@ -141,7 +141,7 @@ namespace CLU.Classes.Rogue
 
 
                            //Utility
-                           Spell.CancelMyAura("Blade Flurry", ret => Buff.PlayerHasBuff("Blade Flurry") && (!CLUSettings.Instance.UseAoEAbilities || Unit.EnemyMeleeUnits.Count() < 2 || Unit.EnemyMeleeUnits.Count() >= CLUSettings.Instance.Rogue.CombatFanOfKnivesCount), "Blade Flurry"),
+                           Spell.CancelMyAura("Blade Flurry", ret => Buff.PlayerHasBuff("Blade Flurry") && (CLUSettings.Instance.UseAoEAbilities && (Unit.EnemyMeleeUnits.Count() < 2 || Unit.EnemyMeleeUnits.Count() >= CLUSettings.Instance.Rogue.CombatFanOfKnivesCount)), "Blade Flurry"),
                     //Spell.CastSpell("Feint",                         ret => Me.CurrentTarget != null && (Me.CurrentTarget.ThreatInfo.RawPercent > 80 || Encounte  rSpecific.IsMorchokStomp()) && CLUSettings.Instance.EnableSelfHealing, "Feint"),
                            Spell.CastInterupt("Kick", ret => true, "Kick"),
                            Spell.CastSpell("Redirect", ret => Me.RawComboPoints > 0 && Me.ComboPoints < 1, "Redirect"),
