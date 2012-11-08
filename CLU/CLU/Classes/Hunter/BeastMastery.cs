@@ -156,7 +156,7 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
                                    Spell.CastSpell("Kill Shot", ret => Me.CurrentTarget != null && Me.CurrentTarget.HealthPercent < 20, "Kill Shot"),
                     //Spell.HunterTrapBehavior("Explosive Trap", ret => Me.CurrentTarget, ret => Me.CurrentTarget != null && !Lists.BossList.IgnoreAoE.Contains(Unit.CurrentTargetEntry) && Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 10) >= CLUSettings.Instance.Hunter.ExplosiveTrapCount),
                                    Spell.CastSpecialSpell("Steady Shot", ret => Me.CurrentTarget != null & Me.CurrentFocus < 40, "Cobra Shot"),
-                                   Buff.CastBuff("Focus Fire", ret => Me.ActiveAuras["Frenzy"].StackCount == 5 && !Buff.PlayerHasBuff("The Beast Within") && Spell.SpellCooldown("Kill Command").TotalSeconds > 1 && Spell.SpellCooldown("Bestial Wrath").TotalSeconds > 10 && !Buff.PlayerHasBuff("Rapid Fire"), "Focus Fire"),
+                                   Buff.CastBuff("Focus Fire", ret => Buff.PlayerHasActiveBuff("Frenzy") && Me.ActiveAuras["Frenzy"].StackCount == 5 && !Buff.PlayerHasBuff("The Beast Within") && Spell.SpellCooldown("Kill Command").TotalSeconds > 1 && Spell.SpellCooldown("Bestial Wrath").TotalSeconds > 10 && !Buff.PlayerHasBuff("Rapid Fire"), "Focus Fire"),
                     //Pet
                                    PetManager.CastPetSpell("Froststorm Breath", ret => Me.CurrentTarget != null && Me.Pet.CurrentFocus >= 30 && Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 12) >= CLUSettings.Instance.Hunter.BmMultiShotCount && PetManager.CanCastPetSpell("Froststorm Breath") && !Me.Pet.HasAura("Froststorm Breath"), "Froststorm Breath"))),
 
@@ -189,7 +189,7 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
                                    Buff.CastBuff("A Murder of Crows", ret => Unit.UseCooldowns(), "A Murder of Crows"), //reduced to 60sec cooldown if under 20%
                                    Spell.CastSpecialSpell("Arcane Shot", ret => Buff.PlayerHasActiveBuff("Thrill of the Hunt"), "Arcane Shot (Thrill of the Hunt)"),
                                    Spell.CastSpecialSpell("Arcane Shot", ret => (Me.FocusPercent >= CLUSettings.Instance.Hunter.BmArcaneShotFocusPercent || Buff.PlayerHasBuff("The Beast Within")), "Arcane Shot"),
-                                   Buff.CastBuff("Focus Fire", ret => Buff.PlayerHasBuff("Frenzy") && Me.ActiveAuras["Frenzy"].StackCount == 5 && !Buff.PlayerHasBuff("The Beast Within") && Spell.SpellCooldown("Kill Command").TotalSeconds > 1 && Spell.SpellCooldown("Bestial Wrath").TotalSeconds > 10 && !Buff.PlayerHasBuff("Rapid Fire"), "Focus Fire"),
+                                   Buff.CastBuff("Focus Fire", ret => Buff.PlayerHasActiveBuff("Frenzy") && Me.ActiveAuras["Frenzy"].StackCount == 5 && !Buff.PlayerHasBuff("The Beast Within") && Spell.SpellCooldown("Kill Command").TotalSeconds > 1 && Spell.SpellCooldown("Bestial Wrath").TotalSeconds > 10 && !Buff.PlayerHasBuff("Rapid Fire"), "Focus Fire"),
                                    Spell.CastSpecialSpell("Steady Shot", ret => Me.FocusPercent < CLUSettings.Instance.Hunter.BmArcaneShotFocusPercent && !Buff.PlayerHasBuff("The Beast Within") || Me.FocusPercent < 30 && Buff.PlayerHasBuff("The Beast Within"), "Cobra Shot"))));
             }
         }
