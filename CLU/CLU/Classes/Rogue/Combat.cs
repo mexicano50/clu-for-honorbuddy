@@ -134,7 +134,7 @@ namespace CLU.Classes.Rogue
                                    Racials.UseRacials(),
                                    Buff.CastBuff("Lifeblood", ret => true, "Lifeblood"), // Thanks Kink
                                    Spell.CastSelfSpell("Preparation", ret => SpellManager.HasSpell(14185) && SpellManager.Spells["Vanish"].Cooldown, "Preparation"),
-                                   Spell.CastSelfSpell("Killing Spree", ret => Me.CurrentEnergy < 35 && Buff.GetAuraTimeLeft(Me, "Slice and Dice", true).TotalSeconds > 4 && !Buff.PlayerHasActiveBuff("Adrenaline Rush"), "Killing Spree"),
+                                   Spell.CastSelfSpell("Killing Spree", ret => CLUSettings.Instance.Rogue.CombatUseKillingSpree && Me.CurrentEnergy < 35 && Buff.GetAuraTimeLeft(Me, "Slice and Dice", true).TotalSeconds > 4 && !Buff.PlayerHasActiveBuff("Adrenaline Rush"), "Killing Spree"),
                                    Spell.CastSelfSpell("Adrenaline Rush", ret => Me.CurrentEnergy < 35 && Spell.SpellCooldown("Killing Spree").TotalSeconds > 10, "Adrenaline Rush"),
                                    Spell.CastSelfSpell("Shadow Blades", ret => Buff.PlayerHasBuff("Adrenaline Rush"), "Shadow Blades"),
                                    Item.UseEngineerGloves())),

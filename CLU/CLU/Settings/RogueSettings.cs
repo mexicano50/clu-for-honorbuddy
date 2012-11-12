@@ -110,12 +110,12 @@ namespace CLU.Settings
             set;
         }
 
-        //[Setting]
-        //[DefaultValue(true)]
-        //[Category("Combat Spec")]
-        //[DisplayName("Use Rupture Finisher")]
-        //[Description("Use Rupture Finisher")]
-        //public bool CombatUseRuptureFinisher { get; set; }
+        [Setting]
+        [DefaultValue(true)]
+        [Category("Combat Spec")]
+        [DisplayName("Use Killing Spree")]
+        [Description("Use Killing Spree in our rotation")]
+        public bool CombatUseKillingSpree { get; set; }
 
         //[Setting]
         //[DefaultValue(true)]
