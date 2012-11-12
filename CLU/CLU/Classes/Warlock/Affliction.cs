@@ -117,7 +117,7 @@ namespace CLU.Classes.Warlock
                     new Decorator(ret => Me.CurrentTarget != null && !Me.CurrentTarget.HasMyAura("Corruption") && !Me.CurrentTarget.HasMyAura("Agony") && !Me.CurrentTarget.HasMyAura("Unstable Affliction"),
                         new PrioritySelector(
                     Buff.CastBuff("Soulburn", ret => !Me.ActiveAuras.ContainsKey("Soulburn"), "Soulburn"),
-                    Spell.CastSpell("Soul Swap", ret => Me.ActiveAuras.ContainsKey("Soulburn"),false, "Soul Swap"))),
+                    Spell.CastSpecialSpell("Soul Swap", ret => Me.ActiveAuras.ContainsKey("Soulburn"), "Soul Swap"))),
                     //Slow Application
                     Buff.CastDebuff("Agony", ret => !Me.ActiveAuras.ContainsKey("Soulburn"), "Agony"),
                     Buff.CastDebuff("Corruption", ret => !Me.ActiveAuras.ContainsKey("Soulburn"), "Corruption"),

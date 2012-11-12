@@ -147,8 +147,8 @@ NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagr
                             Spell.CastSpell("Crusader Strike",                  ret => Me.CurrentHolyPower < 5 && !Me.HasMyAura(59578), "Crusader Strike to generate Holy Power"),
                             Spell.CastSpell("Judgment",                         ret => Me.CurrentHolyPower < 5 && !Me.HasMyAura(59578), "Judgment to generate Holy Power"),
                             Spell.CastSpell("Templar's Verdict", ret => Me.HasMyAura("Inquisition") && Me.CurrentHolyPower >= 3 && Buff.GetAuraTimeLeft(Me, "Inquisition", true).TotalSeconds >= 2 || Me.HasMyAura(90174), "Templar's Verdict with 3+ HP"))),
+                    Spell.CastSelfSpell("Flash of Light", ret => Me.HealthPercent < 100 && Me.HasMyAura("Selfless Healer") && Buff.GetAuraStack(Me, "Selfless Healer", true) >= 3, "Flash of Light"),
                     Buff.CastBuff("Sacred Shield", ret => !Me.HasMyAura("Sacred Shield"), "Sacred Shield as a filler"),
-                    Spell.CastSelfSpell("Flash of Light",                       ret => Me.HealthPercent < 100 && Me.HasMyAura("Selfless Healer") && Buff.GetAuraStack(Me, "Selfless Healer", true) == 3, "Flash of Light with 3 stacks of Selfless Healer"),
                     Spell.CastSelfSpell("Arcane Torrent",                       ret => Me.ManaPercent < 80 && Me.CurrentHolyPower < 3, "Arcane Torrent"));
             }
         }
@@ -170,6 +170,7 @@ NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagr
                                Spell.CastSpell("Word of Glory",            ret => Me, ret => Me.HealthPercent < CLUSettings.Instance.Paladin.WordofGloryPercent && (Me.CurrentHolyPower > 1 || Buff.PlayerHasBuff("Divine Purpose")) && CLUSettings.Instance.EnableSelfHealing && CLUSettings.Instance.EnableMovement, "Word of Glory"),
                                Buff.CastBuff("Hand of Freedom", ret => (Buff.PlayerHasCrowdControl(WoWSpellMechanic.Snared) || Buff.PlayerHasCrowdControl(WoWSpellMechanic.Slowed) || Buff.PlayerHasCrowdControl(WoWSpellMechanic.Rooted) || Buff.PlayerHasCrowdControl(WoWSpellMechanic.Slowed) || Buff.PlayerHasCrowdControl(WoWSpellMechanic.Frozen) || Buff.PlayerHasCrowdControl(WoWSpellMechanic.Dazed)) && CLUSettings.Instance.Paladin.UseHandofFreedom, "Hand of Freedom"),
                                Buff.CastBuff("Cleanse",                    ret => Unit.UnitIsControlled(Me, false), "Cleanse"),
+                               Spell.CastSelfSpell("Flash of Light", ret => Me.HealthPercent < 100 && Me.HasMyAura("Selfless Healer") && Buff.GetAuraStack(Me,"Selfless Healer",true)>=3, "Flash of Light"),
                                Item.UseBagItem("Healthstone",              ret => Me.HealthPercent < CLUSettings.Instance.Paladin.HealthstonePercent, "Healthstone"),
                                Buff.CastBuff("Divine Protection",          ret => Me.HealthPercent < CLUSettings.Instance.Paladin.RetributionDPPercent, "Divine Protection"),
                                new Decorator(

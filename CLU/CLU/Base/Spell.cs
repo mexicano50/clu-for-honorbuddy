@@ -321,15 +321,12 @@ namespace CLU.Base
 
         private static void PrintTarget(WoWUnit tar)
         {
-            if (tar != null && (tar.IsMe || tar.Guid == CLU.LastTargetGuid)) return;
-
             if (tar == null)
             {
                 CLULogger.DiagnosticLog("[PrintTarget] tar is null...im outa here!");
                 CLU.LastTargetGuid = 0;
                 return;
             }
-            CLULogger.DiagnosticLog("[Targetting] New Target:");
             CLULogger.DiagnosticLog("[Targetting] Guid: {0}", tar.Guid);
             CLULogger.DiagnosticLog("[Targetting] ID: {0}", tar.Entry);
             CLULogger.DiagnosticLog("[Targetting] Name: {0}", tar.Name);
@@ -347,7 +344,53 @@ namespace CLU.Base
             CLULogger.DiagnosticLog("[Targetting] General Use of Cooldowns: {0}", CLUSettings.Instance.UseCooldowns);
             CLULogger.DiagnosticLog("[Targetting] Use Cooldowns on Me.CurrentTarget: {0}", Unit.UseCooldowns());
             CLULogger.DiagnosticLog("[Targetting] Use Cooldowns on tar: {0}", Unit.UseCooldowns(tar));
+            CLULogger.DiagnosticLog("[Targetting] -------------------------------------------------------------");
+            CLULogger.DiagnosticLog("[Targetting] TargetAuras:");
+            foreach (var a in tar.ActiveAuras) 
+            {
+                CLULogger.DiagnosticLog("[Targetting] Aura: {0} - {1}", a.Key,a.Value);
+                CLULogger.DiagnosticLog("[Targetting] CreatorID: {0}", a.Value.CreatorGuid);
+                CLULogger.DiagnosticLog("[Targetting] Duration: {0}", a.Value.Duration);
+                CLULogger.DiagnosticLog("[Targetting] EndTime: {0}", a.Value.EndTime);
+                CLULogger.DiagnosticLog("[Targetting] TimeLeft: {0}", a.Value.TimeLeft);
+                CLULogger.DiagnosticLog("[Targetting] StackCount: {0}", a.Value.StackCount);
+                CLULogger.DiagnosticLog("[Targetting] SpellId: {0}", a.Value.SpellId);
+                CLULogger.DiagnosticLog("[Targetting] -------------------------------------------------------------");
 
+            }
+            CLULogger.DiagnosticLog("[Targetting] Me Auras:");
+            foreach (var a in Me.ActiveAuras)
+            {
+                CLULogger.DiagnosticLog("[Targetting] Aura: {0} - {1}", a.Key, a.Value);
+                CLULogger.DiagnosticLog("[Targetting] CreatorID: {0}", a.Value.CreatorGuid);
+                CLULogger.DiagnosticLog("[Targetting] Duration: {0}", a.Value.Duration);
+                CLULogger.DiagnosticLog("[Targetting] EndTime: {0}", a.Value.EndTime);
+                CLULogger.DiagnosticLog("[Targetting] TimeLeft: {0}", a.Value.TimeLeft);
+                CLULogger.DiagnosticLog("[Targetting] StackCount: {0}", a.Value.StackCount);
+                CLULogger.DiagnosticLog("[Targetting] SpellId: {0}", a.Value.SpellId);
+                CLULogger.DiagnosticLog("[Targetting] -------------------------------------------------------------");
+
+            }
+            CLULogger.DiagnosticLog("[Targetting] My Spells:");
+            foreach (var s in SpellManager.Spells)
+            {
+                try
+                {
+                    CLULogger.DiagnosticLog("[Targetting] Spell: {0} - {1}", s.Key, s.Value);
+                    CLULogger.DiagnosticLog("[Targetting] CanCast: {0}", s.Value.CanCast);
+                    CLULogger.DiagnosticLog("[Targetting] CastTime: {0}", s.Value.CastTime);
+                    CLULogger.DiagnosticLog("[Targetting] Category: {0}", s.Value.Category);
+                    CLULogger.DiagnosticLog("[Targetting] Cooldown: {0}", s.Value.Cooldown);
+                    CLULogger.DiagnosticLog("[Targetting] CooldownTimeLeft: {0}", s.Value.CooldownTimeLeft);
+                    CLULogger.DiagnosticLog("[Targetting] HasRange: {0}", s.Value.HasRange);
+                    CLULogger.DiagnosticLog("[Targetting] Id: {0}", s.Value.Id);
+                    CLULogger.DiagnosticLog("[Targetting] IsSelfOnlySpell: {0}", s.Value.IsSelfOnlySpell);
+                    CLULogger.DiagnosticLog("[Targetting] MaxRange: {0}", s.Value.MaxRange);
+                    CLULogger.DiagnosticLog("[Targetting] PowerCost: {0}", s.Value.PowerCost);
+                    CLULogger.DiagnosticLog("[Targetting] -------------------------------------------------------------");
+                }
+                catch (Exception ex) { }
+            }
             CLU.LastTargetGuid = tar.Guid;
         }
 
@@ -424,7 +467,6 @@ namespace CLU.Base
                         return false;
 
                     if (!CanCast(name, onUnit(a), (onUnit(a).IsPlayer || !BossList.IgnoreRangeCheck.Contains(onUnit(a).Entry)), checkmovement)) return false; //This is checking spell, unit, Range, Movement
-
                     return onUnit(a) != null;
                 },
             new Sequence(

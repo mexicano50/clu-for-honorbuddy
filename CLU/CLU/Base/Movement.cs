@@ -61,7 +61,7 @@ namespace CLU.Base
 
         public static Composite MoveToPull()
         {
-            return MoveToPull(RetrieveBotPoiDelegate => StyxWoW.Me.CurrentTarget);
+            return MoveToPull(ret => StyxWoW.Me.CurrentTarget);
         }
 
         private static Composite MoveToPull(CLU.UnitSelection onUnit)
