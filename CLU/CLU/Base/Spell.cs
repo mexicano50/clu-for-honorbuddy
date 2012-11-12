@@ -344,7 +344,7 @@ namespace CLU.Base
             CLULogger.DiagnosticLog("[Targetting] General Use of Cooldowns: {0}", CLUSettings.Instance.UseCooldowns);
             CLULogger.DiagnosticLog("[Targetting] Use Cooldowns on Me.CurrentTarget: {0}", Unit.UseCooldowns());
             CLULogger.DiagnosticLog("[Targetting] Use Cooldowns on tar: {0}", Unit.UseCooldowns(tar));
-            CLULogger.DiagnosticLog("[Targetting] -------------------------------------------------------------");
+            /*CLULogger.DiagnosticLog("[Targetting] -------------------------------------------------------------");
             CLULogger.DiagnosticLog("[Targetting] TargetAuras:");
             foreach (var a in tar.ActiveAuras) 
             {
@@ -390,7 +390,7 @@ namespace CLU.Base
                     CLULogger.DiagnosticLog("[Targetting] -------------------------------------------------------------");
                 }
                 catch (Exception ex) { }
-            }
+            }*/
             CLU.LastTargetGuid = tar.Guid;
         }
 
