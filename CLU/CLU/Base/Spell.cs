@@ -1,4 +1,4 @@
-﻿#region Revision info
+#region Revision info
 
 /*
  * $Author$
@@ -122,6 +122,88 @@ namespace CLU.Base
                 return StyxWoW.Me.ChanneledCastingSpellId != 0;
             }
         }
+
+ #region THIS SHIT SHOULDNT BE HERE -- deleting after testing.
+
+        /// <summary>
+        /// Not sure if this is the one you need for DK's but it works for druids cat form
+        /// </summary>
+        public static double PlayerEnergy
+        {
+            get
+            {
+                try
+                {
+                    return Lua.GetReturnVal<int>("return UnitMana(\"player\");", 0);
+                }
+                catch
+                {
+                  //  Logger.FailLog(" Lua Failed in PlayerEnergy");
+                    return 0;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Returns a unit's current level of mana, rage, energy or other power type. Returns zero for non-existent units.
+        /// </summary>
+        public static double PlayerUnitPower
+        {
+            get
+            {
+                try
+                {
+                    return Lua.GetReturnVal<int>("return UnitPower(\"player\");", 0);
+                }
+                catch
+                {
+                //    Logger.FailLog(" Lua Failed in UnitPower");
+                    return 0;
+                }
+            }
+        }
+
+
+        /// <summary>
+        /// Returns information about the player's mana/energy/etc regeneration rate
+        /// </summary>
+        public static double EnergyRegen
+        {
+            get
+            {
+                try
+                {
+                    return Lua.GetReturnVal<float>("return GetPowerRegen()", 1);
+                }
+                catch
+                {
+                  //  Logger.FailLog(" Lua Failed in EnergyRegen");
+                    return 0;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Calculate time to energy cap.
+        /// </summary>
+        public static double TimetoEnergyCap
+        {
+            get
+            {
+                try
+                {
+                    return (100 - PlayerEnergy) * (1.0 / EnergyRegen);
+                }
+                catch
+                {
+                  //  Logger.FailLog(" Calculation Failed in TimetoEnergyCap");
+                    return 999999;
+                }
+            }
+        }
+
+        #endregion
+
 
         /// <summary>Returns the current casttime of the spell.</summary>
         /// <param name="name">the name of the spell to check for</param>
