@@ -191,12 +191,12 @@ namespace CLU.Settings
             set;
         }
 
-        //[Setting]
-        //[DefaultValue(30)]
-        //[Category("General")]
-        //[DisplayName("Potion Health")]
-        //[Description("Minimum health to use a health pot or health stone at.")]
-        //public int PotionHealth { get; set; }
+        [Setting]
+        [DefaultValue(0.5)]
+        [Category("General")]
+        [DisplayName("ThrottleTime")]
+        [Description("ThrottleTime is used to enable a setable expiryTime for PreventDoubleCast methods. The default value is 0.5 for instant casts")]
+        public double ThrottleTime { get; set; }
 
         //[Setting]
         //[DefaultValue(30)]

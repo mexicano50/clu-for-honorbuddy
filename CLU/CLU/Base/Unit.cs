@@ -23,6 +23,7 @@ namespace CLU.Base
     using Styx;
     using Styx.CommonBot;
     using Styx.CommonBot.POI;
+    using Styx.Pathing;
     using Styx.TreeSharp;
     using Styx.WoWInternals;
     using Styx.WoWInternals.WoWObjects;
@@ -49,6 +50,76 @@ namespace CLU.Base
         internal static readonly IEnumerable<WoWPartyMember> Groupofplayers = (Me.GroupInfo.IsInRaid ? Me.GroupInfo.RaidMembers : Me.GroupInfo.PartyMembers);
 
         internal static IEnumerable<WoWPartyMember> GroupMembers { get { return !Me.GroupInfo.IsInRaid ? Me.GroupInfo.PartyMembers : Me.GroupInfo.RaidMembers; } }
+
+        internal static IEnumerable<WoWUnit> AttackableUnits
+        {
+            get { return ObjectManager.GetObjectsOfType<WoWUnit>(true, false).Where(u => !u.IsDead && u.CanSelect && u.Attackable && !u.IsFriendly && !u.IsAerialTarget() && !u.IsNonCombatPet && !u.IsCritter); }
+        }
+
+        internal static IEnumerable<WoWUnit> NearbyAttackableUnits(WoWPoint fromLocation, double radius)
+        {
+            var hostile = AttackableUnits;
+            var maxDistance = radius * radius;
+            hostile = hostile.Where(x => x.Location.Distance2DSqr(fromLocation) < maxDistance && (x.IsTargetingMeOrPet || x.IsTargetingMyPartyMember || x.IsTargetingMyRaidMember));
+            return hostile.Any(x => x.IsCrowdControlled()) ? new List<WoWUnit>() : hostile;
+        }
+
+        private static bool IsCrowdControlled(this WoWUnit unit)
+        {
+            if (unit != null)
+            {
+                Dictionary<string, WoWAura>.ValueCollection auras = unit.Auras.Values;
+
+                return auras.Any(a =>
+                           a.IsHarmful && (
+                           a.Spell.Mechanic == WoWSpellMechanic.Banished ||
+                           a.Spell.Mechanic == WoWSpellMechanic.Disoriented ||
+                           a.Spell.Mechanic == WoWSpellMechanic.Charmed ||
+                           a.Spell.Mechanic == WoWSpellMechanic.Horrified ||
+                           a.Spell.Mechanic == WoWSpellMechanic.Incapacitated ||
+                           a.Spell.Mechanic == WoWSpellMechanic.Polymorphed ||
+                           a.Spell.Mechanic == WoWSpellMechanic.Sapped ||
+                           a.Spell.Mechanic == WoWSpellMechanic.Shackled ||
+                           a.Spell.Mechanic == WoWSpellMechanic.Asleep ||
+                           a.Spell.Mechanic == WoWSpellMechanic.Frozen ||
+                           a.Spell.Mechanic == WoWSpellMechanic.Invulnerable ||
+                           a.Spell.Mechanic == WoWSpellMechanic.Invulnerable2 ||
+                           a.Spell.Mechanic == WoWSpellMechanic.Turned ||
+                           a.Spell.Mechanic == WoWSpellMechanic.Fleeing ||
+
+                           // Really want to ignore hexed mobs.
+                           a.Spell.Name == "Hex"));
+            }
+            return false;
+        }
+
+        private static float HeightOffTheGround(this WoWUnit unit)
+        {
+            float minDiff = float.MaxValue;
+            var pt = new WoWPoint(unit.Location.X, unit.Location.Y, unit.Location.Z);
+
+            List<float> listMeshZ = Navigator.FindHeights(pt.X, pt.Y);
+            foreach (var meshZ in listMeshZ)
+            {
+                var diff = pt.Z - meshZ;
+                if (diff >= 0 && diff < minDiff)
+                {
+                    minDiff = diff;
+                    pt.Z = meshZ;
+                }
+            }
+
+            return minDiff;
+        }
+
+        private static bool IsAerialTarget(this WoWUnit unit)
+        {
+            if (unit.MaxHealth == 1) return false; // training dummy..:/
+            float height = HeightOffTheGround(unit);
+            if (height > 5f && height < float.MaxValue)
+                return true;
+            return false;
+        }
 
         private static readonly string[] ControlDebuffs = new[] {
             "Bind Elemental", "Hex", "Polymorph", "Hibernate", "Entangling Roots", "Freezing Trap", "Wyvern Sting",
@@ -699,39 +770,6 @@ namespace CLU.Base
         }
 
         /// <summary>
-        /// Crowd controlled
-        /// </summary>
-        /// <param name="unit">unit to check for</param>
-        /// <returns>true if controlled</returns>
-        public static bool IsCrowdControlled(WoWUnit unit)
-        {
-            if (unit != null)
-            {
-                Dictionary<string, WoWAura>.ValueCollection auras = unit.Auras.Values;
-
-                return auras.Any(
-                           a => a.Spell.Mechanic == WoWSpellMechanic.Banished ||
-                           a.Spell.Mechanic == WoWSpellMechanic.Disoriented ||
-                           a.Spell.Mechanic == WoWSpellMechanic.Charmed ||
-                           a.Spell.Mechanic == WoWSpellMechanic.Horrified ||
-                           a.Spell.Mechanic == WoWSpellMechanic.Incapacitated ||
-                           a.Spell.Mechanic == WoWSpellMechanic.Polymorphed ||
-                           a.Spell.Mechanic == WoWSpellMechanic.Sapped ||
-                           a.Spell.Mechanic == WoWSpellMechanic.Shackled ||
-                           a.Spell.Mechanic == WoWSpellMechanic.Asleep ||
-                           a.Spell.Mechanic == WoWSpellMechanic.Frozen ||
-                           a.Spell.Mechanic == WoWSpellMechanic.Invulnerable ||
-                           a.Spell.Mechanic == WoWSpellMechanic.Invulnerable2 ||
-                           a.Spell.Mechanic == WoWSpellMechanic.Turned ||
-                           a.Spell.Mechanic == WoWSpellMechanic.Fleeing ||
-
-                           // Really want to ignore hexed mobs.
-                           a.Spell.Name == "Hex");
-            }
-            return false;
-        }
-
-        /// <summary>
         /// Checks to see if we are silenced or stunned (used for cancast)
         /// </summary>
         /// <param name="unit">the unit to check</param>
@@ -1211,13 +1249,13 @@ namespace CLU.Base
             if (playersOnly)
             {
                 hostile = hostile.Where(x =>
-                                        x.IsPlayer && IsAttackable(x) && IsCrowdControlled(x)
+                                        x.IsPlayer && IsAttackable(x) && x.IsCrowdControlled()
                                         && x.Location.Distance2DSqr(fromLocation) < maxDistance2).ToList();
             }
             else
             {
                 hostile = hostile.Where(x =>
-                                        !x.IsPlayer && IsAttackable(x) && IsCrowdControlled(x)
+                                        !x.IsPlayer && IsAttackable(x) && x.IsCrowdControlled()
                                         && x.Location.Distance2DSqr(fromLocation) < maxDistance2).ToList();
             }
             return hostile;
@@ -1236,13 +1274,13 @@ namespace CLU.Base
             if (playersOnly)
             {
                 hostile = hostile.Where(x =>
-                                        x.IsPlayer && IsAttackable(x) && !IsCrowdControlled(x)
+                                        x.IsPlayer && IsAttackable(x) && !x.IsCrowdControlled()
                                         && x.Location.Distance2DSqr(fromLocation) < maxDistance2).ToList();
             }
             else
             {
                 hostile = hostile.Where(x =>
-                                        !x.IsPlayer && IsAttackable(x) && !IsCrowdControlled(x)
+                                        !x.IsPlayer && IsAttackable(x) && !x.IsCrowdControlled()
                                         && x.Location.Distance2DSqr(fromLocation) < maxDistance2
                                         && (x.IsTargetingMeOrPet || x.IsTargetingMyPartyMember)).ToList();
             }

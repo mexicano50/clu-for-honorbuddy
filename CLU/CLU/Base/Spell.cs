@@ -17,6 +17,7 @@ namespace CLU.Base
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
+    using System.Globalization;
     using System.Linq;
     using System.Text;
     using CommonBehaviors.Actions;
@@ -25,6 +26,7 @@ namespace CLU.Base
     using global::CLU.Settings;
     using Styx;
     using Styx.CommonBot;
+    using Styx.Helpers;
     using Styx.TreeSharp;
     using Styx.WoWInternals;
     using Styx.WoWInternals.WoWObjects;
@@ -34,6 +36,8 @@ namespace CLU.Base
     {
         /* putting all the spell logic here */
 
+        internal delegate T Selection<out T>(object context);
+        public static bool IsChanneling { get { return StyxWoW.Me.ChanneledCastingSpellId != 0 && StyxWoW.Me.IsChanneling; } }
         public static string LastspellCast;
 
         /// <summary>
@@ -212,6 +216,16 @@ namespace CLU.Base
             return unit != null ? spell.MinRange + unit.CombatReach + 1.6666667f : spell.MinRange;
         }
 
+        public static double GetSpellCastTime(string spell)
+        {
+            SpellFindResults results;
+            if (SpellManager.FindSpell(spell, out results))
+            {
+                return results.Override != null ? results.Override.CastTime / 1000.0 : results.Original.CastTime / 1000.0;
+            }
+
+            return 99999.9;
+        }
         /// <summary>
         ///  Returns the current Melee range for the player Unit.DistanceToTargetBoundingBox(target)
         /// </summary>
@@ -262,6 +276,139 @@ namespace CLU.Base
             new Sequence(
                 new Action(a => CLULogger.Log(" [Casting] {0} ", label)), new Action(a => SpellManager.Cast(name, HealableUnit.HealTarget.ToUnit()))));
         }
+
+        #region Double Cast Shit
+
+        struct DoubleCastSpell
+        {
+            private string DoubleCastSpellName { get; set; }
+            public double DoubleCastExpiryTime { get; set; }
+            public DateTime DoubleCastCurrentTime { get; set; }
+            public DoubleCastSpell(string spellName, double expiryTime, DateTime currentTime)
+                : this()
+            {
+
+                DoubleCastSpellName = spellName;
+                DoubleCastExpiryTime = expiryTime;
+                DoubleCastCurrentTime = currentTime;
+            }
+        }
+
+        static readonly Dictionary<string, DoubleCastSpell> DoubleCastEntries = new Dictionary<string, DoubleCastSpell>();
+
+        private static void UpdateDoubleCastEntries(string spellName, double expiryTime)
+        {
+            if (DoubleCastEntries.ContainsKey(spellName)) DoubleCastEntries[spellName] = new DoubleCastSpell(spellName, expiryTime, DateTime.UtcNow);
+            if (!DoubleCastEntries.ContainsKey(spellName)) DoubleCastEntries.Add(spellName, new DoubleCastSpell(spellName, expiryTime, DateTime.UtcNow));
+        }
+
+        public static void OutputDoubleCastEntries()
+        {
+            foreach (var spell in DoubleCastEntries)
+            {
+             CLULogger.DiagnosticLog(spell.Key + " time: " + spell.Value.DoubleCastCurrentTime);
+            }
+        }
+
+        internal static void PulseDoubleCastEntries()
+        {
+            DoubleCastEntries.RemoveAll(t => DateTime.UtcNow.Subtract(t.DoubleCastCurrentTime).TotalSeconds >= t.DoubleCastExpiryTime);
+        }
+
+        public static Composite PreventDoubleCast(string spell, double expiryTime, Selection<bool> reqs = null)
+        {
+            return PreventDoubleCast(spell, expiryTime, ret => StyxWoW.Me.CurrentTarget, reqs);
+        }
+
+        public static Composite PreventDoubleCast(string spell, double expiryTime, CLU.UnitSelection onUnit, Selection<bool> reqs = null)
+        {
+            return
+               new Decorator(
+                   ret => ((reqs != null && reqs(ret)) || (reqs == null)) && onUnit != null && onUnit(ret) != null && SpellManager.CanCast(spell, onUnit(ret))
+                       && !DoubleCastEntries.ContainsKey(spell + onUnit(ret).Guid),
+                       new Action(delegate
+                       {
+                           if (Me.CurrentTarget != null)
+                           {
+                               if (SpellManager.Cast(spell)) UpdateDoubleCastEntries(spell + Me.CurrentTarget.Guid, expiryTime);
+                           }
+
+                       }));
+        }
+
+        public static Composite PreventDoubleCast(int spell, double expiryTime, CLU.UnitSelection onUnit, Selection<bool> reqs = null)
+        {
+            return
+               new Decorator(
+                   ret => ((reqs != null && reqs(ret)) || (reqs == null)) && onUnit != null && onUnit(ret) != null && SpellManager.CanCast(spell, onUnit(ret))
+                       && !DoubleCastEntries.ContainsKey(spell.ToString(CultureInfo.InvariantCulture) + onUnit(ret).Guid),
+                       new Action(delegate
+                       {
+                           if (Me.CurrentTarget != null)
+                           {
+                               if (SpellManager.Cast(spell)) UpdateDoubleCastEntries(spell.ToString(CultureInfo.InvariantCulture) + Me.CurrentTarget.Guid, expiryTime);
+                           }
+
+                       }));
+        }
+
+        public static Composite PreventDoubleCastNoCanCast(string spell, double expiryTime, CLU.UnitSelection onUnit, Selection<bool> reqs = null)
+        {
+            return
+               new Decorator(
+                   ret => ((reqs != null && reqs(ret)) || (reqs == null)) && onUnit != null && onUnit(ret) != null && !DoubleCastEntries.ContainsKey(spell + onUnit(ret).Guid),
+                       new Action(delegate
+                       {
+                           if (Me.CurrentTarget != null)
+                           {
+                               if (SpellManager.Cast(spell)) UpdateDoubleCastEntries(spell + Me.CurrentTarget.Guid, expiryTime);
+                           }
+
+                       }));
+        }
+
+        public static Composite PreventDoubleCast(int spell, double expiryTime, Selection<bool> reqs = null)
+        {
+            return PreventDoubleCast(spell, expiryTime, target => Me.CurrentTarget, reqs);
+        }
+
+        public static Composite PreventDoubleChannel(string spell, double expiryTime, bool checkCancast, Selection<bool> reqs = null)
+        {
+            return PreventDoubleChannel(spell, expiryTime, checkCancast, onUnit => StyxWoW.Me.CurrentTarget, reqs);
+        }
+
+        public static Composite PreventDoubleChannel(string spell, double expiryTime, bool checkCancast, CLU.UnitSelection onUnit, Selection<bool> reqs)
+        {
+            return
+
+                new Decorator(
+                delegate(object a)
+                {
+                    if (IsChanneling)
+                        return false;
+
+                    if (!reqs(a))
+                        return false;
+
+                    if (onUnit != null && DoubleCastEntries.ContainsKey(spell + onUnit(a).Guid))
+                        return false;
+
+                    if (onUnit != null && (checkCancast && !SpellManager.CanCast(spell, onUnit(a))))
+                        return false;
+
+                    return true;
+                },
+                 new Action(delegate
+                 {
+                     if (Me.CurrentTarget != null)
+                     {
+
+                         if (SpellManager.Cast(spell)) UpdateDoubleCastEntries(spell + Me.CurrentTarget.Guid, expiryTime);
+                     }
+                 }));
+        }
+
+        #endregion
 
         #region CastSpell - by ID
 
@@ -344,53 +491,6 @@ namespace CLU.Base
             CLULogger.DiagnosticLog("[Targetting] General Use of Cooldowns: {0}", CLUSettings.Instance.UseCooldowns);
             CLULogger.DiagnosticLog("[Targetting] Use Cooldowns on Me.CurrentTarget: {0}", Unit.UseCooldowns());
             CLULogger.DiagnosticLog("[Targetting] Use Cooldowns on tar: {0}", Unit.UseCooldowns(tar));
-            /*CLULogger.DiagnosticLog("[Targetting] -------------------------------------------------------------");
-            CLULogger.DiagnosticLog("[Targetting] TargetAuras:");
-            foreach (var a in tar.ActiveAuras) 
-            {
-                CLULogger.DiagnosticLog("[Targetting] Aura: {0} - {1}", a.Key,a.Value);
-                CLULogger.DiagnosticLog("[Targetting] CreatorID: {0}", a.Value.CreatorGuid);
-                CLULogger.DiagnosticLog("[Targetting] Duration: {0}", a.Value.Duration);
-                CLULogger.DiagnosticLog("[Targetting] EndTime: {0}", a.Value.EndTime);
-                CLULogger.DiagnosticLog("[Targetting] TimeLeft: {0}", a.Value.TimeLeft);
-                CLULogger.DiagnosticLog("[Targetting] StackCount: {0}", a.Value.StackCount);
-                CLULogger.DiagnosticLog("[Targetting] SpellId: {0}", a.Value.SpellId);
-                CLULogger.DiagnosticLog("[Targetting] -------------------------------------------------------------");
-
-            }
-            CLULogger.DiagnosticLog("[Targetting] Me Auras:");
-            foreach (var a in Me.ActiveAuras)
-            {
-                CLULogger.DiagnosticLog("[Targetting] Aura: {0} - {1}", a.Key, a.Value);
-                CLULogger.DiagnosticLog("[Targetting] CreatorID: {0}", a.Value.CreatorGuid);
-                CLULogger.DiagnosticLog("[Targetting] Duration: {0}", a.Value.Duration);
-                CLULogger.DiagnosticLog("[Targetting] EndTime: {0}", a.Value.EndTime);
-                CLULogger.DiagnosticLog("[Targetting] TimeLeft: {0}", a.Value.TimeLeft);
-                CLULogger.DiagnosticLog("[Targetting] StackCount: {0}", a.Value.StackCount);
-                CLULogger.DiagnosticLog("[Targetting] SpellId: {0}", a.Value.SpellId);
-                CLULogger.DiagnosticLog("[Targetting] -------------------------------------------------------------");
-
-            }
-            CLULogger.DiagnosticLog("[Targetting] My Spells:");
-            foreach (var s in SpellManager.Spells)
-            {
-                try
-                {
-                    CLULogger.DiagnosticLog("[Targetting] Spell: {0} - {1}", s.Key, s.Value);
-                    CLULogger.DiagnosticLog("[Targetting] CanCast: {0}", s.Value.CanCast);
-                    CLULogger.DiagnosticLog("[Targetting] CastTime: {0}", s.Value.CastTime);
-                    CLULogger.DiagnosticLog("[Targetting] Category: {0}", s.Value.Category);
-                    CLULogger.DiagnosticLog("[Targetting] Cooldown: {0}", s.Value.Cooldown);
-                    CLULogger.DiagnosticLog("[Targetting] CooldownTimeLeft: {0}", s.Value.CooldownTimeLeft);
-                    CLULogger.DiagnosticLog("[Targetting] HasRange: {0}", s.Value.HasRange);
-                    CLULogger.DiagnosticLog("[Targetting] Id: {0}", s.Value.Id);
-                    CLULogger.DiagnosticLog("[Targetting] IsSelfOnlySpell: {0}", s.Value.IsSelfOnlySpell);
-                    CLULogger.DiagnosticLog("[Targetting] MaxRange: {0}", s.Value.MaxRange);
-                    CLULogger.DiagnosticLog("[Targetting] PowerCost: {0}", s.Value.PowerCost);
-                    CLULogger.DiagnosticLog("[Targetting] -------------------------------------------------------------");
-                }
-                catch (Exception ex) { }
-            }*/
             CLU.LastTargetGuid = tar.Guid;
         }
 
@@ -1433,6 +1533,11 @@ namespace CLU.Base
             new Sequence(
                 new Action(a => CLULogger.Log(" [CancelAura] {0}", name)),
                 new Action(a => Lua.DoString("RunMacroText(\"" + RealLuaEscape(macro) + "\")"))));
+        }
+
+        public static bool HasAllAuras(this WoWUnit unit, params string[] auraNames)
+        {
+            return auraNames.All(unit.HasAura);
         }
     }
 }

@@ -71,6 +71,29 @@ namespace CLU.Classes.Warlock
                             );
             }
         }
+        public static Composite HandleGrimoire
+        {
+            get
+            {
+                return new PrioritySelector(
+                    //Grimoire of Service
+                    Spell.CastSpell("Grimoire: Felhunter",
+                               ret =>
+                               StyxWoW.Me.GotAlivePet && TalentManager.HasTalent(14) &&
+                               (StyxWoW.Me.Specialization == WoWSpec.WarlockAffliction ||
+                                StyxWoW.Me.Specialization == WoWSpec.WarlockDestruction), "[HandleGrimoire] Grimoire: Felhunter"),
+                    Spell.CastSpell("Grimoire: Felguard",
+                               ret =>
+                               StyxWoW.Me.GotAlivePet && TalentManager.HasTalent(14) &&
+                               StyxWoW.Me.Specialization == WoWSpec.WarlockDemonology, "[HandleGrimoire] Grimoire: Felguard"),
+                    //Sacrifice Pet
+                    Spell.CastSpell("Grimoire of Sacrifice", ret => StyxWoW.Me,
+                               ret =>
+                               StyxWoW.Me.GotAlivePet && TalentManager.HasTalent(15) &&
+                               !StyxWoW.Me.ActiveAuras.ContainsKey("Grimoire of Sacrifice"), "[HandleGrimoire] Grimoire of Sacrifice")
+                    );
+            }
+        }
         public static Composite WarlockPreCombat
         {
             get

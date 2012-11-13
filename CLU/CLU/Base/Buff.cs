@@ -490,6 +490,26 @@ namespace CLU.Base
             return TimeSpan.Zero;
         }
 
+        /// <summary>Returns the timeleft of an aura by TimeSpan. Return 0 if the aura doesn't exist.</summary>
+        /// <param name="unit">The unit to check the aura for.</param>
+        /// <param name="auraName">The name of the aura in English.</param>
+        /// <param name="fromMyAura"> true if its from my aura</param>
+        /// <returns>The get aura time left as double.</returns>
+        public static double GetAuraDoubleTimeLeft(WoWUnit unit, string auraName, bool fromMyAura)
+        {
+            if (unit != null)
+            {
+                var result = unit.GetAuraByName(auraName);
+                if (result != null)
+                {
+                    if (result.TimeLeft.TotalSeconds > 0)
+                        return result.TimeLeft.TotalSeconds;
+                }
+            }
+            CLULogger.DiagnosticLog(" [GetAuraTimeLeft] Unit is null ");
+            return 0;
+        }
+
         /// <summary>Check the aura stack count thats created by the specified unit</summary>
         /// <param name="unit">The unit to check auras for.</param>
         /// <param name="auraName">The name of the aura in English</param>

@@ -275,35 +275,6 @@ namespace CLU.Classes.Rogue
             }
         }
 
-        //private static Action AoEDebug
-        //{
-        //    get
-        //    {
-        //        return new Action
-        //            (delegate
-        //                {
-        //                    CLU.Log("AoETargets != null: {0}", AoETargets != null);
-
-        //                    if(AoETargets == null)
-        //                        return RunStatus.Failure;
-
-        //                    CLU.Log("AoETargets.Count(): {0}", AoETargets.Count());
-
-        //                    foreach ( var aoeTarget in AoETargets.Where(x => !FoKSafe(x)))
-        //                    {
-        //                        var spell = aoeTarget.Debuffs.First(x => IsCcMechanic(x.Value.Spell)).Value;
-        //                        CLU.Log("Target {0} affected by {1} which is {2}", aoeTarget.Name, spell.Name, spell.Spell.Mechanic);
-        //                    }
-
-        //                    CLU.Log("AoETargets in combat: {0}", AoETargets.All(x => x.Combat));
-
-        //                    return RunStatus.Failure;
-        //                });
-
-        //        //(ret => AoETargets.All(x => !Unit.IsCrowdControlled(x)) && AoETargets.Count() >= CLUSettings.Instance.Rogue.AssasinationFanOfKnivesCount,
-        //    }
-        //}
-
         private static IEnumerable<WoWUnit> AoETargets
         {
             get
@@ -327,15 +298,6 @@ namespace CLU.Classes.Rogue
                 return _aoeTargets;
             }
         }
-
-        //private static bool BleedSafe
-        //{
-        //    get
-        //    {
-        //        return Buff.TargetDebuffTimeLeft("Rupture").TotalSeconds > 4 ||
-        //               Buff.TargetDebuffTimeLeft("Garrote").TotalSeconds > 2;
-        //    }
-        //}
 
         private static bool BuffsSafeForVanish
         {
