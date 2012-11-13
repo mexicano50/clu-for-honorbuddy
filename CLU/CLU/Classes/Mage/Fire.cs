@@ -126,7 +126,7 @@ namespace CLU.Classes.Mage
                             new Decorator(ret=> CLUSettings.Instance.UseCooldowns,
                                 new PrioritySelector(
                                     Spell.ChannelSelfSpell("Evocation",             ret => Me.ManaPercent < 35 && !Me.IsMoving, "Evocation"),
-                                    Spell.ChannelSelfSpell("Evocation", ret => TalentManager.HasTalent(16) && Unit.UseCooldowns() && !Buff.PlayerHasActiveBuff("Invocation") && !Me.IsMoving, "Evocation"),
+                                    Spell.ChannelSelfSpell("Evocation", ret => TalentManager.HasTalent(16) && Unit.UseCooldowns() && !Buff.PlayerHasActiveBuff("Invoker's Energy") && !Me.IsMoving, "Evocation"),
                             Item.UseBagItem("Mana Gem",                     ret => Me.CurrentTarget != null && Me.ManaPercent < 90, "Mana Gem"),
                             Item.UseBagItem("Brilliant Mana Gem",           ret => Me.CurrentTarget != null && Me.ManaPercent < 90, "Brilliant Mana Gem"),
                             Spell.CastSelfSpell("Mirror Image",             ret => true, "Mirror Image"),
