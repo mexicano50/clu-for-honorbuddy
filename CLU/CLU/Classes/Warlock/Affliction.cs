@@ -177,7 +177,7 @@ namespace CLU.Classes.Warlock
                 Spell.PreventDoubleCast("Agony", ThrottleTime, ret => NeedAgony),
                 Spell.CastSpell("Corruption", ret => NeedCorruption,"Corruption"),
                 Spell.PreventDoubleCast("Unstable Affliction", CurseRefreshTotalSeconds(1, Traveltime(0.0), Spell.GetSpellCastTime("Unstable Affliction")), ret => NeedUnstableAffliction),
-                Spell.PreventDoubleChannel("Drain Soul", ThrottleTime, true, on => Me.CurrentTarget, ret => NeedDrainSoul && !NeedaCurse),
+                Spell.PreventDoubleChannel("Drain Soul", ThrottleTime, true, on => Me.CurrentTarget, ret => NeedDrainSoul),
                 Spell.PreventDoubleCast("Life Tap", 1, on => Me, ret => Me.ManaPercent < 35 && Me.HealthPercent > 40),
                 Spell.PreventDoubleChannel("Malefic Grasp", ThrottleTime, true, on => Me.CurrentTarget, ret => !Me.IsMoving && !NeedaCurse),
                 Spell.PreventDoubleCast("Life Tap", ThrottleTime, on => Me, ret => Me.CurrentTarget != null && (Me.IsMoving && Me.ManaPercent < 80 && Me.ManaPercent < Me.CurrentTarget.HealthPercent)),
