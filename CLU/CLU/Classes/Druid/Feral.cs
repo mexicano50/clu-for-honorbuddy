@@ -256,9 +256,9 @@ CREDITS TO: HandNavi - because he owns the business.
                                               Item.UseEngineerGloves()
                                               )), // Thanks Kink#
                                       Spell.CastSpell("Tiger's Fury", ret => SpellManager.HasSpell("Tiger's Fury") && SpellManager.Spells["Tiger's Fury"].CooldownTimeLeft.TotalSeconds < 1 && Common.PlayerEnergy <= 35 && !Buff.PlayerHasActiveBuff("Clearcasting"), "Tiger's Fury"),
-                                      Spell.CastSpell("Berserk", ret => SpellManager.HasSpell("Berserk") && SpellManager.Spells["Berserk"].CooldownTimeLeft.TotalSeconds < 1 && (Buff.PlayerHasBuff("Tiger's Fury") || (Unit.TimeToDeath(Me.CurrentTarget) < 15 && SpellManager.Spells["Tiger's Fury"].CooldownTimeLeft.TotalSeconds > 6)), "Berserk"),
+                                      Spell.CastSpell("Berserk", ret => Unit.UseCooldowns() && SpellManager.HasSpell("Berserk") && SpellManager.Spells["Berserk"].CooldownTimeLeft.TotalSeconds < 1 && (Buff.PlayerHasBuff("Tiger's Fury") || (Unit.TimeToDeath(Me.CurrentTarget) < 15 && SpellManager.Spells["Tiger's Fury"].CooldownTimeLeft.TotalSeconds > 6)), "Berserk"),
                                       Spell.CastSpell("Nature's Vigil", ret => SpellManager.HasSpell("Nature's Vigil") && SpellManager.Spells["Nature's Vigil"].CooldownTimeLeft.TotalSeconds < 1 && Buff.PlayerHasBuff("Berserk"), "Nature's Vigil"),
-                                      Spell.CastSpell("Incarnation", ret => SpellManager.HasSpell("Incarnation") && SpellManager.Spells["Incarnation"].CooldownTimeLeft.TotalSeconds < 1 && Buff.PlayerHasBuff("Berserk"), "Incarnation"),
+                                      Spell.CastSpell("Incarnation", ret => Unit.UseCooldowns() && SpellManager.HasSpell("Incarnation") && SpellManager.Spells["Incarnation"].CooldownTimeLeft.TotalSeconds < 1 && Buff.PlayerHasBuff("Berserk"), "Incarnation"),
 
                     //Use Racials!
                                       new Decorator(ret => Me.CurrentTarget != null && Unit.UseCooldowns(), Racials.UseRacials()),
