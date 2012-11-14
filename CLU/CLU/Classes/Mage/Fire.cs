@@ -130,13 +130,13 @@ namespace CLU.Classes.Mage
                             Item.UseBagItem("Mana Gem",                     ret => Me.CurrentTarget != null && Me.ManaPercent < 90, "Mana Gem"),
                             Item.UseBagItem("Brilliant Mana Gem",           ret => Me.CurrentTarget != null && Me.ManaPercent < 90, "Brilliant Mana Gem"),
                             Spell.CastSelfSpell("Mirror Image",             ret => true, "Mirror Image"),
-                            Spell.CastSelfSpell("Presence of Mind",         ret => !Buff.PlayerHasBuff("Invisibility") && !Buff.PlayerHasBuff("Alter Time"), "Presence of Mind"),
+                            Spell.CastSelfSpell("Presence of Mind", ret => Unit.UseCooldowns() && Me.HasMyAura("Pyroblast!"), "Presence of Mind"),
+                            Buff.CastBuff("Alter Time", ret => Unit.UseCooldowns() && Me.HasMyAura("Pyroblast!") && (Me.HasMyAura("Presence of Mind") ||!TalentManager.HasTalent(1)), "Alter Time"),
+                            Spell.CastSpell("Pyroblast", ret => Me.HasMyAura("Presence of Mind") || Me.HasMyAura("Pyroblast!"), "Pyroblast with PoM or Pyroblast!"),
                             Spell.CastSelfSpell("Arcane Power",             ret => Me.CurrentTarget != null, "Arcane Power"))),
-                            Item.RunMacroText("/cast Conjure Mana Gem",     ret => Buff.PlayerHasBuff("Presence of Mind") && !Item.HaveManaGem() && Me.Level > 50, "Conjure Mana Gem"),
-
+                            Spell.CastSpell(759, ret => Spell.CanCast("Conjure Mana Gem") && Buff.PlayerHasBuff("Presence of Mind") && !Item.HaveManaGem() && Me.Level > 50, "Conjure Mana Gem"),
                             // Rune of Power
-                            Spell.CastOnUnitLocation("Rune of Power", unit => Me, ret => !Buff.PlayerHasBuff("Rune of Power") && TalentManager.HasTalent(17), "Rune of Power"),
-                            
+                            Spell.CastOnUnitLocation("Rune of Power", unit => Me, ret => !Buff.PlayerHasBuff("Rune of Power") && TalentManager.HasTalent(17), "Rune of Power"),                          
                             // AoE
                             new Decorator(
                                ret => !Me.IsMoving && Me.CurrentTarget != null && Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 15) >= CLUSettings.Instance.BurstOnMobCount && CLUSettings.Instance.UseAoEAbilities,
@@ -147,12 +147,10 @@ namespace CLU.Classes.Mage
                             // Default Rotaion
                             //Tier5 Talent
                             Spell.CastSpell("Combustion",               ret => CLUSettings.Instance.Mage.EnableCombustion && Buff.TargetHasDebuff("Ignite") && Buff.TargetHasDebuff("Pyroblast") && Unit.UseCooldowns(), "Combustion"),
-                            Buff.CastBuff("Alter Time",                 ret => Unit.UseCooldowns() && Me.HasMyAura("Pyroblast!"), "Alter Time"),
                             Buff.CastDebuff("Mage Bomb", Magebombtalent, ret => true, "Frost/Living Bomb or Nether Tempest"),
                             Spell.CastSpell("Inferno Blast", ret => Me.HasMyAura("Heating Up") && !Me.HasMyAura("Pyroblast!"), "Inferno Blast with Heating Up proc"),
-                            Spell.CastSpell("Pyroblast",                ret => Me.HasMyAura("Pyroblast!"),"Pyroblast with Pyroblast! proc"),
                             Spell.CastSpell("Fire Blast",               ret => Me.HasMyAura("Heating Up") && !Spell.SpellOnCooldown("Fire Blast"), "Fire Blast with Heating Up proc"),
-                            Spell.CastSpell("Fireball",                 ret => !Me.HasMyAura("Heating Up") || Spell.SpellOnCooldown("Fire Blast") || (Me.HasMyAura("Heating Up") && Spell.SpellOnCooldown("Fire Blast")), "Fireball"),
+                            Spell.CastSpell("Fireball",                 ret =>!Me.HasMyAura("Pyroblast!") && !Me.HasMyAura("Presence of Mind") && (!Me.HasMyAura("Heating Up") || Spell.SpellOnCooldown("Fire Blast") || (Me.HasMyAura("Heating Up") && Spell.SpellOnCooldown("Fire Blast"))), "Fireball"),
                             Spell.CastSpell("Scorch",                   ret => Me.IsMoving && TalentManager.HasTalent(2), false, "Scorch (Moving)"),
                             Spell.CastSpell("Ice Lance",                ret => Me.IsMoving, false, "Ice Lance (Moving)")
                             
@@ -188,7 +186,7 @@ namespace CLU.Classes.Mage
                                Buff.CastBuff("Molten Armor",                   ret => true, "Molten Armor"),
                                //Buff.CastRaidBuff("Dalaran Brilliance",         ret => true, "Dalaran Brilliance"), //Commentet out as it is of no real importance except for 10yrd extra range.
                                Buff.CastRaidBuff("Arcane Brilliance",          ret => true, "Arcane Brilliance"),
-                               Item.RunMacroText("/cast Conjure Mana Gem", ret => !Me.IsMoving && !Item.HaveManaGem() && Me.Level > 50, "Conjure Mana Gem")));
+                               Spell.CastSpell(759, ret => Spell.CanCast("Conjure Mana Gem") && Buff.PlayerHasBuff("Presence of Mind") && !Item.HaveManaGem() && Me.Level > 50, "Conjure Mana Gem")));
             }
         }
 
