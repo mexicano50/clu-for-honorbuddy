@@ -130,8 +130,10 @@ namespace CLU.Classes.Mage
                             Item.UseBagItem("Mana Gem",                     ret => Me.CurrentTarget != null && Me.ManaPercent < 90, "Mana Gem"),
                             Item.UseBagItem("Brilliant Mana Gem",           ret => Me.CurrentTarget != null && Me.ManaPercent < 90, "Brilliant Mana Gem"),
                             Spell.CastSelfSpell("Mirror Image",             ret => true, "Mirror Image"),
-                            Spell.CastSelfSpell("Presence of Mind", ret => Unit.UseCooldowns() && Me.HasMyAura("Pyroblast!"), "Presence of Mind"),
+                            Spell.CastSelfSpell("Presence of Mind", ret => Unit.UseCooldowns() && Me.HasMyAura("Pyroblast!") && !Spell.SpellOnCooldown("Alter Time"), "Presence of Mind"),
+                            //Spell.CastSelfSpell("Presence of Mind", ret => Unit.UseCooldowns(), "Presence of Mind"),
                             Buff.CastBuff("Alter Time", ret => Unit.UseCooldowns() && Me.HasMyAura("Pyroblast!") && (Me.HasMyAura("Presence of Mind") ||!TalentManager.HasTalent(1)), "Alter Time"),
+                            Buff.CastBuff("Alter Time", ret => Unit.UseCooldowns() && !Me.HasMyAura("Pyroblast!") && (!Me.HasMyAura("Presence of Mind") || !TalentManager.HasTalent(1)) && Spell.LastspellCast == "Pyroblast", "Alter Time"),
                             Spell.CastSpell("Pyroblast", ret => Me.HasMyAura("Presence of Mind") || Me.HasMyAura("Pyroblast!"), "Pyroblast with PoM or Pyroblast!"),
                             Spell.CastSelfSpell("Arcane Power",             ret => Me.CurrentTarget != null, "Arcane Power"))),
                             Spell.CastSpell(759, ret => Spell.CanCast("Conjure Mana Gem") && Buff.PlayerHasBuff("Presence of Mind") && !Item.HaveManaGem() && Me.Level > 50, "Conjure Mana Gem"),
@@ -186,7 +188,8 @@ namespace CLU.Classes.Mage
                                Buff.CastBuff("Molten Armor",                   ret => true, "Molten Armor"),
                                //Buff.CastRaidBuff("Dalaran Brilliance",         ret => true, "Dalaran Brilliance"), //Commentet out as it is of no real importance except for 10yrd extra range.
                                Buff.CastRaidBuff("Arcane Brilliance",          ret => true, "Arcane Brilliance"),
-                               Spell.CastSpell(759, ret => Spell.CanCast("Conjure Mana Gem") && Buff.PlayerHasBuff("Presence of Mind") && !Item.HaveManaGem() && Me.Level > 50, "Conjure Mana Gem")));
+                               Spell.CastSpell(759, ret => Spell.CanCast("Conjure Mana Gem") && Buff.PlayerHasBuff("Presence of Mind") && !Item.HaveManaGem() && Me.Level > 50, "Conjure Mana Gem"),
+                               Spell.ChannelSelfSpell("Evocation", ret => TalentManager.HasTalent(16) && Unit.UseCooldowns() && !Buff.PlayerHasActiveBuff("Invoker's Energy") && !Me.IsMoving, "Evocation")));
             }
         }
 
