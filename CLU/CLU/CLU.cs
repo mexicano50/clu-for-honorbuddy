@@ -485,7 +485,7 @@ namespace CLU
             {
                 // Make sure we have the proper target from Targeting.
                 // The Botbase should give us the best target in targeting.
-                var firstUnit = Targeting.Instance.TargetList.OrderBy(o=>o.Distance).FirstOrDefault(q=>q.IsHostile && q.IsAlive && !q.IsPet && !q.IsPetBattleCritter);
+                var firstUnit = Targeting.Instance.TargetList.OrderBy(o=>o.Distance).FirstOrDefault(q=> !q.IsFriendly && q.IsAlive && !q.IsPet && !q.IsPetBattleCritter);
                 if (CLUSettings.Instance.EnableTargeting && firstUnit != null && (Me.CurrentTarget==null || Me.CurrentTarget.IsDead || !Me.CurrentTarget.IsAlive || !Me.CurrentTarget.IsHostile) && firstUnit.IsHostile)
                 {
                     if (StyxWoW.Me.CurrentTarget != firstUnit)
