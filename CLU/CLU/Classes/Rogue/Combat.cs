@@ -193,7 +193,7 @@ namespace CLU.Classes.Rogue
         public override Composite Pull
         {
             get { return new PrioritySelector(
-                new DecoratorContinue(ret => Me.CurrentTarget != null && Me.IsFacing(Me.CurrentTarget), new Action(ret => Me.CurrentTarget.Face())),
+                new DecoratorContinue(ret => Me.CurrentTarget != null && !Me.IsSafelyFacing(Me.CurrentTarget, 45f), new Action(ret => Me.CurrentTarget.Face())),
                 Spell.CastSpell("Throw", ret => Me.CurrentTarget.Distance <= 30, "Throw for Pull")); }
         }
 

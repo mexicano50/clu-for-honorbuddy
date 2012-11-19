@@ -142,7 +142,7 @@ namespace CLU.Classes.Mage
                            Spell.CastSelfSpell("Mirror Image",  ret => Me.CurrentTarget != null && Unit.UseCooldowns(), "Mirror Image"),
                            Spell.CastSelfSpell("Icy Veins",     ret => !Buff.PlayerHasActiveBuff("Icy Veins") && !Buff.UnitHasHasteBuff(Me) && (Buff.PlayerCountBuff("Stolen Time") > 7 || Spell.SpellCooldown("Cold Snap").TotalSeconds < 22), "Icy Veins"),
                            Buff.CastBuff("Alter Time",          ret => Unit.UseCooldowns() && Buff.PlayerHasActiveBuff("Brain Freeze") && Buff.PlayerHasActiveBuff("Fingers of Frost"), "Alter Time"),
-                           Spell.CastSpell("Deep Freeze",       ret => Buff.PlayerHasActiveBuff("Fingers of Frost"), "Deep Freeze (Fingers of Frost)"),
+                           Spell.CastSpell("Deep Freeze", ret => Buff.PlayerHasActiveBuff("Fingers of Frost") || Me.CurrentTarget.HasAura("Freeze") || Me.CurrentTarget.HasAura("Frost Nova"), "Deep Freeze (Fingers of Frost)"),
                            Spell.CastSpell("Frostfire Bolt",    ret => Buff.PlayerHasActiveBuff("Brain Freeze"), "Frostfire Bolt (Brain Freeze)"),
                            
                             // AoE
