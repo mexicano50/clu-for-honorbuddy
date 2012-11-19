@@ -25,8 +25,6 @@ using Rest = CLU.Base.Rest;
 
 namespace CLU.Classes.Warlock
 {
-
-
     class Affliction : RotationBase
     {
         public override string Name
@@ -110,7 +108,12 @@ namespace CLU.Classes.Warlock
 
         public override Composite Pull
         {
-             get { return this.SingleRotation; }
+            get
+            {
+                return new PrioritySelector(
+                    new DecoratorContinue(ret => Me.CurrentTarget != null && !Me.IsSafelyFacing(Me.CurrentTarget, 45f), new Action(ret => Me.CurrentTarget.Face())),
+                    this.SingleRotation);
+            }
         }
 
         public override Composite Medic

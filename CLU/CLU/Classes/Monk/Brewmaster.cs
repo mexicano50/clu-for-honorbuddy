@@ -22,6 +22,7 @@ using CLU.Settings;
 using CLU.Base;
 using CLU.Managers;
 using Rest = CLU.Base.Rest;
+using Action = Styx.TreeSharp.Action;
 
 namespace CLU.Classes.Monk
 {
@@ -161,6 +162,7 @@ namespace CLU.Classes.Monk
                 return new PrioritySelector(
                     new Decorator(ret => CLUSettings.Instance.EnableMovement,
                         new PrioritySelector(
+                            new DecoratorContinue(ret => Me.CurrentTarget != null && !Me.IsSafelyFacing(Me.CurrentTarget, 45f), new Action(ret => Me.CurrentTarget.Face())),
                             Spell.CastSpell("Provoke", ret => !CLU.IsMounted && (Me.CurrentTarget != null && Me.CurrentTarget.DistanceSqr >= 8 * 8), "Provoke"),
                             Spell.CastSpell("Roll", ret => !CLU.IsMounted && (Me.CurrentTarget != null && Me.CurrentTarget.DistanceSqr >= 10 * 10), "Roll"),
                             this.SingleRotation)),

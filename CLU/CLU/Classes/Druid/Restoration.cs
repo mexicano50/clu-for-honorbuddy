@@ -10,15 +10,15 @@
  */
 #endregion
 
-using System;
+using CLU.Base;
 using CLU.Helpers;
+using CLU.Managers;
 using CLU.Settings;
 using CommonBehaviors.Actions;
 using Styx;
 using Styx.WoWInternals;
 using Styx.TreeSharp;
-using CLU.Base;
-using CLU.Managers;
+
 
 namespace CLU.Classes.Druid
 {
@@ -72,7 +72,12 @@ namespace CLU.Classes.Druid
         /// </summary>
         public override Composite Pull
         {
-            get { return this.SingleRotation; }
+            get
+            {
+                return new PrioritySelector(
+                    new DecoratorContinue(ret => Me.CurrentTarget != null && !Me.IsSafelyFacing(Me.CurrentTarget, 45f), new Action(ret => Me.CurrentTarget.Face())),
+                    this.SingleRotation);
+            }
         }
 
         // adding some help about cooldown management
@@ -124,7 +129,7 @@ namespace CLU.Classes.Druid
                                                  Spell.CastHeal("Remove Corruption", a => true, "Remove Corruption (Urgent)")
                                                 ),
                     // Lifebloom to three stacks
-                           Healer.FindTank(a => StyxWoW.Me.Combat, x => x.ToUnit().InLineOfSight && !x.ToUnit().IsDead && (!x.ToUnit().HasAura("Lifebloom") || x.ToUnit().Auras["Lifebloom"].StackCount < 3 || x.ToUnit().Auras["Lifebloom"].TimeLeft <= TimeSpan.FromSeconds(3)) && x.LifeBloom, (a, b) => (int)(a.MaxHealth - b.MaxHealth), "Lifebloom to three stacks",
+                           Healer.FindTank(a => StyxWoW.Me.Combat, x => x.ToUnit().InLineOfSight && !x.ToUnit().IsDead && (!x.ToUnit().HasAura("Lifebloom") || x.ToUnit().Auras["Lifebloom"].StackCount < 3 || x.ToUnit().Auras["Lifebloom"].TimeLeft.TotalSeconds <= 3) && x.LifeBloom, (a, b) => (int)(a.MaxHealth - b.MaxHealth), "Lifebloom to three stacks",
                                            Spell.CastHeal("Lifebloom", a => true, "Lifebloom on tank")
                                           ),
 
@@ -180,7 +185,7 @@ namespace CLU.Classes.Druid
                                               ),
 
                            // Lifebloom during Tree of Life
-                           Healer.FindTank(a => StyxWoW.Me.Shapeshift == ShapeshiftForm.TreeOfLife && StyxWoW.Me.Combat, x => x.ToUnit().InLineOfSight && !x.ToUnit().IsDead && (!x.ToUnit().HasAura("Lifebloom") || x.ToUnit().Auras["Lifebloom"].StackCount < 3 || x.ToUnit().Auras["Lifebloom"].TimeLeft <= TimeSpan.FromSeconds(3)), (a, b) => (int)(a.CurrentHealth - b.CurrentHealth), "Lifebloom during Tree of Life",
+                           Healer.FindTank(a => StyxWoW.Me.Shapeshift == ShapeshiftForm.TreeOfLife && StyxWoW.Me.Combat, x => x.ToUnit().InLineOfSight && !x.ToUnit().IsDead && (!x.ToUnit().HasAura("Lifebloom") || x.ToUnit().Auras["Lifebloom"].StackCount < 3 || x.ToUnit().Auras["Lifebloom"].TimeLeft.TotalSeconds <= 3), (a, b) => (int)(a.CurrentHealth - b.CurrentHealth), "Lifebloom during Tree of Life",
                                            Spell.CastHeal("Lifebloom", a => true, "Lifebloom tree of life")
                                           ),
 

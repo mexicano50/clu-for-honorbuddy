@@ -20,10 +20,11 @@ using CLU.Base;
 using Styx.WoWInternals;
 using Rest = CLU.Base.Rest;
 
+
 namespace CLU.Classes.Paladin
 {
     using System;
-
+    using Action = Styx.TreeSharp.Action;
     class Retribution : RotationBase
     {
         private const int ItemSetId = 1064; // Tier set ID
@@ -156,6 +157,7 @@ NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagr
         public override Composite Pull
         {
              get { return new PrioritySelector(
+                    new DecoratorContinue(ret => Me.CurrentTarget != null && !Me.IsSafelyFacing(Me.CurrentTarget, 45f), new Action(ret => Me.CurrentTarget.Face())),
                     Spell.CastSpell("Judgment",ret => true, "Pull Judgment"),
                     Spell.CastSpell("Exorcism",ret => true, "Pull Excorcism")); }
         }

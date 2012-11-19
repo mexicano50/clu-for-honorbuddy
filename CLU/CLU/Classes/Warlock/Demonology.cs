@@ -11,20 +11,18 @@
 #endregion
 
 using CommonBehaviors.Actions;
-using Styx.TreeSharp;
-using Styx.WoWInternals;
 using CLU.Base;
-using System;
 using CLU.Helpers;
 using CLU.Managers;
 using CLU.Settings;
 using System.Linq;
+using Styx;
+using Styx.TreeSharp;
+using Styx.WoWInternals;
 using Rest = CLU.Base.Rest;
 
-using Styx;
 namespace CLU.Classes.Warlock
 {
-
     class Demonology : RotationBase
     {
         public override string Name
@@ -205,7 +203,12 @@ namespace CLU.Classes.Warlock
 
         public override Composite Pull
         {
-            get { return this.SingleRotation; }
+            get
+            {
+                return new PrioritySelector(
+                    new DecoratorContinue(ret => Me.CurrentTarget != null && !Me.IsSafelyFacing(Me.CurrentTarget, 45f), new Action(ret => Me.CurrentTarget.Face())),
+                    this.SingleRotation);
+            }
         }
 
         public override Composite Medic
