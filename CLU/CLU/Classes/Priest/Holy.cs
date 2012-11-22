@@ -58,7 +58,7 @@ namespace CLU.Classes.Priest
             get
             {
                 return new PrioritySelector(
-                    new DecoratorContinue(ret => Me.CurrentTarget != null && !Me.IsSafelyFacing(Me.CurrentTarget, 45f), new Action(ret => Me.CurrentTarget.Face())),
+                    Movement.CreateFaceTargetBehavior(),
                     this.SingleRotation);
             }
         }

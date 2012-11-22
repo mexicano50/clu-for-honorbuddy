@@ -90,7 +90,7 @@ namespace CLU.Classes.Rogue
             {
                 return new PrioritySelector
                     (
-                    new DecoratorContinue(ret => Me.CurrentTarget != null && !Me.IsSafelyFacing(Me.CurrentTarget, 45f), new Action(ret => Me.CurrentTarget.Face())),
+                    Movement.CreateFaceTargetBehavior(),
                     Spell.CastSpell("Garrote", cond =>Me.CurrentTarget.DistanceSqr <= Spell.MeleeRange && Me.IsStealthed, "Garrote for pull"),
                     Spell.CastSpell("Throw", ret => Me.CurrentTarget.Distance <= 30, "Throw for Pull"));
             }

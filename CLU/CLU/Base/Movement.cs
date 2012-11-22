@@ -50,7 +50,37 @@ namespace CLU.Base
         {
             get { return StyxWoW.Me; }
         }
+        public static Composite CreateFaceTargetBehavior(float viewDegrees = 70f)
+        {
+            return CreateFaceTargetBehavior(ret => StyxWoW.Me.CurrentTarget);
+        }
 
+        public static Composite CreateFaceTargetBehavior(CLU.UnitSelection toUnit, float viewDegrees = 70f)
+        {
+            return new Decorator(
+                ret =>
+                CLUSettings.Instance.EnableMovement && toUnit != null && toUnit(ret) != null &&
+                !StyxWoW.Me.IsMoving && !toUnit(ret).IsMe &&
+                !StyxWoW.Me.IsSafelyFacing(toUnit(ret), viewDegrees),
+                new Action(ret =>
+                {
+                    StyxWoW.Me.CurrentTarget.Face();
+                    return RunStatus.Failure;
+                }));
+        }
+
+        public static Composite CreateMoveToLosBehavior()
+        {
+            return CreateMoveToLosBehavior(ret => StyxWoW.Me.CurrentTarget);
+        }
+        public static Composite CreateMoveToLosBehavior(CLU.UnitSelection toUnit)
+        {
+            return new Decorator(
+                ret =>
+                CLUSettings.Instance.EnableMovement && toUnit != null && toUnit(ret) != null &&
+                toUnit(ret) != StyxWoW.Me && !toUnit(ret).InLineOfSpellSight,
+                new Action(ret => Navigator.MoveTo(toUnit(ret).Location)));
+        }
         /// <summary>
         /// Movement Behaviour
         /// </summary>
@@ -67,7 +97,7 @@ namespace CLU.Base
         private static Composite MoveToPull(CLU.UnitSelection onUnit)
         {
             return new Sequence(
-
+                CreateMoveToLosBehavior(),
                 // Move to Location
                        new DecoratorContinue(ret => onUnit(ret) != null && onUnit(ret).Distance > CharacterSettings.Instance.PullDistance,
                                              new Sequence(

@@ -157,7 +157,7 @@ NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagr
         public override Composite Pull
         {
              get { return new PrioritySelector(
-                    new DecoratorContinue(ret => Me.CurrentTarget != null && !Me.IsSafelyFacing(Me.CurrentTarget, 45f), new Action(ret => Me.CurrentTarget.Face())),
+                    Movement.CreateFaceTargetBehavior(),
                     Spell.CastSpell("Judgment",ret => true, "Pull Judgment"),
                     Spell.CastSpell("Exorcism",ret => true, "Pull Excorcism")); }
         }

@@ -10,6 +10,7 @@
  */
 #endregion
 
+using System.Collections.Generic;
 using CLU.Helpers;
 using Styx.TreeSharp;
 
@@ -170,7 +171,7 @@ namespace CLU.Classes.Mage
             get
             {
                 return new PrioritySelector(
-                    new DecoratorContinue(ret => Me.CurrentTarget != null && !Me.IsSafelyFacing(Me.CurrentTarget, 45f), new Action(ret => Me.CurrentTarget.Face())),
+                    new Decorator(ret => Me.CurrentTarget != null && !Me.IsSafelyFacing(Me.CurrentTarget, 45f), new Action(ret => Me.CurrentTarget.Face())),
                     this.SingleRotation);
             }
         }
@@ -226,6 +227,36 @@ namespace CLU.Classes.Mage
             {
                 return this.SingleRotation;
             }
+        }
+        /* atm unused */
+        private static HashSet<int> MageBomb = new HashSet<int>
+        {
+            44457, // Living Bomb 
+            114923, // Nether Tempest
+            113092  // Frost Bomb
+        };
+        /* atm unused, not finished */
+        private Composite FireMageRotation()
+        {
+            return new PrioritySelector(
+                new Decorator(ret => CLUSettings.Instance.PauseRotation, new ActionAlwaysSucceed()),
+                new Decorator(ret=> Me.GotTarget && Me.CurrentTarget!=null && Me.CurrentTarget.IsAlive && Me.CurrentTarget.Attackable,
+                    new PrioritySelector(
+                        Spell.ChannelSelfSpell("Evovation", ret => Unit.UseCooldowns() && TalentManager.HasTalent(16) && !Me.HasAura("Invoker's Energy") && !Me.HasAura("Pyroblast!"),"Evocation"),
+                        Spell.CastSelfSpell("Presence of Mind", ret => Me.HasAura("Pyroblast!") && Spell.CanCast("Alter Time"),"Presence of Mind"),
+                        Spell.CastSelfSpell("Alter Time", ret => Me.HasAura("Invoker's Energy") && Me.HasAura("Pyroblast!") && Me.HasAura("Presence of Mind") && !Me.HasAura("Alter Time"), "Alter Time"),
+                        Spell.CastSelfSpell("Alter Time", ret => Me.HasAura("Alter Time") && !Me.HasAura("Presence of Mind") && !Me.HasAura("Pyroblast!"), "Alter Time"),
+                        Spell.CastSpell("Pyroblast", ret => Me.HasAura("Pyroblast!") || Me.HasAura("Presence of Mind"),"Pyroblast"),
+                        Spell.CastSpell("Inferno Blast", ret=>true,"Inferno Blast"),
+                        /* Remove start */
+                        Spell.CastSpell("Living Bomb",ret=> !Me.CurrentTarget.HasAura("Living Bomb") || Me.CurrentTarget.HasAura("Living Bomb") && Buff.GetAuraDoubleTimeLeft(Me.CurrentTarget,"Living Bomb", true) <= 1,"Living Bomb"),
+                        Spell.CastSpell("Nether Tempest", ret => !Me.CurrentTarget.HasAura("Nether Tempest") || Me.CurrentTarget.HasAura("Nether Tempest") && Buff.GetAuraDoubleTimeLeft(Me.CurrentTarget, "Nether Tempest", true) <= 1, "Nether Tempest"),
+                        Spell.CastSpell("Frost Bomb", ret => !Me.CurrentTarget.HasAura("Frost Bomb"), "Frost Bomb"),
+                        /* Remove end */
+                        Spell.CastSpell("Mage Bomb", ret => !Me.CurrentTarget.HasAnyAura(MageBomb) || Me.CurrentTarget.HasAnyAura(MageBomb) && Buff.GetAuraDoubleTimeLeft(Me.CurrentTarget, Magebombtalent, true) <= 1, "Mage Bomb"),
+                        Spell.CastSpell("Fireball", ret => Buff.GetAuraDoubleTimeLeft(Me.CurrentTarget, Magebombtalent, true)>2,"Fireball")
+                        ))
+                );
         }
     }
 }

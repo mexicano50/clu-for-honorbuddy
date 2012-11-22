@@ -198,7 +198,7 @@ Credits: alxaw , Kbrebel04
                 return new PrioritySelector(
                     new Decorator(ret => CLUSettings.Instance.EnableMovement,
                         new PrioritySelector(
-                            new DecoratorContinue(ret => Me.CurrentTarget != null && !Me.IsSafelyFacing(Me.CurrentTarget, 45f), new Action(ret => Me.CurrentTarget.Face())),
+                            Movement.CreateFaceTargetBehavior(),
                             Spell.CastSpell("Provoke", ret => Me.CurrentTarget != null && Me.CurrentTarget.DistanceSqr >= 8 * 8, "Provoke"),
                             Spell.CastSpell("Crackling Jade Lightning", ret => Me.CurrentTarget != null && Me.CurrentTarget.DistanceSqr >= 8 * 8 && Spell.SpellOnCooldown("Roll"), "Crackling Jade Lightning")
                             )),
