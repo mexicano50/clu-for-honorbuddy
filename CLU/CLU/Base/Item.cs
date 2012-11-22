@@ -14,7 +14,7 @@
 
 using CLU.Helpers;
 using CLU.Managers;
-
+using CLU.Settings;
 namespace CLU.Base
 {
     using System.Linq;
@@ -255,33 +255,79 @@ namespace CLU.Base
         }
 
         /// <summary>
-        ///  Blows your wad all over the floor
+        ///  Blows your wad all over the floor, copied from Singular
         /// </summary>
         /// <returns>Nothing but win</returns>
         public static Composite UseTrinkets()
         {
-            return UseEquippedTrinket();
+            if (CLUSettings.Instance.Trinket1Usage == TrinketUsage.Never && CLUSettings.Instance.Trinket2Usage == TrinketUsage.Never)
+            {
+                return new Action(ret => { return RunStatus.Failure; });
+            }
+
+            PrioritySelector ps = new PrioritySelector();
+
+            if (CLUSettings.IsTrinketUsageWanted(TrinketUsage.OnCooldown))
+            {
+                ps.AddChild(Item.UseEquippedTrinket(TrinketUsage.OnCooldown));
+            }
+
+            if (CLUSettings.IsTrinketUsageWanted(TrinketUsage.OnCooldownInCombat))
+            {
+                ps.AddChild(Item.UseEquippedTrinket(TrinketUsage.OnCooldownInCombat));
+            }
+
+            if (CLUSettings.IsTrinketUsageWanted(TrinketUsage.LowHealth))
+            {
+                ps.AddChild(new Decorator(ret => StyxWoW.Me.HealthPercent < CLUSettings.Instance.MinHealth,
+                                            Item.UseEquippedTrinket(TrinketUsage.LowHealth)));
+            }
+
+            if (CLUSettings.IsTrinketUsageWanted(TrinketUsage.LowPower))
+            {
+                ps.AddChild(new Decorator(ret => StyxWoW.Me.PowerPercent < CLUSettings.Instance.MinMana,
+                                            Item.UseEquippedTrinket(TrinketUsage.LowPower)));
+            }
+
+            if (CLUSettings.IsTrinketUsageWanted(TrinketUsage.CrowdControlled))
+            {
+                ps.AddChild(new Decorator(ret => Unit.UnitIsControlled(Me,false),
+                                            Item.UseEquippedTrinket(TrinketUsage.CrowdControlled)));
+            }
+
+            if (CLUSettings.IsTrinketUsageWanted(TrinketUsage.CrowdControlledSilenced))
+            {
+                ps.AddChild(new Decorator(ret => StyxWoW.Me.Silenced && Unit.UnitIsControlled(Me, false),
+                                            Item.UseEquippedTrinket(TrinketUsage.CrowdControlledSilenced)));
+            }
+
+            return ps;
+            //return UseEquippedTrinket();
         }
 
-        private static Composite UseEquippedTrinket()
+        /// <summary>
+        ///  Trinket usage again copied from Singular
+        /// </summary>
+        /// <returns>Nothing but win</returns>
+        public static Composite UseEquippedTrinket(TrinketUsage usage)
         {
             return new PrioritySelector(
                 new Decorator(
-                    ret => Unit.UseCooldowns() && Me.Inventory.GetItemBySlot((uint)WoWInventorySlot.Trinket1) != null,
+                    ret => usage == CLUSettings.Instance.Trinket1Usage,
                     new PrioritySelector(
-                        ctx => Me.Inventory.GetItemBySlot((uint)WoWInventorySlot.Trinket1),
+                        ctx => StyxWoW.Me.Inventory.GetItemBySlot((uint)WoWInventorySlot.Trinket1),
                         new Decorator(
-                            ctx => ctx != null && CanUseEquippedItem((WoWItem)ctx) && TrinketUsageSatisfied((WoWItem)ctx),
+                            ctx => ctx != null && CanUseEquippedItem((WoWItem)ctx),
                             new Action(ctx => UseItem((WoWItem)ctx))
                             )
                         )
                     ),
                 new Decorator(
-                    ret => Unit.UseCooldowns() && Me.Inventory.GetItemBySlot((uint)WoWInventorySlot.Trinket2) != null,
+                    ret => usage == CLUSettings.Instance.Trinket2Usage,
                     new PrioritySelector(
-                        ctx => Me.Inventory.GetItemBySlot((uint)WoWInventorySlot.Trinket2),
+                        ctx => StyxWoW.Me.Inventory.GetItemBySlot((uint)WoWInventorySlot.Trinket2),
                         new Decorator(
-                            ctx => ctx != null && CanUseEquippedItem((WoWItem)ctx) && TrinketUsageSatisfied((WoWItem)ctx),
+                            ctx => ctx != null && CanUseEquippedItem((WoWItem)ctx),
                             new Action(ctx => UseItem((WoWItem)ctx))
                             )
                         )

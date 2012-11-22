@@ -570,18 +570,22 @@ namespace CLU.Settings
         //[Description("Uses Flask of the North or Flask of Enhancement.")]
         //public bool UseAlchemyFlasks { get; set; }
 
-        //[Setting]
-        //[DefaultValue(TrinketUsage.Never)]
-        //[Category("Items")]
-        //[DisplayName("Trinket 1 Usage")]
-        //public TrinketUsage Trinket1Usage { get; set; }
+        [Setting]
+        [DefaultValue(TrinketUsage.Never)]
+        [Category("Items")]
+        [DisplayName("Trinket 1 Usage")]
+        public TrinketUsage Trinket1Usage { get; set; }
 
-        //[Setting]
-        //[DefaultValue(TrinketUsage.Never)]
-        //[Category("Items")]
-        //[DisplayName("Trinket 2 Usage")]
-        //public TrinketUsage Trinket2Usage { get; set; }
-
+        [Setting]
+        [DefaultValue(TrinketUsage.Never)]
+        [Category("Items")]
+        [DisplayName("Trinket 2 Usage")]
+        public TrinketUsage Trinket2Usage { get; set; }
+        public static bool IsTrinketUsageWanted(TrinketUsage usage)
+        {
+            return usage == CLUSettings.Instance.Trinket1Usage
+                || usage == CLUSettings.Instance.Trinket2Usage;
+        }
         #endregion
 
         #region Category: Racials
