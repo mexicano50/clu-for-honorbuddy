@@ -176,7 +176,7 @@ namespace CLU.Classes.Rogue
                                new PrioritySelector(
                                Spell.CastSpell("Ambush", ret => Me.IsBehind(Me.CurrentTarget), "Ambush"),
                     //Spell.CastSpell("Expose Armor",              ret => Me.CurrentTarget != null && Me.ComboPoints == 5 && Unit.UseCooldowns() && !Buff.UnitHasWeakenedArmor(Me.CurrentTarget), "Expose Armor"),
-                               Spell.CastSelfSpell("Slice and Dice", ret => Me.ComboPoints >= 1 && Buff.PlayerBuffTimeLeft("Slice and Dice") < 2, "Slice and Dice"),
+                               Spell.CastSelfSpell("Slice and Dice", ret => Me.ComboPoints >= 1 && Buff.GetAuraTimeLeft(Me, "Slice and Dice", true).TotalSeconds < 2, "Slice and Dice"),
                                Vanish,
                                Spell.CastSpell("Revealing Strike", ret => SpellManager.HasSpell(114015) && Buff.GetAuraTimeLeft(Me.CurrentTarget, "Revealing Strike", true).TotalSeconds < 2 && (Buff.PlayerCountBuff("Anticipation") < 5 || Me.ComboPoints < 5), "Revealing Strike"),
                                Spell.CastSpell("Revealing Strike", ret => !SpellManager.HasSpell(114015) && Buff.GetAuraTimeLeft(Me.CurrentTarget, "Revealing Strike", true).TotalSeconds < 2 && Me.ComboPoints < 5, "Revealing Strike"),
