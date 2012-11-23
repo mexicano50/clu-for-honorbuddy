@@ -102,7 +102,7 @@ namespace CLU.Classes.Warrior
                                 Common.HandleFlyingUnits,
 
                                 new Decorator(
-                                    ret => CLUSettings.Instance.UseCooldowns && Me.CurrentTarget != null && Unit.UseCooldowns(),
+                                    ret => CLUSettings.Instance.UseCooldowns && Me.CurrentTarget != null && Me.CurrentTarget.IsWithinMeleeRange && Unit.UseCooldowns(),
                                         new PrioritySelector(
                                         Item.UseTrinkets(),
                                         Racials.UseRacials(),

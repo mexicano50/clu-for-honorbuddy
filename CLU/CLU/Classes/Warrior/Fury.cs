@@ -99,14 +99,14 @@ Credits: kbrebel04
                                 Common.HandleFlyingUnits,
 
                                 new Decorator(
-                                    ret => CLUSettings.Instance.UseCooldowns && Me.CurrentTarget != null && Unit.UseCooldowns(),
+                                    ret => CLUSettings.Instance.UseCooldowns && Me.CurrentTarget != null && Me.CurrentTarget.IsWithinMeleeRange && Unit.UseCooldowns(),
                                         new PrioritySelector(
                                         Item.UseTrinkets(),
                                         Racials.UseRacials(),
                                         Buff.CastBuff("Lifeblood", ret => true, "Lifeblood"),
                                         Item.UseEngineerGloves(),
-                                        Spell.CastSelfSpell("Skull Banner", ret => !Me.HasAura(114206) && Unit.UseCooldowns(), "Skull Banner"),
-                                        Spell.CastSelfSpell("Recklessness", ret => CLUSettings.Instance.Warrior.UseRecklessness && Unit.UseCooldowns() && Me.CurrentTarget != null && ((Buff.TargetDebuffTimeLeft("Colossus Smash").TotalSeconds >= 5 || Spell.SpellCooldown("Colossus Smash").TotalSeconds <= 4) && ((!SpellManager.HasSpell("Avatar") || !Item.Has4PcTeirBonus(ItemSetId))) && ((Me.CurrentTarget.HealthPercent < 20 || Unit.TimeToDeath(Me.CurrentTarget) > 315 || (Unit.TimeToDeath(Me.CurrentTarget) > 165 && Item.Has4PcTeirBonus(ItemSetId)))) || (SpellManager.HasSpell("Avatar") && Item.Has4PcTeirBonus(ItemSetId) && Buff.PlayerHasBuff("Avatar"))), "Recklessness"),
+                                        Spell.CastSelfSpell("Skull Banner", ret => !Me.HasAura(114206), "Skull Banner"),
+                                        Spell.CastSelfSpell("Recklessness", ret => CLUSettings.Instance.Warrior.UseRecklessness && ((Buff.TargetDebuffTimeLeft("Colossus Smash").TotalSeconds >= 5 || Spell.SpellCooldown("Colossus Smash").TotalSeconds <= 4) && ((!SpellManager.HasSpell("Avatar") || !Item.Has4PcTeirBonus(ItemSetId))) && ((Me.CurrentTarget.HealthPercent < 20 || Unit.TimeToDeath(Me.CurrentTarget) > 315 || (Unit.TimeToDeath(Me.CurrentTarget) > 165 && Item.Has4PcTeirBonus(ItemSetId)))) || (SpellManager.HasSpell("Avatar") && Item.Has4PcTeirBonus(ItemSetId) && Buff.PlayerHasBuff("Avatar"))), "Recklessness"),
                                         Spell.CastSelfSpell("Avatar", ret => SpellManager.HasSpell("Avatar") && (((Spell.SpellCooldown("Recklessness").TotalSeconds >= 180 || Buff.PlayerHasBuff("Recklessness")) || (Me.CurrentTarget.HealthPercent >= 20 && Unit.TimeToDeath(Me.CurrentTarget) > 195) || (Me.CurrentTarget.HealthPercent < 20 && Item.Has4PcTeirBonus(ItemSetId))) || Unit.TimeToDeath(Me.CurrentTarget) <= 20), "Avatar"))),
                    
                                     // Interupts
