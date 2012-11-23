@@ -122,8 +122,8 @@ namespace CLU.Base
 
     public enum SubtletyRogueRotation
     {
-        Default,
-        ImprovedTestVersion
+        Algorithmic,
+        Estimated
     }
 
     public enum ChakraStance

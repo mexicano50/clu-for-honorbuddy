@@ -30,25 +30,37 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Honorbuddy, Version=2.5.6377.493, Culture=neutral, PublicKeyToken=50a565ab5c01ae50, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
       <ExecutableExtension>.exe</ExecutableExtension>
-      <HintPath>..\..\..\..\Applications\HB\Honorbuddy.exe</HintPath>
+      <HintPath>..\..\..\..\..\Desktop\Games\Blizzard\HB\dev\Honorbuddy.exe</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="System" />
-    <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
     <Reference Include="Tripper.Tools">
-      <HintPath>..\..\..\Honorbuddy\Tripper.Tools.dll</HintPath>
+      <HintPath>..\..\..\..\..\Desktop\Games\Blizzard\HB\dev\Tripper.Tools.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -89,6 +101,7 @@
     <Compile Include="Classes\Priest\Shadow.cs" />
     <Compile Include="Classes\Rogue\Combat.cs" />
     <Compile Include="Classes\Rogue\Assassination.cs" />
+    <Compile Include="Classes\Rogue\Rogue.cs" />
     <Compile Include="Classes\Rogue\Subtlety.cs" />
     <Compile Include="Classes\RotationBase.cs" />
     <Compile Include="Classes\Shaman\Common.cs" />

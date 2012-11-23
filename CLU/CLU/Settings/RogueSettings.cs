@@ -72,6 +72,27 @@ namespace CLU.Settings
         //public bool InterruptSpells { get; set; }
 
         [Setting]
+        [DefaultValue(50)]
+        [Category("Common")]
+        [DisplayName("Recuperate Health Threshold")]
+        [Description("Maximum health threshold at which we use Recuperate.")]
+        public int RecuperatePercent { get; set; }
+
+        [Setting]
+        [DefaultValue(4)]
+        [Category("Common")]
+        [DisplayName("Recuperate Point Threshold")]
+        [Description("Minimum combo point threshold at which we use Recuperate.")]
+        public int RecuperatePoints { get; set; }
+
+        [Setting]
+        [DefaultValue(false)]
+        [Category("Common")]
+        [DisplayName("Recuperate")]
+        [Description("Will use Recuperate in combat.")]
+        public bool UseRecuperate { get; set; }
+
+        [Setting]
         [DefaultValue(true)]
         [Category("Common")]
         [DisplayName("Use Tricks Of The Trade")]
@@ -92,8 +113,6 @@ namespace CLU.Settings
             get;
             set;
         }
-
-       
 
         #endregion
 
@@ -129,7 +148,7 @@ namespace CLU.Settings
         #region Subtlety
 
         [Setting]
-        [DefaultValue(SubtletyRogueRotation.ImprovedTestVersion)]
+        [DefaultValue(SubtletyRogueRotation.Algorithmic)]
         [Category("Subtlety Spec")]
         [DisplayName("Rotation Selector")]
         [Description("This rotation was developed by kbrebel04 on the HB forums and is included for consideration and testing. Please report to the CLU thread if you think this rotation should be made default.")]
