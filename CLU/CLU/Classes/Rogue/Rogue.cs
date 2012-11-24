@@ -72,9 +72,10 @@ namespace CLU.Classes.Rogue
                           Spell.CastSpell
                               (RogueSpells.Recuperate,
                                reqs =>
-                               CLUSettings.Instance.Rogue.UseRecuperate &&
+                               !Me.HasAura(RogueSpells.Recuperate) && CLUSettings.Instance.Rogue.UseRecuperate &&
                                Me.HealthPercent <= CLUSettings.Instance.Rogue.RecuperatePercent &&
-                               (Me.ComboPoints >= CLUSettings.Instance.Rogue.RecuperatePoints || Me.RawComboPoints >= CLUSettings.Instance.Rogue.RecuperatePoints),
+                               ( Me.ComboPoints >= CLUSettings.Instance.Rogue.RecuperatePoints ||
+                                 Me.RawComboPoints >= CLUSettings.Instance.Rogue.RecuperatePoints ),
                                string.Format("Recuperate: HP={0}, CP={1}", Me.HealthPercent, Me.ComboPoints)),
                           Spell.CastSpell
                               (RogueSpells.SmokeBomb,
