@@ -133,9 +133,6 @@ Credits: kbrebel04
                                     Spell.CastSpell("Cleave", ret => Unit.EnemyMeleeUnits.Count() == 2 && ColossusSmashBloodthirstCooldown && Buff.PlayerHasBuff("Deadly Calm") && Me.CurrentRage >= (TalentManager.HasGlyph("Unending Rage") ? 60 : 40) || Me.CurrentRage >= (TalentManager.HasGlyph("Unending Rage") ? 90 : 110), "Cleave"))),
                                     
                                 //Single Target
-                                new Decorator(
-                                    ret => Me.CurrentTarget != null && (!CLUSettings.Instance.UseAoEAbilities || Unit.EnemyMeleeUnits.Count() < 2),
-                                        new PrioritySelector(
                                     Spell.CastSpell("Execute", ret => Me.CurrentTarget.HealthPercent <= 20, "Execute"),
                                     Spell.CastSpell("Raging Blow", ret => Buff.PlayerHasActiveBuff("Raging Blow!"), "Raging Blow"),
                                     Spell.CastSelfSpell("Deadly Calm", ret => CLUSettings.Instance.Warrior.UseDeadlyCalm && Me.CurrentRage >= 40, "Deadly Calm"),
@@ -144,9 +141,9 @@ Credits: kbrebel04
                                     Spell.CastSpell("Storm Bolt", ret => SpellManager.HasSpell("Storm Bolt"), "Storm Bolt"),
                                     Spell.CastConicSpell("Shockwave", 11f, 33f, ret => CLUSettings.Instance.Warrior.UseShockwave, "Shockwave"),
                                     Spell.CastSpell("Dragon Roar", ret => CLUSettings.Instance.Warrior.UseDragonRoar && Me.CurrentTarget.IsWithinMeleeRange && TalentManager.HasTalent(12), "Dragon Roar"),
-                                    Spell.CastSpell("Heroic Throw", ret => StyxWoW.Me.Inventory.Equipped.MainHand != null, "Heroic Throw"),
+                                    Spell.CastSpell("Heroic Throw", ret => StyxWoW.Me.Inventory.Equipped.MainHand != null && CLUSettings.Instance.Warrior.UseHeroicThrow && Me.CurrentTarget.DistanceSqr > 8*8, "Heroic Throw"),
                                     Spell.CastSpell("Commanding Shout", ret => Me.RagePercent < 70 && !WoWSpell.FromId(469).Cooldown && CLUSettings.Instance.Warrior.ShoutSelection == WarriorShout.Commanding, "Commanding Shout for Rage"),
-                                    Spell.CastSpell("Battle Shout", ret => Me.RagePercent < 70 && !WoWSpell.FromId(6673).Cooldown && CLUSettings.Instance.Warrior.ShoutSelection == WarriorShout.Battle, "Battle Shout for Rage"))));
+                                    Spell.CastSpell("Battle Shout", ret => Me.RagePercent < 70 && !WoWSpell.FromId(6673).Cooldown && CLUSettings.Instance.Warrior.ShoutSelection == WarriorShout.Battle, "Battle Shout for Rage"));
             }
         }
 

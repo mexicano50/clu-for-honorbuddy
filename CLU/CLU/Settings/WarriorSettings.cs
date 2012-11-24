@@ -101,6 +101,12 @@ namespace CLU.Settings
         [Description("When enabled CLU will use Recklessness on bosses.")]
         public bool UseRecklessness { get; set; }
 
+        [Setting]
+        [DefaultValue(true)]
+        [Category("Common")]
+        [DisplayName("Use Heroic Throw when out of MeleeRange")]
+        [Description("Use Heroic Throw when out of MeleeRange")]
+        public bool UseHeroicThrow { get; set; }
         #endregion
 
         #region Protection

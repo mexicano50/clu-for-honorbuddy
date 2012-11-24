@@ -165,7 +165,7 @@ namespace CLU.Classes.Warrior
                                     Spell.CastSpell("Storm Bolt", ret => SpellManager.HasSpell("Storm Bolt"), "Storm Bolt"),
                                     Spell.CastSpell("Slam", ret => Me.CurrentTarget != null && Me.CurrentRage > 60 && Buff.TargetHasDebuff("Colossus Smash") && Me.CurrentTarget.HealthPercent > 20, "Slam"),
                                     Spell.CastSpell("Slam", ret => !Spell.CanCast("Overpower") && Me.CurrentTarget.HealthPercent >= 20, "Slam"),
-                                    Spell.CastSpell("Heroic Throw", ret => Me.CurrentTarget.HealthPercent >= 20, "Heroic Throw"),
+                                    Spell.CastSpell("Heroic Throw", ret => StyxWoW.Me.Inventory.Equipped.MainHand != null && CLUSettings.Instance.Warrior.UseHeroicThrow && Me.CurrentTarget.DistanceSqr > 8 * 8, "Heroic Throw"),
                                     Spell.CastSpell("Commanding Shout", ret => CLUSettings.Instance.Warrior.ShoutSelection == WarriorShout.Commanding && !WoWSpell.FromId(469).Cooldown && (Me.RagePercent < 60), "Commanding Shout for Rage"),
                                     Spell.CastSpell("Battle Shout", ret => CLUSettings.Instance.Warrior.ShoutSelection == WarriorShout.Battle && !WoWSpell.FromId(6673).Cooldown && (Me.RagePercent < 60), "Battle Shout for Rage"))));
             }
