@@ -129,7 +129,7 @@ namespace CLU.Classes.Shaman
                             // Rotation 
                             // AuraId = 118470 is unleashing fury which comes from Unleashed Fury talent. Lightning bolt gains extra dmg.
                             // Cooldown Useage
-                          Spell.CastAreaSpell("Chain Lightning", 5, false, 3, 0.0, 0.0, a => Buff.PlayerCountBuff("Maelstrom Weapon") == 5, "Chain Lightning"),
+                          Spell.CastAreaSpell("Chain Lightning", 15, false, 2, 0.0, 12.0, a => Buff.PlayerCountBuff("Maelstrom Weapon") == 5, "Chain Lightning"),
                           Spell.CastAreaSpell("Fire Nova", 5, false, 3, 0.0, 0.0, a => Buff.TargetHasDebuff("Flame Shock"), "Fire Nova"),
                             //Single Target
                     // AuraId = 118470 is unleashing fury which comes from Unleashed Fury talent. Lightning bolt gains extra dmg.

@@ -145,7 +145,7 @@ namespace CLU.Classes.DeathKnight
                 WoWAura bloodPlague =
                     Me.CurrentTarget.GetAllAuras().FirstOrDefault(
                         u => u.CreatorGuid == Me.Guid && u.SpellId == 55078);
-                return frostFever != null && frostFever.TimeLeft >= TimeSpan.FromSeconds(2) ||
+                return (frostFever != null && frostFever.TimeLeft >= TimeSpan.FromSeconds(2)) &&
                        (bloodPlague != null && bloodPlague.TimeLeft >= TimeSpan.FromSeconds(2));
             }
         }

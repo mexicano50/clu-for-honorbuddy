@@ -14,7 +14,6 @@ using CLU.Helpers;
 using CommonBehaviors.Actions;
 using Styx.TreeSharp;
 using Styx.WoWInternals;
-using CLU.Lists;
 using CLU.Settings;
 using CLU.Base;
 using CLU.Managers;
@@ -115,7 +114,7 @@ namespace CLU.Classes.Warlock
                             Spell.CastSelfSpell("Unending Resolve", ret => Me.CurrentTarget != null && Unit.UseCooldowns() && Me.HealthPercent < 40, "Unending Resolve (Save my life)"),
                             Spell.CastSelfSpell("Twilight Warden", ret => Me.CurrentTarget != null && Me.CurrentTarget.IsCasting && Unit.UseCooldowns() && Me.HealthPercent < 80, "Twilight Warden (Protect me from magical damage)"))),
                     Buff.CastDebuff("Curse of the Elements",       ret => Me.CurrentTarget != null && Unit.UseCooldowns() && Me.CurrentTarget.HealthPercent > 70 && !Buff.UnitHasMagicVulnerabilityDeBuffs(Me.CurrentTarget), "Curse of the Elements"),
-                    Buff.CastDebuff("Corruption", ret => Me.CurrentTarget != null && Me.CurrentTarget.HasMyAura("Immolate"), "Immolate"),
+                    Buff.CastDebuff("Corruption", ret => Me.CurrentTarget != null && !Me.CurrentTarget.HasMyAura("Immolate"), "Immolate"),
                     //Spell.CastSpell("Havoc", u => Unit.BestBaneOfHavocTarget, ret => true, "Havoc on "), // + Unit.BestBaneOfHavocTarget.Name
                     Spell.CastSpell("Conflagrate", ret => Me.CurrentTarget != null && Me.CurrentTarget.HasMyAura("Immolate"), "Conflagrate"),
                     new Decorator(ret => CLUSettings.Instance.EnableSelfHealing && Me.CurrentHealth <= 70, Common.WarlockTierOneTalents),
