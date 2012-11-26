@@ -854,8 +854,8 @@ namespace CLU.Base
                             break;
 
                         case WoWClass.Paladin:
-                            ProvidablePlayerBuffs.UnionWith(Stats);
-                            ProvidablePlayerBuffs.UnionWith(Mastery);
+                            if(CLUSettings.Instance.Paladin.BlessingSelection==PaladinBlessing.Kings) ProvidablePlayerBuffs.UnionWith(Stats);
+                            if (CLUSettings.Instance.Paladin.BlessingSelection == PaladinBlessing.Might) ProvidablePlayerBuffs.UnionWith(Mastery);
 
                             break;
 

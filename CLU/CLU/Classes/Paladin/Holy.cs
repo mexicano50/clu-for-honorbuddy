@@ -266,8 +266,8 @@ namespace CLU.Classes.Paladin
                                         Buff.CastHealBuff("Beacon of Light", a => true, "Beacon of Light")
                                        ),
                         Buff.CastBuff("Seal of Insight", ret => true, "Seal of Insight"),
-                        Buff.CastRaidBuff("Blessing of Kings", ret => true, "[Blessing] of Kings"),
-                        Buff.CastRaidBuff("Blessing of Might", ret => true, "[Blessing] of Might")));
+                               Buff.CastRaidBuff("Blessing of Kings", ret => CLUSettings.Instance.Paladin.BlessingSelection == PaladinBlessing.Kings, "[Blessing] of Kings"),
+                               Buff.CastRaidBuff("Blessing of Might", ret => CLUSettings.Instance.Paladin.BlessingSelection == PaladinBlessing.Might, "[Blessing] of Might")));
             }
         }
 

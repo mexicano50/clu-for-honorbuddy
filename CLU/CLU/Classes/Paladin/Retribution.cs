@@ -198,8 +198,8 @@ NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagr
                            ret => !Me.Mounted && !Me.IsDead && !Me.Combat && !Me.IsFlying && !Me.IsOnTransport && !Me.HasAura("Food") && !Me.HasAura("Drink"),
                            new PrioritySelector(
                                Buff.CastBuff("Seal of Truth",             ret => !Buff.PlayerHasBuff("Seal of Truth"), "Seal of Truth"),
-                               Buff.CastRaidBuff("Blessing of Kings",     ret => true, "[Blessing] of Kings"),
-                               Buff.CastRaidBuff("Blessing of Might",     ret => true, "[Blessing] of Might")));
+                               Buff.CastRaidBuff("Blessing of Kings",     ret => CLUSettings.Instance.Paladin.BlessingSelection==PaladinBlessing.Kings, "[Blessing] of Kings"),
+                               Buff.CastRaidBuff("Blessing of Might",     ret => CLUSettings.Instance.Paladin.BlessingSelection == PaladinBlessing.Might, "[Blessing] of Might")));
             }
         }
 
