@@ -14,6 +14,7 @@
 
 
 using System.ComponentModel;
+using System.IO;
 using Styx;
 using Styx.Helpers;
 using CLU.Base;
@@ -28,17 +29,27 @@ namespace CLU.Settings
         private static CLUSettings _instance;
 
         public CLUSettings()
-        : base(SettingsPath + ".xml")
+            : base(Path.Combine(CharacterSettingsPath, "CLUSettings.xml"))
         {
         }
 
         public static string SettingsPath
         {
-            get {
-                return string.Format("{0}\\Settings\\CLUSettings_{1}", Utilities.AssemblyDirectory, StyxWoW.Me.Name); //todo: fix my path
+            get
+            {
+                string settingsDirectory = Path.Combine(Styx.Common.Utilities.AssemblyDirectory, "Settings");
+                return Path.Combine(Path.Combine(Path.Combine(settingsDirectory, StyxWoW.Me.RealmName), StyxWoW.Me.Name), "CLU");
             }
         }
 
+        private static string CharacterSettingsPath
+        {
+            get
+            {
+                string settingsDirectory = Path.Combine(Styx.Common.Utilities.AssemblyDirectory, "Settings");
+                return Path.Combine(Path.Combine(settingsDirectory, StyxWoW.Me.RealmName), StyxWoW.Me.Name);
+            }
+        }
         public static CLUSettings Instance
         {
             get {

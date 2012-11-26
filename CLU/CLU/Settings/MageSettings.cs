@@ -11,7 +11,7 @@
 #endregion
 
 // This file was part of Singular - A community driven Honorbuddy CC
-
+using System.IO;
 using System.ComponentModel;
 using Styx.Helpers;
 
@@ -20,7 +20,7 @@ namespace CLU.Settings
     internal class MageSettings : Styx.Helpers.Settings
     {
         public MageSettings()
-        : base(CLUSettings.SettingsPath + "_Mage.xml")
+            : base(Path.Combine(CLUSettings.SettingsPath, "Mage.xml"))
         {
 
         }

@@ -11,6 +11,7 @@
 #endregion
 
 // This file was part of Singular - A community driven Honorbuddy CC
+using System.IO;
 using CLU.Base;
 using System.ComponentModel;
 using Styx.Helpers;
@@ -23,7 +24,7 @@ namespace CLU.Settings
     internal class WarlockSettings : Styx.Helpers.Settings
     {
         public WarlockSettings()
-        : base(CLUSettings.SettingsPath + "_Warlock.xml")
+            : base(Path.Combine(CLUSettings.SettingsPath, "Warlock.xml"))
         {
         }
 

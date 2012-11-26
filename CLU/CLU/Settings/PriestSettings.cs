@@ -11,7 +11,7 @@
 #endregion
 
 // This file was part of Singular - A community driven Honorbuddy CC
-
+using System.IO;
 using System.ComponentModel;
 using Styx.Helpers;
 using CLU.Base;
@@ -23,7 +23,7 @@ namespace CLU.Settings
     internal class PriestSettings : Styx.Helpers.Settings
     {
         public PriestSettings()
-        : base(CLUSettings.SettingsPath + "_Priest.xml")
+            : base(Path.Combine(CLUSettings.SettingsPath, "Priest.xml"))
         {
         }
 

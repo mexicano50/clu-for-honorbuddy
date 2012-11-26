@@ -11,7 +11,7 @@
 #endregion
 
 // This file was part of Singular - A community driven Honorbuddy CC
-
+using System.IO;
 using System.ComponentModel;
 using CLU.Base;
 using Styx.Helpers;
@@ -24,7 +24,7 @@ namespace CLU.Settings
     internal class ShamanSettings : Styx.Helpers.Settings
     {
         public ShamanSettings()
-        : base(CLUSettings.SettingsPath + "_Shaman.xml")
+            : base(Path.Combine(CLUSettings.SettingsPath, "Shaman.xml"))
         {
         }
 

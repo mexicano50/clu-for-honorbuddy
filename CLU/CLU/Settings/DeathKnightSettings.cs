@@ -11,6 +11,7 @@
 #endregion
 
 // This file was part of Singular - A community driven Honorbuddy CC
+using System.IO;
 using System.ComponentModel;
 using Styx.Helpers;
 using CLU.Base;
@@ -23,7 +24,7 @@ namespace CLU.Settings
     internal class DeathKnightSettings : Styx.Helpers.Settings
     {
         public DeathKnightSettings()
-        : base(CLUSettings.SettingsPath + "_DeathKnight.xml")
+            : base(Path.Combine(CLUSettings.SettingsPath, "DeathKnight.xml"))
         {
         }
 

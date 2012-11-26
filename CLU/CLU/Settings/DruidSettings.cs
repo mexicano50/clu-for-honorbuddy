@@ -11,6 +11,7 @@
 #endregion
 
 // This file was part of Singular - A community driven Honorbuddy CC
+using System.IO;
 using System.ComponentModel;
 using Styx.Helpers;
 using DefaultValue = Styx.Helpers.DefaultValueAttribute;
@@ -22,7 +23,7 @@ namespace CLU.Settings
     internal class DruidSettings : Styx.Helpers.Settings
     {
         public DruidSettings()
-        : base(CLUSettings.SettingsPath + "_Druid.xml")
+            : base(Path.Combine(CLUSettings.SettingsPath, "Druid.xml"))
         {
         }
 
