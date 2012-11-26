@@ -544,36 +544,7 @@ namespace CLU.Base
                 },
                  new Sequence
                      (new Action(a => CLULogger.Log(" [Casting] {0} on {1}", label, CLULogger.SafeName(onUnit(a)))),
-                      new Action(a => PrintTarget(onUnit(a))),
                       new Action(a => SpellManager.Cast(spell, onUnit(a)))));
-        }
-
-        private static void PrintTarget(WoWUnit tar)
-        {
-            if (tar == null)
-            {
-                CLULogger.DiagnosticLog("[PrintTarget] tar is null...im outa here!");
-                CLU.LastTargetGuid = 0;
-                return;
-            }
-            CLULogger.DiagnosticLog("[Targetting] Guid: {0}", tar.Guid);
-            CLULogger.DiagnosticLog("[Targetting] ID: {0}", tar.Entry);
-            CLULogger.DiagnosticLog("[Targetting] Name: {0}", tar.Name);
-            CLULogger.DiagnosticLog("[Targetting] MaxHealth: {0}", tar.MaxHealth);
-            CLULogger.DiagnosticLog("[Targetting] CurrentHealth: {0}", tar.CurrentHealth);
-            CLULogger.DiagnosticLog("[Targetting] Location: {0}", tar.Location);
-            CLULogger.DiagnosticLog("[Targetting] Unit.IsBoss: {0}", Unit.IsBoss(tar));
-            CLULogger.DiagnosticLog("[Targetting] BossList.BossIds: {0}", BossList.BossIds.Contains(tar.Entry));
-            CLULogger.DiagnosticLog("[Targetting] BossList.IgnoreRangeCheck: {0}", BossList.IgnoreRangeCheck.Contains(tar.Entry));
-            CLULogger.DiagnosticLog("[Targetting] Unit.IsAttackable: {0}", Unit.IsAttackable(tar));
-            CLULogger.DiagnosticLog("[Targetting] Unit.IgnoreAoE: {0}", BossList.IgnoreAoE.Contains(tar.Entry));
-            CLULogger.DiagnosticLog("[Targetting] tar.Distance: {0}", tar.Distance);
-            CLULogger.DiagnosticLog("[Targetting] tar.Distance2D: {0}", tar.Distance2D);
-            CLULogger.DiagnosticLog("[Targetting] tar.DistanceSqr: {0}", tar.DistanceSqr);
-            CLULogger.DiagnosticLog("[Targetting] General Use of Cooldowns: {0}", CLUSettings.Instance.UseCooldowns);
-            CLULogger.DiagnosticLog("[Targetting] Use Cooldowns on Me.CurrentTarget: {0}", Unit.UseCooldowns());
-            CLULogger.DiagnosticLog("[Targetting] Use Cooldowns on tar: {0}", Unit.UseCooldowns(tar));
-            CLU.LastTargetGuid = tar.Guid;
         }
 
         #endregion CastSpell - by ID
@@ -653,7 +624,6 @@ namespace CLU.Base
                 },
             new Sequence(
                 new Action(a => CLULogger.Log(" [Casting] {0} on {1}", label, CLULogger.SafeName(onUnit(a)))),
-                new Action(a => PrintTarget(onUnit(a))),
                 new Action(a => SpellManager.Cast(name, onUnit(a))),
                 new Action(a => LastspellCast = name)));
         }
@@ -690,7 +660,6 @@ namespace CLU.Base
                 },
             new Sequence(
                 new Action(a => CLULogger.Log(" [Casting] {0} on {1}", label, CLULogger.SafeName(onUnit(a)))),
-                new Action(a => PrintTarget(onUnit(a))),
                 new Action(a => SpellManager.Cast(spell, onUnit(a))),
                 new Action(a => LastspellCast = spell.Name)));
         }
@@ -849,7 +818,6 @@ namespace CLU.Base
                 },
             new Sequence(
                 new Action(a => CLULogger.Log(" [Casting] {0} on {1}", label, CLULogger.SafeName(onUnit(a).CurrentTarget))),
-                new Action(a => PrintTarget(onUnit(a).CurrentTarget)),
                 new DecoratorContinue(x => faceTarget, new Action(a => WoWMovement.Face(onUnit(a).CurrentTarget.Guid))),
                 new Action(a => SpellManager.Cast(name, onUnit(a).CurrentTarget))));
         }
@@ -881,7 +849,6 @@ namespace CLU.Base
                 },
             new Sequence(
                 new Action(a => CLULogger.Log(" [Casting] {0} on {1}", label, CLULogger.SafeName(onUnit(a)))),
-                new Action(a => PrintTarget(onUnit(a))),
                 new DecoratorContinue(x => faceTarget, new Action(a => WoWMovement.Face(onUnit(a).Guid))),
                 new Action(a => SpellManager.Cast(name, onUnit(a)))));
         }
@@ -948,22 +915,13 @@ namespace CLU.Base
                 {
                     if (!CLUSettings.Instance.EnableInterupts)
                         return false;
-
                     if (!cond(a))
                         return false;
-
                     if (onUnit != null && onUnit(a) != null && !(onUnit(a).IsCasting && onUnit(a).CanInterruptCurrentSpellCast))
                         return false;
-
-                    if (onUnit != null && !Spell.CanCast(name, onUnit(a), onUnit(a).IsPlayer ? true : !BossList.IgnoreRangeCheck.Contains(onUnit(a).Entry), true))
-                        return false;
-
                     return true;
                 },
-            new Sequence(
-                new Action(a => CLULogger.Log(" [Interupt] {0} on {1}", label, CLULogger.SafeName(onUnit(a)))),
-                new Action(a => PrintTarget(onUnit(a))),
-                new Action(a => SpellManager.Cast(name, onUnit(a)))));
+                CastSpell(name, onUnit,cond,true,label));
         }
 
         /// <summary>Casts the interupt by name on your current target. Checks CanInterruptCurrentSpellCast.</summary>
