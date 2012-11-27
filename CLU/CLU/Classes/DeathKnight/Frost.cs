@@ -237,8 +237,17 @@ namespace CLU.Classes.DeathKnight
             get
             {
                 return new PrioritySelector(
+                    Movement.CreateMoveToLosBehavior(),
                     Movement.CreateFaceTargetBehavior(),
-                    this.SingleRotation);
+                    new Sequence(
+                        Spell.CastSpell("Death Grip", ret => StyxWoW.Me.CurrentTarget.DistanceSqr > 10 * 10,"[Pull] Death Grip"),
+                        new DecoratorContinue(ret => StyxWoW.Me.IsMoving,
+                            new Action(ret => Movement.EnsureMovementStoppedBehavior())),
+                        new WaitContinue(1, new ActionAlwaysSucceed())),
+                    Spell.CastSpell("Outbreak", ret => true, "[Pull] Outbreak"),
+                    Spell.CastSpell("Howling Blast", ret => true, "[Pull] Howling Blast"),
+                    Spell.CastSpell("Icy Touch", ret => true, "[Pull] Icy Touch"),
+                    Movement.CreateMoveToMeleeBehavior(true));
             }
         }
 

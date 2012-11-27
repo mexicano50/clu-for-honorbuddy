@@ -152,17 +152,15 @@ Credits: kbrebel04
             get
             {
                 return new PrioritySelector(
-                    new Decorator(ret => CLUSettings.Instance.EnableMovement && CLU.LocationContext != GroupLogic.Battleground,
-                        new PrioritySelector(
-                            new Decorator(ret => !Me.IsSafelyFacing(Me.CurrentTarget.Location), new Action(a=> Me.CurrentTarget.Face())),
-                            Spell.CastSpell("Charge", ret => Me.CurrentTarget != null && Me.CurrentTarget.DistanceSqr > 3.2 * 3.2 && Navigator.CanNavigateFully(Me.Location, Me.CurrentTarget.Location), "Charge"),
-                           Spell.CastOnUnitLocation("Heroic Leap", ret => Me.CurrentTarget, ret => Me.CurrentTarget != null &&
+                    Movement.CreateMoveToLosBehavior(),
+                    Movement.CreateFaceTargetBehavior(),
+                    Spell.CastSpell("Charge", ret => Me.CurrentTarget != null && Me.CurrentTarget.DistanceSqr > 3.2 * 3.2, "Charge"),
+                    Spell.CastOnUnitLocation("Heroic Leap", ret => Me.CurrentTarget, ret => Me.CurrentTarget != null &&
                                 Me.CurrentTarget.DistanceSqr > 3.2 * 3.2 &&
                                 SpellManager.Spells["Charge"].CooldownTimeLeft.Seconds > 1 &&
                                 SpellManager.Spells["Charge"].CooldownTimeLeft.Seconds < 18, "Heroic Leap"),
-                            this.SingleRotation)),
-                    this.SingleRotation
-                    );
+                    this.SingleRotation,
+                    Movement.CreateMoveToMeleeBehavior(true));
             }
         }
 

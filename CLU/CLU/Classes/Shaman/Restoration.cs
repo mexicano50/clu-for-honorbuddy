@@ -77,8 +77,12 @@ namespace CLU.Classes.Shaman
             get
             {
                 return new PrioritySelector(
+                    Movement.CreateMoveToLosBehavior(),
                     Movement.CreateFaceTargetBehavior(),
-                    this.SingleRotation);
+                    Spell.CastSpell("Judgment", ret => true, "Pull Judgment"),
+                    Spell.CastSpell("Exorcism", ret => true, "Pull Excorcism"),
+                    this.SingleRotation,
+                    Movement.CreateMoveToMeleeBehavior(true));
             }
         }
 

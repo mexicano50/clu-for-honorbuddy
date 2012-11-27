@@ -189,12 +189,17 @@ namespace CLU.Classes.Rogue
             }
         }
 
-
         public override Composite Pull
         {
-            get { return new PrioritySelector(
-                Movement.CreateFaceTargetBehavior(),
-                Spell.CastSpell("Throw", ret => Me.CurrentTarget.Distance <= 30, "Throw for Pull")); }
+            get
+            {
+                return new PrioritySelector(
+                    Movement.CreateMoveToLosBehavior(),
+                    Movement.CreateFaceTargetBehavior(),
+                    Spell.CastSpell("Throw", ret => Me.CurrentTarget.Distance <= 30, "Throw for Pull"),
+                    this.SingleRotation,
+                    Movement.CreateMoveToMeleeBehavior(true));
+            }
         }
 
         public override Composite Medic

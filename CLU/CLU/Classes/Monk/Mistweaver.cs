@@ -206,8 +206,10 @@ namespace CLU.Classes.Monk
             get
             {
                 return new PrioritySelector(
+                    Movement.CreateMoveToLosBehavior(),
                     Movement.CreateFaceTargetBehavior(),
-                    this.SingleRotation);
+                    this.SingleRotation,
+                    Movement.CreateMoveToMeleeBehavior(true));
             }
         }
 

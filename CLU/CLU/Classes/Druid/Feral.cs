@@ -119,8 +119,10 @@ CREDITS TO: HandNavi - because he owns the business.
             get
             {
                 return new PrioritySelector(
+                    Movement.CreateMoveToLosBehavior(),
                     Movement.CreateFaceTargetBehavior(),
-                    this.SingleRotation);
+                    this.SingleRotation,
+                    Movement.CreateMoveToMeleeBehavior(true));
             }
         }
 

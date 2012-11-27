@@ -145,8 +145,15 @@ Credits to Weischbier, because he owns the buisness and I want him to have my ba
             get
             {
                 return new PrioritySelector(
+                    Movement.CreateMoveToLosBehavior(),
                     Movement.CreateFaceTargetBehavior(),
-                    this.SingleRotation);
+                    new Sequence(
+                        Spell.CastSpell("Death Grip", ret => Me.CurrentTarget.DistanceSqr > 10 * 10,"[Pull]Death Grip"),
+                        new DecoratorContinue(ret => Me.IsMoving,
+                            new Action(ret => Movement.EnsureMovementStoppedBehavior())),
+                        new WaitContinue(1, new ActionAlwaysSucceed())),
+                    this.SingleRotation,
+                    Movement.CreateMoveToMeleeBehavior(true));
             }
         }
 

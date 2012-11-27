@@ -160,14 +160,13 @@ namespace CLU.Classes.Monk
             get
             {
                 return new PrioritySelector(
-                    new Decorator(ret => CLUSettings.Instance.EnableMovement,
-                        new PrioritySelector(
-                            Movement.CreateFaceTargetBehavior(),
-                            Spell.CastSpell("Provoke", ret => !CLU.IsMounted && (Me.CurrentTarget != null && Me.CurrentTarget.DistanceSqr >= 8 * 8), "Provoke"),
-                            Spell.CastSpell("Roll", ret => !CLU.IsMounted && (Me.CurrentTarget != null && Me.CurrentTarget.DistanceSqr >= 10 * 10), "Roll"),
-                            this.SingleRotation)),
-                    this.SingleRotation
-                    );
+                    Movement.CreateMoveToLosBehavior(),
+                    Movement.CreateFaceTargetBehavior(),
+                    Spell.CastSpell("Crackling Jade Lightning", ret => Me.CurrentTarget != null && Me.CurrentTarget.DistanceSqr >= 8 * 8 && Spell.SpellOnCooldown("Roll"), "Crackling Jade Lightning"),
+                    Spell.CastSpell("Provoke", ret => !CLU.IsMounted && (Me.CurrentTarget != null && Me.CurrentTarget.DistanceSqr >= 8 * 8), "Provoke"),
+                    Spell.CastSpell("Roll", ret => !CLU.IsMounted && (Me.CurrentTarget != null && Me.CurrentTarget.DistanceSqr >= 10 * 10), "Roll"),
+                    this.SingleRotation,
+                    Movement.CreateMoveToMeleeBehavior(true));
             }
         }
 

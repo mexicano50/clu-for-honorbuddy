@@ -180,8 +180,15 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
             get
             {
                 return new PrioritySelector(
+                    Movement.CreateMoveToLosBehavior(),
                     Movement.CreateFaceTargetBehavior(),
-                    this.SingleRotation);
+                    Spell.CastSpell("Charge", ret => Me.CurrentTarget != null && Me.CurrentTarget.DistanceSqr > 3.2 * 3.2, "Charge"),
+                    Spell.CastOnUnitLocation("Heroic Leap", ret => Me.CurrentTarget, ret => Me.CurrentTarget != null &&
+                                Me.CurrentTarget.DistanceSqr > 3.2 * 3.2 &&
+                                SpellManager.Spells["Charge"].CooldownTimeLeft.Seconds > 1 &&
+                                SpellManager.Spells["Charge"].CooldownTimeLeft.Seconds < 18, "Heroic Leap"),
+                    this.SingleRotation,
+                    Movement.CreateMoveToMeleeBehavior(true));
             }
         }
 

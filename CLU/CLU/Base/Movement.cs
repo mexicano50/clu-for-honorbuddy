@@ -32,6 +32,9 @@ namespace CLU.Base
     public static class Movement
     {
         /* putting all the Movement logic here */
+        public delegate WoWPoint LocationRetriever(object context);
+
+        public delegate float DynamicRangeRetriever(object context);
 
         private const bool EnableBotTargetingOveride = false;
 
@@ -39,10 +42,10 @@ namespace CLU.Base
         {
             get
             {
-                return StyxWoW.Me.CurrentTarget != null &&
-                       (StyxWoW.Me.CurrentTarget.IsFlying ||
-                        StyxWoW.Me.CurrentTarget.Distance2DSqr < 5 * 5 &&
-                        Math.Abs(StyxWoW.Me.Z - StyxWoW.Me.CurrentTarget.Z) >= 5);
+                return Me.CurrentTarget != null &&
+                       (Me.CurrentTarget.IsFlying ||
+                        Me.CurrentTarget.Distance2DSqr < 5 * 5 &&
+                        Math.Abs(Me.Z - Me.CurrentTarget.Z) >= 5);
             }
         }
 
@@ -52,7 +55,7 @@ namespace CLU.Base
         }
         public static Composite CreateFaceTargetBehavior(float viewDegrees = 70f)
         {
-            return CreateFaceTargetBehavior(ret => StyxWoW.Me.CurrentTarget);
+            return CreateFaceTargetBehavior(ret => Me.CurrentTarget);
         }
 
         public static Composite CreateFaceTargetBehavior(CLU.UnitSelection toUnit, float viewDegrees = 70f)
@@ -60,25 +63,22 @@ namespace CLU.Base
             return new Decorator(
                 ret =>
                 CLUSettings.Instance.EnableMovement && toUnit != null && toUnit(ret) != null &&
-                !StyxWoW.Me.IsMoving && !toUnit(ret).IsMe &&
-                !StyxWoW.Me.IsSafelyFacing(toUnit(ret), viewDegrees),
+                !Me.IsMoving && !toUnit(ret).IsMe &&
+                !Me.IsSafelyFacing(toUnit(ret), viewDegrees),
                 new Action(ret =>
                 {
-                    StyxWoW.Me.CurrentTarget.Face();
+                    Me.CurrentTarget.Face();
                     return RunStatus.Failure;
                 }));
         }
 
         public static Composite CreateMoveToLosBehavior()
         {
-            return CreateMoveToLosBehavior(ret => StyxWoW.Me.CurrentTarget);
+            return CreateMoveToLosBehavior(ret => Me.CurrentTarget);
         }
         public static Composite CreateMoveToLosBehavior(CLU.UnitSelection toUnit)
         {
-            return new Decorator(
-                ret =>
-                CLUSettings.Instance.EnableMovement && toUnit != null && toUnit(ret) != null &&
-                toUnit(ret) != StyxWoW.Me && !toUnit(ret).InLineOfSpellSight,
+            return new Decorator(ret => CLUSettings.Instance.EnableMovement && toUnit != null && toUnit(ret) != null && toUnit(ret) != Me && !toUnit(ret).InLineOfSpellSight,
                 new Action(ret => Navigator.MoveTo(toUnit(ret).Location)));
         }
         /// <summary>
@@ -86,12 +86,12 @@ namespace CLU.Base
         /// </summary>
         public static Composite MovingFacingBehavior()
         {
-            return MovingFacingBehavior(ret => StyxWoW.Me.CurrentTarget);
+            return MovingFacingBehavior(ret => Me.CurrentTarget);
         }
 
         public static Composite MoveToPull()
         {
-            return MoveToPull(ret => StyxWoW.Me.CurrentTarget);
+            return MoveToPull(ret => Me.CurrentTarget);
         }
 
         private static Composite MoveToPull(CLU.UnitSelection onUnit)
@@ -127,7 +127,7 @@ namespace CLU.Base
                                                     if (ctx != null && (onUnit(ctx).IsDead || onUnit(ctx).IsFriendly))
                                                     {
                                                         CLULogger.TroubleshootLog(" Target Appears to be dead or a Friendly. Clearing Current Target [" + CLULogger.SafeName((WoWUnit)ctx) + "]");
-                                                        StyxWoW.Me.ClearTarget();
+                                                        Me.ClearTarget();
                                                     }
 
                                                     // Aquires a target.
@@ -137,7 +137,7 @@ namespace CLU.Base
                                                         if (Blacklist.Contains(Unit.EnsureUnitTargeted.Guid) || Unit.EnsureUnitTargeted.IsDead)
                                                         {
                                                             CLULogger.TroubleshootLog(" EnsureUnitTargeted Appears to be dead or Blacklisted. Clearing Current Target [" + CLULogger.SafeName(Unit.EnsureUnitTargeted) + "]");
-                                                            StyxWoW.Me.ClearTarget();
+                                                            Me.ClearTarget();
                                                         }
 
                                                         return Unit.EnsureUnitTargeted;
@@ -159,7 +159,7 @@ namespace CLU.Base
                         // Are we Facing the target?
                 // Is the Target in line of site?
                 // Face Target
-                       new DecoratorContinue(ret => onUnit(ret) != null && !StyxWoW.Me.IsSafelyFacing(onUnit(ret), 45f) && onUnit(ret).InLineOfSight,
+                       new DecoratorContinue(ret => onUnit(ret) != null && !Me.IsSafelyFacing(onUnit(ret), 45f) && onUnit(ret).InLineOfSight,
                                              new Sequence(
                                                  new Action(ret => WoWMovement.Face(onUnit(ret).Guid)))),
 
@@ -202,7 +202,7 @@ namespace CLU.Base
                 // We are not the tank?
                 // We are not channeling?
                 // Move Behind Target
-                       new DecoratorContinue(ret => CLUSettings.Instance.EnableMoveBehindTarget && onUnit(ret) != null && onUnit(ret) != StyxWoW.Me && // && !onUnit(ret).IsMoving
+                       new DecoratorContinue(ret => CLUSettings.Instance.EnableMoveBehindTarget && onUnit(ret) != null && onUnit(ret) != Me && // && !onUnit(ret).IsMoving
                                              onUnit(ret).InLineOfSight && onUnit(ret).IsAlive && !onUnit(ret).MeIsBehind && !Me.IsCasting && !Spell.PlayerIsChanneling &&
                                              Unit.DistanceToTargetBoundingBox() >= 10,// && (Unit.Tanks != null && Unit.Tanks.Any(x => x.Guid != Me.Guid))
                                              new Sequence(
@@ -257,8 +257,8 @@ namespace CLU.Base
         private static WoWPoint CalculatePointBehindTarget()
         {
             return
-                StyxWoW.Me.CurrentTarget.Location.RayCast(
-                    StyxWoW.Me.CurrentTarget.Rotation + WoWMathHelper.DegreesToRadians(150), Spell.MeleeRange - 2f);
+                Me.CurrentTarget.Location.RayCast(
+                    Me.CurrentTarget.Rotation + WoWMathHelper.DegreesToRadians(150), Spell.MeleeRange - 2f);
         }
 
         /// <summary>
@@ -268,8 +268,95 @@ namespace CLU.Base
         public static Composite EnsureMovementStoppedBehavior()
         {
             return new Decorator(
-                ret => CLUSettings.Instance.EnableMovement && StyxWoW.Me.IsMoving,
+                ret => CLUSettings.Instance.EnableMovement && Me.IsMoving,
                 new Action(ret => Navigator.PlayerMover.MoveStop()));
+        }
+        
+        /// <summary>
+        ///   Creates a move to melee range behavior. Will return RunStatus.Success if it has reached the location, or stopped in range. Best used at the end of a rotation.
+        /// </summary>
+        /// <remarks>
+        ///   Created 5/1/2011.
+        /// </remarks>
+        /// <param name = "stopInRange">true to stop in range.</param>
+        /// <param name = "range">The range.</param>
+        /// <returns>.</returns>
+        public static Composite CreateMoveToMeleeBehavior(bool stopInRange)
+        {
+            return CreateMoveToMeleeBehavior(ret => Me.CurrentTarget.Location, stopInRange);
+        }
+
+        public static Composite CreateMoveToMeleeBehavior(LocationRetriever location, bool stopInRange)
+        {
+            return
+                new Decorator(
+                    ret => !Me.IsCasting,
+                    CreateMoveToLocationBehavior(location, stopInRange, ret => Me.CurrentTarget.IsPlayer ? 2f : Spell.MeleeRange));
+        }
+
+        /// <summary>
+        ///   Creates a move to location behavior. Will return RunStatus.Success if it has reached the location, or stopped in range. Best used at the end of a rotation.
+        /// </summary>
+        /// <remarks>
+        ///   Created 5/1/2011.
+        /// </remarks>
+        /// <param name = "location">The location.</param>
+        /// <param name = "stopInRange">true to stop in range.</param>
+        /// <param name = "range">The range.</param>
+        /// <returns>.</returns>
+        public static Composite CreateMoveToLocationBehavior(LocationRetriever location, bool stopInRange, DynamicRangeRetriever range)
+        {
+            // Do not fuck with this. It will ensure we stop in range if we're supposed to.
+            // Otherwise it'll stick to the targets ass like flies on dog shit.
+            // Specifying a range of, 2 or so, will ensure we're constantly running to the target. Specifying 0 will cause us to spin in circles around the target
+            // or chase it down like mad. (PVP oriented behavior)
+            return
+                new Decorator(
+                // Don't run if the movement is disabled.
+                    ret => CLUSettings.Instance.EnableMovement,
+                    new PrioritySelector(
+                        new Decorator(
+                // Give it a little more than 1/2 a yard buffer to get it right. CTM is never 'exact' on where we land. So don't expect it to be.
+                            ret => stopInRange && Me.Location.Distance(location(ret)) < range(ret),
+                            new PrioritySelector(
+                                EnsureMovementStoppedBehavior(),
+                // In short; if we're not moving, just 'succeed' here, so we break the tree.
+                                new Action(ret => RunStatus.Success)
+                                )
+                            ),
+                        new Action(ret => Navigator.MoveTo(location(ret)))
+                        ));
+        }
+
+        /// <summary>
+        ///   Creates a move to target behavior. Will return RunStatus.Success if it has reached the location, or stopped in range. Best used at the end of a rotation.
+        /// </summary>
+        /// <remarks>
+        ///   Created 5/1/2011.
+        /// </remarks>
+        /// <param name = "stopInRange">true to stop in range.</param>
+        /// <param name = "range">The range.</param>
+        /// <returns>.</returns>
+        public static Composite CreateMoveToTargetBehavior(bool stopInRange, float range)
+        {
+            return CreateMoveToTargetBehavior(stopInRange, range, ret => StyxWoW.Me.CurrentTarget);
+        }
+
+        /// <summary>
+        ///   Creates a move to target behavior. Will return RunStatus.Success if it has reached the location, or stopped in range. Best used at the end of a rotation.
+        /// </summary>
+        /// <remarks>
+        ///   Created 5/1/2011.
+        /// </remarks>
+        /// <param name = "stopInRange">true to stop in range.</param>
+        /// <param name = "range">The range.</param>
+        /// <param name="onUnit">The unit to move to.</param>
+        /// <returns>.</returns>
+        public static Composite CreateMoveToTargetBehavior(bool stopInRange, float range, CLU.UnitSelection onUnit)
+        {
+            return
+                new Decorator(ret => onUnit != null && onUnit(ret) != null && onUnit(ret) != StyxWoW.Me && !StyxWoW.Me.IsCasting,
+                    CreateMoveToLocationBehavior(ret => onUnit(ret).Location, stopInRange, ret => range));
         }
     }
 }

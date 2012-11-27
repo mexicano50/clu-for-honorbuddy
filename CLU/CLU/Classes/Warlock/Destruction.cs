@@ -132,8 +132,13 @@ namespace CLU.Classes.Warlock
             get
             {
                 return new PrioritySelector(
+                    Unit.EnsureTarget(),
+                    Movement.CreateMoveToLosBehavior(),
                     Movement.CreateFaceTargetBehavior(),
-                    this.SingleRotation);
+                    Spell.WaitForCast(true),
+                    this.SingleRotation,
+                    Movement.CreateMoveToTargetBehavior(true, 39f)
+                    );
             }
         }
 

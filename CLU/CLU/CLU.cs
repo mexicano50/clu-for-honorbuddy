@@ -70,7 +70,7 @@ namespace CLU
     {
         #region Constants and Fields
 
-        public static readonly Version Version = new Version(3, 3, 8);
+        public static readonly Version Version = new Version(3, 3, 9);
         private readonly Timer _clupulsetimer = new Timer(10000); // A timer for keybinds
         private RotationBase _rotationBase;
         private List<RotationBase> _rotations; // list of Rotations
@@ -204,9 +204,7 @@ namespace CLU
         {
             get
             {
-                return new Sequence(
-                    new DecoratorContinue(x => CLUSettings.Instance.EnableMovement && (!Me.IsCasting || !Spell.PlayerIsChanneling) && Me.CurrentTarget.DistanceSqr <= CharacterSettings.Instance.PullDistance * CharacterSettings.Instance.PullDistance, Movement.MoveToPull()),
-                    new DecoratorContinue(x => true, ActiveRotation.Pull));
+                return ActiveRotation.Pull;
             }
         }
 

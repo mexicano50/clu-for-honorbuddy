@@ -220,9 +220,17 @@ namespace CLU.Classes.Shaman
 
         public override Composite Pull
         {
-             get { return new PrioritySelector(
-                Movement.CreateFaceTargetBehavior(),
-                this.SingleRotation);   }
+            get
+            {
+                return new PrioritySelector(
+                    Unit.EnsureTarget(),
+                    Movement.CreateMoveToLosBehavior(),
+                    Movement.CreateFaceTargetBehavior(),
+                    Spell.WaitForCast(true),
+                    this.SingleRotation,
+                    Movement.CreateMoveToTargetBehavior(true, 39f)
+                    );
+            }
         }
 
         public override Composite Medic

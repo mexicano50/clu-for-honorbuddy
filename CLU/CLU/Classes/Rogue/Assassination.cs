@@ -88,11 +88,12 @@ namespace CLU.Classes.Rogue
         {
             get
             {
-                return new PrioritySelector
-                    (
+                return new PrioritySelector(
+                    Movement.CreateMoveToLosBehavior(),
                     Movement.CreateFaceTargetBehavior(),
                     Spell.CastSpell("Garrote", cond =>Me.CurrentTarget.DistanceSqr <= Spell.MeleeRange && Me.IsStealthed, "Garrote for pull"),
-                    Spell.CastSpell("Throw", ret => Me.CurrentTarget.Distance <= 30, "Throw for Pull"));
+                    Spell.CastSpell("Throw", ret => Me.CurrentTarget.Distance <= 30, "Throw for Pull"),
+                    Movement.CreateMoveToMeleeBehavior(true));
             }
         }
 

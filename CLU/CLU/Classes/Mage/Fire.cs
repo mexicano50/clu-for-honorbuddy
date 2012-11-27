@@ -101,68 +101,11 @@ namespace CLU.Classes.Mage
                 return "Mage Bomb";
             }
         }
-
         public override Composite SingleRotation
         {
             get
             {
-                return new PrioritySelector(
-                    // Pause Rotation
-                           new Decorator(ret => CLUSettings.Instance.PauseRotation, new ActionAlwaysSucceed()),
-
-                           // For DS Encounters.
-                           EncounterSpecific.ExtraActionButton(),
-
-                           new Decorator(
-                                ret => Me.CurrentTarget != null && Unit.UseCooldowns(),
-                                new PrioritySelector(
-                                        Item.UseTrinkets(),
-                                        Racials.UseRacials(),
-                                        Buff.CastBuff("Lifeblood", ret => true, "Lifeblood"), // Thanks Kink
-                                        Item.UseBagItem("Volcanic Potion", ret => Buff.UnitHasHasteBuff(Me), "Volcanic Potion Heroism/Bloodlust"),
-                                        Item.UseEngineerGloves())),
-
-                            // Comment: Dont break Invinsibility!!
-                            new Decorator(x => Buff.PlayerHasBuff("Invisibility"), new Action(a => CLULogger.TroubleshootLog("Invisibility active"))),
-                    // Interupts & Steal Buffs
-                            Spell.CastSpell("Spellsteal", ret => Spell.TargetHasStealableBuff() && !Me.IsMoving, "[Steal] Spellsteal"),
-                            Spell.CastInterupt("Counterspell", ret => true, "Counterspell"),
-                            Spell.CastSpell("Blazing Speed", unit => Me, ret => Me.MovementInfo.ForwardSpeed < 8.05 && Me.IsMoving && TalentManager.HasTalent(5) && CLUSettings.Instance.EnableMovement, "Blazing Speed"),
-                    // Cooldowns
-                            new Decorator(ret => CLUSettings.Instance.UseCooldowns,
-                                new PrioritySelector(
-                                    Spell.ChannelSelfSpell("Evocation", ret => Me.ManaPercent < 35 && !Me.IsMoving, "Evocation"),
-                                    Spell.ChannelSelfSpell("Evocation", ret => TalentManager.HasTalent(16) && Unit.UseCooldowns() && !Buff.PlayerHasActiveBuff("Invoker's Energy") && !Me.IsMoving, "Evocation"),
-                            Item.UseBagItem("Mana Gem", ret => Me.CurrentTarget != null && Me.ManaPercent < 90, "Mana Gem"),
-                            Item.UseBagItem("Brilliant Mana Gem", ret => Me.CurrentTarget != null && Me.ManaPercent < 90, "Brilliant Mana Gem"),
-                            Spell.CastSelfSpell("Mirror Image", ret => true, "Mirror Image"),
-                            Spell.CastSelfSpell("Presence of Mind", ret => !Me.HasMyAura("Pyroblast!"), "Presence of Mind"),
-                            Spell.CastSpell("Pyroblast", ret => Me.HasMyAura("Presence of Mind") || Me.HasMyAura("Pyroblast!"), "Pyroblast with PoM or Pyroblast!"),
-                            Spell.CastSelfSpell("Arcane Power", ret => Me.CurrentTarget != null, "Arcane Power"))),
-                            Spell.CastSpell(759, ret => Spell.CanCast("Conjure Mana Gem") && Buff.PlayerHasBuff("Presence of Mind") && !Item.HaveManaGem() && Me.Level > 50, "Conjure Mana Gem"),
-                    // Rune of Power
-                            Spell.CastOnUnitLocation("Rune of Power", unit => Me, ret => !Buff.PlayerHasBuff("Rune of Power") && TalentManager.HasTalent(17), "Rune of Power"),
-                    // AoE
-                            new Decorator(
-                               ret => !Me.IsMoving && Me.CurrentTarget != null && Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 15) >= CLUSettings.Instance.BurstOnMobCount && CLUSettings.Instance.UseAoEAbilities,
-                               new PrioritySelector(
-                                   Spell.CastOnUnitLocation("Flamestrike", u => Me.CurrentTarget, ret => Me.CurrentTarget != null && !Buff.TargetHasDebuff("Flamestrike") && !BossList.IgnoreAoE.Contains(Unit.CurrentTargetEntry) && Me.ManaPercent > 30 && Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 15) > 3, "Flamestrike"),
-                                   Spell.CastConicSpell("Dragon's Breath", 12f, 33f, ret => !Me.HasMyAura("Heating Up") && !Me.HasMyAura("Pyroblast!"), "Dragon's Breath")
-                               )),
-                    // Default Rotaion
-                    //Tier5 Talent
-                            Spell.CastSpell("Combustion", ret => CLUSettings.Instance.Mage.EnableCombustion && Buff.TargetHasDebuff("Ignite") && Buff.TargetHasDebuff("Pyroblast") && Unit.UseCooldowns(), "Combustion"),
-                            Spell.CastSelfSpell("Presence of Mind", ret => Unit.UseCooldowns() && Me.HasMyAura("Pyroblast!"), "Presence of Mind"),
-                            Buff.CastBuff("Alter Time", ret => Unit.UseCooldowns() && Me.HasMyAura("Pyroblast!"), "Alter Time"),
-                            Buff.CastDebuff("Mage Bomb", Magebombtalent, ret => true, Magebombtalent),
-                            Spell.CastSpell("Inferno Blast", ret => Me.HasMyAura("Heating Up") && !Me.HasMyAura("Pyroblast!"), "Inferno Blast with Heating Up proc"),
-                            Spell.CastSpell("Pyroblast", ret => Me.HasMyAura("Pyroblast!"), "Pyroblast with Pyroblast! proc"),
-                            Spell.CastSpell("Fire Blast", ret => Me.HasMyAura("Heating Up") && !Spell.SpellOnCooldown("Fire Blast"), "Fire Blast with Heating Up proc"),
-                            Spell.CastSpell("Fireball", ret => !Me.HasMyAura("Pyroblast!") && !Me.HasMyAura("Presence of Mind") && (!Me.HasMyAura("Heating Up") || Spell.SpellOnCooldown("Fire Blast") || (Me.HasMyAura("Heating Up") && Spell.SpellOnCooldown("Fire Blast"))), "Fireball"),
-                            Spell.CastSpell("Scorch", ret => Me.IsMoving && TalentManager.HasTalent(2), false, "Scorch (Moving)"),
-                            Spell.CastSpell("Ice Lance", ret => Me.IsMoving, false, "Ice Lance (Moving)")
-
-                       );
+                return FireMageRotation();
             }
         }
 
@@ -171,8 +114,13 @@ namespace CLU.Classes.Mage
             get
             {
                 return new PrioritySelector(
-                    new Decorator(ret => Me.CurrentTarget != null && !Me.IsSafelyFacing(Me.CurrentTarget, 45f), new Action(ret => Me.CurrentTarget.Face())),
-                    this.SingleRotation);
+                    Unit.EnsureTarget(),
+                    Movement.CreateMoveToLosBehavior(),
+                    Movement.CreateFaceTargetBehavior(),
+                    Spell.WaitForCast(true),
+                    this.SingleRotation,
+                    Movement.CreateMoveToTargetBehavior(true, 39f)
+                    );
             }
         }
 
@@ -240,21 +188,60 @@ namespace CLU.Classes.Mage
         {
             return new PrioritySelector(
                 new Decorator(ret => CLUSettings.Instance.PauseRotation, new ActionAlwaysSucceed()),
+                new Decorator(ret => Me.CurrentTarget != null && Unit.UseCooldowns(),
+                    new PrioritySelector(
+                        Item.UseTrinkets(),
+                        Racials.UseRacials(),
+                        Buff.CastBuff("Lifeblood", ret => true, "Lifeblood"), // Thanks Kink
+                        Item.UseBagItem("Volcanic Potion", ret => Buff.UnitHasHasteBuff(Me), "Volcanic Potion Heroism/Bloodlust"),
+                        Item.UseEngineerGloves())),
+                Spell.CastSpell("Spellsteal", ret => Spell.TargetHasStealableBuff() && !Me.IsMoving, "[Steal] Spellsteal"),
+                Spell.CastInterupt("Counterspell", ret => true, "Counterspell"),
+                Spell.CastSpell("Blazing Speed", unit => Me, ret => Me.MovementInfo.ForwardSpeed < 8.05 && Me.IsMoving && TalentManager.HasTalent(5) && CLUSettings.Instance.EnableMovement, "Blazing Speed"),
+                // Cooldowns
+                new Decorator(ret => CLUSettings.Instance.UseCooldowns,
+                    new PrioritySelector(
+                        //Spell.ChannelSelfSpell("Evocation", ret => Unit.UseCooldowns() && TalentManager.HasTalent(16) && !Me.HasAura("Invoker's Energy") && !Me.HasAura("Pyroblast!"), "Evocation"),
+                        Spell.PreventDoubleChannel("Evocation", 0.5, true, On=>Me, ret => Unit.UseCooldowns() && TalentManager.HasTalent(16) && !Me.HasAura("Invoker's Energy") && !Me.HasAura("Pyroblast!")),
+                        Spell.PreventDoubleCast("Presence of Mind", 0.5,on => Me, ret => Unit.UseCooldowns() && Me.HasAura("Pyroblast!") && Spell.CanCast("Alter Time")),
+                        Spell.PreventDoubleCast("Alter Time", 0.5, on => Me, ret => Me.HasAura("Invoker's Energy") && Me.HasAura("Pyroblast!") && Me.HasAura("Presence of Mind") && !Me.HasAura("Alter Time")),
+                        Spell.PreventDoubleCast("Alter Time", 0.5, on => Me, ret => Me.HasAura("Alter Time") && !Me.HasAura("Presence of Mind") && !Me.HasAura("Pyroblast!")),
+                        //Spell.CastSelfSpell("Presence of Mind", ret => Unit.UseCooldowns() && Me.HasAura("Pyroblast!") && Spell.CanCast("Alter Time"), "Presence of Mind"),
+                        //Spell.CastSelfSpell("Alter Time", ret => Me.HasAura("Invoker's Energy") && Me.HasAura("Pyroblast!") && Me.HasAura("Presence of Mind") && !Me.HasAura("Alter Time"), "Alter Time"),
+                        //Spell.CastSelfSpell("Alter Time", ret => Me.HasAura("Alter Time") && !Me.HasAura("Presence of Mind") && !Me.HasAura("Pyroblast!"), "Alter Time"),
+                        Item.UseBagItem("Mana Gem", ret => Me.CurrentTarget != null && Me.ManaPercent < 90, "Mana Gem"),
+                        Item.UseBagItem("Brilliant Mana Gem", ret => Me.CurrentTarget != null && Me.ManaPercent < 90, "Brilliant Mana Gem"),
+                        //Spell.CastSelfSpell("Mirror Image", ret => true, "Mirror Image"),
+                        //Spell.CastSelfSpell("Arcane Power", ret => Me.CurrentTarget != null, "Arcane Power"))),
+                        Spell.PreventDoubleCast("Mirror Image", 0.5, on => Me, ret => true),
+                        Spell.PreventDoubleCast("Arcane Power", 0.5, on => Me, ret => Me.CurrentTarget != null))),
+                 Spell.CastSpell(759, ret => Spell.CanCast("Conjure Mana Gem") && Buff.PlayerHasBuff("Presence of Mind") && !Item.HaveManaGem() && Me.Level > 50, "Conjure Mana Gem"),
+                // Rune of Power
+                Spell.CastOnUnitLocation("Rune of Power", unit => Me, ret => !Buff.PlayerHasBuff("Rune of Power") && TalentManager.HasTalent(17), "Rune of Power"),
+                // AoE
+                new Decorator(ret => !Me.IsMoving && Me.CurrentTarget != null && Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 15) >= CLUSettings.Instance.BurstOnMobCount && CLUSettings.Instance.UseAoEAbilities,
+                    new PrioritySelector(
+                        Spell.CastOnUnitLocation("Flamestrike", u => Me.CurrentTarget, ret => Me.CurrentTarget != null && !Buff.TargetHasDebuff("Flamestrike") && !BossList.IgnoreAoE.Contains(Unit.CurrentTargetEntry) && Me.ManaPercent > 30 && Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 15) > 3, "Flamestrike"),
+                        Spell.CastConicSpell("Dragon's Breath", 12f, 33f, ret => !Me.HasMyAura("Heating Up") && !Me.HasMyAura("Pyroblast!"), "Dragon's Breath")
+                        )),
                 new Decorator(ret=> Me.GotTarget && Me.CurrentTarget!=null && Me.CurrentTarget.IsAlive && Me.CurrentTarget.Attackable,
                     new PrioritySelector(
-                        Spell.ChannelSelfSpell("Evovation", ret => Unit.UseCooldowns() && TalentManager.HasTalent(16) && !Me.HasAura("Invoker's Energy") && !Me.HasAura("Pyroblast!"),"Evocation"),
-                        Spell.CastSelfSpell("Presence of Mind", ret => Me.HasAura("Pyroblast!") && Spell.CanCast("Alter Time"),"Presence of Mind"),
-                        Spell.CastSelfSpell("Alter Time", ret => Me.HasAura("Invoker's Energy") && Me.HasAura("Pyroblast!") && Me.HasAura("Presence of Mind") && !Me.HasAura("Alter Time"), "Alter Time"),
-                        Spell.CastSelfSpell("Alter Time", ret => Me.HasAura("Alter Time") && !Me.HasAura("Presence of Mind") && !Me.HasAura("Pyroblast!"), "Alter Time"),
+                        Spell.CastSpell("Combustion", ret => CLUSettings.Instance.Mage.EnableCombustion && Buff.TargetHasDebuff("Ignite") && Buff.TargetHasDebuff("Pyroblast") && Unit.UseCooldowns(), "Combustion"),
                         Spell.CastSpell("Pyroblast", ret => Me.HasAura("Pyroblast!") || Me.HasAura("Presence of Mind"),"Pyroblast"),
-                        Spell.CastSpell("Inferno Blast", ret=>true,"Inferno Blast"),
-                        /* Remove start */
-                        Spell.CastSpell("Living Bomb",ret=> !Me.CurrentTarget.HasAura("Living Bomb") || Me.CurrentTarget.HasAura("Living Bomb") && Buff.GetAuraDoubleTimeLeft(Me.CurrentTarget,"Living Bomb", true) <= 1,"Living Bomb"),
-                        Spell.CastSpell("Nether Tempest", ret => !Me.CurrentTarget.HasAura("Nether Tempest") || Me.CurrentTarget.HasAura("Nether Tempest") && Buff.GetAuraDoubleTimeLeft(Me.CurrentTarget, "Nether Tempest", true) <= 1, "Nether Tempest"),
-                        Spell.CastSpell("Frost Bomb", ret => !Me.CurrentTarget.HasAura("Frost Bomb"), "Frost Bomb"),
+                        Spell.PreventDoubleCast("Inferno Blast", 0.5, ret => true),
+                        //Spell.CastSpell("Inferno Blast", ret=>true,"Inferno Blast"),
+                        /* Remove start - this is experimental und SHOULDN'T work*/
+                        Spell.PreventDoubleCast("Living Bomb",0.5,ret=>!Me.CurrentTarget.HasAura("Living Bomb") || Me.CurrentTarget.HasAura("Living Bomb") && Buff.GetAuraDoubleTimeLeft(Me.CurrentTarget,"Living Bomb", true) <= 1),
+                        Spell.PreventDoubleCast("Nether Tempest",0.5,ret=>!Me.CurrentTarget.HasAura("Nether Tempest") || Me.CurrentTarget.HasAura("Nether Tempest") && Buff.GetAuraDoubleTimeLeft(Me.CurrentTarget, "Nether Tempest", true) <= 1),
+                        Spell.PreventDoubleCast("Frost Bomb",0.5,ret=>!Me.CurrentTarget.HasAura("Frost Bomb")),
+                        //Spell.CastSpell("Living Bomb",ret=> !Me.CurrentTarget.HasAura("Living Bomb") || Me.CurrentTarget.HasAura("Living Bomb") && Buff.GetAuraDoubleTimeLeft(Me.CurrentTarget,"Living Bomb", true) <= 1,"Living Bomb"),
+                        //Spell.CastSpell("Nether Tempest", ret => !Me.CurrentTarget.HasAura("Nether Tempest") || Me.CurrentTarget.HasAura("Nether Tempest") && Buff.GetAuraDoubleTimeLeft(Me.CurrentTarget, "Nether Tempest", true) <= 1, "Nether Tempest"),
+                        //Spell.CastSpell("Frost Bomb", ret => !Me.CurrentTarget.HasAura("Frost Bomb"), "Frost Bomb"),
                         /* Remove end */
-                        Spell.CastSpell("Mage Bomb", ret => !Me.CurrentTarget.HasAnyAura(MageBomb) || Me.CurrentTarget.HasAnyAura(MageBomb) && Buff.GetAuraDoubleTimeLeft(Me.CurrentTarget, Magebombtalent, true) <= 1, "Mage Bomb"),
-                        Spell.CastSpell("Fireball", ret => Buff.GetAuraDoubleTimeLeft(Me.CurrentTarget, Magebombtalent, true)>2,"Fireball")
+                        Spell.PreventDoubleCast("Mage Bomb",0.5,ret=>!Me.CurrentTarget.HasAnyAura(MageBomb) || (Me.CurrentTarget.HasAnyAura(MageBomb) && Buff.GetAuraDoubleTimeLeft(Me.CurrentTarget, Magebombtalent, true) <= 1)),
+                        //Spell.CastSpell("Mage Bomb", ret => !Me.CurrentTarget.HasAnyAura(MageBomb) || (Me.CurrentTarget.HasAnyAura(MageBomb) && Buff.GetAuraDoubleTimeLeft(Me.CurrentTarget, Magebombtalent, true) <= 1), "Mage Bomb"),
+                        //Spell.CastSpell("Fireball", ret => Buff.GetAuraDoubleTimeLeft(Me.CurrentTarget, Magebombtalent, true)>2,"Fireball")
+                        Spell.PreventDoubleCast("Fireball", 0.5, ret => Buff.GetAuraDoubleTimeLeft(Me.CurrentTarget, Magebombtalent, true)>2)
                         ))
                 );
         }

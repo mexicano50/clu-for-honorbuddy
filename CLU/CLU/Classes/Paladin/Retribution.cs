@@ -153,13 +153,18 @@ NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagr
                     Spell.CastSelfSpell("Arcane Torrent",                       ret => Me.ManaPercent < 80 && Me.CurrentHolyPower < 3, "Arcane Torrent"));
             }
         }
-
         public override Composite Pull
         {
-             get { return new PrioritySelector(
+            get
+            {
+                return new PrioritySelector(
+                    Movement.CreateMoveToLosBehavior(),
                     Movement.CreateFaceTargetBehavior(),
-                    Spell.CastSpell("Judgment",ret => true, "Pull Judgment"),
-                    Spell.CastSpell("Exorcism",ret => true, "Pull Excorcism")); }
+                    Spell.CastSpell("Judgment", ret => true, "Pull Judgment"),
+                    Spell.CastSpell("Exorcism", ret => true, "Pull Excorcism"),
+                    this.SingleRotation,
+                    Movement.CreateMoveToMeleeBehavior(true));
+            }
         }
 
         public override Composite Medic

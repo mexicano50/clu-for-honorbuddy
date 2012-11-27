@@ -49,10 +49,8 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Honorbuddy, Version=2.5.6377.493, Culture=neutral, PublicKeyToken=50a565ab5c01ae50, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <ExecutableExtension>.exe</ExecutableExtension>
-      <HintPath>..\..\..\..\..\Desktop\Games\Blizzard\HB\dev\Honorbuddy.exe</HintPath>
+    <Reference Include="Honorbuddy">
+      <HintPath>..\Honorbuddy\Honorbuddy.exe</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="System" />
@@ -60,7 +58,7 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="Tripper.Tools">
-      <HintPath>..\..\..\..\..\Desktop\Games\Blizzard\HB\dev\Tripper.Tools.dll</HintPath>
+      <HintPath>..\Honorbuddy\Tripper.Tools.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

@@ -27,6 +27,7 @@ namespace CLU.Base
     using Styx.TreeSharp;
     using Styx.WoWInternals;
     using Styx.WoWInternals.WoWObjects;
+    using CommonBehaviors.Actions;
     using Action = Styx.TreeSharp.Action;
 
     internal static class Unit
@@ -977,6 +978,156 @@ namespace CLU.Base
                 CLULogger.MovementLog("[CLU] " + CLU.Version + ": CLU targeting FAILED. *Reason: I cannot find a good target.*");
                 return null;
             }
+        }
+
+        /// <summary>
+        ///  This behavior SHOULD be called at top of the combat behavior. This behavior won't let the rest of the combat behavior to be called
+        /// if you don't have a target. Also it will find a proper target, if the current target is dead or you don't have a target and still in combat.
+        /// Tank targeting is also dealed in this behavior.
+        /// </summary>
+        /// <returns></returns>
+        public static Composite EnsureTarget()
+        {
+            return
+                new Decorator(
+                    ret => CLUSettings.Instance.EnableTargeting,
+                    new PrioritySelector(
+                        new Decorator(
+                // DisableTankTargeting is a user-setting. NeedTankTargeting is an internal one. Make sure both are turned on.
+                            ret => Me.Role == WoWPartyMember.GroupRole.Tank && StyxWoW.Me.Combat && Targeting.Instance.FirstUnit != null &&
+                                   (StyxWoW.Me.CurrentTarget == null || StyxWoW.Me.CurrentTarget != Targeting.Instance.FirstUnit),
+                            new Sequence(
+                // pending spells like mage blizard cause targeting to fail.
+                                new DecoratorContinue(ctx => StyxWoW.Me.CurrentPendingCursorSpell != null,
+                                    new Action(ctx => Lua.DoString("SpellStopTargeting()"))
+                                    ),
+                                new Action(
+                                    ret =>
+                                    {
+                                        CLULogger.Log("Targeting first unit of Targeting from HB");
+                                        Targeting.Instance.FirstUnit.Target();
+                                    }),
+                                Spell.CreateWaitForLagDuration()
+                                )
+                            ),
+
+                        new PrioritySelector(
+                            ctx =>
+                            {
+                                // We are making sure we have the proper target in all cases here.
+                                // Go below if current target is null or dead. We have other checks to deal with that
+                                if (StyxWoW.Me.CurrentTarget == null || StyxWoW.Me.CurrentTarget.IsDead)
+                                    return null;
+
+                                // If the current target is in combat or has aggro towards us, it should be a valid target.
+                                if (StyxWoW.Me.CurrentTarget.Combat || StyxWoW.Me.CurrentTarget.Aggro)
+                                    return null;
+
+                                // Check botpoi first and make sure our target is set to POI's object.
+                                if (BotPoi.Current.Type == PoiType.Kill)
+                                {
+                                    var obj = BotPoi.Current.AsObject;
+
+                                    if (obj != null)
+                                    {
+                                        if (StyxWoW.Me.CurrentTarget != obj && (obj as WoWUnit).IsAlive)
+                                            return obj;
+                                    }
+                                }
+
+                                // Make sure we have the proper target from Targeting. 
+                                // The Botbase should give us the best target in targeting.
+                                var firstUnit = Targeting.Instance.FirstUnit;
+
+                                if (firstUnit != null)
+                                {
+                                    if (StyxWoW.Me.CurrentTarget != firstUnit)
+                                        return firstUnit;
+                                }
+
+                                return null;
+                            },
+                            new Decorator(
+                                ret => ret != null,
+                                new Sequence(
+                                    new Action(ret => CLULogger.Log("Current target is not the best target. Switching to " + ((WoWUnit)ret).Name + "!")),
+                                    new Action(ret => ((WoWUnit)ret).Target()),
+                                    new WaitContinue(2,ret => StyxWoW.Me.CurrentTarget != null && StyxWoW.Me.CurrentTarget == (WoWUnit)ret,
+                                        new ActionAlwaysSucceed())
+                                    )
+                                )
+                            ),
+                        new Decorator(
+                            ret => StyxWoW.Me.CurrentTarget == null || StyxWoW.Me.CurrentTarget.IsDead,
+                            new PrioritySelector(
+                                ctx =>
+                                {
+                                    // If we have a RaF leader, then use its target.
+                                    var rafLeader = RaFHelper.Leader;
+                                    if (rafLeader != null && rafLeader.IsValid && !rafLeader.IsMe && rafLeader.Combat &&
+                                        rafLeader.CurrentTarget != null && rafLeader.CurrentTarget.IsAlive && !Blacklist.Contains(rafLeader.CurrentTarget))
+                                    {
+                                        return rafLeader.CurrentTarget;
+                                    }
+
+                                    // Check bot poi.
+                                    if (BotPoi.Current.Type == PoiType.Kill)
+                                    {
+                                        var unit = BotPoi.Current.AsObject as WoWUnit;
+
+                                        if (unit != null && unit.IsAlive && !unit.IsMe && !Blacklist.Contains(unit))
+                                        {
+                                            return unit;
+                                        }
+                                    }
+
+                                    // Does the target list have anything in it? And is the unit in combat?
+                                    // Make sure we only check target combat, if we're NOT in a BG. (Inside BGs, all targets are valid!!)
+                                    var firstUnit = Targeting.Instance.FirstUnit;
+                                    if (firstUnit != null && firstUnit.IsAlive && !firstUnit.IsMe && firstUnit.Combat &&
+                                        !Blacklist.Contains(firstUnit))
+                                    {
+                                        return firstUnit;
+                                    }
+
+                                    // Cache this query, since we'll be using it for 2 checks. No need to re-query it.
+                                    var agroMob =
+                                        ObjectManager.GetObjectsOfType<WoWUnit>(false, false).
+                                            Where(p => !Blacklist.Contains(p) && p.IsHostile && !p.IsOnTransport && !p.IsDead &&
+                                                        !p.Mounted && p.DistanceSqr <= 70 * 70 && p.Combat).
+                                            OrderBy(u => u.DistanceSqr).
+                                            FirstOrDefault();
+
+                                    if (agroMob != null)
+                                    {
+                                        // Return the closest one to us
+                                        return agroMob;
+                                    }
+
+                                    // And there's nothing left, so just return null, kthx.
+                                    return null;
+                                },
+                // Make sure the target is VALID. If not, then ignore this next part. (Resolves some silly issues!)
+                                new Decorator(
+                                    ret => ret != null,
+                                    new Sequence(
+                                        new Action(ret => CLULogger.Log("Current target is invalid. Switching to " + ((WoWUnit)ret).Name + "!")),
+                // pending spells like mage blizard cause targeting to fail.
+                                        new DecoratorContinue(ctx => StyxWoW.Me.CurrentPendingCursorSpell != null,
+                                            new Action(ctx => Lua.DoString("SpellStopTargeting()"))),
+                                        new Action(ret => ((WoWUnit)ret).Target()),
+                                        new WaitContinue(
+                                            2,
+                                            ret => StyxWoW.Me.CurrentTarget != null &&
+                                                   StyxWoW.Me.CurrentTarget == (WoWUnit)ret,
+                                            new ActionAlwaysSucceed())
+                                        )
+                                    ),
+                                new ActionAlwaysSucceed()
+                                )
+                            )
+                        )
+                    );
         }
 
         /// <summary>

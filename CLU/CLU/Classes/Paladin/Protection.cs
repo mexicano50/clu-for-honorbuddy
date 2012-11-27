@@ -132,8 +132,12 @@ NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagr
             get
             {
                 return new PrioritySelector(
+                    Movement.CreateMoveToLosBehavior(),
                     Movement.CreateFaceTargetBehavior(),
-                    this.SingleRotation);
+                    Spell.CastSpell("Judgment", ret => true, "Pull Judgment"),
+                    Spell.CastSpell("Exorcism", ret => true, "Pull Excorcism"),
+                    this.SingleRotation,
+                    Movement.CreateMoveToMeleeBehavior(true));
             }
         }
 
