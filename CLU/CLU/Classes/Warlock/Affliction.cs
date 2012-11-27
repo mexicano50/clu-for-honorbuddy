@@ -293,7 +293,7 @@ namespace CLU.Classes.Warlock
         private static Composite HandleSoulSwapAoE()
         {
             return
-                new Decorator(ret => Me.CurrentTarget != null && Unit.NearbyAttackableUnits(Me.CurrentTarget.Location, 20).Count() >= 2 && CurrentSoulShards > 0,
+                new Decorator(ret => Me.CurrentTarget != null && Unit.NearbyAttackableUnits(Me.CurrentTarget.Location, 20).Count() > 1 && Unit.NearbyAttackableUnits(Me.CurrentTarget.Location, 20).Count() < CLUSettings.Instance.Warlock.SeedOfCorruptionCount,
                         new PrioritySelector(ctx => GetSoulSwapTarget(SoulSwapDebuffs),
                             new Decorator(ret => !Me.HasAura("Soulburn"), Spell.PreventDoubleCast("Soulburn", 1, ret => true)),
                             new Action(a => SpellManager.Cast(119678, ((WoWUnit)a)))));
@@ -318,7 +318,7 @@ namespace CLU.Classes.Warlock
         private static Composite HandleSeedofCorruptionAoE()
         {
             return
-                new Decorator(ret => Me.CurrentTarget != null && Unit.NearbyAttackableUnits(Me.CurrentTarget.Location, 20).Count() > (Me.MaxSoulShards + 1) && !HasSeedofCorruption,
+                new Decorator(ret => Me.CurrentTarget != null && Unit.NearbyAttackableUnits(Me.CurrentTarget.Location, 20).Count() >= CLUSettings.Instance.Warlock.SeedOfCorruptionCount && !HasSeedofCorruption,
                         new Sequence(
                             Spell.CastSpell(27243, onUnit => Me.CurrentTarget, ret => true, "[HandleSeedofCorruptionAoE] Sed of Corruption"),
                             new WaitContinue(2, ret => HasSeedofCorruption, new ActionAlwaysSucceed())));

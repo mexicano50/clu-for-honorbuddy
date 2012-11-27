@@ -99,6 +99,16 @@ namespace CLU.Settings
             set;
         }
 
+        [Setting]
+        [DefaultValue(10)]
+        [Category("Common")]
+        [DisplayName("Execution Sentence HP%")]
+        [Description("Will use Flash of Light for self heal when resting at this healthpercent. (Self Healing, and Enable Movement (General Tab) must be enabled as well.)")]
+        public int ExecutionSentencePercentage
+        {
+            get;
+            set;
+        }
         #endregion
 
         #region Holy

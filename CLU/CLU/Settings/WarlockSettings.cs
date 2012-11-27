@@ -43,6 +43,16 @@ namespace CLU.Settings
         #endregion
 
         #region Affliction
+        [Setting]
+        [DefaultValue(4)]
+        [Category("Affliction")]
+        [DisplayName("Seed of Corruption Adds")]
+        [Description("Choose a Number to start with Seed of Corruption instead of Multidotting (Soulburn + Soulswap), set to 1 or 0 to disable it")]
+        public int SeedOfCorruptionCount
+        {
+            get;
+            set;
+        }
         #endregion
 
         #region Demonology
