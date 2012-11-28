@@ -228,7 +228,8 @@ namespace CLU.Classes.Mage
                         Spell.CastSpell("Pyroblast", ret => Me.HasAura("Pyroblast!") || Me.HasAura("Presence of Mind"),"Pyroblast"),
                         Spell.PreventDoubleCast("Inferno Blast", 0.5, ret => true),
                         Spell.CastSpell("Mage Bomb", ret => !Me.CurrentTarget.HasAnyAura(MageBomb) || (Me.CurrentTarget.HasAnyAura(MageBomb) && Buff.GetAuraDoubleTimeLeft(Me.CurrentTarget, Magebombtalent, true) <= 1), "Mage Bomb"),
-                        Spell.PreventDoubleCast("Fireball", 0.5, ret => Buff.GetAuraDoubleTimeLeft(Me.CurrentTarget, Magebombtalent, true)>2)
+                        Spell.PreventDoubleCast("Fireball", 0.5, ret => Buff.GetAuraDoubleTimeLeft(Me.CurrentTarget, Magebombtalent, true)>2),
+                        Spell.CastSpell("Scorch",ret=>Me.IsMoving,false,"Scorch")
                         ))
                 );
         }
