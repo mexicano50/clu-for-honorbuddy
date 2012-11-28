@@ -219,7 +219,7 @@ namespace CLU.Classes.Mage
                         )),
                 new Decorator(ret=> Me.GotTarget && Me.CurrentTarget!=null && Me.CurrentTarget.IsAlive && Me.CurrentTarget.Attackable,
                     new PrioritySelector(
-                        SkipFireball(),
+                        //SkipFireball(),
                         Spell.CastSpell("Combustion", ret => CLUSettings.Instance.Mage.EnableCombustion && Buff.TargetHasDebuff("Ignite") && Unit.UseCooldowns(), "Combustion"),
                         /* Remove start - this is experimental und SHOULDN'T work*/
                         Spell.CastSpell("Living Bomb", ret => !Me.CurrentTarget.HasAura("Living Bomb") || Me.CurrentTarget.HasAura("Living Bomb") && Buff.GetAuraDoubleTimeLeft(Me.CurrentTarget, "Living Bomb", true) <= 1, "Living Bomb"),
