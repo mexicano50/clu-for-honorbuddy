@@ -121,7 +121,8 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
                                    Spell.CastSpell("Shadow Word: Death",    ret => Me.CurrentTarget != null && Me.CurrentTarget.HealthPercent <= 25, "Shadow Word: Death"),
                                    Spell.CastSpell("Mind Spike",            ret => Buff.PlayerHasBuff("Surge of Darkness"), "Mind Spike"), // Free Mindspike
                                    Spell.CastSpell("Mind Blast",            ret => !Me.IsMoving, "Mind Blast"),
-                                   Buff.CastDebuff("Vampiric Touch",        ret => Me.CurrentTarget != null && Unit.TimeToDeath(Me.CurrentTarget) > 10, "Vampiric Touch"),
+                                   //Buff.CastDebuff("Vampiric Touch",        ret => Me.CurrentTarget != null && Unit.TimeToDeath(Me.CurrentTarget) > 10, "Vampiric Touch"),
+                                   Spell.PreventDoubleCast("Vampiric Touch", 2.5, ret => NeedVampiricTouch),
                                    Buff.CastDebuff("Shadow Word: Pain",     ret => Me.CurrentTarget != null && Unit.TimeToDeath(Me.CurrentTarget) > 15, "Shadow Word: Pain"),
                                    Spell.CastSpell("Divine Star",           ret => Me.CurrentTarget != null && !Me.IsMoving && Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 12) > 4 && !BossList.IgnoreAoE.Contains(Unit.CurrentTargetEntry), "Divine Star"), // New patch 5.0.4 - could be a mana drainer --wulf
                                    Spell.ChannelSpell("Mind Sear",          ret => Me.CurrentTarget != null && !Me.IsMoving && Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 12) > 4 && !BossList.IgnoreAoE.Contains(Unit.CurrentTargetEntry) && Buff.PlayerHasActiveBuff("Empowered Shadow"), "Mind Sear [Leveling]"),
@@ -138,9 +139,10 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
                                new PrioritySelector(
                                    Spell.WaitForCast(),
                                    Buff.CastDebuff("Devouring Plague", ret => Me.GetCurrentPower(WoWPowerType.ShadowOrbs) > 2, "Devouring Plague"),
-                                   Spell.CastSpell("Mind Blast", ret => true, "Mind Blast"),
+                                   Spell.CastSpell("Mind Blast", ret => true, "Mind Blast"),                                   
                                    Buff.CastDebuff("Shadow Word: Pain", ret => true, "Shadow Word: Pain"),
-                                   Buff.CastDebuff("Vampiric Touch",          ret => !Me.IsMoving, "Vampiric Touch"), // Vampiric Touch <DND> ??
+                                   Spell.PreventDoubleCast("Vampiric Touch", 2.5, ret => NeedVampiricTouch),
+                                   //Buff.CastDebuff("Vampiric Touch",          ret => !Me.IsMoving, "Vampiric Touch"), // Vampiric Touch <DND> ??
                                    Spell.CastSpell("Shadow Word: Death",      ret => Me.CurrentTarget != null && (TalentManager.HasGlyph("Shadow Word: Death") ? Me.CurrentTarget.HealthPercent <= 100 : Me.CurrentTarget.HealthPercent <= 25), "Shadow Word: Death"),
                                    Spell.CastSpell("Mind Spike",              ret => Buff.PlayerHasActiveBuff("Surge of Darkness"), "Mind Spike"),
                                    Spell.CastSpell("Mindbender",              ret => Me.CurrentTarget != null && Unit.UseCooldowns(), "Mindbender"),
@@ -294,6 +296,35 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
                 )));
             }
         }
+
+        private static readonly double Clientlag = StyxWoW.WoWClient.Latency * 2 / 1000.0;
+
+        private static double Traveltime(double travelSpeed)
+        {
+            {
+                if (travelSpeed < 1) return 0;
+
+                if (Me.CurrentTarget != null && Me.CurrentTarget.Distance < 1) return 0;
+
+                if (Me.CurrentTarget != null)
+                {
+                    double t = Me.CurrentTarget.Distance / travelSpeed;
+                    CLULogger.DiagnosticLog("Travel time: {0}", t);
+                    return t;
+                }
+
+                return 0;
+            }
+        }
+
+        private static double DoTRefreshTotalSeconds(double buffer, double traveltime, double casttime)
+        {
+            {
+                return buffer + traveltime + casttime + Clientlag;
+            }
+        }
+
+        private static bool NeedVampiricTouch { get { return !Me.IsMoving && Me.CurrentTarget != null && (!Me.CurrentTarget.HasMyAura("Vampiric Touch") || (Me.CurrentTarget.HasMyAura("Vampiric Touch") && Buff.GetAuraDoubleTimeLeft(Me.CurrentTarget,"Vampiric Touch",true) < DoTRefreshTotalSeconds(2.5, Traveltime(0), Spell.GetSpellCastTime("Vampiric Touch")))); } }
 
         public override Composite PVERotation
         {
