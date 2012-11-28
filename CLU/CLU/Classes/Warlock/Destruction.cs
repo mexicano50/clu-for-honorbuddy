@@ -118,10 +118,10 @@ namespace CLU.Classes.Warlock
                             Spell.CastSelfSpell("Twilight Warden", ret => Me.CurrentTarget != null && Me.CurrentTarget.IsCasting && Unit.UseCooldowns() && Me.HealthPercent < 80, "Twilight Warden (Protect me from magical damage)"))),
                     Buff.CastDebuff("Curse of the Elements",       ret => Me.CurrentTarget != null && Unit.UseCooldowns() && Me.CurrentTarget.HealthPercent > 70 && !Buff.UnitHasMagicVulnerabilityDeBuffs(Me.CurrentTarget), "Curse of the Elements"),
                     //AOE - Start
-                    Spell.CastSpell("Fire and Brimstone",ret=>Me.CurrentTarget != null && Unit.NearbyAttackableUnits(Me.CurrentTarget.Location, 15).Count() > 1,"Fire and Brimstone"),
-                    Spell.PreventDoubleCast("Rain of Fire",0.5,ret=> Me.CurrentTarget!=null && !Me.CurrentTarget.HasMyAura("Rain of Fire")),
+                    Spell.CastSpell("Fire and Brimstone",ret=>Me.CurrentTarget != null && Unit.NearbyAttackableUnits(Me.CurrentTarget.Location, 15).Count() >=2,"Fire and Brimstone"),
+                    Spell.PreventDoubleCast("Rain of Fire", 0.5, ret => Me.CurrentTarget != null && !Me.CurrentTarget.HasMyAura("Rain of Fire") && Unit.NearbyAttackableUnits(Me.CurrentTarget.Location, 15).Count() >= 2),
                     //AOE - End
-                    Spell.PreventDoubleCast("Havoc",0.5,on=>Unit.BestBaneOfHavocTarget,ret=> CLUSettings.Instance.Warlock.ApplyBaneOfHavoc && Unit.BestBaneOfHavocTarget!=null && !Unit.BestBaneOfHavocTarget.GetAllAuras().Any(x=>x.Name=="Havoc") && Unit.EnemyRangedUnits.Where(t=>t!=Me.CurrentTarget && t.GetAllAuras().Any(a=>a.Name=="Havoc")).Count()==0),
+                    Spell.PreventDoubleCast("Havoc", 0.5, on => Unit.BestBaneOfHavocTarget, ret => CLUSettings.Instance.Warlock.ApplyBaneOfHavoc && Unit.BestBaneOfHavocTarget != null && Unit.BestBaneOfHavocTarget != Me.CurrentTarget && !Unit.BestBaneOfHavocTarget.GetAllAuras().Any(x => x.Name == "Havoc") && Unit.EnemyRangedUnits.Where(t => t != Me.CurrentTarget && t.GetAllAuras().Any(a => a.Name == "Havoc")).Count() == 0),
                     Spell.PreventDoubleCast("Corruption",0.5,ret => Me.CurrentTarget != null && !Me.CurrentTarget.HasMyAura("Immolate")),
                     Spell.CastSpell("Conflagrate", ret => Me.CurrentTarget != null && Me.CurrentTarget.HasMyAura("Immolate"), "Conflagrate"),
                     new Decorator(ret => CLUSettings.Instance.EnableSelfHealing && Me.CurrentHealth <= 70, Common.WarlockTierOneTalents),
