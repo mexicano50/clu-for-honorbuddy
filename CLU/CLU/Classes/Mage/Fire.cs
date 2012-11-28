@@ -204,17 +204,10 @@ namespace CLU.Classes.Mage
                         //Spell.ChannelSelfSpell("Evocation", ret => Unit.UseCooldowns() && TalentManager.HasTalent(16) && !Me.HasAura("Invoker's Energy") && !Me.HasAura("Pyroblast!"), "Evocation"),
                         Spell.PreventDoubleChannel("Evocation", 0.5, true, On=>Me, ret => Unit.UseCooldowns() && TalentManager.HasTalent(16) && !Me.HasAura("Invoker's Energy") && !Me.HasAura("Pyroblast!")),
                         Spell.PreventDoubleCast("Presence of Mind", 0.5,on => Me, ret => Unit.UseCooldowns() && Me.HasAura("Pyroblast!") && Spell.CanCast("Alter Time")),
-                        Spell.PreventDoubleCast("Alter Time", 0.5, on => Me, ret => Me.HasAura("Invoker's Energy") && Me.HasAura("Pyroblast!") && Me.HasAura("Presence of Mind") && !Me.HasAura("Alter Time")),
-                        Spell.PreventDoubleCast("Alter Time", 0.5, on => Me, ret => Me.HasAura("Alter Time") && !Me.HasAura("Presence of Mind") && !Me.HasAura("Pyroblast!")),
-                        //Spell.CastSelfSpell("Presence of Mind", ret => Unit.UseCooldowns() && Me.HasAura("Pyroblast!") && Spell.CanCast("Alter Time"), "Presence of Mind"),
-                        //Spell.CastSelfSpell("Alter Time", ret => Me.HasAura("Invoker's Energy") && Me.HasAura("Pyroblast!") && Me.HasAura("Presence of Mind") && !Me.HasAura("Alter Time"), "Alter Time"),
-                        //Spell.CastSelfSpell("Alter Time", ret => Me.HasAura("Alter Time") && !Me.HasAura("Presence of Mind") && !Me.HasAura("Pyroblast!"), "Alter Time"),
+                        Spell.PreventDoubleCast("Alter Time", 0.5, on => Me, ret => (Me.HasAura("Invoker's Energy") && Me.HasAura("Pyroblast!") && Me.HasAura("Presence of Mind") && !Me.HasAura("Alter Time")) || (!Me.HasAura("Presence of Mind") && !Me.HasAura("Pyroblast!"))),
                         Item.UseBagItem("Mana Gem", ret => Me.CurrentTarget != null && Me.ManaPercent < 90, "Mana Gem"),
                         Item.UseBagItem("Brilliant Mana Gem", ret => Me.CurrentTarget != null && Me.ManaPercent < 90, "Brilliant Mana Gem"),
-                        //Spell.CastSelfSpell("Mirror Image", ret => true, "Mirror Image"),
-                        //Spell.CastSelfSpell("Arcane Power", ret => Me.CurrentTarget != null, "Arcane Power"))),
-                        Spell.PreventDoubleCast("Mirror Image", 0.5, on => Me, ret => true),
-                        Spell.PreventDoubleCast("Arcane Power", 0.5, on => Me, ret => Me.CurrentTarget != null))),
+                        Spell.PreventDoubleCast("Mirror Image", 0.5, on => Me, ret => true))),
                  Spell.CastSpell(759, ret => Spell.CanCast("Conjure Mana Gem") && Buff.PlayerHasBuff("Presence of Mind") && !Item.HaveManaGem() && Me.Level > 50, "Conjure Mana Gem"),
                 // Rune of Power
                 Spell.CastOnUnitLocation("Rune of Power", unit => Me, ret => !Buff.PlayerHasBuff("Rune of Power") && TalentManager.HasTalent(17), "Rune of Power"),
@@ -226,21 +219,15 @@ namespace CLU.Classes.Mage
                         )),
                 new Decorator(ret=> Me.GotTarget && Me.CurrentTarget!=null && Me.CurrentTarget.IsAlive && Me.CurrentTarget.Attackable,
                     new PrioritySelector(
-                        Spell.CastSpell("Combustion", ret => CLUSettings.Instance.Mage.EnableCombustion && Buff.TargetHasDebuff("Ignite") && Buff.TargetHasDebuff("Pyroblast") && Unit.UseCooldowns(), "Combustion"),
+                        Spell.CastSpell("Combustion", ret => CLUSettings.Instance.Mage.EnableCombustion && Buff.TargetHasDebuff("Ignite") && Unit.UseCooldowns(), "Combustion"),
+                        /* Remove start - this is experimental und SHOULDN'T work*/
+                        Spell.CastSpell("Living Bomb", ret => !Me.CurrentTarget.HasAura("Living Bomb") || Me.CurrentTarget.HasAura("Living Bomb") && Buff.GetAuraDoubleTimeLeft(Me.CurrentTarget, "Living Bomb", true) <= 1, "Living Bomb"),
+                        Spell.CastSpell("Nether Tempest", ret => !Me.CurrentTarget.HasAura("Nether Tempest") || Me.CurrentTarget.HasAura("Nether Tempest") && Buff.GetAuraDoubleTimeLeft(Me.CurrentTarget, "Nether Tempest", true) <= 1, "Nether Tempest"),
+                        Spell.CastSpell("Frost Bomb", ret => !Me.CurrentTarget.HasAura("Frost Bomb"), "Frost Bomb"),
+                        /* Remove end */
                         Spell.CastSpell("Pyroblast", ret => Me.HasAura("Pyroblast!") || Me.HasAura("Presence of Mind"),"Pyroblast"),
                         Spell.PreventDoubleCast("Inferno Blast", 0.5, ret => true),
-                        //Spell.CastSpell("Inferno Blast", ret=>true,"Inferno Blast"),
-                        /* Remove start - this is experimental und SHOULDN'T work*/
-                        Spell.PreventDoubleCast("Living Bomb",0.5,ret=>!Me.CurrentTarget.HasAura("Living Bomb") || Me.CurrentTarget.HasAura("Living Bomb") && Buff.GetAuraDoubleTimeLeft(Me.CurrentTarget,"Living Bomb", true) <= 1),
-                        Spell.PreventDoubleCast("Nether Tempest",0.5,ret=>!Me.CurrentTarget.HasAura("Nether Tempest") || Me.CurrentTarget.HasAura("Nether Tempest") && Buff.GetAuraDoubleTimeLeft(Me.CurrentTarget, "Nether Tempest", true) <= 1),
-                        Spell.PreventDoubleCast("Frost Bomb",0.5,ret=>!Me.CurrentTarget.HasAura("Frost Bomb")),
-                        //Spell.CastSpell("Living Bomb",ret=> !Me.CurrentTarget.HasAura("Living Bomb") || Me.CurrentTarget.HasAura("Living Bomb") && Buff.GetAuraDoubleTimeLeft(Me.CurrentTarget,"Living Bomb", true) <= 1,"Living Bomb"),
-                        //Spell.CastSpell("Nether Tempest", ret => !Me.CurrentTarget.HasAura("Nether Tempest") || Me.CurrentTarget.HasAura("Nether Tempest") && Buff.GetAuraDoubleTimeLeft(Me.CurrentTarget, "Nether Tempest", true) <= 1, "Nether Tempest"),
-                        //Spell.CastSpell("Frost Bomb", ret => !Me.CurrentTarget.HasAura("Frost Bomb"), "Frost Bomb"),
-                        /* Remove end */
-                        Spell.PreventDoubleCast("Mage Bomb",0.5,ret=>!Me.CurrentTarget.HasAnyAura(MageBomb) || (Me.CurrentTarget.HasAnyAura(MageBomb) && Buff.GetAuraDoubleTimeLeft(Me.CurrentTarget, Magebombtalent, true) <= 1)),
-                        //Spell.CastSpell("Mage Bomb", ret => !Me.CurrentTarget.HasAnyAura(MageBomb) || (Me.CurrentTarget.HasAnyAura(MageBomb) && Buff.GetAuraDoubleTimeLeft(Me.CurrentTarget, Magebombtalent, true) <= 1), "Mage Bomb"),
-                        //Spell.CastSpell("Fireball", ret => Buff.GetAuraDoubleTimeLeft(Me.CurrentTarget, Magebombtalent, true)>2,"Fireball")
+                        Spell.CastSpell("Mage Bomb", ret => !Me.CurrentTarget.HasAnyAura(MageBomb) || (Me.CurrentTarget.HasAnyAura(MageBomb) && Buff.GetAuraDoubleTimeLeft(Me.CurrentTarget, Magebombtalent, true) <= 1), "Mage Bomb"),
                         Spell.PreventDoubleCast("Fireball", 0.5, ret => Buff.GetAuraDoubleTimeLeft(Me.CurrentTarget, Magebombtalent, true)>2)
                         ))
                 );

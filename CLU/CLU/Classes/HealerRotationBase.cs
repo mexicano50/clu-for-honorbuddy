@@ -151,7 +151,7 @@ namespace CLU.Classes
         {
             get
             {
-                return TalentManager.HasTalent(5) && TalentManager.HasGlyph("Divine Accuracy") && TalentManager.HasGlyph("Smite");
+                return true;
             }
         }
 

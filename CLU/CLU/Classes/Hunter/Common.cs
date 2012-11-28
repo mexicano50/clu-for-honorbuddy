@@ -48,21 +48,9 @@ namespace CLU.Classes.Hunter
         public static Composite HandleAspectSwitching(int time)
         {
             return new PrioritySelector(
-                    new Decorator( ret => Me.IsMoving && CLUSettings.Instance.Hunter.HandleAspectSwitching,
-                        new Sequence(
-                            // Waiting for a bit just incase we are only moving outa the fire!
-                            new WaitContinue(time, ret => false, new ActionAlwaysSucceed()), // Hmm..check this...-- wulf
-                            Buff.CastBuff("Aspect of the Fox", ret => Me.IsMoving, "[Aspect] of the Fox - Moving"),
-                            new PrioritySelector(
-                                Buff.CastBuff("Aspect of the Hawk", ret => !Me.IsMoving && !TalentManager.HasTalent(8), "[Aspect] of the Hawk"),
-                                Buff.CastBuff("Aspect of the Hawk", "Aspect of the Iron Hawk", ret => !Me.IsMoving && TalentManager.HasTalent(8), "Aspect of the Iron Hawk")
-                                )
-                                )),
-                    new Decorator( ret => !Me.IsMoving && CLUSettings.Instance.Hunter.HandleAspectSwitching,
-                        new PrioritySelector(
-                                Buff.CastBuff("Aspect of the Hawk", ret => !Me.IsMoving && !TalentManager.HasTalent(8), "[Aspect] of the Hawk"),
-                                Buff.CastBuff("Aspect of the Hawk", "Aspect of the Iron Hawk", ret => !Me.IsMoving && TalentManager.HasTalent(8), "Aspect of the Iron Hawk")
-                                )));
+                    new Decorator( ret => CLUSettings.Instance.Hunter.HandleAspectSwitching,
+                        Buff.CastBuff("Aspect of the Hawk", !TalentManager.HasTalent(8) ? "Aspect of the Hawk" : "Aspect of the Iron Hawk", ret => TalentManager.HasTalent(8), "Aspect of the Iron Hawk")
+                        ));
         }
 
         /// <summary>

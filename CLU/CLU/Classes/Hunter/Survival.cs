@@ -65,7 +65,7 @@ namespace CLU.Classes.Hunter
                     @"
 ----------------------------------------------------------------------
 Survival:
-[*] Aspect of the Fox/Aspect of the Hawk/Iron Hawk Switching while moving.
+[*] Aspect of the Hawk/Iron Hawk Switching while moving.
 [*] Misdirection on best target (tank or pet or focus) when movement enabled.
 [*] AutomaticCooldowns now works with Boss's or Mob's (See: General Setting)
 [*] Tranquilizing Shot on Enrage.
@@ -189,7 +189,6 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
                         //irmens_bite_potion,if=buff.bloodlust.react|target.time_to_die<=60
                         Racials.UseRacials(),
                         Buff.CastBuff("Aspect of the Hawk",         ret => !Me.IsMoving && !Buff.PlayerHasBuff("Aspect of the Hawk"), "Aspect of the Hawk"),
-                        Buff.CastBuff("Aspect of the Fox",          ret => Me.IsMoving && !Buff.PlayerHasBuff("Aspect of the Fox"), "Aspect of the Fox"),
                         Spell.CastSpell("Glaive Toss", ret => true, "Glaive Toss"),
                         Spell.CastSpell("Powershot", ret => true, "Powershot"),
                         Spell.CastSpell("Barrage", ret => true, "Barage"),
