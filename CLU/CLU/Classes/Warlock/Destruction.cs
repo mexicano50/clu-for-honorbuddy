@@ -117,7 +117,8 @@ namespace CLU.Classes.Warlock
                             Spell.CastSpell("Summon Doomguard", ret => !WoWSpell.FromId(18540).Cooldown && Me.CurrentTarget != null && Unit.UseCooldowns(), "Summon Doomguard"),
                             Spell.CastSelfSpell("Unending Resolve", ret => Me.CurrentTarget != null && Unit.UseCooldowns() && Me.HealthPercent < 40, "Unending Resolve (Save my life)"),
                             Spell.CastSelfSpell("Twilight Warden", ret => Me.CurrentTarget != null && Me.CurrentTarget.IsCasting && Unit.UseCooldowns() && Me.HealthPercent < 80, "Twilight Warden (Protect me from magical damage)"))),
-                    Buff.CastDebuff("Curse of the Elements",       ret => Me.CurrentTarget != null && Me.CurrentTarget.HealthPercent > 70 && !Buff.UnitHasMagicVulnerabilityDeBuffs(Me.CurrentTarget), "Curse of the Elements"),
+                    Spell.PreventDoubleCast("Curse of the Elements", 1, ret => Me.CurrentTarget != null && Me.CurrentTarget.HealthPercent > 70 && !Me.CurrentTarget.HasAura("Curse of the Elements")),
+                    //Buff.CastDebuff("Curse of the Elements",       ret => Me.CurrentTarget != null && Me.CurrentTarget.HealthPercent > 70 && !Buff.UnitHasMagicVulnerabilityDeBuffs(Me.CurrentTarget), "Curse of the Elements"),
                     //AOE - Start
                     Spell.CastSpell("Fire and Brimstone",ret=>Me.CurrentTarget != null && Unit.NearbyAttackableUnits(Me.CurrentTarget.Location, 15).Count() >=2,"Fire and Brimstone"),                    
                     Spell.CastAreaSpell("Rain of Fire", 8, true, 2, 0.0, 8, ret => Me.CurrentTarget != null && !Me.CurrentTarget.HasMyAura("Rain of Fire") && Unit.NearbyAttackableUnits(Me.CurrentTarget.Location, 15).Count() >= 2 && !BossList.IgnoreAoE.Contains(Unit.CurrentTargetEntry), "Rain of Fire"),
