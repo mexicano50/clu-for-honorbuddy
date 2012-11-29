@@ -37,7 +37,9 @@ namespace CLU.Base
         /* putting all the spell logic here */
 
         internal delegate T Selection<out T>(object context);
+
         public static bool IsChanneling { get { return StyxWoW.Me.ChanneledCastingSpellId != 0 && StyxWoW.Me.IsChanneling; } }
+
         public static string LastspellCast;
 
         /// <summary>
@@ -123,7 +125,7 @@ namespace CLU.Base
             }
         }
 
- #region THIS SHIT SHOULDNT BE HERE -- deleting after testing.
+        #region THIS SHIT SHOULDNT BE HERE -- deleting after testing.
 
         /// <summary>
         /// Not sure if this is the one you need for DK's but it works for druids cat form
@@ -138,7 +140,7 @@ namespace CLU.Base
                 }
                 catch
                 {
-                  //  Logger.FailLog(" Lua Failed in PlayerEnergy");
+                    //  Logger.FailLog(" Lua Failed in PlayerEnergy");
                     return 0;
                 }
             }
@@ -157,12 +159,11 @@ namespace CLU.Base
                 }
                 catch
                 {
-                //    Logger.FailLog(" Lua Failed in UnitPower");
+                    //    Logger.FailLog(" Lua Failed in UnitPower");
                     return 0;
                 }
             }
         }
-
 
         /// <summary>
         /// Returns information about the player's mana/energy/etc regeneration rate
@@ -177,7 +178,7 @@ namespace CLU.Base
                 }
                 catch
                 {
-                  //  Logger.FailLog(" Lua Failed in EnergyRegen");
+                    //  Logger.FailLog(" Lua Failed in EnergyRegen");
                     return 0;
                 }
             }
@@ -196,14 +197,13 @@ namespace CLU.Base
                 }
                 catch
                 {
-                  //  Logger.FailLog(" Calculation Failed in TimetoEnergyCap");
+                    //  Logger.FailLog(" Calculation Failed in TimetoEnergyCap");
                     return 999999;
                 }
             }
         }
 
-        #endregion
-
+        #endregion THIS SHIT SHOULDNT BE HERE -- deleting after testing.
 
         /// <summary>Returns the current casttime of the spell.</summary>
         /// <param name="name">the name of the spell to check for</param>
@@ -308,6 +308,7 @@ namespace CLU.Base
 
             return 99999.9;
         }
+
         /// <summary>
         ///  Returns the current Melee range for the player Unit.DistanceToTargetBoundingBox(target)
         /// </summary>
@@ -361,22 +362,24 @@ namespace CLU.Base
 
         #region Double Cast Shit
 
-        struct DoubleCastSpell
+        private struct DoubleCastSpell
         {
             private string DoubleCastSpellName { get; set; }
+
             public double DoubleCastExpiryTime { get; set; }
+
             public DateTime DoubleCastCurrentTime { get; set; }
+
             public DoubleCastSpell(string spellName, double expiryTime, DateTime currentTime)
                 : this()
             {
-
                 DoubleCastSpellName = spellName;
                 DoubleCastExpiryTime = expiryTime;
                 DoubleCastCurrentTime = currentTime;
             }
         }
 
-        static readonly Dictionary<string, DoubleCastSpell> DoubleCastEntries = new Dictionary<string, DoubleCastSpell>();
+        private static readonly Dictionary<string, DoubleCastSpell> DoubleCastEntries = new Dictionary<string, DoubleCastSpell>();
 
         private static void UpdateDoubleCastEntries(string spellName, double expiryTime)
         {
@@ -388,7 +391,7 @@ namespace CLU.Base
         {
             foreach (var spell in DoubleCastEntries)
             {
-             CLULogger.DiagnosticLog(spell.Key + " time: " + spell.Value.DoubleCastCurrentTime);
+                CLULogger.DiagnosticLog(spell.Key + " time: " + spell.Value.DoubleCastCurrentTime);
             }
         }
 
@@ -414,7 +417,6 @@ namespace CLU.Base
                            {
                                if (SpellManager.Cast(spell)) UpdateDoubleCastEntries(spell + Me.CurrentTarget.Guid, expiryTime);
                            }
-
                        }));
         }
 
@@ -430,7 +432,6 @@ namespace CLU.Base
                            {
                                if (SpellManager.Cast(spell)) UpdateDoubleCastEntries(spell.ToString(CultureInfo.InvariantCulture) + Me.CurrentTarget.Guid, expiryTime);
                            }
-
                        }));
         }
 
@@ -445,7 +446,6 @@ namespace CLU.Base
                            {
                                if (SpellManager.Cast(spell)) UpdateDoubleCastEntries(spell + Me.CurrentTarget.Guid, expiryTime);
                            }
-
                        }));
         }
 
@@ -484,13 +484,12 @@ namespace CLU.Base
                  {
                      if (Me.CurrentTarget != null)
                      {
-
                          if (SpellManager.Cast(spell)) UpdateDoubleCastEntries(spell + Me.CurrentTarget.Guid, expiryTime);
                      }
                  }));
         }
 
-        #endregion
+        #endregion Double Cast Shit
 
         #region CastSpell - by ID
 
@@ -572,27 +571,6 @@ namespace CLU.Base
             return CastSpell(name, ret => Me.CurrentTarget, cond, checkCanCast, label);
         }
 
-        /// <summary>Casts a spell by name on a target</summary>
-        /// <param name="spell">the spell to cast in engrish</param>
-        /// <param name="cond">The conditions that must be true</param>
-        /// <param name="label">A descriptive label for the clients GUI logging output</param>
-        /// <returns>The cast spell.</returns>
-        public static Composite CastSpell(WoWSpell spell, CanRunDecoratorDelegate cond, string label)
-        {
-            return CastSpell(spell, ret => Me.CurrentTarget, cond, label);
-        }
-
-        /// <summary>Casts a spell by name on a target</summary>
-        /// <param name="spell">the spell to cast in engrish</param>
-        /// <param name="cond">The conditions that must be true</param>
-        /// <param name="checkCanCast">Disable check for CanCast</param>
-        /// <param name="label">A descriptive label for the clients GUI logging output</param>
-        /// <returns>The cast spell.</returns>
-        public static Composite CastSpell(WoWSpell spell, CanRunDecoratorDelegate cond, bool checkCanCast, string label)
-        {
-            return CastSpell(spell, ret => Me.CurrentTarget, cond, checkCanCast, label);
-        }
-
         /// <summary>Casts a spell on a specified unit</summary>
         /// <param name="name">the name of the spell to cast</param>
         /// <param name="onUnit">The Unit.</param>
@@ -616,52 +594,31 @@ namespace CLU.Base
             return new Decorator(
                 delegate(object a)
                 {
-                    if (!cond(a))
-                        return false;
+                    try
+                    {
+                        if (!cond(a))
+                            return false;
 
-                    if (!CanCast(name, onUnit(a), (onUnit(a).IsPlayer || !BossList.IgnoreRangeCheck.Contains(onUnit(a).Entry)), checkmovement)) return false; //This is checking spell, unit, Range, Movement
-                    return onUnit(a) != null;
+                        if (!CanCast(name, onUnit(a), (onUnit(a).IsPlayer || !BossList.IgnoreRangeCheck.Contains(onUnit(a).Entry)), checkmovement)) return false; //This is checking spell, unit, Range, Movement
+                        return onUnit(a) != null;
+                    }
+                    catch (Exception e) 
+                    {
+                        CLULogger.DiagnosticLog("Exception thrown in CastSpell: {0}", e.ToString());
+                        CLULogger.DiagnosticLog("Details CastSpell:");
+                        CLULogger.DiagnosticLog("Spellname: {0}", name);
+                        CLULogger.DiagnosticLog("onUnit=null: {0}", onUnit == null);
+                        CLULogger.DiagnosticLog("cond: {0}", cond.ToString());
+                        CLULogger.DiagnosticLog("checkmovement: {0}", checkmovement);
+                        CLULogger.DiagnosticLog("label: {0}", label);
+                        return false;
+                    }
+
                 },
             new Sequence(
                 new Action(a => CLULogger.Log(" [Casting] {0} on {1}", label, CLULogger.SafeName(onUnit(a)))),
                 new Action(a => SpellManager.Cast(name, onUnit(a))),
                 new Action(a => LastspellCast = name)));
-        }
-
-        /// <summary>Casts a spell on a specified unit</summary>
-        /// <param name="spell">the name of the spell to cast</param>
-        /// <param name="onUnit">The Unit.</param>
-        /// <param name="cond">The conditions that must be true</param>
-        /// <param name="label">A descriptive label for the clients GUI logging output</param>
-        /// <returns>The cast spell on the unit</returns>
-        public static Composite CastSpell(WoWSpell spell, CLU.UnitSelection onUnit, CanRunDecoratorDelegate cond, string label)
-        {
-            return CastSpell(spell, ret => Me.CurrentTarget, cond, true, label);
-        }
-
-        /// <summary>Casts a spell on a specified unit</summary>
-        /// <param name="spell">the WoWSpell to be casted</param>
-        /// <param name="onUnit">The Unit.</param>
-        /// <param name="cond">The conditions that must be true</param>
-        /// <param name="checkmovement"> check movement </param>
-        /// <param name="label">A descriptive label for the clients GUI logging output</param>
-        /// <returns>The cast spell on the unit</returns>
-        public static Composite CastSpell(WoWSpell spell, CLU.UnitSelection onUnit, CanRunDecoratorDelegate cond, bool checkmovement, string label)
-        {
-            return new Decorator(
-                delegate(object a)
-                {
-                    if (!cond(a))
-                        return false;
-
-                    if (!Spell.CanCast(spell.ToString(), onUnit(a), onUnit(a).IsPlayer ? true : !BossList.IgnoreRangeCheck.Contains(onUnit(a).Entry), checkmovement)) return false; //This is checking spell, unit, Range, Movement
-
-                    return onUnit(a) != null;
-                },
-            new Sequence(
-                new Action(a => CLULogger.Log(" [Casting] {0} on {1}", label, CLULogger.SafeName(onUnit(a)))),
-                new Action(a => SpellManager.Cast(spell, onUnit(a))),
-                new Action(a => LastspellCast = spell.Name)));
         }
 
         /// <summary>Casts self spells eg: 'Fient', 'Shield Wall', 'Blood Tap', 'Rune Tap' </summary>
@@ -921,7 +878,7 @@ namespace CLU.Base
                         return false;
                     return true;
                 },
-                CastSpell(name, onUnit,cond,true,label));
+                CastSpell(name, onUnit, cond, true, label));
         }
 
         /// <summary>Casts the interupt by name on your current target. Checks CanInterruptCurrentSpellCast.</summary>
@@ -977,7 +934,7 @@ namespace CLU.Base
                     new Decorator(
                         x => PlayerIsChanneling && Me.ChanneledCastingSpellId == spell.Id,
                         new Action(a => CLULogger.Log(" [Channeling] {0}", spell.Name))),
-                    CastSpell(spell, cond, label));
+                    CastSpell(spell.Name, cond, label));
         }
 
         /// <summary>Channel spell on player. Will not break channel and adds the name of spell to _knownChanneledSpells</summary>

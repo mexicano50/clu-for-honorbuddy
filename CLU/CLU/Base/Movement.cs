@@ -32,6 +32,7 @@ namespace CLU.Base
     public static class Movement
     {
         /* putting all the Movement logic here */
+
         public delegate WoWPoint LocationRetriever(object context);
 
         public delegate float DynamicRangeRetriever(object context);
@@ -53,6 +54,7 @@ namespace CLU.Base
         {
             get { return StyxWoW.Me; }
         }
+
         public static Composite CreateFaceTargetBehavior(float viewDegrees = 70f)
         {
             return CreateFaceTargetBehavior(ret => Me.CurrentTarget);
@@ -76,37 +78,19 @@ namespace CLU.Base
         {
             return CreateMoveToLosBehavior(ret => Me.CurrentTarget);
         }
+
         public static Composite CreateMoveToLosBehavior(CLU.UnitSelection toUnit)
         {
             return new Decorator(ret => CLUSettings.Instance.EnableMovement && toUnit != null && toUnit(ret) != null && toUnit(ret) != Me && !toUnit(ret).InLineOfSpellSight,
                 new Action(ret => Navigator.MoveTo(toUnit(ret).Location)));
         }
+
         /// <summary>
         /// Movement Behaviour
         /// </summary>
         public static Composite MovingFacingBehavior()
         {
             return MovingFacingBehavior(ret => Me.CurrentTarget);
-        }
-
-        public static Composite MoveToPull()
-        {
-            return MoveToPull(ret => Me.CurrentTarget);
-        }
-
-        private static Composite MoveToPull(CLU.UnitSelection onUnit)
-        {
-            return new Sequence(
-                CreateMoveToLosBehavior(),
-                // Move to Location
-                       new DecoratorContinue(ret => onUnit(ret) != null && onUnit(ret).Distance > CharacterSettings.Instance.PullDistance,
-                                             new Sequence(
-                                                 new Action(ret => CLULogger.MovementLog(" [CLU Movement] Target not in Pullrange. Moving closer.")),
-                                                 new Action(ret => Navigator.MoveTo(WoWMovement.CalculatePointFrom(onUnit(ret).Location, CharacterSettings.Instance.PullDistance))))),
-                       new DecoratorContinue(ret => onUnit(ret) != null && onUnit(ret).Distance < CharacterSettings.Instance.PullDistance,
-                                             new Sequence(
-                                                 new Action(ret => CLULogger.MovementLog(" [CLU Movement] Target in Pullrange. Movement Stopped.")),
-                                                 new Action(ret => WoWMovement.MoveStop()))));
         }
 
         private static Composite MovingFacingBehavior(CLU.UnitSelection onUnit)
@@ -271,7 +255,7 @@ namespace CLU.Base
                 ret => CLUSettings.Instance.EnableMovement && Me.IsMoving,
                 new Action(ret => Navigator.PlayerMover.MoveStop()));
         }
-        
+
         /// <summary>
         ///   Creates a move to melee range behavior. Will return RunStatus.Success if it has reached the location, or stopped in range. Best used at the end of a rotation.
         /// </summary>
@@ -312,14 +296,17 @@ namespace CLU.Base
             // or chase it down like mad. (PVP oriented behavior)
             return
                 new Decorator(
+
                 // Don't run if the movement is disabled.
                     ret => CLUSettings.Instance.EnableMovement,
                     new PrioritySelector(
                         new Decorator(
+
                 // Give it a little more than 1/2 a yard buffer to get it right. CTM is never 'exact' on where we land. So don't expect it to be.
                             ret => stopInRange && Me.Location.Distance(location(ret)) < range(ret),
                             new PrioritySelector(
                                 EnsureMovementStoppedBehavior(),
+
                 // In short; if we're not moving, just 'succeed' here, so we break the tree.
                                 new Action(ret => RunStatus.Success)
                                 )

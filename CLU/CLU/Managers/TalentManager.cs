@@ -43,12 +43,6 @@ namespace CLU.Managers
 
         private static HashSet<string> Glyphs { get; set; }
 
-        /*
-                public static int GetCount(int index)
-                {
-                    return Talents.FirstOrDefault(t => t.Index == index).Count;
-                }
-        */
 
         /// <summary>
         ///   Checks if we have a glyph or not
@@ -189,7 +183,6 @@ namespace CLU.Managers
         {
             public int Count;
             public int Index;
-            public string Name;
         }
     }
 }
