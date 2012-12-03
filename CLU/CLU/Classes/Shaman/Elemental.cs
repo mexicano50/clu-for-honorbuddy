@@ -125,25 +125,6 @@ namespace CLU.Classes.Shaman
                     //  Buff.CastBuff("Wind Shear",                         ret => Me.CurrentTarget != null && Me.CurrentTarget.ThreatInfo.RawPercent > 90, "Wind Shear (Threat)"),
                     // Totem management
                            Totems.CreateTotemsBehavior(),
-                    // AoE
-                           Spell.CastTotem("Magma Totem", ret => Unit.EnemyRangedUnits.Count(u => u.DistanceSqr <= 12 * 12) >= 3 && !Totems.Exist(WoWTotem.FireElemental), "Magma Totem"),
-                           Spell.CastAreaSpell("Chain Lightning", 15, false, 2, 0.0, 12.0, a => true, "Chain Lightning"),
-                           Spell.CastAreaSpell("Thunderstorm", 8, false, 6, 0.0, 0.0, a => true, "Thunderstorm"),
-                           Spell.CastAreaSpell("Earthquake", 8, false, 6, 0.0, 0.0, a => true, "Earthquake"),
-                           Item.RunMacroText("/Cast Lava Beam", ret => !Me.IsMoving && Me.CurrentTarget != null && Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 10) > 3 && Buff.PlayerHasActiveBuff("Ascendance"), "Pew Pew LaserBEEEAM"),
-
-                  //Default Rotation
-                           Spell.WaitForCast(),
-                           Spell.CastSpell("Unleash Elements", ret => TalentManager.HasTalent(16) && !Buff.PlayerHasActiveBuff("Ascendance"), "Unleash Elements"),
-                           Spell.CastSpell("Flame Shock", ret => !Buff.TargetHasDebuff("Flame Shock") || Buff.TargetDebuffTimeLeft("Flame Shock").Seconds < 3, "Flame Shock"),
-                           Spell.CastSpell("Lava Burst", ret => Buff.TargetDebuffTimeLeft("Flame Shock").TotalSeconds > 1.25 && (Buff.PlayerHasActiveBuff("Ascendance") || Spell.CanCast("Lava Burst")), "Lava Burst"),
-                           Spell.CastSpell("Elemental Blast",ret => TalentManager.HasTalent(18) && !Buff.PlayerHasActiveBuff("Ascendance"),"Elemental Blast"),
-                           Spell.CastSpell("Earth Shock", ret => Buff.PlayerCountBuff("Lightning Shield") == 7, "Earth Shock"),
-                           Spell.CastSpell("Earth Shock", ret => Buff.PlayerCountBuff("Lightning Shield") > 3 && Buff.TargetDebuffTimeLeft("Flame Shock").Seconds > 5 && Buff.TargetDebuffTimeLeft("Flame Shock").TotalSeconds < 5 + 2.50, "Earth Shock"),
-                           Spell.CastSpell("Lightning Bolt", ret => true, "Lightning Bolt"),
-                           Spell.CastSpell("Fire Elemental Totem", ret => Unit.UseCooldowns(), "Fire Elemental Totem"),
-
-
                   //Cooldowns
                            Buff.CastBuff("Ascendance", ret => CLUSettings.Instance.Shaman.AscendanceSelection == Ascendance.OnBoss && Unit.UseCooldowns(), "Ascendance"),
                            Buff.CastBuff("Ascendance", ret => CLUSettings.Instance.Shaman.AscendanceSelection == Ascendance.OnCooldown, "Ascendance"),
@@ -152,7 +133,24 @@ namespace CLU.Classes.Shaman
                            Spell.CastSpell("Stormlash Totem", ret => CLUSettings.Instance.Shaman.UseStormlashTotem != StormlashTotem.Never
                                         && ((CLUSettings.Instance.Shaman.UseStormlashTotem == StormlashTotem.OnHaste && Me.HasAnyAura(Me.IsHorde ? "Bloodlust" : "Heroism", "Timewarp", "Ancient Hysteria")
                                         || CLUSettings.Instance.Shaman.UseStormlashTotem == StormlashTotem.OnCooldown)
-                                        && !Totems.Exist(WoWTotemType.Air)), "Stormlash Totem")
+                                        && !Totems.Exist(WoWTotemType.Air)), "Stormlash Totem"),
+                  //Default Rotation
+                           Spell.WaitForCast(),
+                           Spell.CastSpell("Unleash Elements", ret => TalentManager.HasTalent(16) && !Buff.PlayerHasActiveBuff("Ascendance"), "Unleash Elements"),
+                           Spell.CastSpell("Flame Shock", ret => !Buff.TargetHasDebuff("Flame Shock") || Buff.TargetDebuffTimeLeft("Flame Shock").Seconds < 3, "Flame Shock"),
+                           Spell.CastSpell("Lava Burst", ret => Buff.TargetDebuffTimeLeft("Flame Shock").TotalSeconds > 1.25 && (Buff.PlayerHasActiveBuff("Ascendance") || Spell.CanCast("Lava Burst")), "Lava Burst"),
+                           Spell.CastSpell("Elemental Blast",ret => TalentManager.HasTalent(18) && !Buff.PlayerHasActiveBuff("Ascendance"),"Elemental Blast"),
+                           Spell.CastSpell("Earth Shock", ret => Buff.PlayerCountBuff("Lightning Shield") == 7, "Earth Shock"),
+                           Spell.CastSpell("Earth Shock", ret => Buff.PlayerCountBuff("Lightning Shield") > 3 && Buff.TargetDebuffTimeLeft("Flame Shock").Seconds > 5 && Buff.TargetDebuffTimeLeft("Flame Shock").TotalSeconds < 5 + 2.50, "Earth Shock"),
+                    // AoE
+                           Spell.CastTotem("Magma Totem", ret => Unit.EnemyRangedUnits.Count(u => u.DistanceSqr <= 12 * 12) >= 3 && !Totems.Exist(WoWTotem.FireElemental), "Magma Totem"),
+                           Spell.CastAreaSpell("Chain Lightning", 15, false, 2, 0.0, 12.0, a => true, "Chain Lightning"),
+                           Spell.CastAreaSpell("Thunderstorm", 8, false, 6, 0.0, 0.0, a => true, "Thunderstorm"),
+                           Spell.CastAreaSpell("Earthquake", 8, false, 6, 0.0, 0.0, a => true, "Earthquake"),
+                           Item.RunMacroText("/Cast Lava Beam", ret => !Me.IsMoving && Me.CurrentTarget != null && Unit.CountEnnemiesInRange(Me.CurrentTarget.Location, 10) > 3 && Buff.PlayerHasActiveBuff("Ascendance"), "Pew Pew LaserBEEEAM"),
+                    //Default Rotation
+                           Spell.CastSpell("Lightning Bolt", ret => true, "Lightning Bolt"),
+                           Spell.CastSpell("Fire Elemental Totem", ret => Unit.UseCooldowns(), "Fire Elemental Totem")
                        );
             }
         }

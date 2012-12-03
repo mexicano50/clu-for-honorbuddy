@@ -564,6 +564,175 @@
             Obsolete
             </summary>
         </member>
+        <member name="M:Styx.Pathing.Avoidance.Avoid.IsPointInAvoid(Tripper.Tools.Math.Vector3)">
+            <summary>Determines whether point is inside avoid.</summary>
+            <param name="point">The point.</param>
+            <returns><c>true</c> if point is inside avoid; otherwise, <c>false</c>.</returns>
+        </member>
+        <member name="M:Styx.Pathing.Avoidance.Avoid.UpdateLocation">
+            <summary>Updates the location. Used for optimization purposes. Apparently WoWObject.Location is a very expensive call </summary>
+        </member>
+        <member name="P:Styx.Pathing.Avoidance.Avoid.Radius">
+            <summary>Gets the radius.</summary>
+        </member>
+        <member name="P:Styx.Pathing.Avoidance.Avoid.LeashPoint">
+            <summary>Gets the leash point.</summary>
+        </member>
+        <member name="P:Styx.Pathing.Avoidance.Avoid.LeashRadius">
+            <summary>Gets the leash radius.</summary>
+        </member>
+        <member name="P:Styx.Pathing.Avoidance.Avoid.IsBlocking">
+            <summary>Gets a value indicating whether to ignore avoid if no avoid path is found.</summary>
+            <value>
+            	<c>true</c> if should not ignore avoid if no avoid path is found, <c>false</c> otherwisr.
+            </value>
+        </member>
+        <member name="P:Styx.Pathing.Avoidance.Avoid.Location">
+            <summary>Gets the location.</summary>
+        </member>
+        <member name="P:Styx.Pathing.Avoidance.Avoid.RadiusSqr">
+            <summary>Gets the radius squared.</summary>
+        </member>
+        <member name="P:Styx.Pathing.Avoidance.Avoid.LeashRadiusSqr">
+            <summary>Gets the leash radius squared.</summary>
+        </member>
+        <member name="P:Styx.Pathing.Avoidance.Avoid.IsValid">
+            <summary>Gets a value indicating whether this instance is valid.</summary>
+            <value><c>true</c> if this instance is valid; otherwise, <c>false</c>.</value>
+        </member>
+        <member name="T:Styx.Pathing.Avoidance.AvoidCluster">
+            <summary>Contains a group of overlaping avoids.</summary>
+        </member>
+        <member name="M:Styx.Pathing.Avoidance.Helpers.SetToNearestZ(Tripper.Tools.Math.Vector3)">
+            <summary>
+              Sets to nearest Z.
+            </summary>
+            <param name="point"> The point. </param>
+            <returns> </returns>
+        </member>
+        <member name="M:Styx.Pathing.Avoidance.Helpers.GetAvoidPath(Styx.WoWPoint)">
+            <summary>
+            Returns a path around avoids or null if none is needed
+            </summary>
+            <param name="destination"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Styx.Pathing.Avoidance.Helpers.GetAvoidsHitByTraceline(System.Collections.Generic.IEnumerable{Styx.Pathing.Avoidance.Avoid},Tripper.Tools.Math.Vector3,Tripper.Tools.Math.Vector3)">
+            <summary>
+              Returns a list of avoids from the list passed as a parameter that are hit by traceline in the ascending order by which they were hit 1st.
+            </summary>
+            <param name="start"> The start. </param>
+            <param name="end"> The end. </param>
+            <param name="avoids"> The avoids. </param>
+            <returns> </returns>
+        </member>
+        <member name="M:Styx.Pathing.Avoidance.Helpers.GetLineCircleIntersections(Tripper.Tools.Math.Vector3,System.Single,Tripper.Tools.Math.Vector3,Tripper.Tools.Math.Vector3,Tripper.Tools.Math.Vector3@,Tripper.Tools.Math.Vector3@)">
+            <summary>
+              returns the number of collisions of a line passing through a circle. Note: algorithm counts small lines inside circle as hits.
+            </summary>
+            <param name="circlePos"> The circle pos. </param>
+            <param name="radius"> The radius. </param>
+            <param name="start"> The start. </param>
+            <param name="end"> The end. </param>
+            <param name="enterPoint"> The line enter point. </param>
+            <param name="exitPoint"> The line exit point. </param>
+            <returns> </returns>
+        </member>
+        <member name="M:Styx.Pathing.Avoidance.AvoidInfo.#ctor(Styx.TreeSharp.CanRunDecoratorDelegate,System.Func{System.Single},System.Func{Styx.WoWPoint},System.Single,System.Boolean)">
+            <summary>Initializes a new instance of the <see cref="T:Styx.Pathing.Avoidance.AvoidInfo"/> class.</summary>
+            <param name="condition">The condition.</param>
+            <param name="objectSelector">The object selector.</param>
+            <param name="radiusSelector">The radius selector.</param>
+            <param name="leashPointSelector">The leash point selector.</param>
+            <param name="leashRadius">The leash radius.</param>
+            <param name="isBlocking">if set to <c>true</c> stay away if no avoid path is found.</param>
+        </member>
+        <member name="M:Styx.Pathing.Avoidance.AvoidInfo.CanRun(System.Object)">
+            <summary>Determines whether this instance can run.</summary>
+            <param name="ctx">The context. Can be null.</param>
+            <returns><c>true</c> if this instance can run; otherwise, <c>false</c>.</returns>
+        </member>
+        <member name="P:Styx.Pathing.Avoidance.AvoidInfo.Condition">
+            <summary>Gets the condition.</summary>
+        </member>
+        <member name="P:Styx.Pathing.Avoidance.AvoidInfo.RadiusSelector">
+            <summary>Gets the radius.</summary>
+        </member>
+        <member name="P:Styx.Pathing.Avoidance.AvoidInfo.LeashPointSelector">
+            <summary>Gets the leash point selector.</summary>
+        </member>
+        <member name="P:Styx.Pathing.Avoidance.AvoidInfo.LeashRadius">
+            <summary>Gets the leash radius.</summary>
+        </member>
+        <member name="P:Styx.Pathing.Avoidance.AvoidInfo.IsBlocking">
+            <summary>Gets a value indicating whether to ignore avoid if no avoid path is found.</summary>
+            <value>
+            	<c>true</c> if should not ignore avoid if no avoid path is found, <c>false</c> otherwisr.
+            </value>
+        </member>
+        <member name="P:Styx.Pathing.Avoidance.AvoidInfo.RadiusSqr">
+            <summary>Gets the radius squared.</summary>
+        </member>
+        <member name="M:Styx.Pathing.Avoidance.AvoidLocation.#ctor(Styx.Pathing.Avoidance.AvoidLocationInfo,System.Object)">
+            <summary>Initializes a new instance of the <see cref="T:Styx.Pathing.Avoidance.AvoidLocation"/> class.</summary>
+            <param name="avoidInfo">The avoid info.</param>
+            <param name="content"></param>
+        </member>
+        <member name="M:Styx.Pathing.Avoidance.AvoidLocation.UpdateLocation">
+            <summary>
+            Updates the location. Used for optimization purposes. Apparently WoWObject.Location is a very expensive call
+            </summary>
+        </member>
+        <member name="P:Styx.Pathing.Avoidance.AvoidLocation.Location">
+            <summary>Gets the location.</summary>
+        </member>
+        <member name="M:Styx.Pathing.Avoidance.AvoidLocationInfo.#ctor(Styx.TreeSharp.CanRunDecoratorDelegate,System.Func{System.Object,Styx.WoWPoint},System.Func{System.Single},System.Func{Styx.WoWPoint},System.Single,System.Func{System.Collections.Generic.IEnumerable{System.Object}},System.Boolean)">
+            <summary>
+              Initializes a new instance of the <see cref="T:Styx.Pathing.Avoidance.AvoidObjectInfo"/> class.
+            </summary>
+            <param name="condition"> The condition. </param>
+            <param name="locationSelector"> </param>
+            <param name="radiusSelector"> The radius selector. </param>
+            <param name="leashPointSelector"> The leash point selector. </param>
+            <param name="leashRadius"> The leash radius. </param>
+            <param name="collecionSelection">Optional collection of objects that are passed as args to LocationSelector </param>
+            <param name="isBlocking"> if set to <c>true</c> stay away if no avoid path is found. </param>
+        </member>
+        <member name="P:Styx.Pathing.Avoidance.AvoidLocationInfo.LocationSelector">
+            <summary>
+              Gets the location selector.
+            </summary>
+        </member>
+        <member name="M:Styx.Pathing.Avoidance.AvoidObject.#ctor(Styx.Pathing.Avoidance.AvoidObjectInfo,Styx.WoWInternals.WoWObjects.WoWObject)">
+            <summary>Initializes a new instance of the <see cref="T:Styx.Pathing.Avoidance.AvoidObject"/> class.</summary>
+            <param name="avoidInfo">The avoid info .</param>
+            <param name="obj">The WoWObject.</param>
+        </member>
+        <member name="P:Styx.Pathing.Avoidance.AvoidObject.Object">
+            <summary>Gets the object.</summary>
+        </member>
+        <member name="P:Styx.Pathing.Avoidance.AvoidObject.Location">
+            <summary>Gets the location.</summary>
+        </member>
+        <member name="P:Styx.Pathing.Avoidance.AvoidObject.IsValid">
+            <summary>Gets a value indicating whether this instance is valid.</summary>
+            <value><c>true</c> if this instance is valid; otherwise, <c>false</c>.</value>
+        </member>
+        <member name="M:Styx.Pathing.Avoidance.AvoidObjectInfo.#ctor(Styx.TreeSharp.CanRunDecoratorDelegate,System.Predicate{Styx.WoWInternals.WoWObjects.WoWObject},System.Func{System.Single},System.Func{Styx.WoWPoint},System.Single,System.Func{Styx.WoWInternals.WoWObjects.WoWObject,Styx.WoWPoint},System.Boolean)">
+            <summary>Initializes a new instance of the <see cref="T:Styx.Pathing.Avoidance.AvoidObjectInfo"/> class.</summary>
+            <param name="condition">The condition.</param>
+            <param name="objectSelector">The object selector.</param>
+            <param name="radiusSelector">The radius selector.</param>
+            <param name="leashPointSelector">The leash point selector.</param>
+            <param name="leashRadius">The leash radius.</param>
+            <param name="locationSelector">Allows you to customize the center locaton to avoid. Defaults to the object Location.</param>
+            <param name="isBlocking">if set to <c>true</c> stay away if no avoid path is found.</param>
+        </member>
+        <member name="P:Styx.Pathing.Avoidance.AvoidObjectInfo.ObjectSelector">
+            <summary>
+              Gets the object selector.
+            </summary>
+        </member>
         <member name="M:Styx.Pathing.FlightorNavigation.NavMesh.RemoveConnection(System.Int32,System.Int32)">
             <summary>
             Removes the connection from <paramref name="node1"/> to <paramref name="node2"/>.
