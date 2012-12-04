@@ -637,7 +637,7 @@ namespace CLU.Base
                         return false;
                     }
 
-                    return  ;
+                    return  true;
                 },
             new Sequence(
                 new Action(a => CLULogger.Log(" [Casting Debuff] {0} : (RefreshTime={1}) had {2} second(s) left : {0} cast time = {3}", label, DotDelta(name), TargetDebuffTimeLeft(name).TotalSeconds, Spell.CastTime(name))),
