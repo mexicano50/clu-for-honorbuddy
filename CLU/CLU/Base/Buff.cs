@@ -617,11 +617,19 @@ namespace CLU.Base
                     var lockstatus = true;
                     try
                     {
-                        lockstatus = DateTime.Now.Subtract(CombatLogEvents.Locks[name]).TotalSeconds > 0;
+                        if (CombatLogEvents.Locks.ContainsKey(name))
+                        {
+                            lockstatus = DateTime.Now.Subtract(CombatLogEvents.Locks[name]).TotalSeconds > 0; //Lock expired, everything is fine
+                        }
+                        else
+                        {
+                            return true; //does not exist, everything is fine
+                        }
                     }
                     catch (Exception ex)
                     {
                         CLULogger.Log("Exception thrown in Buff.CastMyDebuff: {0}", ex);
+                        CLULogger.Log("Exception related to Entry (not existent): {0}", name);
                     }
 
                     if (!Spell.CanCast(name, Me.CurrentTarget))
@@ -629,7 +637,7 @@ namespace CLU.Base
                         return false;
                     }
 
-                    return lockstatus;
+                    return  ;
                 },
             new Sequence(
                 new Action(a => CLULogger.Log(" [Casting Debuff] {0} : (RefreshTime={1}) had {2} second(s) left : {0} cast time = {3}", label, DotDelta(name), TargetDebuffTimeLeft(name).TotalSeconds, Spell.CastTime(name))),
