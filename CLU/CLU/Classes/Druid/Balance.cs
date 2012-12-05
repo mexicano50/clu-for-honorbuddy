@@ -281,6 +281,8 @@ new Decorator(ret => Buff.PlayerHasBuff("Boomkin Form"),
                     Movement.CreateMoveToLosBehavior(),
                     Movement.CreateFaceTargetBehavior(),
                     Spell.WaitForCast(true),
+		    Spell.CastSpell("Moonfire", ret => Buff.PlayerHasBuff("Eclipse (Lunar)"), "Moonfire"),
+		    Spell.CastSpell("Sunfire", ret => true, "Sunfire")
                     this.SingleRotation,
                     Movement.CreateMoveToTargetBehavior(true, 39f)
                     );
