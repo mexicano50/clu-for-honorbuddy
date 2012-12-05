@@ -110,7 +110,7 @@ NOTE: PvP uses single target rotation - It's not designed for PvP use until Dagr
                            Spell.CastSpell("Word of Glory",               ret=> Me,   ret => Me.HealthPercent < CLUSettings.Instance.Paladin.WordofGloryPercent && (Me.CurrentHolyPower > 1 || Buff.PlayerHasBuff("Divine Purpose")), "Word of Glory"),
                             // AOE
                            Spell.CastAreaSpell("Hammer of the Righteous", 8, false, CLUSettings.Instance.Paladin.ProtectionHoRCount, 0.0, 0.0, ret => true, "Hammer of the Righteous"),
-                           Spell.CastSpell("Holy Prism", ret => Me.HealthPercent < CLUSettings.Instance.Paladin.HolyPrismPercent && Me.CurrentTarget != null && Unit.EnemyMeleeUnits.Count() >= CLUSettings.Instance.Paladin.HolyPrismCount, "Holy Prism"),
+                           Spell.CastSpell("Holy Prism",on=>Me, ret => Me.HealthPercent < CLUSettings.Instance.Paladin.HolyPrismPercent && Me.CurrentTarget != null && Unit.EnemyMeleeUnits.Count() >= CLUSettings.Instance.Paladin.HolyPrismCount, "Holy Prism"),
                            Spell.CastOnGround("Light's Hammer", loc => Me.CurrentTarget.Location, ret => Me.HealthPercent > CLUSettings.Instance.Paladin.HolyPrismPercent && Me.CurrentTarget != null && Unit.EnemyMeleeUnits.Count() >= CLUSettings.Instance.Paladin.LightsHammerCount && CLUSettings.Instance.UseAoEAbilities, true),
                            // end AoE
                            Spell.CastSpell("Crusader Strike",             ret => true, "Crusader Strike"),                          
