@@ -204,7 +204,6 @@ namespace CLU.Base
             20484, // Rebirth, //
             8936, // Regrowth, //
             1513, // Scare Beast, //
-            2948, // Scorch, //
             5676, // Searing Pain, //
             27243, // Seed of Corruption, //
             9484, // Shackle Undead, //

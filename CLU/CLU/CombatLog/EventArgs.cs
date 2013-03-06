@@ -57,7 +57,8 @@ namespace CLU.CombatLog
         {
             get
             {
-                return ulong.Parse(this.Args[3].ToString().Replace("0x", string.Empty), NumberStyles.HexNumber);
+                if (Args[3].ToString() == "") return 0;
+                return ulong.Parse(Args[3].ToString().Replace("0x", string.Empty), NumberStyles.HexNumber);
             }
         }
 

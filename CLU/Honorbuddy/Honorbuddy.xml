@@ -5831,17 +5831,6 @@
             </returns>
             <remarks>Created by Nesox 2012-02-04</remarks>
         </member>
-        <member name="M:Styx.CommonBot.Blacklist.Contains(System.UInt64,System.Boolean)">
-            <summary>
-            Determines whether [contains] [the specified GUID].
-            </summary>
-            <param name="guid">The GUID.</param>
-            <param name="flush">if set to <c>true</c> [flush].</param>
-            <returns>
-              <c>true</c> if [contains] [the specified GUID]; otherwise, <c>false</c>.
-            </returns>
-            <remarks>Created by Nesox 2012-02-04</remarks>
-        </member>
         <member name="M:Styx.CommonBot.Blacklist.Add(System.UInt64,System.TimeSpan)">
             <summary>
             Adds the specified GUID.

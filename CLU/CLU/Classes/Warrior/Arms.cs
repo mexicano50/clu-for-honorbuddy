@@ -83,7 +83,6 @@ namespace CLU.Classes.Warrior
         private static bool HasColossusSmash2 { get { return Buff.PlayerBuffTimeLeft("Colossus Smash") > 2; } }
         private static bool IsColossusSmashOnCooldown { get { return Spell.SpellCooldown("Colossus Smash").TotalSeconds > 4.0; } }
         private static bool IsTasteForBloodOnCooldown { get { return Buff.PlayerBuffTimeLeft("Taste For Blood") <= 3; } }
-        private static bool UseDeadlyCalm { get { return Buff.GetAuraStack(Me, "Taste for Blood", true) > 2; } }
         private static bool TasteForBloodStacks { get { return Buff.GetAuraStack(Me, "Taste for Blood", true) > 3; } }
         private static bool IsColossusSmashOnCoolDownHeroicStrike { get { return Spell.SpellCooldown("Colossus Smash").TotalSeconds > 0.3; } }
 
@@ -133,7 +132,6 @@ namespace CLU.Classes.Warrior
                                     new Decorator(ret => CLUSettings.Instance.UseAoEAbilities && Unit.CountEnnemiesInRange(Me.Location, 8f) == 3,
                                         new PrioritySelector(
                                     Spell.CastSelfSpell("Berserker Rage", ret => !Me.Auras.ContainsKey("Enrage") && Spell.SpellOnCooldown("Colossus Smash"), "Berserker Rage"),
-                                    Spell.CastSelfSpell("Deadly Calm", ret => Me.CurrentRage > 40, "Deadly Calm"),
                                     Spell.CastSpell("Thunder Clap", ret => Me.CurrentTarget != null && Me.CurrentTarget.IsWithinMeleeRange, "Thunder Clap"),
                                     Buff.CastBuff("Sweeping Strikes", ret => true, "Sweeping Strikes"),
                                     Spell.CastSpell("Dragon Roar", ret => SpellManager.HasSpell("Dragon Roar"), "Dragon Roar"),
@@ -150,10 +148,9 @@ namespace CLU.Classes.Warrior
                                     new Decorator(ret => !CLUSettings.Instance.UseAoEAbilities || Unit.CountEnnemiesInRange(Me.Location, 8f) < 3,
                                         new PrioritySelector(
                                     Spell.CastSelfSpell("Berserker Rage", ret => !Me.Auras.ContainsKey("Enrage") && Spell.SpellOnCooldown("Colossus Smash"), "Berserker Rage"),
-                                    Spell.CastSelfSpell("Deadly Calm", ret => UseDeadlyCalm, "Deadly Calm"),
                                     Spell.CastSelfSpell("Bloodbath", ret => Me.CurrentTarget != null && (SpellManager.HasSpell("Bloodbath") && (((Spell.SpellCooldown("Recklessness").TotalSeconds >= 10 || Buff.PlayerHasBuff("Recklessness")) || (Me.CurrentTarget.HealthPercent >= 20 && (Unit.TimeToDeath(Me.CurrentTarget) <= 165 || (Unit.TimeToDeath(Me.CurrentTarget) <= 315 & !Item.Has4PcTeirBonus(ItemSetId))) && Unit.TimeToDeath(Me.CurrentTarget) > 75)) || Unit.TimeToDeath(Me.CurrentTarget) <= 19)), "Bloodbath"),
                                     Spell.CastSelfSpell("Sweeping Strikes", ret => Unit.CountEnnemiesInRange(Me.Location, 8f) == 2 && CLUSettings.Instance.UseAoEAbilities, "Sweeping Strikes"),
-                                    Spell.CastSpell("Heroic Strike", ret => UseDeadlyCalm && Buff.TargetHasDebuff("Colossus Smash"), "Heroic Strike"),
+                                    Spell.CastSpell("Heroic Strike", ret => Buff.TargetHasDebuff("Colossus Smash"), "Heroic Strike"),
                                     Spell.CastSpell("Heroic Strike", ret => Buff.GetAuraStack(Me, "Taste for Blood", true) > 1 && IsTasteForBloodOnCooldown && Me.CurrentTarget.HealthPercent >= 20, "Heroic Strike"),
                                     Spell.CastSpell("Slam", ret => Me.CurrentTarget != null && Me.CurrentRage > 110 && Me.CurrentTarget.HealthPercent >= 20, "Slam"),
                                     Spell.CastSpell("Mortal Strike", ret => true, "Mortal Strike"),
@@ -202,8 +199,7 @@ namespace CLU.Classes.Warrior
                         Spell.CastSelfSpell("Bloodbath", ret => Me.CurrentTarget != null && Me.CurrentTarget.IsWithinMeleeRange && TalentManager.HasTalent(17) && (((SpellManager.Spells["Recklessness"].CooldownTimeLeft.Seconds >= 10 || Buff.PlayerHasActiveBuff("Recklessness")) || (Me.CurrentTarget.HealthPercent >= 20 && (Unit.TimeToDeath(Me.CurrentTarget) <= 165 || Unit.TimeToDeath(Me.CurrentTarget) <= 315) && Unit.TimeToDeath(Me.CurrentTarget) > 75)) || Unit.TimeToDeath(Me.CurrentTarget) <= 19), "Bloodbath"),
                         Spell.CastSelfSpell("Berserker Rage", ret => Me.CurrentTarget != null && Me.CurrentTarget.IsWithinMeleeRange && !Buff.PlayerHasActiveBuff("Enrage"), "Berserker Rage"),
                         Spell.CastOnUnitLocation("Heroic Leap", ret => Me.CurrentTarget, ret => Buff.TargetHasDebuff("Colossus Smash"), "Heroic Leap"),
-                        Spell.CastSelfSpell("Deadly Calm", ret => Me.CurrentTarget != null && Me.CurrentTarget.IsWithinMeleeRange && Me.CurrentRage >= 40, "Deadly Calm"),
-                        Spell.CastSpell("Heroic Strike", ret => Me.CurrentTarget != null && ((Buff.PlayerHasActiveBuff("Taste for Blood") && Buff.PlayerActiveBuffTimeLeft("Taste for Blood").Seconds <= 2) || (Buff.PlayerCountBuff("Taste for Blood") == 3 && Spell.CanCast("Overpower")) || (Buff.PlayerHasActiveBuff("Taste for Blood") && Buff.TargetDebuffTimeLeft("Colossus Smash").Seconds <= 2 && SpellManager.Spells["Colossus Smash"].CooldownTimeLeft.Seconds != 0) || Buff.PlayerHasActiveBuff("Deadly Calm") || Me.CurrentRage > 110) && Me.CurrentTarget.HealthPercent >= 20 && Buff.TargetHasDebuff("Colossus Smash"), "Heroic Strike"),
+                        Spell.CastSpell("Heroic Strike", ret => Me.CurrentTarget != null && ((Buff.PlayerHasActiveBuff("Taste for Blood") && Buff.PlayerActiveBuffTimeLeft("Taste for Blood").Seconds <= 2) || (Buff.PlayerCountBuff("Taste for Blood") == 3 && Spell.CanCast("Overpower")) || (Buff.PlayerHasActiveBuff("Taste for Blood") && Buff.TargetDebuffTimeLeft("Colossus Smash").Seconds <= 2 && SpellManager.Spells["Colossus Smash"].CooldownTimeLeft.Seconds != 0) || Me.CurrentRage > 110) && Me.CurrentTarget.HealthPercent >= 20 && Buff.TargetHasDebuff("Colossus Smash"), "Heroic Strike"),
                         Spell.CastSpell("Mortal Strike", ret => true, "Mortal Strike"),
                         Spell.CastSpell("Colossus Smash", ret => Buff.TargetDebuffTimeLeft("Colossus Smash").TotalSeconds <= 1.5, "Colossus Smash"),
                         Spell.CastSpell("Execute", ret => Me.CurrentTarget != null && Me.CurrentTarget.HealthPercent <= 20, "Execute"),

@@ -124,7 +124,6 @@ NOTE: PvP rotations have been implemented in the most basic form, once MoP is re
                      Spell.CastSpell("Heroic Strike",       ret => Buff.PlayerHasActiveBuff("Ultimatum") || Me.RagePercent >= CLUSettings.Instance.Warrior.ProtHeroicStrikeRagePercent, "Heroic Strike"),
                      Spell.CastSpell("Shield Slam",         ret => true, "Shield Slam on CD"),
                      Spell.CastSpell("Revenge",             ret => true, "Revenge on CD"),
-                     Spell.CastSelfSpell("Deadly Calm", ret => CLUSettings.Instance.Warrior.UseDeadlyCalm && Unit.UseCooldowns(), "Deadly Calm"),
                      Spell.CastSpell("Execute", ret => Me.CurrentTarget != null && Me.CurrentTarget.HealthPercent < 20, "Execute"),
                      Spell.CastSelfSpell("Berserker Rage", ret => Me.CurrentTarget != null && (CLUSettings.Instance.Warrior.UseBerserkerRage && Unit.UseCooldowns() && Me.CurrentTarget.IsWithinMeleeRange), "Berserker Rage"),
                      Spell.CastAreaSpell("Thunder Clap", 8, false, 1, 0.0, 0.0, ret => !Buff.UnitHasWeakenedBlows(Me.CurrentTarget) && Me.CurrentTarget != null && Me.CurrentTarget.IsWithinMeleeRange, "Thunder Clap for Weakened Blows"),

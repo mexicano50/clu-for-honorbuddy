@@ -86,14 +86,6 @@ namespace CLU.Settings
         [Description("When enabled CLU will use Dragon Roar. (shared across all warrior rotations)")]
         public bool UseDragonRoar { get; set; }
 
-
-        [Setting]
-        [DefaultValue(true)]
-        [Category("Common")]
-        [DisplayName("Use Deadly Calm on CD")]
-        [Description("When enabled CLU will use deadly calm on CD.")]
-        public bool UseDeadlyCalm { get; set; }
-
         [Setting]
         [DefaultValue(true)]
         [Category("Common")]
