@@ -118,7 +118,7 @@ namespace CLU.Classes.Rogue
 
                            // Questing and PvP helpers
                            new Decorator(
-                               ret => CLUSettings.Instance.EnableMovement && Buff.PlayerHasBuff("Stealth"),
+                               ret => CLUSettings.Instance.Rogue.EnableAlwaysStealth && CLUSettings.Instance.EnableMovement && Buff.PlayerHasBuff("Stealth"),
                                new PrioritySelector(
                     // Spell.CastSpell("Pick Pocket", ret => Buff.PlayerHasBuff("Stealth"), "Gimme the caaash (Pick Pocket)"),
                                    Spell.CastSelfSpell("Sprint", ret => Me.IsMoving && Unit.DistanceToTargetBoundingBox() >= 15, "Sprint"),
