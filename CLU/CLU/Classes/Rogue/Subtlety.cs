@@ -1,12 +1,12 @@
 ﻿#region Revision info
 
 /*
- * $Author: clutwopointzero@gmail.com $
- * $Date: 2012-10-20 05:12:24 +0200 (Sat, 20 Oct 2012) $
+ * $Author$
+ * $Date$
  * $ID$
- * $Revision: 706 $
- * $URL: https://clu-for-honorbuddy.googlecode.com/svn/trunk/CLU/CLU/Classes/Rogue/Subtlety.cs $
- * $LastChangedBy: clutwopointzero@gmail.com $
+ * $Revision$
+ * $URL$
+ * $LastChangedBy$
  * $ChangesMade$
  */
 
